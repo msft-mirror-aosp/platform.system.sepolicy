@@ -178,28 +178,6 @@ neverallow { domain -$1 } $1_userfaultfd:anon_inode *;
 neverallow $1 ~$1_userfaultfd:anon_inode *;
 ')
 
-####################################
-# virtualizationservice_use(domain)
-# Allow domain to create and communicate with a virtual machine using
-# virtualizationservice.
-define(`virtualizationservice_use', `
-allow $1 virtualization_service:service_manager find;
-# Let the client call virtualizationservice.
-binder_call($1, virtualizationservice)
-# Let virtualizationservice call back to the client.
-binder_call(virtualizationservice, $1)
-# Let the client pass file descriptors to virtualizationservice and on
-# to crosvm
-allow { virtualizationservice crosvm } $1:fd use;
-# Allow client to read/write vsock created by virtualizationservice to
-# communicate with the VM that it created. Notice that we do not grant
-# permission to create a vsock; the client can only connect to VMs
-# that it owns.
-allow $1 virtualizationservice:vsock_socket { getattr read write };
-# Allow client to inspect hypervisor capabilities
-get_prop($1, hypervisor_prop)
-')
-
 #####################################
 # app_domain(domain)
 # Allow a base set of permissions required for all apps.
@@ -453,9 +431,6 @@ allow $1 system_suspend_hwservice:hwservice_manager find;
 hwbinder_use($1)
 get_prop($1, hwservicemanager_prop)
 allow $1 hidl_manager_hwservice:hwservice_manager find;
-# AIDL suspend hal permissions
-allow $1 hal_system_suspend_service:service_manager find;
-binder_use($1)
 ')
 
 #####################################
@@ -695,12 +670,6 @@ define(`use_drmservice', `
 define(`add_service', `
   allow $1 $2:service_manager { add find };
   neverallow { domain -$1 } $2:service_manager add;
-
-  # On debug builds with root, allow binder services to use binder over TCP.
-  # Not using rw_socket_perms_no_ioctl to avoid granting too many permissions.
-  userdebug_or_eng(`
-    allow $1 su:tcp_socket { accept getopt read write };
-  ')
 ')
 
 ###########################################
@@ -1021,13 +990,4 @@ define(`vendor_public_prop', `define_prop($1, vendor, public)')
 define(`read_fstab', `
   allow $1 { metadata_file gsi_metadata_file_type }:dir search;
   allow $1 gsi_public_metadata_file:file r_file_perms;
-  allow $1 proc_bootconfig:file r_file_perms;
-')
-
-######################################
-# use_bootstrap_libs(domain)
-# Allow domain to use bootstrap bionic libraries in system/lib[64]/bootstrap
-define(`use_bootstrap_libs', `
-  allow $1 system_bootstrap_lib_file:dir r_dir_perms;
-  allow $1 system_bootstrap_lib_file:file { execute read open getattr map };
 ')
