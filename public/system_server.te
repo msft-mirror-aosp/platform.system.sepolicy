@@ -14,5 +14,4 @@ neverallow {
   -init
   -vendor_init
   -system_server
-  -shell
 } power_debug_prop:property_service set;
