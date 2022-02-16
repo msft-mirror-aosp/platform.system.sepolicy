@@ -147,7 +147,6 @@ dump_hal(hal_wifi)
 dump_hal(hal_graphics_allocator)
 dump_hal(hal_light)
 dump_hal(hal_neuralnetworks)
-dump_hal(hal_nfc)
 dump_hal(hal_thermal)
 dump_hal(hal_power)
 dump_hal(hal_power_stats)
@@ -155,7 +154,6 @@ dump_hal(hal_identity)
 dump_hal(hal_face)
 dump_hal(hal_fingerprint)
 dump_hal(hal_gnss)
-dump_hal(hal_contexthub)
 
 # Vibrate the device after we are done collecting the bugreport
 hal_client_domain(dumpstate, hal_vibrator)
@@ -254,9 +252,9 @@ allow dumpstate {
   -apex_service
   -dumpstate_service
   -gatekeeper_service
-  -hal_wifi_supplicant_service
   -virtual_touchpad_service
   -vold_service
+  -vr_hwc_service
   -default_android_service
 }:service_manager find;
 # suppress denials for services dumpstate should not be accessing.
@@ -264,9 +262,9 @@ dontaudit dumpstate {
   apex_service
   dumpstate_service
   gatekeeper_service
-  hal_wifi_supplicant_service
   virtual_touchpad_service
   vold_service
+  vr_hwc_service
 }:service_manager find;
 
 # Most of these are neverallowed.

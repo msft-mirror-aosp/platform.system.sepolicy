@@ -85,9 +85,6 @@ $(built_$(version)_plat_sepolicy): $($(version)_plat_policy.conf) $(HOST_OUT_EXE
 	$(hide) cat $(PRIVATE_ADDITIONAL_CIL_FILES) >> $@
 	$(hide) $(HOST_OUT_EXECUTABLES)/secilc -m -M true -G -c $(POLICYVERS) $(PRIVATE_NEVERALLOW_ARG) $@ -o $@ -f /dev/null
 
-# TODO(b/214336258): move to Soong
-$(call dist-for-goals,base-sepolicy-files-for-mapping,$(built_$(version)_plat_sepolicy):$(version)_plat_sepolicy)
-
 $(version)_plat_policy.conf :=
 
 # $(version)_compat - the current plat_sepolicy.cil built with the compatibility file
@@ -116,8 +113,11 @@ endif #($(IS_TREBLE_TEST_ENABLED_PARTNER),true)
 
 # vendor_sepolicy.cil and plat_pub_versioned.cil are the new design to replace
 # nonplat_sepolicy.cil.
-$(version)_vendor := $($(version)_prebuilts_dir)/vendor_sepolicy.cil \
+$(version)_nonplat := $($(version)_prebuilts_dir)/vendor_sepolicy.cil \
 $($(version)_prebuilts_dir)/plat_pub_versioned.cil
+ifeq (,$(wildcard $($(version)_nonplat)))
+$(version)_nonplat := $($(version)_prebuilts_dir)/nonplat_sepolicy.cil
+endif
 
 cil_files := $(built_plat_cil)
 ifeq ($(IS_TREBLE_TEST_ENABLED_PARTNER),true)
@@ -128,7 +128,7 @@ ifneq (,$(PRODUCT_PREBUILT_POLICY)
 cil_files += $(built_product_cil)
 endif # (,$(PRODUCT_PREBUILT_POLICY)
 endif # ($(IS_TREBLE_TEST_ENABLED_PARTNER),true)
-cil_files += $($(version)_mapping.cil) $($(version)_vendor)
+cil_files += $($(version)_mapping.cil) $($(version)_nonplat)
 $($(version)_compat): PRIVATE_CIL_FILES := $(cil_files)
 $($(version)_compat): $(HOST_OUT_EXECUTABLES)/secilc $(cil_files)
 	$(hide) $(HOST_OUT_EXECUTABLES)/secilc -m -M true -G -N -c $(POLICYVERS) \
@@ -167,7 +167,8 @@ $(LOCAL_BUILT_MODULE): $(HOST_OUT_EXECUTABLES)/treble_sepolicy_tests \
   $(public_cil_files) \
   $(built_$(version)_plat_sepolicy) $($(version)_compat) $($(version)_mapping.combined.cil)
 	@mkdir -p $(dir $@)
-	$(hide) $(HOST_OUT_EXECUTABLES)/treble_sepolicy_tests $(ALL_FC_ARGS) \
+	$(hide) $(HOST_OUT_EXECUTABLES)/treble_sepolicy_tests -l \
+                $(HOST_OUT)/lib64/libsepolwrap.$(SHAREDLIB_EXT) $(ALL_FC_ARGS) \
                 -b $(PRIVATE_PLAT_SEPOLICY) -m $(PRIVATE_COMBINED_MAPPING) \
                 -o $(PRIVATE_SEPOLICY_OLD) -p $(PRIVATE_SEPOLICY) \
                 -u $(PRIVATE_PLAT_PUB_SEPOLICY) \
@@ -187,7 +188,7 @@ $(version)_compat :=
 $(version)_mapping.cil :=
 $(version)_mapping.combined.cil :=
 $(version)_mapping.ignore.cil :=
-$(version)_vendor :=
+$(version)_nonplat :=
 $(version)_prebuilts_dir :=
 built_$(version)_plat_sepolicy :=
 version :=
