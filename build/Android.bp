@@ -31,4 +31,12 @@ python_binary_host {
     "secilc",
     "version_policy",
   ],
+  version: {
+    py2: {
+      enabled: true,
+    },
+    py3: {
+      enabled: false,
+    },
+  },
 }
