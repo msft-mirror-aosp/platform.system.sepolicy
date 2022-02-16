@@ -17,7 +17,6 @@ package selinux
 import (
 	"fmt"
 	"io"
-	"os"
 	"strings"
 
 	"github.com/google/blueprint"
@@ -31,14 +30,18 @@ type selinuxContextsProperties struct {
 	// Filenames under sepolicy directories, which will be used to generate contexts file.
 	Srcs []string `android:"path"`
 
-	// Output file name. Defaults to module name
-	Stem *string
-
 	Product_variables struct {
+		Debuggable struct {
+			Srcs []string
+		}
+
 		Address_sanitize struct {
-			Srcs []string `android:"path"`
+			Srcs []string
 		}
 	}
+
+	// Whether reqd_mask directory is included to sepolicy directories or not.
+	Reqd_mask *bool
 
 	// Whether the comments in generated contexts file will be removed or not.
 	Remove_comment *bool
@@ -55,16 +58,8 @@ type fileContextsProperties struct {
 	// Apex paths, /system/apex/{apex_name}, will be amended to the paths of file_contexts
 	// entries.
 	Flatten_apex struct {
-		Srcs []string `android:"path"`
+		Srcs []string
 	}
-}
-
-type seappProperties struct {
-	// Files containing neverallow rules.
-	Neverallow_files []string `android:"path"`
-
-	// Precompiled sepolicy binary file which will be fed to checkseapp.
-	Sepolicy *string `android:"path"`
 }
 
 type selinuxContextsModule struct {
@@ -72,7 +67,6 @@ type selinuxContextsModule struct {
 
 	properties             selinuxContextsProperties
 	fileContextsProperties fileContextsProperties
-	seappProperties        seappProperties
 	build                  func(ctx android.ModuleContext, inputs android.Paths) android.Path
 	deps                   func(ctx android.BottomUpMutatorContext)
 	outputPath             android.Path
@@ -92,7 +86,6 @@ func init() {
 	android.RegisterModuleType("property_contexts", propertyFactory)
 	android.RegisterModuleType("service_contexts", serviceFactory)
 	android.RegisterModuleType("keystore2_key_contexts", keystoreKeyFactory)
-	android.RegisterModuleType("seapp_contexts", seappFactory)
 }
 
 func (m *selinuxContextsModule) InstallInRoot() bool {
@@ -127,10 +120,6 @@ func (m *selinuxContextsModule) propertyContextsDeps(ctx android.BottomUpMutator
 	}
 }
 
-func (m *selinuxContextsModule) stem() string {
-	return proptools.StringDefault(m.properties.Stem, m.Name())
-}
-
 func (m *selinuxContextsModule) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	if m.InRecovery() {
 		// Installing context files at the root of the recovery partition
@@ -144,21 +133,61 @@ func (m *selinuxContextsModule) GenerateAndroidBuildActions(ctx android.ModuleCo
 
 		if reuseDeps, ok := dep.(*selinuxContextsModule); ok {
 			m.outputPath = reuseDeps.outputPath
-			ctx.InstallFile(m.installPath, m.stem(), m.outputPath)
+			ctx.InstallFile(m.installPath, m.Name(), m.outputPath)
 			return
 		}
 	}
 
-	m.outputPath = m.build(ctx, android.PathsForModuleSrc(ctx, m.properties.Srcs))
-	ctx.InstallFile(m.installPath, m.stem(), m.outputPath)
+	var inputs android.Paths
+
+	ctx.VisitDirectDepsWithTag(android.SourceDepTag, func(dep android.Module) {
+		segroup, ok := dep.(*fileGroup)
+		if !ok {
+			ctx.ModuleErrorf("srcs dependency %q is not an selinux filegroup",
+				ctx.OtherModuleName(dep))
+			return
+		}
+
+		if ctx.ProductSpecific() {
+			inputs = append(inputs, segroup.ProductPrivateSrcs()...)
+		} else if ctx.SocSpecific() {
+			if ctx.DeviceConfig().BoardSepolicyVers() == ctx.DeviceConfig().PlatformSepolicyVersion() {
+				inputs = append(inputs, segroup.SystemVendorSrcs()...)
+			}
+			inputs = append(inputs, segroup.VendorSrcs()...)
+		} else if ctx.DeviceSpecific() {
+			inputs = append(inputs, segroup.OdmSrcs()...)
+		} else if ctx.SystemExtSpecific() {
+			inputs = append(inputs, segroup.SystemExtPrivateSrcs()...)
+		} else {
+			inputs = append(inputs, segroup.SystemPrivateSrcs()...)
+			inputs = append(inputs, segroup.SystemPublicSrcs()...)
+		}
+
+		if proptools.Bool(m.properties.Reqd_mask) {
+			if ctx.SocSpecific() || ctx.DeviceSpecific() {
+				inputs = append(inputs, segroup.VendorReqdMaskSrcs()...)
+			} else {
+				inputs = append(inputs, segroup.SystemReqdMaskSrcs()...)
+			}
+		}
+	})
+
+	for _, src := range m.properties.Srcs {
+		// Module sources are handled above with VisitDirectDepsWithTag
+		if android.SrcIsModule(src) == "" {
+			inputs = append(inputs, android.PathForModuleSrc(ctx, src))
+		}
+	}
+
+	m.outputPath = m.build(ctx, inputs)
+	ctx.InstallFile(m.installPath, ctx.ModuleName(), m.outputPath)
 }
 
 func newModule() *selinuxContextsModule {
 	m := &selinuxContextsModule{}
 	m.AddProperties(
 		&m.properties,
-		&m.fileContextsProperties,
-		&m.seappProperties,
 	)
 	android.InitAndroidArchModule(m, android.DeviceSupported, android.MultilibCommon)
 	android.AddLoadHook(m, func(ctx android.LoadHookContext) {
@@ -171,6 +200,10 @@ func (m *selinuxContextsModule) selinuxContextsHook(ctx android.LoadHookContext)
 	// TODO: clean this up to use build/soong/android/variable.go after b/79249983
 	var srcs []string
 
+	if ctx.Config().Debuggable() {
+		srcs = append(srcs, m.properties.Product_variables.Debuggable.Srcs...)
+	}
+
 	for _, sanitize := range ctx.Config().SanitizeDevice() {
 		if sanitize == "address" {
 			srcs = append(srcs, m.properties.Product_variables.Address_sanitize.Srcs...)
@@ -182,32 +215,38 @@ func (m *selinuxContextsModule) selinuxContextsHook(ctx android.LoadHookContext)
 }
 
 func (m *selinuxContextsModule) AndroidMk() android.AndroidMkData {
-	nameSuffix := ""
-	if m.InRecovery() && !m.onlyInRecovery() {
-		nameSuffix = ".recovery"
-	}
 	return android.AndroidMkData{
-		Class:      "ETC",
-		OutputFile: android.OptionalPathForPath(m.outputPath),
-		SubName:    nameSuffix,
-		Extra: []android.AndroidMkExtraFunc{
-			func(w io.Writer, outputFile android.Path) {
-				fmt.Fprintln(w, "LOCAL_MODULE_PATH :=", m.installPath.String())
-				fmt.Fprintln(w, "LOCAL_INSTALLED_MODULE_STEM :=", m.stem())
-			},
+		Custom: func(w io.Writer, name, prefix, moduleDir string, data android.AndroidMkData) {
+			nameSuffix := ""
+			if m.InRecovery() && !m.onlyInRecovery() {
+				nameSuffix = ".recovery"
+			}
+			fmt.Fprintln(w, "\ninclude $(CLEAR_VARS)")
+			fmt.Fprintln(w, "LOCAL_PATH :=", moduleDir)
+			fmt.Fprintln(w, "LOCAL_MODULE :=", name+nameSuffix)
+			data.Entries.WriteLicenseVariables(w)
+			fmt.Fprintln(w, "LOCAL_MODULE_CLASS := ETC")
+			if m.Owner() != "" {
+				fmt.Fprintln(w, "LOCAL_MODULE_OWNER :=", m.Owner())
+			}
+			fmt.Fprintln(w, "LOCAL_MODULE_TAGS := optional")
+			fmt.Fprintln(w, "LOCAL_PREBUILT_MODULE_FILE :=", m.outputPath.String())
+			fmt.Fprintln(w, "LOCAL_MODULE_PATH :=", m.installPath.ToMakePath().String())
+			fmt.Fprintln(w, "LOCAL_INSTALLED_MODULE_STEM :=", name)
+			fmt.Fprintln(w, "include $(BUILD_PREBUILT)")
 		},
 	}
 }
 
 func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
-	if proptools.Bool(m.properties.Recovery_available) && m.ModuleBase.InstallInRecovery() {
+	if proptools.Bool(m.properties.Recovery_available) && m.InstallInRecovery() {
 		ctx.PropertyErrorf("recovery_available",
 			"doesn't make sense at the same time as `recovery: true`")
 	}
 }
 
 func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
-	return !m.ModuleBase.InstallInRecovery()
+	return !m.InstallInRecovery()
 }
 
 func (m *selinuxContextsModule) RamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
@@ -223,7 +262,7 @@ func (m *selinuxContextsModule) DebugRamdiskVariantNeeded(ctx android.BaseModule
 }
 
 func (m *selinuxContextsModule) RecoveryVariantNeeded(ctx android.BaseModuleContext) bool {
-	return m.ModuleBase.InstallInRecovery() || proptools.Bool(m.properties.Recovery_available)
+	return m.InstallInRecovery() || proptools.Bool(m.properties.Recovery_available)
 }
 
 func (m *selinuxContextsModule) ExtraImageVariations(ctx android.BaseModuleContext) []string {
@@ -236,7 +275,7 @@ func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext,
 var _ android.ImageInterface = (*selinuxContextsModule)(nil)
 
 func (m *selinuxContextsModule) buildGeneralContexts(ctx android.ModuleContext, inputs android.Paths) android.Path {
-	builtContext := android.PathForModuleGen(ctx, ctx.ModuleName()+"_m4out")
+	ret := android.PathForModuleGen(ctx, ctx.ModuleName()+"_m4out")
 
 	rule := android.NewRuleBuilder(pctx, ctx)
 
@@ -245,40 +284,37 @@ func (m *selinuxContextsModule) buildGeneralContexts(ctx android.ModuleContext, 
 		Text("--fatal-warnings -s").
 		FlagForEachArg("-D", ctx.DeviceConfig().SepolicyM4Defs()).
 		Inputs(inputs).
-		FlagWithOutput("> ", builtContext)
+		FlagWithOutput("> ", ret)
 
 	if proptools.Bool(m.properties.Remove_comment) {
-		rule.Temporary(builtContext)
+		rule.Temporary(ret)
 
 		remove_comment_output := android.PathForModuleGen(ctx, ctx.ModuleName()+"_remove_comment")
 
 		rule.Command().
 			Text("sed -e 's/#.*$//' -e '/^$/d'").
-			Input(builtContext).
+			Input(ret).
 			FlagWithOutput("> ", remove_comment_output)
 
-		builtContext = remove_comment_output
+		ret = remove_comment_output
 	}
 
 	if proptools.Bool(m.properties.Fc_sort) {
-		rule.Temporary(builtContext)
+		rule.Temporary(ret)
 
 		sorted_output := android.PathForModuleGen(ctx, ctx.ModuleName()+"_sorted")
 
 		rule.Command().
 			Tool(ctx.Config().HostToolPath(ctx, "fc_sort")).
-			FlagWithInput("-i ", builtContext).
+			FlagWithInput("-i ", ret).
 			FlagWithOutput("-o ", sorted_output)
 
-		builtContext = sorted_output
+		ret = sorted_output
 	}
 
-	ret := android.PathForModuleGen(ctx, m.stem())
-	rule.Temporary(builtContext)
-	rule.Command().Text("cp").Input(builtContext).Output(ret)
+	rule.Build("selinux_contexts", "building contexts: "+m.Name())
 
 	rule.DeleteTemporaryFiles()
-	rule.Build("selinux_contexts", "building contexts: "+m.Name())
 
 	return ret
 }
@@ -291,18 +327,25 @@ func (m *selinuxContextsModule) buildFileContexts(ctx android.ModuleContext, inp
 	rule := android.NewRuleBuilder(pctx, ctx)
 
 	if ctx.Config().FlattenApex() {
-		for _, path := range android.PathsForModuleSrc(ctx, m.fileContextsProperties.Flatten_apex.Srcs) {
-			out := android.PathForModuleGen(ctx, "flattened_apex", path.Rel())
-			apex_path := "/system/apex/" + strings.Replace(
-				strings.TrimSuffix(path.Base(), "-file_contexts"),
-				".", "\\\\.", -1)
+		for _, src := range m.fileContextsProperties.Flatten_apex.Srcs {
+			if m := android.SrcIsModule(src); m != "" {
+				ctx.ModuleErrorf(
+					"Module srcs dependency %q is not supported for flatten_apex.srcs", m)
+				return nil
+			}
+			for _, path := range android.PathsForModuleSrcExcludes(ctx, []string{src}, nil) {
+				out := android.PathForModuleGen(ctx, "flattened_apex", path.Rel())
+				apex_path := "/system/apex/" + strings.Replace(
+					strings.TrimSuffix(path.Base(), "-file_contexts"),
+					".", "\\\\.", -1)
 
-			rule.Command().
-				Text("awk '/object_r/{printf(\""+apex_path+"%s\\n\",$0)}'").
-				Input(path).
-				FlagWithOutput("> ", out)
+				rule.Command().
+					Text("awk '/object_r/{printf(\""+apex_path+"%s\\n\",$0)}'").
+					Input(path).
+					FlagWithOutput("> ", out)
 
-			inputs = append(inputs, out)
+				inputs = append(inputs, out)
+			}
 		}
 	}
 
@@ -312,6 +355,7 @@ func (m *selinuxContextsModule) buildFileContexts(ctx android.ModuleContext, inp
 
 func fileFactory() android.Module {
 	m := newModule()
+	m.AddProperties(&m.fileContextsProperties)
 	m.build = m.buildFileContexts
 	return m
 }
@@ -434,31 +478,6 @@ func (m *selinuxContextsModule) buildPropertyContexts(ctx android.ModuleContext,
 	return builtCtxFile
 }
 
-func (m *selinuxContextsModule) buildSeappContexts(ctx android.ModuleContext, inputs android.Paths) android.Path {
-	neverallowFile := android.PathForModuleGen(ctx, "neverallow")
-	ret := android.PathForModuleGen(ctx, m.stem())
-
-	rule := android.NewRuleBuilder(pctx, ctx)
-	rule.Command().Text("(grep").
-		Flag("-ihe").
-		Text("'^neverallow'").
-		Inputs(android.PathsForModuleSrc(ctx, m.seappProperties.Neverallow_files)).
-		Text(os.DevNull). // to make grep happy even when Neverallow_files is empty
-		Text(">").
-		Output(neverallowFile).
-		Text("|| true)") // to make ninja happy even when result is empty
-
-	rule.Temporary(neverallowFile)
-	rule.Command().BuiltTool("checkseapp").
-		FlagWithInput("-p ", android.PathForModuleSrc(ctx, proptools.String(m.seappProperties.Sepolicy))).
-		FlagWithOutput("-o ", ret).
-		Inputs(inputs).
-		Input(neverallowFile)
-
-	rule.Build("seapp_contexts", "Building seapp_contexts: "+m.Name())
-	return ret
-}
-
 func hwServiceFactory() android.Module {
 	m := newModule()
 	m.build = m.buildHwServiceContexts
@@ -482,20 +501,4 @@ func keystoreKeyFactory() android.Module {
 	m := newModule()
 	m.build = m.buildGeneralContexts
 	return m
-}
-
-func seappFactory() android.Module {
-	m := newModule()
-	m.build = m.buildSeappContexts
-	return m
-}
-
-var _ android.OutputFileProducer = (*selinuxContextsModule)(nil)
-
-// Implements android.OutputFileProducer
-func (m *selinuxContextsModule) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return []android.Path{m.outputPath}, nil
-	}
-	return nil, fmt.Errorf("unsupported module reference tag %q", tag)
 }
