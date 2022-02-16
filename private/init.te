@@ -3,6 +3,7 @@ typeattribute init coredomain;
 tmpfs_domain(init)
 
 # Transitions to seclabel processes in init.rc
+domain_trans(init, rootfs, healthd)
 domain_trans(init, rootfs, slideshow)
 domain_auto_trans(init, charger_exec, charger)
 domain_auto_trans(init, e2fs_exec, e2fs)
@@ -13,10 +14,8 @@ recovery_only(`
   domain_trans(init, rootfs, adbd)
   domain_trans(init, rootfs, charger)
   domain_trans(init, rootfs, fastbootd)
-  domain_trans(init, rootfs, hal_health_server)
   domain_trans(init, rootfs, recovery)
   domain_trans(init, rootfs, linkerconfig)
-  domain_trans(init, rootfs, servicemanager)
   domain_trans(init, rootfs, snapuserd)
 ')
 domain_trans(init, shell_exec, shell)
@@ -44,10 +43,10 @@ allow init sysfs_loop:dir r_dir_perms;
 allow init sysfs_loop:file rw_file_perms;
 
 # Allow init to examine the properties of block devices.
-allow init sysfs_type:file { getattr read };
-# Allow init get the attributes of block devices in /dev/block.
-allow init dev_type:dir r_dir_perms;
-allow init dev_type:blk_file getattr;
+allow init sysfs_block_type:file { getattr read };
+# Allow init access /dev/block
+allow init bdev_type:dir r_dir_perms;
+allow init bdev_type:blk_file getattr;
 
 # Allow init to write to the drop_caches file.
 allow init proc_drop_caches:file rw_file_perms;
@@ -93,9 +92,6 @@ neverallow { domain -init } vts_status_prop:property_service set;
 # Only init can write normal ro.boot. properties
 neverallow { domain -init } bootloader_prop:property_service set;
 
-# Only init can write ro.boot.hypervisor properties
-neverallow { domain -init } hypervisor_prop:property_service set;
-
 # Only init can write hal.instrumentation.enable
 neverallow { domain -init } hal_instrumentation_prop:property_service set;
 
@@ -107,11 +103,6 @@ neverallow { domain -init } keystore_listen_prop:property_service set;
 
 # Allow accessing /sys/kernel/tracing/instances/bootreceiver to set up tracing.
 allow init debugfs_bootreceiver_tracing:file w_file_perms;
-
-# Devices with kernels where CONFIG_HIST_TRIGGERS isn't enabled will
-# attempt to write a non exisiting 'synthetic_events' file, when setting
-# up synthetic events. This is a no-op in tracefs.
-dontaudit init debugfs_tracing_debug:dir { write add_name };
 
 # chown/chmod on devices.
 allow init {
