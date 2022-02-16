@@ -17,9 +17,7 @@ package selinux
 import (
 	"fmt"
 	"os"
-	"sort"
 	"strconv"
-	"strings"
 
 	"github.com/google/blueprint/proptools"
 
@@ -33,35 +31,9 @@ const (
 	PolicyVers = 30
 )
 
-// This order should be kept. checkpolicy syntax requires it.
-var policyConfOrder = []string{
-	"security_classes",
-	"initial_sids",
-	"access_vectors",
-	"global_macros",
-	"neverallow_macros",
-	"mls_macros",
-	"mls_decl",
-	"mls",
-	"policy_capabilities",
-	"te_macros",
-	"attributes",
-	"ioctl_defines",
-	"ioctl_macros",
-	"*.te",
-	"roles_decl",
-	"roles",
-	"users",
-	"initial_sid_contexts",
-	"fs_use",
-	"genfs_contexts",
-	"port_contexts",
-}
-
 func init() {
 	android.RegisterModuleType("se_policy_conf", policyConfFactory)
 	android.RegisterModuleType("se_policy_cil", policyCilFactory)
-	android.RegisterModuleType("se_policy_binary", policyBinaryFactory)
 }
 
 type policyConfProperties struct {
@@ -82,9 +54,6 @@ type policyConfProperties struct {
 
 	// Whether to build CTS specific policy or not. Default is false
 	Cts *bool
-
-	// Whether to build recovery specific policy or not. Default is false
-	Target_recovery *bool
 
 	// Whether this module is directly installable to one of the partitions. Default is true
 	Installable *bool
@@ -133,10 +102,6 @@ func (c *policyConf) cts() bool {
 	return proptools.Bool(c.properties.Cts)
 }
 
-func (c *policyConf) isTargetRecovery() bool {
-	return proptools.Bool(c.properties.Target_recovery)
-}
-
 func (c *policyConf) withAsan(ctx android.ModuleContext) string {
 	isAsanDevice := android.InList("address", ctx.Config().SanitizeDevice())
 	return strconv.FormatBool(proptools.BoolDefault(c.properties.With_asan, isAsanDevice))
@@ -146,18 +111,12 @@ func (c *policyConf) sepolicySplit(ctx android.ModuleContext) string {
 	if c.cts() {
 		return "cts"
 	}
-	if c.isTargetRecovery() {
-		return "false"
-	}
 	return strconv.FormatBool(ctx.DeviceConfig().SepolicySplit())
 }
 
 func (c *policyConf) compatibleProperty(ctx android.ModuleContext) string {
 	if c.cts() {
 		return "cts"
-	}
-	if c.isTargetRecovery() {
-		return "false"
 	}
 	return "true"
 }
@@ -166,18 +125,12 @@ func (c *policyConf) trebleSyspropNeverallow(ctx android.ModuleContext) string {
 	if c.cts() {
 		return "cts"
 	}
-	if c.isTargetRecovery() {
-		return "false"
-	}
 	return strconv.FormatBool(!ctx.DeviceConfig().BuildBrokenTrebleSyspropNeverallow())
 }
 
 func (c *policyConf) enforceSyspropOwner(ctx android.ModuleContext) string {
 	if c.cts() {
 		return "cts"
-	}
-	if c.isTargetRecovery() {
-		return "false"
 	}
 	return strconv.FormatBool(!ctx.DeviceConfig().BuildBrokenEnforceSyspropOwner())
 }
@@ -189,25 +142,9 @@ func (c *policyConf) enforceDebugfsRestrictions(ctx android.ModuleContext) strin
 	return strconv.FormatBool(ctx.DeviceConfig().BuildDebugfsRestrictionsEnabled())
 }
 
-func findPolicyConfOrder(name string) int {
-	for idx, pattern := range policyConfOrder {
-		if pattern == name || (pattern == "*.te" && strings.HasSuffix(name, ".te")) {
-			return idx
-		}
-	}
-	// name is not matched
-	return len(policyConfOrder)
-}
-
 func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.OutputPath {
-	conf := android.PathForModuleOut(ctx, c.stem()).OutputPath
+	conf := android.PathForModuleOut(ctx, "conf").OutputPath
 	rule := android.NewRuleBuilder(pctx, ctx)
-
-	srcs := android.PathsForModuleSrc(ctx, c.properties.Srcs)
-	sort.SliceStable(srcs, func(x, y int) bool {
-		return findPolicyConfOrder(srcs[x].Base()) < findPolicyConfOrder(srcs[y].Base())
-	})
-
 	rule.Command().Tool(ctx.Config().PrebuiltBuildTool(ctx, "m4")).
 		Flag("--fatal-warnings").
 		FlagForEachArg("-D ", ctx.DeviceConfig().SepolicyM4Defs()).
@@ -225,9 +162,8 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 		FlagWithArg("-D target_exclude_build_test=", strconv.FormatBool(proptools.Bool(c.properties.Exclude_build_test))).
 		FlagWithArg("-D target_requires_insecure_execmem_for_swiftshader=", strconv.FormatBool(ctx.DeviceConfig().RequiresInsecureExecmemForSwiftshader())).
 		FlagWithArg("-D target_enforce_debugfs_restriction=", c.enforceDebugfsRestrictions(ctx)).
-		FlagWithArg("-D target_recovery=", strconv.FormatBool(c.isTargetRecovery())).
 		Flag("-s").
-		Inputs(srcs).
+		Inputs(android.PathsForModuleSrc(ctx, c.properties.Srcs)).
 		Text("> ").Output(conf)
 
 	rule.Build("conf", "Transform policy to conf: "+ctx.ModuleName())
@@ -239,13 +175,13 @@ func (c *policyConf) DepsMutator(ctx android.BottomUpMutatorContext) {
 }
 
 func (c *policyConf) GenerateAndroidBuildActions(ctx android.ModuleContext) {
-	if !c.installable() {
-		c.SkipInstall()
-	}
-
 	c.installSource = c.transformPolicyToConf(ctx)
 	c.installPath = android.PathForModuleInstall(ctx, "etc")
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
+
+	if !c.installable() {
+		c.SkipInstall()
+	}
 }
 
 func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
@@ -255,7 +191,7 @@ func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
 		ExtraEntries: []android.AndroidMkExtraEntriesFunc{
 			func(ctx android.AndroidMkExtraEntriesContext, entries *android.AndroidMkEntries) {
 				entries.SetBool("LOCAL_UNINSTALLABLE_MODULE", !c.installable())
-				entries.SetPath("LOCAL_MODULE_PATH", c.installPath)
+				entries.SetPath("LOCAL_MODULE_PATH", c.installPath.ToMakePath())
 				entries.SetString("LOCAL_INSTALLED_MODULE_STEM", c.stem())
 			},
 		},
@@ -389,10 +325,6 @@ func (c *policyCil) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	conf := android.PathForModuleSrc(ctx, *c.properties.Src)
 	cil := c.compileConfToCil(ctx, conf)
 
-	if !c.Installable() {
-		c.SkipInstall()
-	}
-
 	if c.InstallInDebugRamdisk() {
 		// for userdebug_plat_sepolicy.cil
 		c.installPath = android.PathForModuleInstall(ctx)
@@ -401,6 +333,10 @@ func (c *policyCil) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	}
 	c.installSource = cil
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
+
+	if !c.Installable() {
+		c.SkipInstall()
+	}
 }
 
 func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
@@ -410,7 +346,7 @@ func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
 		ExtraEntries: []android.AndroidMkExtraEntriesFunc{
 			func(ctx android.AndroidMkExtraEntriesContext, entries *android.AndroidMkEntries) {
 				entries.SetBool("LOCAL_UNINSTALLABLE_MODULE", !c.Installable())
-				entries.SetPath("LOCAL_MODULE_PATH", c.installPath)
+				entries.SetPath("LOCAL_MODULE_PATH", c.installPath.ToMakePath())
 				entries.SetString("LOCAL_INSTALLED_MODULE_STEM", c.stem())
 			},
 		},
@@ -425,139 +361,3 @@ func (c *policyCil) OutputFiles(tag string) (android.Paths, error) {
 }
 
 var _ android.OutputFileProducer = (*policyCil)(nil)
-
-type policyBinaryProperties struct {
-	// Name of the output. Default is {module_name}
-	Stem *string
-
-	// Cil files to be compiled.
-	Srcs []string `android:"path"`
-
-	// Whether to ignore neverallow when running secilc check. Defaults to
-	// SELINUX_IGNORE_NEVERALLOWS.
-	Ignore_neverallow *bool
-
-	// Whether this module is directly installable to one of the partitions. Default is true
-	Installable *bool
-}
-
-type policyBinary struct {
-	android.ModuleBase
-
-	properties policyBinaryProperties
-
-	installSource android.Path
-	installPath   android.InstallPath
-}
-
-// se_policy_binary compiles cil files to a binary sepolicy file with secilc.  Usually sources of
-// se_policy_binary come from outputs of se_policy_cil modules.
-func policyBinaryFactory() android.Module {
-	c := &policyBinary{}
-	c.AddProperties(&c.properties)
-	android.InitAndroidArchModule(c, android.DeviceSupported, android.MultilibCommon)
-	return c
-}
-
-func (c *policyBinary) InstallInRoot() bool {
-	return c.InstallInRecovery()
-}
-
-func (c *policyBinary) Installable() bool {
-	return proptools.BoolDefault(c.properties.Installable, true)
-}
-
-func (c *policyBinary) stem() string {
-	return proptools.StringDefault(c.properties.Stem, c.Name())
-}
-
-func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
-	if len(c.properties.Srcs) == 0 {
-		ctx.PropertyErrorf("srcs", "must be specified")
-		return
-	}
-	bin := android.PathForModuleOut(ctx, c.stem()+"_policy")
-	rule := android.NewRuleBuilder(pctx, ctx)
-	secilcCmd := rule.Command().BuiltTool("secilc").
-		Flag("-m").                 // Multiple decls
-		FlagWithArg("-M ", "true"). // Enable MLS
-		Flag("-G").                 // expand and remove auto generated attributes
-		FlagWithArg("-c ", strconv.Itoa(PolicyVers)).
-		Inputs(android.PathsForModuleSrc(ctx, c.properties.Srcs)).
-		FlagWithOutput("-o ", bin).
-		FlagWithArg("-f ", os.DevNull)
-
-	if proptools.BoolDefault(c.properties.Ignore_neverallow, ctx.Config().SelinuxIgnoreNeverallows()) {
-		secilcCmd.Flag("-N")
-	}
-	rule.Temporary(bin)
-
-	// permissive check is performed only in user build (not debuggable).
-	if !ctx.Config().Debuggable() {
-		permissiveDomains := android.PathForModuleOut(ctx, c.stem()+"_permissive")
-		rule.Command().BuiltTool("sepolicy-analyze").
-			Input(bin).
-			Text("permissive").
-			Text(" > ").
-			Output(permissiveDomains)
-		rule.Temporary(permissiveDomains)
-
-		msg := `==========\n` +
-			`ERROR: permissive domains not allowed in user builds\n` +
-			`List of invalid domains:`
-
-		rule.Command().Text("if test").
-			FlagWithInput("-s ", permissiveDomains).
-			Text("; then echo").
-			Flag("-e").
-			Text(`"` + msg + `"`).
-			Text("&& cat ").
-			Input(permissiveDomains).
-			Text("; exit 1; fi")
-	}
-
-	out := android.PathForModuleOut(ctx, c.stem())
-	rule.Command().Text("cp").
-		Flag("-f").
-		Input(bin).
-		Output(out)
-
-	rule.DeleteTemporaryFiles()
-	rule.Build("secilc", "Compiling cil files for "+ctx.ModuleName())
-
-	if !c.Installable() {
-		c.SkipInstall()
-	}
-
-	if c.InstallInRecovery() {
-		// install in root
-		c.installPath = android.PathForModuleInstall(ctx)
-	} else {
-		c.installPath = android.PathForModuleInstall(ctx, "etc", "selinux")
-	}
-	c.installSource = out
-	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
-}
-
-func (c *policyBinary) AndroidMkEntries() []android.AndroidMkEntries {
-	return []android.AndroidMkEntries{android.AndroidMkEntries{
-		OutputFile: android.OptionalPathForPath(c.installSource),
-		Class:      "ETC",
-		ExtraEntries: []android.AndroidMkExtraEntriesFunc{
-			func(ctx android.AndroidMkExtraEntriesContext, entries *android.AndroidMkEntries) {
-				entries.SetBool("LOCAL_UNINSTALLABLE_MODULE", !c.Installable())
-				entries.SetPath("LOCAL_MODULE_PATH", c.installPath)
-				entries.SetString("LOCAL_INSTALLED_MODULE_STEM", c.stem())
-			},
-		},
-	}}
-}
-
-func (c *policyBinary) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return android.Paths{c.installSource}, nil
-	}
-	return nil, fmt.Errorf("Unknown tag %q", tag)
-}
-
-var _ android.OutputFileProducer = (*policyBinary)(nil)
