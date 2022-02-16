@@ -3,11 +3,6 @@ binder_call(hal_wifi_hostapd_client, hal_wifi_hostapd_server)
 binder_call(hal_wifi_hostapd_server, hal_wifi_hostapd_client)
 
 hal_attribute_hwservice(hal_wifi_hostapd, hal_wifi_hostapd_hwservice)
-hal_attribute_service(hal_wifi_hostapd, hal_wifi_hostapd_service)
-
-binder_use(hal_wifi_hostapd_server)
-
-allow hal_wifi_hostapd_server dumpstate:fifo_file write;
 
 allow hal_wifi_hostapd_server self:global_capability_class_set { net_admin net_raw };
 
@@ -28,5 +23,5 @@ allow hal_wifi_hostapd_server self:netlink_route_socket nlmsg_write;
 ###
 
 # hal_wifi_hostapd should not trust any data from sdcards
-neverallow hal_wifi_hostapd_server { sdcard_type fuse }:dir ~getattr;
-neverallow hal_wifi_hostapd_server { sdcard_type fuse }:file *;
+neverallow hal_wifi_hostapd_server sdcard_type:dir ~getattr;
+neverallow hal_wifi_hostapd_server sdcard_type:file *;
