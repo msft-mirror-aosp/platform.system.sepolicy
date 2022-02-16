@@ -33,7 +33,7 @@ allow isolated_app self:process ptrace;
 # neverallow rules below.
 # media_rw_data_file is included for sdcardfs, and can be removed if sdcardfs
 # is modified to change the secontext when accessing the lower filesystem.
-allow isolated_app { sdcard_type fuse media_rw_data_file }:file { read write append getattr lock map };
+allow isolated_app { sdcard_type media_rw_data_file }:file { read write append getattr lock map };
 
 # For webviews, isolated_app processes can be forked from the webview_zygote
 # in addition to the zygote. Allow access to resources inherited from the
@@ -110,10 +110,10 @@ neverallow isolated_app cache_file:file ~{ read getattr };
 
 # Do not allow isolated_app to access external storage, except for files passed
 # via file descriptors (b/32896414).
-neverallow isolated_app { storage_file mnt_user_file sdcard_type fuse }:dir ~getattr;
+neverallow isolated_app { storage_file mnt_user_file sdcard_type }:dir ~getattr;
 neverallow isolated_app { storage_file mnt_user_file }:file_class_set *;
-neverallow isolated_app { sdcard_type fuse }:{ devfile_class_set lnk_file sock_file fifo_file } *;
-neverallow isolated_app { sdcard_type fuse }:file ~{ read write append getattr lock map };
+neverallow isolated_app sdcard_type:{ devfile_class_set lnk_file sock_file fifo_file } *;
+neverallow isolated_app sdcard_type:file ~{ read write append getattr lock map };
 
 # Do not allow USB access
 neverallow isolated_app { usb_device usbaccessory_device }:chr_file *;
@@ -136,7 +136,7 @@ neverallow isolated_app {
 # excluding unix_stream_socket and unix_dgram_socket.
 # Many of these are socket families which have never and will never
 # be compiled into the Android kernel.
-neverallow isolated_app { self ephemeral_app priv_app supplemental_process untrusted_app_all }:{
+neverallow isolated_app { self ephemeral_app priv_app untrusted_app_all }:{
   socket tcp_socket udp_socket rawip_socket netlink_socket packet_socket
   key_socket appletalk_socket netlink_route_socket
   netlink_tcpdiag_socket netlink_nflog_socket netlink_xfrm_socket

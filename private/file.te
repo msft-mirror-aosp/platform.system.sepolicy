@@ -30,9 +30,6 @@ typealias app_exec_data_file alias rs_data_file;
 # of application data.
 type rollback_data_file, file_type, data_file_type, core_data_file_type;
 
-# /data/misc_ce/checkin for checkin apps.
-type checkin_data_file, file_type, data_file_type, core_data_file_type;
-
 # /data/gsi/ota
 type ota_image_data_file, file_type, data_file_type, core_data_file_type;
 
@@ -46,26 +43,13 @@ type emergency_data_file, file_type, data_file_type, core_data_file_type;
 type profcollectd_data_file, file_type, data_file_type, core_data_file_type;
 
 # /data/misc/apexdata/com.android.art
-type apex_art_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
+type apex_art_data_file, file_type, data_file_type, core_data_file_type;
 
 # /data/misc/apexdata/com.android.art/staging
 type apex_art_staging_data_file, file_type, data_file_type, core_data_file_type;
 
-# /data/misc/apexdata/com.android.compos
-type apex_compos_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
-
-# legacy labels for various /data/misc[_ce|_de]/*/apexdata directories - retained
-# for backward compatibility b/217581286
-type apex_appsearch_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
-type apex_permission_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
-type apex_scheduling_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
-type apex_wifi_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
-
 # /data/font/files
 type font_data_file, file_type, data_file_type, core_data_file_type;
-
-# /data/misc/dmesgd
-type dmesgd_data_file, file_type, data_file_type, core_data_file_type;
 
 # /data/misc/odrefresh
 type odrefresh_data_file, file_type, data_file_type, core_data_file_type;
@@ -73,24 +57,8 @@ type odrefresh_data_file, file_type, data_file_type, core_data_file_type;
 # /data/misc/odsign
 type odsign_data_file, file_type, data_file_type, core_data_file_type;
 
-# /data/misc/virtualizationservice
-type virtualizationservice_data_file, file_type, data_file_type, core_data_file_type;
-
 # /data/system/environ
 type environ_system_data_file, file_type, data_file_type, core_data_file_type;
 
-# /data/bootanim
-type bootanim_data_file, file_type, data_file_type, core_data_file_type;
-
 # /dev/kvm
 type kvm_device, dev_type;
-
-# /apex/com.android.virt/bin/fd_server
-type fd_server_exec, system_file_type, exec_type, file_type;
-
-# /metadata/sepolicy
-type sepolicy_metadata_file, file_type;
-
-# /dev/selinux/test - used to verify that apex sepolicy is loaded and
-# property labeled.
-type sepolicy_test_file, file_type;
