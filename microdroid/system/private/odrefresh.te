@@ -1,0 +1,32 @@
+# odrefresh
+type odrefresh, domain, coredomain;
+type odrefresh_exec, system_file_type, exec_type, file_type;
+
+# Run dex2oat in its own sandbox.
+domain_auto_trans(odrefresh, dex2oat_exec, dex2oat)
+
+# Allow odrefresh to kill dex2oat if compilation times out.
+allow odrefresh dex2oat:process sigkill;
+
+# Allow odrefresh to read/write/lookup files/directories on authfs.
+allow odrefresh authfs_fuse:file create_file_perms;
+allow odrefresh authfs_fuse:dir create_dir_perms;
+
+# Allow odrefresh to check the parent directory exists.
+allow odrefresh authfs_data_file:dir { search getattr };
+
+# Allow odrefresh to read /apex/apex-info-list.xml to gather information of
+# the current APEXes.
+allow odrefresh apex_info_file:file r_file_perms;
+
+# Minijail uses pipe for the parent process to signal the child (as a fallback
+# mechanism, since Android does not support minijail's preload).
+# TODO(196109647): We can probably remove this once the minijail preload is
+# supported on Android.
+allow odrefresh compos:fifo_file read;
+
+# Allow using FDs from the parent. It's possible that this could be avoided,
+# if we close fd 0-2 before execute. But minijial replaces them with /dev/null
+# (unless specified otherwise). Without allowing the use, the execution will
+# fail immediately. See b/210909688.
+allow odrefresh compos:fd use;

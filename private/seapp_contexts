@@ -5,11 +5,9 @@
 # Input selectors:
 #       isSystemServer (boolean)
 #       isEphemeralApp (boolean)
-#       isOwner (boolean)
 #       user (string)
 #       seinfo (string)
 #       name (string)
-#       path (string)
 #       isPrivApp (boolean)
 #       minTargetSdkVersion (unsigned integer)
 #       fromRunAs (boolean)
@@ -17,7 +15,7 @@
 # All specified input selectors in an entry must match (i.e. logical AND).
 # An unspecified string or boolean selector with no default will match any
 # value.
-# A user, name, or path string selector that ends in * will perform a prefix
+# A user, or name string selector that ends in * will perform a prefix
 # match.
 # String matching is case-insensitive.
 # See external/selinux/libselinux/src/android/android_platform.c,
@@ -26,7 +24,6 @@
 # isSystemServer=true only matches the system server.
 # An unspecified isSystemServer defaults to false.
 # isEphemeralApp=true will match apps marked by PackageManager as Ephemeral
-# isOwner=true will only match for the owner/primary user.
 # user=_app will match any regular app process.
 # user=_isolated will match any isolated service process.
 # Other values of user are matched against the name associated with the process
@@ -35,7 +32,6 @@
 # mac_permissions.xml files.
 # The ':' character is reserved and may not be used in seinfo.
 # name= matches against the package name of the app.
-# path= matches against the directory path when labeling app directories.
 # isPrivApp=true will only match for applications preinstalled in
 #       /system/priv-app.
 # minTargetSdkVersion will match applications with a targetSdkVersion
@@ -50,19 +46,16 @@
 #       (1) isSystemServer=true before isSystemServer=false.
 #       (2) Specified isEphemeralApp= before unspecified isEphemeralApp=
 #             boolean.
-#       (3) Specified isOwner= before unspecified isOwner= boolean.
-#       (4) Specified user= string before unspecified user= string;
+#       (3) Specified user= string before unspecified user= string;
 #             more specific user= string before less specific user= string.
-#       (5) Specified seinfo= string before unspecified seinfo= string.
-#       (6) Specified name= string before unspecified name= string;
+#       (4) Specified seinfo= string before unspecified seinfo= string.
+#       (5) Specified name= string before unspecified name= string;
 #             more specific name= string before less specific name= string.
-#       (7) Specified path= string before unspecified path= string.
-#             more specific name= string before less specific name= string.
-#       (8) Specified isPrivApp= before unspecified isPrivApp= boolean.
-#       (9) Higher value of minTargetSdkVersion= before lower value of
+#       (6) Specified isPrivApp= before unspecified isPrivApp= boolean.
+#       (7) Higher value of minTargetSdkVersion= before lower value of
 #              minTargetSdkVersion= integer. Note that minTargetSdkVersion=
 #              defaults to 0 if unspecified.
-#       (10) fromRunAs=true before fromRunAs=false.
+#       (8) fromRunAs=true before fromRunAs=false.
 # (A fixed selector is more specific than a prefix, i.e. ending in *, and a
 # longer prefix is more specific than a shorter prefix.)
 # Apps are checked against entries in precedence order until the first match,
@@ -106,9 +99,11 @@
 # inputs are matched on a key value rule line.
 #
 
-# only the system server can be in system_server domain
+# only the system server can be assigned the system_server domains
 neverallow isSystemServer=false domain=system_server
+neverallow isSystemServer=false domain=system_server_startup
 neverallow isSystemServer="" domain=system_server
+neverallow isSystemServer="" domain=system_server_startup
 
 # system domains should never be assigned outside of system uid
 neverallow user=((?!system).)* domain=system_app
@@ -142,7 +137,10 @@ neverallow isEphemeralApp=true domain=((?!ephemeral_app).)*
 
 isSystemServer=true domain=system_server_startup
 
-user=_app isPrivApp=true name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
+# supplemental_process must run in the supplemental_process domain
+neverallow name=com.android.supplemental.process domain=((?!supplemental_process).)*
+
+user=_app seinfo=platform name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.remoteprovisioner domain=remote_prov_app type=app_data_file levelFrom=all
 user=system seinfo=platform domain=system_app type=system_app_data_file
 user=bluetooth seinfo=platform domain=bluetooth type=bluetooth_data_file
@@ -168,10 +166,12 @@ user=_app isPrivApp=true name=com.google.android.gms domain=gmscore_app type=pri
 user=_app isPrivApp=true name=com.google.android.gms.* domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms:* domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gsf domain=gmscore_app type=privapp_data_file levelFrom=user
-user=_app minTargetSdkVersion=30 domain=untrusted_app type=app_data_file levelFrom=all
+user=_app minTargetSdkVersion=32 domain=untrusted_app type=app_data_file levelFrom=all
+user=_app minTargetSdkVersion=30 domain=untrusted_app_30 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=29 domain=untrusted_app_29 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=28 domain=untrusted_app_27 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=26 domain=untrusted_app_27 type=app_data_file levelFrom=user
 user=_app domain=untrusted_app_25 type=app_data_file levelFrom=user
 user=_app minTargetSdkVersion=28 fromRunAs=true domain=runas_app levelFrom=all
 user=_app fromRunAs=true domain=runas_app levelFrom=user
+user=_app seinfo=supplemental_process name=com.android.supplemental.process domain=supplemental_process type=app_data_file levelFrom=user

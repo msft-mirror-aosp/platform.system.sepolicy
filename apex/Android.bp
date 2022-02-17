@@ -22,6 +22,11 @@ package {
 }
 
 filegroup {
+  name: "apex_file_contexts_files",
+  srcs: ["*-file_contexts"],
+}
+
+filegroup {
   name: "apex.test-file_contexts",
   srcs: [
     "apex.test-file_contexts",
@@ -183,6 +188,13 @@ filegroup {
 }
 
 filegroup {
+  name: "com.android.sepolicy-file_contexts",
+  srcs: [
+    "com.android.sepolicy-file_contexts",
+  ],
+}
+
+filegroup {
   name: "com.android.telephony-file_contexts",
   srcs: [
     "com.android.telephony-file_contexts",
@@ -193,6 +205,13 @@ filegroup {
   name: "com.android.tzdata-file_contexts",
   srcs: [
     "com.android.tzdata-file_contexts",
+  ],
+}
+
+filegroup {
+  name: "com.android.uwb-file_contexts",
+  srcs: [
+    "com.android.uwb-file_contexts",
   ],
 }
 
@@ -228,5 +247,33 @@ filegroup {
   name: "com.android.extservices-file_contexts",
   srcs: [
     "com.android.extservices-file_contexts",
+  ],
+}
+
+filegroup {
+  name: "com.android.car.framework-file_contexts",
+  srcs: [
+    "com.android.car.framework-file_contexts",
+  ],
+}
+
+filegroup {
+  name: "com.android.supplementalprocess-file_contexts",
+  srcs: [
+    "com.android.supplementalprocess-file_contexts",
+  ],
+}
+
+filegroup {
+  name: "com.android.auxiliary-file_contexts",
+  srcs: [
+    "com.android.auxiliary-file_contexts",
+  ],
+}
+
+filegroup {
+  name: "com.android.ondevicepersonalization-file_contexts",
+  srcs: [
+    "com.android.ondevicepersonalization-file_contexts",
   ],
 }
