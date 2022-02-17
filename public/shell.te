@@ -8,6 +8,7 @@ net_domain(shell)
 # logcat
 read_logd(shell)
 control_logd(shell)
+get_prop(shell, logd_prop)
 # logcat -L (directly, or via dumpstate)
 allow shell pstorefs:dir search;
 allow shell pstorefs:file r_file_perms;
@@ -84,12 +85,12 @@ allow shell {
   -incident_service
   -installd_service
   -iorapd_service
+  -mdns_service
   -netd_service
   -system_suspend_control_internal_service
   -system_suspend_control_service
   -virtual_touchpad_service
   -vold_service
-  -vr_hwc_service
   -default_android_service
 }:service_manager find;
 allow shell dumpstate:binder call;
@@ -157,9 +158,6 @@ allow shell self:process ptrace;
 allow shell sysfs:dir r_dir_perms;
 allow shell sysfs_batteryinfo:dir r_dir_perms;
 allow shell sysfs_batteryinfo:file r_file_perms;
-
-# allow shell to list /sys/class/block/ to get storage type for CTS
-allow shell sysfs_block:dir r_dir_perms;
 
 # Allow access to ion memory allocation device.
 allow shell ion_device:chr_file rw_file_perms;
