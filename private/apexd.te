@@ -13,25 +13,21 @@ allow apexd metadata_file:dir search;
 allow apexd apex_metadata_file:dir create_dir_perms;
 allow apexd apex_metadata_file:file create_file_perms;
 
+# Allow creating and writing APEX files/dirs in the SEPolicy metadata dir
+allow apexd sepolicy_metadata_file:dir create_dir_perms;
+allow apexd sepolicy_metadata_file:file create_file_perms;
+
 # Allow reserving space on /data/apex/ota_reserved for apex decompression
 allow apexd apex_ota_reserved_file:dir create_dir_perms;
 allow apexd apex_ota_reserved_file:file create_file_perms;
 
 # Allow apexd to create files and directories for snapshots of apex data
-allow apexd apex_appsearch_data_file:dir { create_dir_perms relabelto };
-allow apexd apex_appsearch_data_file:file { create_file_perms relabelto };
-allow apexd apex_art_data_file:dir { create_dir_perms relabelto };
-allow apexd apex_art_data_file:file { create_file_perms relabelto };
-allow apexd apex_permission_data_file:dir { create_dir_perms relabelto };
-allow apexd apex_permission_data_file:file { create_file_perms relabelto };
+allow apexd apex_data_file_type:dir { create_dir_perms relabelto };
+allow apexd apex_data_file_type:file { create_file_perms relabelto };
 allow apexd apex_module_data_file:dir { create_dir_perms relabelfrom };
 allow apexd apex_module_data_file:file { create_file_perms relabelfrom };
 allow apexd apex_rollback_data_file:dir create_dir_perms;
 allow apexd apex_rollback_data_file:file create_file_perms;
-allow apexd apex_scheduling_data_file:dir { create_dir_perms relabelto };
-allow apexd apex_scheduling_data_file:file { create_file_perms relabelto };
-allow apexd apex_wifi_data_file:dir { create_dir_perms relabelto };
-allow apexd apex_wifi_data_file:file { create_file_perms relabelto };
 
 # Allow apexd to read directories under /data/misc_de in order to snapshot and
 # restore apex data for all users.
@@ -52,8 +48,8 @@ allowxperm apexd loop_device:blk_file ioctl {
   LOOP_CONFIGURE
 };
 # Allow apexd to access /dev/block
-allow apexd bdev_type:dir r_dir_perms;
-allow apexd bdev_type:blk_file getattr;
+allow apexd dev_type:dir r_dir_perms;
+allow apexd dev_type:blk_file getattr;
 
 #allow apexd to access virtual disks
 allow apexd vd_device:blk_file r_file_perms;
@@ -86,6 +82,7 @@ allow apexd apex_mnt_dir:file { create_file_perms relabelfrom mounton };
 allow apexd apex_info_file:file relabelto;
 # apexd needs to update /apex/apex-info-list.xml after non-staged APEX update.
 allow apexd apex_info_file:file rw_file_perms;
+allow apexd apex_info_file:file mounton;
 
 # allow apexd to unlink apex files in /data/apex/active
 # note that apexd won't be able to unlink files in /data/app-staging/session_XXXX,
@@ -107,8 +104,9 @@ allow apexd labeledfs:filesystem { mount unmount };
 
 # /sys directory tree traversal
 allow apexd sysfs_type:dir search;
-allow apexd sysfs_block_type:dir r_dir_perms;
-allow apexd sysfs_block_type:file r_file_perms;
+# Access to /sys/class/block
+allow apexd sysfs_type:dir r_dir_perms;
+allow apexd sysfs_type:file r_file_perms;
 # Configure read-ahead of dm-verity and loop devices
 # for dm-X
 allow apexd sysfs_dm:dir r_dir_perms;
@@ -131,30 +129,8 @@ set_prop(apexd, ctl_apexd_prop)
 allow apexd vold_service:service_manager find;
 binder_call(apexd, vold)
 
-# Apex pre- & post-install permission.
-
-# Allow self-execute for the fork mount helper.
-allow apexd apexd_exec:file execute_no_trans;
-
-# Unshare and make / private so that hooks cannot influence the
-# running system.
-allow apexd rootfs:dir mounton;
-
-# Allow to execute shell for pre- and postinstall scripts. A transition
-# rule is required, thus restricted to execute and not execute_no_trans.
-allow apexd shell_exec:file { r_file_perms execute };
-
 # apexd is using bootstrap bionic
-allow apexd system_bootstrap_lib_file:dir r_dir_perms;
-allow apexd system_bootstrap_lib_file:file { execute read open getattr map };
-
-# Allow transition to test APEX preinstall domain.
-userdebug_or_eng(`
-  domain_auto_trans(apexd, apex_test_prepostinstall_exec, apex_test_prepostinstall)
-')
-
-# Allow transition to GKI update pre/post install domain
-domain_auto_trans(apexd, gki_apex_prepostinstall_exec, gki_apex_prepostinstall)
+use_bootstrap_libs(apexd)
 
 # Allow apexd to be invoked with logwrapper from init during userspace reboot.
 allow apexd devpts:chr_file { read write };
@@ -181,6 +157,13 @@ get_prop(apexd, cold_boot_done_prop)
 
 # Allow apexd to read per-device configuration properties.
 get_prop(apexd, apexd_config_prop)
+
+# Allow apexd to read apex selection properties.
+# These are used to choose between multi-installed APEXes at activation time.
+get_prop(apexd, apexd_select_prop)
+#
+# Allow apexd to read apexd_payload_metadata_prop
+get_prop(apexd, apexd_payload_metadata_prop)
 
 neverallow { domain -apexd -init } apex_data_file:dir no_w_dir_perms;
 neverallow { domain -apexd -init } apex_metadata_file:dir no_w_dir_perms;
@@ -214,3 +197,6 @@ allow apexd postinstall_apex_mnt_dir:dir { create_dir_perms mounton };
 allow apexd postinstall_apex_mnt_dir:file { create_file_perms relabelfrom };
 allow apexd postinstall_apex_mnt_dir:lnk_file create;
 allow apexd proc_filesystems:file r_file_perms;
+
+# Allow calling derive_classpath to gather BCP information for staged sessions
+domain_auto_trans(apexd, derive_classpath_exec, apexd_derive_classpath);
