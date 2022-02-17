@@ -37,6 +37,7 @@ neverallow {
     -init
 
     # generic access to sysfs_type
+    -apexd
     -ueventd
     -vold
 } sysfs_leds:file *;
@@ -75,6 +76,7 @@ full_treble_only(`
         userdebug_or_eng(`-profcollectd')
         -postinstall_dexopt
         -rs # spawned by appdomain, so carryover the exception above
+        userdebug_or_eng(`-simpleperf_boot')
         -system_server
         -traced_perf
         -mediaserver
@@ -120,6 +122,7 @@ full_treble_only(`
         -zygote
         -heapprofd
         userdebug_or_eng(`-profcollectd')
+        userdebug_or_eng(`-simpleperf_boot')
     } vendor_overlay_file:file open;
 ')
 
@@ -137,6 +140,7 @@ full_treble_only(`
   # /sys
   neverallow {
     coredomain
+    -apexd
     -init
     -ueventd
     -vold
@@ -145,6 +149,7 @@ full_treble_only(`
   # /dev
   neverallow {
     coredomain
+    -apexd
     -fsck
     -init
     -ueventd
@@ -173,6 +178,7 @@ full_treble_only(`
     -system_server
     -traceur_app
     userdebug_or_eng(`-profcollectd')
+    userdebug_or_eng(`-simpleperf_boot')
   } debugfs_tracing:file no_rw_file_perms;
 
   # inotifyfs
@@ -187,7 +193,6 @@ full_treble_only(`
     -bootstat
     -charger
     -dumpstate
-    -healthd
     userdebug_or_eng(`-incidentd')
     -init
     -logd
