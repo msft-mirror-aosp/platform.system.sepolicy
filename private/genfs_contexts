@@ -7,6 +7,7 @@ genfscon proc /bootconfig u:object_r:proc_bootconfig:s0
 genfscon proc /buddyinfo u:object_r:proc_buddyinfo:s0
 genfscon proc /cmdline u:object_r:proc_cmdline:s0
 genfscon proc /config.gz u:object_r:config_gz:s0
+genfscon proc /cpu/alignment u:object_r:proc_cpu_alignment:s0
 genfscon proc /diskstats u:object_r:proc_diskstats:s0
 genfscon proc /filesystems u:object_r:proc_filesystems:s0
 genfscon proc /interrupts u:object_r:proc_interrupts:s0
@@ -43,6 +44,7 @@ genfscon proc /sys/fs/protected_hardlinks u:object_r:proc_security:s0
 genfscon proc /sys/fs/protected_symlinks u:object_r:proc_security:s0
 genfscon proc /sys/fs/suid_dumpable u:object_r:proc_security:s0
 genfscon proc /sys/fs/verity/require_signatures u:object_r:proc_fs_verity:s0
+genfscon proc /sys/kernel/bpf_ u:object_r:proc_bpf:s0
 genfscon proc /sys/kernel/core_pattern u:object_r:usermodehelper:s0
 genfscon proc /sys/kernel/core_pipe_limit u:object_r:usermodehelper:s0
 genfscon proc /sys/kernel/domainname u:object_r:proc_hostname:s0
@@ -73,8 +75,10 @@ genfscon proc /sys/kernel/sched_util_clamp_min u:object_r:proc_sched:s0
 genfscon proc /sys/kernel/sched_util_clamp_min_rt_default u:object_r:proc_sched:s0
 genfscon proc /sys/kernel/sched_wakeup_granularity_ns u:object_r:proc_sched:s0
 genfscon proc /sys/kernel/sysrq u:object_r:proc_sysrq:s0
+genfscon proc /sys/kernel/unprivileged_bpf_ u:object_r:proc_bpf:s0
 genfscon proc /sys/kernel/usermodehelper u:object_r:usermodehelper:s0
 genfscon proc /sys/net u:object_r:proc_net:s0
+genfscon proc /sys/net/core/bpf_ u:object_r:proc_bpf:s0
 genfscon proc /sys/vm/dirty_background_ratio u:object_r:proc_dirty:s0
 genfscon proc /sys/vm/dirty_expire_centisecs u:object_r:proc_dirty:s0
 genfscon proc /sys/vm/extra_free_kbytes u:object_r:proc_extra_free_kbytes:s0
@@ -86,6 +90,8 @@ genfscon proc /sys/vm/page-cluster u:object_r:proc_page_cluster:s0
 genfscon proc /sys/vm/drop_caches u:object_r:proc_drop_caches:s0
 genfscon proc /sys/vm/overcommit_memory u:object_r:proc_overcommit_memory:s0
 genfscon proc /sys/vm/min_free_order_shift u:object_r:proc_min_free_order_shift:s0
+genfscon proc /sys/vm/watermark_boost_factor u:object_r:proc_watermark_boost_factor:s0
+genfscon proc /sys/vm/watermark_scale_factor u:object_r:proc_watermark_scale_factor:s0
 genfscon proc /timer_list u:object_r:proc_timer:s0
 genfscon proc /timer_stats u:object_r:proc_timer:s0
 genfscon proc /tty/drivers u:object_r:proc_tty_drivers:s0
@@ -117,7 +123,6 @@ genfscon sysfs /devices/cs_etm                    u:object_r:sysfs_devices_cs_et
 genfscon sysfs /devices/system/cpu u:object_r:sysfs_devices_system_cpu:s0
 genfscon sysfs /class/android_usb                 u:object_r:sysfs_android_usb:s0
 genfscon sysfs /class/extcon                      u:object_r:sysfs_extcon:s0
-genfscon sysfs /class/block                       u:object_r:sysfs_block:s0
 genfscon sysfs /class/leds                        u:object_r:sysfs_leds:s0
 genfscon sysfs /class/net                         u:object_r:sysfs_net:s0
 genfscon sysfs /class/rfkill/rfkill0/state        u:object_r:sysfs_bluetooth_writable:s0
@@ -143,6 +148,7 @@ genfscon sysfs /devices/virtual/wakeup          u:object_r:sysfs_wakeup:s0
 genfscon sysfs /firmware/devicetree/base/firmware/android u:object_r:sysfs_dt_firmware_android:s0
 genfscon sysfs /fs/ext4/features                  u:object_r:sysfs_fs_ext4_features:s0
 genfscon sysfs /fs/f2fs                           u:object_r:sysfs_fs_f2fs:s0
+genfscon sysfs /fs/fuse/bpf_prog_type_fuse        u:object_r:sysfs_fs_fuse_bpf:s0
 genfscon sysfs /fs/incremental-fs/features        u:object_r:sysfs_fs_incfs_features:s0
 genfscon sysfs /fs/incremental-fs/instances       u:object_r:sysfs_fs_incfs_metrics:s0
 genfscon sysfs /power/autosleep u:object_r:sysfs_power:s0
@@ -227,6 +233,12 @@ genfscon tracefs /events/ext4/ext4_sync_file_exit/           u:object_r:debugfs_
 genfscon tracefs /events/block/block_rq_issue/               u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/block/block_rq_complete/            u:object_r:debugfs_tracing:s0
 
+genfscon tracefs /synthetic_events                                       u:object_r:debugfs_tracing:s0
+genfscon tracefs /events/synthetic/rss_stat_throttled                    u:object_r:debugfs_tracing:s0
+
+genfscon debugfs /tracing/synthetic_events                               u:object_r:debugfs_tracing:s0
+genfscon debugfs /tracing/events/synthetic/rss_stat_throttled            u:object_r:debugfs_tracing:s0
+
 genfscon tracefs /trace_clock                                            u:object_r:debugfs_tracing:s0
 genfscon tracefs /buffer_size_kb                                         u:object_r:debugfs_tracing:s0
 genfscon tracefs /options/overwrite                                      u:object_r:debugfs_tracing:s0
@@ -250,6 +262,7 @@ genfscon tracefs /events/power/clock_disable/                            u:objec
 genfscon tracefs /events/power/clock_set_rate/                           u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/power/cpu_frequency_limits/                     u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/power/gpu_frequency/                            u:object_r:debugfs_tracing:s0
+genfscon tracefs /events/power/gpu_work_period/                          u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/power/suspend_resume/                           u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/cpufreq_interactive/                            u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/vmscan/mm_vmscan_direct_reclaim_begin/          u:object_r:debugfs_tracing:s0
@@ -314,6 +327,7 @@ genfscon debugfs /tracing/events/power/clock_disable/                           
 genfscon debugfs /tracing/events/power/clock_set_rate/                           u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/events/power/cpu_frequency_limits/                     u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/events/power/gpu_frequency/                            u:object_r:debugfs_tracing:s0
+genfscon debugfs /tracing/events/power/gpu_work_period/                          u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/events/power/suspend_resume/                           u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/events/cpufreq_interactive/                            u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/events/vmscan/mm_vmscan_direct_reclaim_begin/          u:object_r:debugfs_tracing:s0
@@ -379,3 +393,4 @@ genfscon usbfs / u:object_r:usbfs:s0
 genfscon binfmt_misc / u:object_r:binfmt_miscfs:s0
 genfscon bpf / u:object_r:fs_bpf:s0
 genfscon bpf /tethering u:object_r:fs_bpf_tethering:s0
+genfscon bpf /vendor u:object_r:fs_bpf_vendor:s0
