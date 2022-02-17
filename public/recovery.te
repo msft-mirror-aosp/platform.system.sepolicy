@@ -9,8 +9,12 @@ type recovery, domain;
 recovery_only(`
   # Allow recovery to perform an update as update_engine would do.
   typeattribute recovery update_engine_common;
-  # Recovery can only use HALs in passthrough mode
+  # Recovery can use HIDL HALs in passthrough mode
   passthrough_hal_client_domain(recovery, hal_bootctl)
+
+  # Recovery can use AIDL HALs in binder mode
+  binder_use(recovery)
+  hal_client_domain(recovery, hal_health)
 
   allow recovery self:global_capability_class_set {
     chown
@@ -133,6 +137,10 @@ recovery_only(`
 
   # Allow mounting /metadata for writing update states
   allow recovery metadata_file:dir { getattr mounton };
+
+  # Recovery uses liblogwrap to write fsck logs to kmsg, liblogwrap requires devpts.
+  allow recovery devpts:chr_file rw_file_perms;
+  allow recovery kmsg_device:chr_file { getattr w_file_perms };
 ')
 
 ###

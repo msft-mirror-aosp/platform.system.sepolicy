@@ -7,7 +7,7 @@
 # in tools/checkfc.c
 attribute dev_type;
 
-# Attribute for block devices.
+# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
 attribute bdev_type;
 
 # All types used for processes.
@@ -20,6 +20,12 @@ attribute fs_type;
 
 # All types used for context= mounts.
 attribute contextmount_type;
+
+# All types referencing a FUSE filesystem.
+# When mounting a new FUSE filesystem, the fscontext= option should be used to
+# set a domain-specific type with this attribute. See app_fusefs for an
+# example.
+attribute fusefs_type;
 
 # All types used for files that can exist on a labeled fs.
 # Do not use for pseudo file types.
@@ -45,6 +51,9 @@ expandattribute app_data_file_type false;
 # All types in /system
 attribute system_file_type;
 
+# All types in /system_dlkm
+attribute system_dlkm_file_type;
+
 # All types in /vendor
 attribute vendor_file_type;
 
@@ -62,7 +71,7 @@ expandattribute proc_net_type true;
 # All types used for sysfs files.
 attribute sysfs_type;
 
-# Attribute for /sys/class/block files.
+# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
 attribute sysfs_block_type;
 
 # All types use for debugfs files.
@@ -213,6 +222,10 @@ attribute bluetoothdomain;
 # All domains used for binder service domains.
 attribute binderservicedomain;
 
+# All domains which have BPF access.
+attribute bpfdomain;
+expandattribute bpfdomain false;
+
 # update_engine related domains that need to apply an update and run
 # postinstall. This includes the background daemon and the sideload tool from
 # recovery for A/B devices.
@@ -318,7 +331,6 @@ hal_attribute(audiocontrol);
 hal_attribute(authsecret);
 hal_attribute(bluetooth);
 hal_attribute(bootctl);
-hal_attribute(bufferhub);
 hal_attribute(broadcastradio);
 hal_attribute(camera);
 hal_attribute(can_bus);
@@ -328,6 +340,7 @@ hal_attribute(codec2);
 hal_attribute(configstore);
 hal_attribute(confirmationui);
 hal_attribute(contexthub);
+hal_attribute(dice);
 hal_attribute(drm);
 hal_attribute(dumpstate);
 hal_attribute(evs);
@@ -341,6 +354,7 @@ hal_attribute(health);
 hal_attribute(health_storage);
 hal_attribute(identity);
 hal_attribute(input_classifier);
+hal_attribute(input_processor);
 hal_attribute(ir);
 hal_attribute(keymaster);
 hal_attribute(keymint);
@@ -349,6 +363,7 @@ hal_attribute(lowpan);
 hal_attribute(memtrack);
 hal_attribute(neuralnetworks);
 hal_attribute(nfc);
+hal_attribute(nlinterceptor);
 hal_attribute(oemlock);
 hal_attribute(omx);
 hal_attribute(power);
@@ -365,6 +380,9 @@ hal_attribute(tv_tuner);
 hal_attribute(usb);
 hal_attribute(usb_gadget);
 hal_attribute(uwb);
+# TODO(b/196225233): Remove this attribute and its usages elsewhere
+# once all chip vendors integrate to the new UWB stack.
+hal_attribute(uwb_vendor);
 hal_attribute(vehicle);
 hal_attribute(vibrator);
 hal_attribute(vr);
@@ -383,6 +401,7 @@ hal_attribute(wifi_supplicant);
 attribute automotive_display_service_server;
 attribute camera_service_server;
 attribute display_service_server;
+attribute evsmanager_service_server;
 attribute scheduler_service_server;
 attribute sensor_service_server;
 attribute stats_service_server;
@@ -399,3 +418,14 @@ expandattribute dmabuf_heap_device_type false;
 
 # All types used for DSU metadata files.
 attribute gsi_metadata_file_type;
+
+# Types used for module-specific APEX data directories under
+# /data/{misc,misc_ce,misc_de}/apexdata.
+attribute apex_data_file_type;
+
+# Domains used for charger.
+# This is the common type for domains that executes charger's
+# functionalities, including setting and getting necessary properties,
+# permissions to maintain the health loop, writing to kernel log, handling
+# inputs and drawing screens, etc.
+attribute charger_type;
