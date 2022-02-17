@@ -1,5 +1,4 @@
 # mediatranscoding - daemon for transcoding video and image.
-type mediatranscoding, domain;
 type mediatranscoding_exec, system_file_type, exec_type, file_type;
 type mediatranscoding_tmpfs, file_type;
 typeattribute mediatranscoding coredomain;
@@ -19,6 +18,7 @@ hal_client_domain(mediatranscoding, hal_graphics_allocator)
 hal_client_domain(mediatranscoding, hal_configstore)
 hal_client_domain(mediatranscoding, hal_omx)
 hal_client_domain(mediatranscoding, hal_codec2)
+hal_client_domain(mediatranscoding, hal_allocator)
 
 allow mediatranscoding mediaserver_service:service_manager find;
 allow mediatranscoding mediametrics_service:service_manager find;
@@ -61,4 +61,5 @@ neverallow mediatranscoding { file_type fs_type }:file execute_no_trans;
 # permissions and be isolated from the rest of the system and network.
 # Lengthier explanation here:
 # https://android-developers.googleblog.com/2016/05/hardening-media-stack.html
-neverallow mediatranscoding domain:{ tcp_socket udp_socket rawip_socket } *;
+neverallow mediatranscoding domain:{ udp_socket rawip_socket } *;
+neverallow mediatranscoding { domain userdebug_or_eng(`-su') }:tcp_socket *;

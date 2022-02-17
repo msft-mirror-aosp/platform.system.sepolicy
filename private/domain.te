@@ -112,6 +112,26 @@ allow domain linkerconfig_file:file r_file_perms;
 # Allow all processes to check for the existence of the boringssl_self_test_marker files.
 allow domain boringssl_self_test_marker:dir search;
 
+# No domains other than a select few can access the misc_block_device. This
+# block device is reserved for OTA use.
+# Do not assert this rule on userdebug/eng builds, due to some devices using
+# this partition for testing purposes.
+neverallow {
+  domain
+  userdebug_or_eng(`-domain') # exclude debuggable builds
+  -fastbootd
+  -hal_bootctl_server
+  -init
+  -uncrypt
+  -update_engine
+  -vendor_init
+  -vendor_misc_writer
+  -vold
+  -recovery
+  -ueventd
+  -mtectrl
+} misc_block_device:blk_file { append link relabelfrom rename write open read ioctl lock };
+
 # Limit ability to ptrace or read sensitive /proc/pid files of processes
 # with other UIDs to these allowlisted domains.
 neverallow {
@@ -121,6 +141,7 @@ neverallow {
   -dumpstate
   userdebug_or_eng(`-incidentd')
   userdebug_or_eng(`-profcollectd')
+  userdebug_or_eng(`-simpleperf_boot')
   -storaged
   -system_server
 } self:global_capability_class_set sys_ptrace;
@@ -203,8 +224,30 @@ neverallow {
 # that these files cannot be accessed by other domains to ensure that the files
 # do not change between system_server staging the files and apexd processing
 # the files.
-neverallow { domain -init -system_server -apexd -installd -iorap_inode2filename -priv_app } staging_data_file:dir *;
-neverallow { domain -init -system_app -system_server -apexd -adbd -kernel -installd -iorap_inode2filename -priv_app } staging_data_file:file *;
+neverallow {
+  domain
+  -init
+  -system_server
+  -apexd
+  -installd
+  -iorap_inode2filename
+  -priv_app
+  -virtualizationservice
+} staging_data_file:dir *;
+neverallow {
+  domain
+  -init
+  -system_app
+  -system_server
+  -apexd
+  -adbd
+  -kernel
+  -installd
+  -iorap_inode2filename
+  -priv_app
+  -virtualizationservice
+  -crosvm
+} staging_data_file:file *;
 neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
 # apexd needs the link and unlink permissions, so list every `no_w_file_perms`
 # except for `link` and `unlink`.
@@ -282,7 +325,9 @@ neverallow {
 # contains boot class path and system server AOT artifacts following an ART APEX Mainline update.
 neverallow {
   domain
-  # art processes
+  # art-related processes
+  -composd
+  -compos_fd_server
   -odrefresh
   -odsign
   # others
@@ -293,7 +338,9 @@ neverallow {
 
 neverallow {
   domain
-  # art processes
+  # art-related processes
+  -composd
+  -compos_fd_server
   -odrefresh
   -odsign
   # others
@@ -354,8 +401,8 @@ neverallow ~{
 } self:global_capability_class_set dac_read_search;
 
 # Limit what domains can mount filesystems or change their mount flags.
-# sdcard_type / vfat is exempt as a larger set of domains need
-# this capability, including device-specific domains.
+# sdcard_type (including vfat and exfat) and fusefs_type are exempt as a larger
+# set of domains need this capability, including device-specific domains.
 neverallow {
     domain
     -apexd
@@ -369,6 +416,7 @@ neverallow {
     -zygote
 } { fs_type
     -sdcard_type
+    -fusefs_type
 }:filesystem { mount remount relabelfrom relabelto };
 
 enforce_debugfs_restriction(`
@@ -386,7 +434,6 @@ neverallow {
   -init
   -recovery
   -ueventd
-  -healthd
   -uncrypt
   -tee
   -hal_bootctl_server
@@ -396,6 +443,7 @@ neverallow {
 # Limit directory operations that doesn't need to do app data isolation.
 neverallow {
   domain
+  -fsck
   -init
   -installd
   -zygote
@@ -429,6 +477,7 @@ full_treble_only(`
     -iorap_inode2filename
     -iorap_prefetcherd
     -kernel
+    userdebug_or_eng(`-simpleperf_boot')
     -traced_perf
     -ueventd
   } vendor_file:file { no_w_file_perms no_x_file_perms open };
@@ -461,6 +510,7 @@ full_treble_only(`
     coredomain
     # TODO(b/37168747): clean up fwk access to /vendor
     -crash_dump
+    -crosvm # loads vendor-specific disk images
     -init # starts vendor executables
     -iorap_inode2filename
     -iorap_prefetcherd
@@ -468,6 +518,7 @@ full_treble_only(`
     -heapprofd
     userdebug_or_eng(`-profcollectd')
     -shell
+    userdebug_or_eng(`-simpleperf_boot')
     -system_executes_vendor_violators
     -traced_perf # library/binary access for symbolization
     -ueventd # reads /vendor/ueventd.rc
@@ -487,6 +538,7 @@ full_treble_only(`
     -vendor_public_framework_file
     -vendor_public_lib_file
     -vendor_task_profiles_file
+    -vendor_uuid_mapping_config_file
     -vndk_sp_file
   }:file *;
 ')
@@ -518,6 +570,7 @@ neverallow {
   -init
   userdebug_or_eng(`-profcollectd')
   -vendor_init
+  userdebug_or_eng(`-simpleperf_boot')
   -traced_probes
   -traced_perf
 } proc_kallsyms:file { open read };
@@ -539,3 +592,40 @@ enforce_debugfs_restriction(`
       -tracefs_type
   }:file no_rw_file_perms;
 ')
+
+# Restrict write access to etm sysfs interface.
+neverallow { domain -ueventd -vendor_init } sysfs_devices_cs_etm:file no_w_file_perms;
+
+# Restrict write access to shell owned files. The /data/local/tmp directory is
+# untrustworthy, and non-allowed domains should not be trusting any content in
+# those directories. We allow shell files to be passed around by file
+# descriptor, but not directly opened.
+neverallow {
+  domain
+  -adbd
+  -appdomain
+  -dumpstate
+  -installd
+  userdebug_or_eng(`-uncrypt')
+  userdebug_or_eng(`-virtualizationservice')
+  userdebug_or_eng(`-crosvm')
+} shell_data_file:file open;
+
+# respect system_app sandboxes
+neverallow {
+  domain
+  -appdomain
+  -system_server #populate com.android.providers.settings/databases/settings.db.
+  -installd # creation of app sandbox
+  -iorap_inode2filename
+  -traced_probes # resolve inodes for i/o tracing.
+                 # only needs open and read, the rest is neverallow in
+                 # traced_probes.te.
+} system_app_data_file:dir_file_class_set { create unlink open };
+neverallow {
+  isolated_app
+  ephemeral_app
+  priv_app
+  supplemental_process
+  untrusted_app_all
+} system_app_data_file:dir_file_class_set { create unlink open };
