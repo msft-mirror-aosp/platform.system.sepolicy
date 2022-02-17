@@ -100,7 +100,9 @@ allow domain property_info:file r_file_perms;
 
 # Public readable properties
 get_prop(domain, aaudio_config_prop)
+get_prop(domain, apexd_select_prop)
 get_prop(domain, arm64_memtag_prop)
+get_prop(domain, bluetooth_config_prop)
 get_prop(domain, bootloader_prop)
 get_prop(domain, build_odm_prop)
 get_prop(domain, build_prop)
@@ -474,7 +476,7 @@ neverallow { domain userdebug_or_eng(`-shell') } nativetest_data_file:file no_x_
 
 neverallow { domain -shell -init -adbd } shell_test_data_file:file_class_set no_w_file_perms;
 neverallow { domain -shell -init -adbd } shell_test_data_file:dir no_w_dir_perms;
-neverallow { domain -shell -init -adbd -heapprofd } shell_test_data_file:file *;
+neverallow { domain -shell -init -adbd -heapprofd -crash_dump } shell_test_data_file:file *;
 neverallow heapprofd shell_test_data_file:file { no_w_file_perms no_x_file_perms };
 neverallow { domain -shell -init -adbd } shell_test_data_file:sock_file *;
 
@@ -610,25 +612,6 @@ neverallow {
   -update_engine
 } system_block_device:blk_file { write append };
 
-# No domains other than a select few can access the misc_block_device. This
-# block device is reserved for OTA use.
-# Do not assert this rule on userdebug/eng builds, due to some devices using
-# this partition for testing purposes.
-neverallow {
-  domain
-  userdebug_or_eng(`-domain') # exclude debuggable builds
-  -fastbootd
-  -hal_bootctl_server
-  -init
-  -uncrypt
-  -update_engine
-  -vendor_init
-  -vendor_misc_writer
-  -vold
-  -recovery
-  -ueventd
-} misc_block_device:blk_file { append link relabelfrom rename write open read ioctl lock };
-
 # Only (hw|vnd|)servicemanager should be able to register with binder as the context manager
 neverallow { domain -servicemanager -hwservicemanager -vndservicemanager } *:binder set_context_mgr;
 # The service managers are only allowed to access their own device node
@@ -685,7 +668,6 @@ full_treble_only(`
     -nfc_service
     -radio_service
     -virtual_touchpad_service
-    -vr_hwc_service
     -vr_manager_service
     userdebug_or_eng(`-hal_face_service')
   }:service_manager find;
@@ -1147,24 +1129,6 @@ neverallow {
 # to installd
 neverallow installd system_data_file:file ~{ r_file_perms relabelfrom unlink };
 
-# respect system_app sandboxes
-neverallow {
-  domain
-  -appdomain # finer-grained rules for appdomain are listed below
-  -system_server #populate com.android.providers.settings/databases/settings.db.
-  -installd # creation of app sandbox
-  -iorap_inode2filename
-  -traced_probes # resolve inodes for i/o tracing.
-                 # only needs open and read, the rest is neverallow in
-                 # traced_probes.te.
-} system_app_data_file:dir_file_class_set { create unlink open };
-neverallow {
-  isolated_app
-  untrusted_app_all # finer-grained rules for appdomain are listed below
-  ephemeral_app
-  priv_app
-} system_app_data_file:dir_file_class_set { create unlink open };
-
 #
 # Only these domains should transition to shell domain. This domain is
 # permissible for the "shell user". If you need a process to exec a shell
@@ -1227,17 +1191,6 @@ neverallow {
   userdebug_or_eng(`-uncrypt')
 } shell_data_file:dir { open search };
 
-# Same as above for /data/local/tmp files. We allow shell files
-# to be passed around by file descriptor, but not directly opened.
-neverallow {
-  domain
-  -adbd
-  -appdomain
-  -dumpstate
-  -installd
-  userdebug_or_eng(`-uncrypt')
-} shell_data_file:file open;
-
 # servicemanager and vndservicemanager are the only processes which handle the
 # service_manager list request
 neverallow * ~{
@@ -1291,8 +1244,9 @@ neverallow {
 
 # Enforce restrictions on kernel module origin.
 # Do not allow kernel module loading except from system,
-# vendor, and boot partitions.
-neverallow * ~{ system_file_type vendor_file_type rootfs }:system module_load;
+# vendor, boot, and system_dlkm partitions.
+# TODO(b/218951883): Remove usage of system and rootfs as origin
+neverallow * ~{ system_file_type vendor_file_type rootfs system_dlkm_file_type }:system module_load;
 
 # Only allow filesystem caps to be set at build time. Runtime changes
 # to filesystem capabilities are not permitted.
@@ -1362,12 +1316,15 @@ neverallow {
   -coredomain
 } mnt_product_file:dir *;
 
-# Platform must not have access to sysfs_batteryinfo, but should do it via health HAL and healthd
+# Platform must not have access to sysfs_batteryinfo, but should do it via health HAL
 full_treble_only(`
   neverallow {
     coredomain
-    -healthd
     -shell
+    # For access to block device information under /sys/class/block.
+    -apexd
+    # Read sysfs block device information.
+    -init
     # Generate uevents for health info
     -ueventd
     # Recovery uses health HAL passthrough implementation.
