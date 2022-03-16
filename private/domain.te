@@ -500,6 +500,7 @@ full_treble_only(`
     -init
     -tombstoned # linker to tombstoned
     userdebug_or_eng(`-heapprofd')
+    userdebug_or_eng(`-traced')
     userdebug_or_eng(`-traced_perf')
   });
 ')
@@ -627,6 +628,6 @@ neverallow {
   isolated_app
   ephemeral_app
   priv_app
-  supplemental_process
+  sdk_sandbox
   untrusted_app_all
 } system_app_data_file:dir_file_class_set { create unlink open };

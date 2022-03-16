@@ -265,20 +265,6 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.supplementalprocess-file_contexts",
-  srcs: [
-    "com.android.supplementalprocess-file_contexts",
-  ],
-}
-
-filegroup {
-  name: "com.android.auxiliary-file_contexts",
-  srcs: [
-    "com.android.auxiliary-file_contexts",
-  ],
-}
-
-filegroup {
   name: "com.android.ondevicepersonalization-file_contexts",
   srcs: [
     "com.android.ondevicepersonalization-file_contexts",
