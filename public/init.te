@@ -98,7 +98,6 @@ allow init {
     mnt_user_file
     system_data_file
     system_data_root_file
-    system_dlkm_file
     system_file
     vendor_file
     postinstall_mnt_dir
@@ -202,7 +201,6 @@ allow init {
   -nativetest_data_file
   -privapp_data_file
   -system_app_data_file
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
 }:dir { create search getattr open read setattr ioctl };
@@ -219,7 +217,6 @@ allow init {
   -privapp_data_file
   -shell_data_file
   -system_app_data_file
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
   -vold_data_file
@@ -240,7 +237,6 @@ allow init {
   -runtime_event_log_tags_file
   -shell_data_file
   -system_app_data_file
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
   -vold_data_file
@@ -262,7 +258,6 @@ allow init {
   -privapp_data_file
   -shell_data_file
   -system_app_data_file
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
   -vold_data_file
@@ -282,7 +277,6 @@ allow init {
   -privapp_data_file
   -shell_data_file
   -system_app_data_file
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
   -vold_data_file
@@ -292,7 +286,6 @@ allow init cache_file:lnk_file r_file_perms;
 
 allow init {
   file_type
-  -system_dlkm_file_type
   -system_file_type
   -vendor_file_type
   -exec_type
@@ -320,12 +313,11 @@ allow init {
   -keychord_device
   -proc_type
   -sdcard_type
-  -fusefs_type
   -sysfs_type
   -rootfs
   enforce_debugfs_restriction(`-debugfs_type')
 }:file { open read setattr };
-allow init { fs_type -contextmount_type -sdcard_type -fusefs_type -rootfs }:dir  { open read setattr search };
+allow init { fs_type -contextmount_type -sdcard_type -rootfs }:dir  { open read setattr search };
 
 allow init {
   binder_device
@@ -378,8 +370,6 @@ allow init {
 
 allow init {
   proc_abi
-  proc_bpf
-  proc_cpu_alignment
   proc_dirty
   proc_hostname
   proc_hung_task
@@ -393,7 +383,6 @@ allow init {
   proc_perf
   proc_sched
   proc_sysrq
-  proc_watermark_boost_factor
 }:file w_file_perms;
 
 allow init {
@@ -443,7 +432,6 @@ allowxperm init loop_device:blk_file ioctl {
   LOOP_SET_BLOCK_SIZE
   LOOP_SET_DIRECT_IO
   LOOP_GET_STATUS
-  LOOP_SET_STATUS64
 };
 
 # Allow init to write to vibrator/trigger
@@ -597,7 +585,6 @@ allowxperm init { data_file_type unlabeled }:dir ioctl {
 allow init misc_block_device:blk_file w_file_perms;
 
 r_dir_file(init, system_file)
-r_dir_file(init, system_dlkm_file_type)
 r_dir_file(init, vendor_file_type)
 
 allow init system_data_file:file { getattr read };
@@ -617,16 +604,14 @@ allow init userspace_reboot_metadata_file:file w_file_perms;
 allow init proc_pressure_mem:file { rw_file_perms setattr };
 
 # init is using bootstrap bionic
-use_bootstrap_libs(init)
+allow init system_bootstrap_lib_file:dir r_dir_perms;
+allow init system_bootstrap_lib_file:file { execute read open getattr map };
 
 # stat the root dir of fuse filesystems (for the mount handler)
 allow init fuse:dir { search getattr };
 
 # allow filesystem tuning
 allow init userdata_sysdev:file create_file_perms;
-
-# allow disk tuning
-allow init rootdisk_sysdev:file create_file_perms;
 
 ###
 ### neverallow rules
@@ -663,7 +648,7 @@ neverallow init servicemanager:service_manager list;
 neverallow init shell_data_file:dir { write add_name remove_name };
 
 # Init should not access sysfs node that are not explicitly labeled.
-neverallow init sysfs:file { open write };
+neverallow init sysfs:file { open read write };
 
 # No domain should be allowed to ptrace init.
 neverallow * init:process ptrace;

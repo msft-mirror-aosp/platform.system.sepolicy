@@ -86,12 +86,14 @@ allow vold block_device:dir create_dir_perms;
 allow vold device:dir write;
 allow vold devpts:chr_file rw_file_perms;
 allow vold rootfs:dir mounton;
-allow vold { sdcard_type fuse }:dir mounton; # TODO: deprecated in M
-allow vold { sdcard_type fuse }:filesystem { mount remount unmount }; # TODO: deprecated in M
+allow vold sdcard_type:dir mounton; # TODO: deprecated in M
+allow vold sdcard_type:filesystem { mount remount unmount }; # TODO: deprecated in M
+allow vold sdcard_type:dir create_dir_perms; # TODO: deprecated in M
+allow vold sdcard_type:file create_file_perms; # TODO: deprecated in M
 
 # Manage locations where storage is mounted
-allow vold { mnt_media_rw_file storage_file sdcard_type fuse }:dir create_dir_perms;
-allow vold { mnt_media_rw_file storage_file sdcard_type fuse }:file create_file_perms;
+allow vold { mnt_media_rw_file storage_file sdcard_type }:dir create_dir_perms;
+allow vold { mnt_media_rw_file storage_file sdcard_type }:file create_file_perms;
 
 # Access to storage that backs emulated FUSE daemons for migration optimization
 allow vold media_rw_data_file:dir create_dir_perms;
@@ -221,6 +223,9 @@ add_service(vold, vold_service)
 binder_call(vold, system_server)
 allow vold permission_service:service_manager find;
 
+# talk to batteryservice
+binder_call(vold, healthd)
+
 # talk to keymaster
 hal_client_domain(vold, hal_keymaster)
 
@@ -341,6 +346,7 @@ neverallow vold {
   -hal_keymaster_server
   -system_suspend_server
   -hal_bootctl_server
+  -healthd
   -hwservicemanager
   -iorapd_service
   -keystore
