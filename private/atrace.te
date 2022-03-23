@@ -12,10 +12,10 @@ allow atrace debugfs_tracing:dir r_dir_perms;
 allow atrace debugfs_tracing:file rw_file_perms;
 allow atrace debugfs_trace_marker:file getattr;
 
-# Allow atrace to write data when a pipe is used for stdout/stderr.
-# This is used by Perfetto to capture atrace stdout/stderr.
+# Allow atrace to write data when a pipe is used for stdout/stderr
+# This is used by Perfetto to capture the output on error in atrace.
 allow atrace traced_probes:fd use;
-allow atrace traced_probes:fifo_file { getattr write };
+allow atrace traced_probes:fifo_file write;
 
 # atrace sets debug.atrace.* properties
 set_prop(atrace, debug_prop)
@@ -33,7 +33,6 @@ allow atrace {
   -installd_service
   -iorapd_service
   -lpdump_service
-  -mdns_service
   -netd_service
   -stats_service
   -tracingproxy_service
@@ -45,6 +44,7 @@ allow atrace servicemanager:service_manager list;
 # Allow notifying the processes hosting specific binder services that
 # trace-related system properties have changed.
 binder_use(atrace)
+allow atrace healthd:binder call;
 allow atrace surfaceflinger:binder call;
 allow atrace system_server:binder call;
 allow atrace cameraserver:binder call;
