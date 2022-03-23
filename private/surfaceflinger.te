@@ -19,6 +19,7 @@ hal_client_domain(surfaceflinger, hal_codec2)
 hal_client_domain(surfaceflinger, hal_omx)
 hal_client_domain(surfaceflinger, hal_configstore)
 hal_client_domain(surfaceflinger, hal_power)
+hal_client_domain(surfaceflinger, hal_bufferhub)
 allow surfaceflinger hidl_token_hwservice:hwservice_manager find;
 
 # Perform Binder IPC.
@@ -60,7 +61,6 @@ set_prop(surfaceflinger, surfaceflinger_display_prop)
 
 # Get properties.
 get_prop(surfaceflinger, qemu_sf_lcd_density_prop)
-get_prop(surfaceflinger, device_config_surface_flinger_native_boot_prop)
 
 # Use open files supplied by an app.
 allow surfaceflinger appdomain:fd use;
@@ -89,6 +89,8 @@ r_dir_file(surfaceflinger, dumpstate)
 # provider as well
 #add_service(surfaceflinger, surfaceflinger_service)
 allow surfaceflinger surfaceflinger_service:service_manager { add find };
+
+add_service(surfaceflinger, vrflinger_vsync_service)
 
 allow surfaceflinger mediaserver_service:service_manager find;
 allow surfaceflinger permission_service:service_manager find;
@@ -125,9 +127,6 @@ allow surfaceflinger statsmanager_service:service_manager find;
 # TODO(146461633): remove this once native pullers talk to StatsManagerService
 binder_call(surfaceflinger, statsd);
 
-# Allow to use files supplied by hal_evs
-allow surfaceflinger hal_evs:fd use;
-
 # Allow pushing jank event atoms to statsd
 userdebug_or_eng(`
     unix_socket_send(surfaceflinger, statsdw, statsd)
@@ -143,7 +142,7 @@ dontaudit surfaceflinger vendor_default_prop:file read;
 
 # Do not allow accessing SDcard files as unsafe ejection could
 # cause the kernel to kill the process.
-neverallow surfaceflinger { sdcard_type fuse }:file rw_file_perms;
+neverallow surfaceflinger sdcard_type:file rw_file_perms;
 
 # b/68864350
 dontaudit surfaceflinger unlabeled:dir search;
