@@ -22,7 +22,7 @@ allow servicemanager service_contexts_file:file r_file_perms;
 allow servicemanager vendor_service_contexts_file:file r_file_perms;
 
 # nonplat_service_contexts only accessible on non full-treble devices
-not_full_treble(`allow servicemanager vendor_service_contexts_file:file r_file_perms;')
+not_full_treble(`allow servicemanager nonplat_service_contexts_file:file r_file_perms;')
 
 add_service(servicemanager, service_manager_service)
 allow servicemanager dumpstate:fd use;
@@ -30,11 +30,3 @@ allow servicemanager dumpstate:fifo_file write;
 
 # Check SELinux permissions.
 selinux_check_access(servicemanager)
-
-recovery_only(`
-  # In recovery, log to kmsg.
-  allow servicemanager kmsg_device:chr_file rw_file_perms;
-
-  # Read VINTF files.
-  r_dir_file(servicemanager, rootfs)
-')
