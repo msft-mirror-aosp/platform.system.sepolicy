@@ -6,6 +6,10 @@ init_daemon_domain(dumpstate)
 # Execute and transition to the vdc domain
 domain_auto_trans(dumpstate, vdc_exec, vdc)
 
+# Create tmpfs files for using memfd descriptors to get output from child
+# processes.
+tmpfs_domain(dumpstate)
+
 # Acquire advisory lock on /system/etc/xtables.lock from ip[6]tables
 allow dumpstate system_file:file lock;
 
@@ -91,6 +95,9 @@ set_prop(dumpstate, ctl_dumpstate_prop)
 set_prop(dumpstate, lpdumpd_prop)
 binder_call(dumpstate, lpdumpd)
 
+# For dumping hypervisor information.
+get_prop(dumpstate, hypervisor_prop)
+
 # For dumping device-mapper and snapshot information.
 allow dumpstate gsid_exec:file rx_file_perms;
 set_prop(dumpstate, ctl_gsid_prop)
@@ -113,3 +120,6 @@ allow dumpstate perfetto_traces_bugreport_data_file:file { r_file_perms unlink }
 # /dev/null.
 allow perfetto dumpstate_tmpfs:file rw_file_perms;
 allow perfetto dumpstate:fd use;
+
+# system_dlkm_file for /system_dlkm partition
+allow dumpstate system_dlkm_file:dir getattr;

@@ -2,7 +2,7 @@
 type installd, domain;
 type installd_exec, system_file_type, exec_type, file_type;
 typeattribute installd mlstrustedsubject;
-allow installd self:global_capability_class_set { chown dac_override dac_read_search fowner fsetid setgid setuid sys_admin };
+allow installd self:global_capability_class_set { chown dac_override dac_read_search fowner fsetid setgid setuid sys_admin kill };
 
 # Allow labeling of files under /data/app/com.example/oat/
 allow installd dalvikcache_data_file:dir relabelto;
@@ -71,8 +71,8 @@ allow installd media_rw_data_file:dir relabelto;
 # Delete /data/media files through sdcardfs, instead of going behind its back
 allow installd tmpfs:dir r_dir_perms;
 allow installd storage_file:dir search;
-allow installd sdcard_type:dir { search open read write remove_name getattr rmdir };
-allow installd sdcard_type:file { getattr unlink };
+allow installd { sdcard_type fuse }:dir { search open read write remove_name getattr rmdir };
+allow installd { sdcard_type fuse }:file { getattr unlink };
 
 # Create app's mirror data directory in /data_mirror, and bind mount the real directory to it
 allow installd mirror_data_file:dir { create_dir_perms mounton };
@@ -114,6 +114,16 @@ allow installd system_data_file:notdevfile_class_set { getattr relabelfrom unlin
 # upon package uninstall.
 allow installd app_data_file_type:dir { create_dir_perms relabelfrom relabelto };
 allow installd app_data_file_type:notdevfile_class_set { create_file_perms relabelfrom relabelto };
+
+# Allow setting extended attributes (for project quota IDs) on dirs and files
+# and to enable project ID inheritance through FS_IOC_SETFLAGS
+# Added install_data_file to be able to create file under /data/misc/installd/ioctl_check
+allowxperm installd { app_data_file_type system_data_file install_data_file}:{ dir file } ioctl {
+  FS_IOC_FSGETXATTR
+  FS_IOC_FSSETXATTR
+  FS_IOC_GETFLAGS
+  FS_IOC_SETFLAGS
+};
 
 # Similar for the files under /data/misc/profiles/
 allow installd user_profile_root_file:dir { create_dir_perms relabelfrom };
