@@ -20,7 +20,6 @@ hal_client_domain(mediaextractor, hal_cas)
 hal_client_domain(mediaextractor, hal_allocator)
 
 r_dir_file(mediaextractor, cgroup)
-r_dir_file(mediaextractor, cgroup_v2)
 allow mediaextractor proc_meminfo:file r_file_perms;
 
 crash_dump_fallback(mediaextractor)
@@ -40,6 +39,8 @@ allow mediaextractor vendor_overlay_file:file { read map };
 
 # scan extractor library directory to dynamically load extractors
 allow mediaextractor system_file:dir { read open };
+
+get_prop(mediaextractor, device_config_media_native_prop)
 
 ###
 ### neverallow rules

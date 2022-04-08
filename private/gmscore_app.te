@@ -33,7 +33,6 @@ binder_call(gmscore_app, statsd)
 
 # Allow GMS core to generate unique hardware IDs
 allow gmscore_app keystore:keystore_key gen_unique_id;
-allow gmscore_app keystore:keystore2_key gen_unique_id;
 
 # Allow GMS core to access /sys/fs/selinux/policyvers for compatibility check
 allow gmscore_app selinuxfs:file r_file_perms;
@@ -54,7 +53,8 @@ dontaudit gmscore_app sysfs:file r_file_perms;
 dontaudit gmscore_app sysfs_android_usb:file r_file_perms;
 dontaudit gmscore_app sysfs_dm:file r_file_perms;
 dontaudit gmscore_app sysfs_loop:file r_file_perms;
-dontaudit gmscore_app { wifi_prop wifi_hal_prop }:file r_file_perms;
+dontaudit gmscore_app wifi_prop:file r_file_perms;
+dontaudit gmscore_app { wifi_prop exported_wifi_prop }:file r_file_perms;
 dontaudit gmscore_app mirror_data_file:dir search;
 dontaudit gmscore_app mnt_vendor_file:dir search;
 
@@ -74,10 +74,6 @@ allow gmscore_app self:process ptrace;
 # * /data/user_de/0/com.google.android.gms/app_chimera
 # TODO: Tighten (b/112357170)
 allow gmscore_app privapp_data_file:file execute;
-
-# Chrome Crashpad uses the the dynamic linker to load native executables
-# from an APK (b/112050209, crbug.com/928422)
-allow gmscore_app system_linker_exec:file execute_no_trans;
 
 allow gmscore_app privapp_data_file:lnk_file create_file_perms;
 
@@ -131,10 +127,3 @@ allow gmscore_app anr_data_file:file r_file_perms;
 
 # b/148974132: com.android.vending needs this
 allow gmscore_app priv_app:tcp_socket { read write };
-
-# b/168059475 Allow GMSCore to read Virtual AB properties to determine
-# if device supports VAB.
-get_prop(gmscore_app, virtual_ab_prop)
-
-# b/186488185: Allow GMSCore to read dck properties
-get_prop(gmscore_app, dck_prop)

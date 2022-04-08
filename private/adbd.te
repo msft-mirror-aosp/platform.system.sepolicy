@@ -44,9 +44,6 @@ dontaudit adbd self:global_capability_class_set sys_resource;
 # this occurs. (b/123569840)
 dontaudit adbd self:{ socket vsock_socket } create;
 
-# Allow adbd inside vm to forward vm's vsock.
-allow adbd self:vsock_socket { create_socket_perms_no_ioctl listen accept };
-
 # Create and use network sockets.
 net_domain(adbd)
 
@@ -84,22 +81,14 @@ allow adbd sdcard_type:file create_file_perms;
 allow adbd anr_data_file:dir r_dir_perms;
 allow adbd anr_data_file:file r_file_perms;
 
-# adb pull /vendor/framework/*
-allow adbd vendor_framework_file:dir r_dir_perms;
-allow adbd vendor_framework_file:file r_file_perms;
-
 # Set service.adb.*, sys.powerctl, and sys.usb.ffs.ready properties.
 set_prop(adbd, shell_prop)
 set_prop(adbd, powerctl_prop)
-get_prop(adbd, ffs_config_prop)
-set_prop(adbd, ffs_control_prop)
+set_prop(adbd, ffs_prop)
+set_prop(adbd, exported_ffs_prop)
 
-# Set service.adb.tcp.port, service.adb.tls.port, persist.adb.wifi.* properties
+# Set service.adb.tls.port, persist.adb.wifi. properties
 set_prop(adbd, adbd_prop)
-set_prop(adbd, adbd_config_prop)
-
-# Allow adbd start/stop mdnsd via ctl.start
-set_prop(adbd, ctl_mdnsd_prop)
 
 # Access device logging gating property
 get_prop(adbd, device_logging_prop)
@@ -169,6 +158,9 @@ allow adbd sepolicy_file:file r_file_perms;
 # Allow pulling config.gz for CTS purposes
 allow adbd config_gz:file r_file_perms;
 
+# For CTS listening ports test.
+allow adbd proc_net_tcp_udp:file r_file_perms;
+
 allow adbd gpu_service:service_manager find;
 allow adbd surfaceflinger_service:service_manager find;
 allow adbd bootchart_data_file:dir search;
@@ -200,25 +192,10 @@ allow adbd perfetto:process signal;
 allow adbd perfetto_traces_data_file:file r_file_perms;
 allow adbd perfetto_traces_data_file:dir r_dir_perms;
 
-# Allow to push and manage configs in /data/misc/perfetto-configs.
-allow adbd perfetto_configs_data_file:dir rw_dir_perms;
-allow adbd perfetto_configs_data_file:file create_file_perms;
-
 # Connect to shell and use a socket transferred from it.
 # Used for e.g. abb.
 allow adbd shell:unix_stream_socket { read write shutdown };
 allow adbd shell:fd use;
-
-# Allow pull /vendor/apex files for CTS tests
-allow adbd vendor_apex_file:dir search;
-allow adbd vendor_apex_file:file r_file_perms;
-
-# Allow adb pull of updated apex files in /data/apex/active.
-allow adbd apex_data_file:dir search;
-allow adbd staging_data_file:file r_file_perms;
-
-# Allow adbd to pull /apex/apex-info-list.xml for CTS tests.
-allow adbd apex_info_file:file r_file_perms;
 
 ###
 ### Neverallow rules

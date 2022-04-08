@@ -1,9 +1,6 @@
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := plat_mac_permissions.xml
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT)/etc/selinux
@@ -42,9 +39,6 @@ plat_mac_perms_keys.tmp :=
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := system_ext_mac_permissions.xml
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_SYSTEM_EXT)/etc/selinux
@@ -58,9 +52,9 @@ all_system_ext_mac_perms_files := $(call build_policy, mac_permissions.xml, $(SY
 system_ext_mac_perms_keys.tmp := $(intermediates)/system_ext_keys.tmp
 $(system_ext_mac_perms_keys.tmp): PRIVATE_ADDITIONAL_M4DEFS := $(LOCAL_ADDITIONAL_M4DEFS)
 $(system_ext_mac_perms_keys.tmp): PRIVATE_KEYS := $(all_system_ext_mac_perms_keys)
-$(system_ext_mac_perms_keys.tmp): $(all_system_ext_mac_perms_keys) $(M4)
+$(system_ext_mac_perms_keys.tmp): $(all_system_ext_mac_perms_keys)
 	@mkdir -p $(dir $@)
-	$(hide) $(M4) --fatal-warnings -s $(PRIVATE_ADDITIONAL_M4DEFS) $(PRIVATE_KEYS) > $@
+	$(hide) $(M4) --fatal-warnings -s $(PRIVATE_ADDITIONAL_M4DEFS) $^ > $@
 
 $(LOCAL_BUILT_MODULE): PRIVATE_MAC_PERMS_FILES := $(all_system_ext_mac_perms_files)
 $(LOCAL_BUILT_MODULE): $(system_ext_mac_perms_keys.tmp) $(HOST_OUT_EXECUTABLES)/insertkeys.py \
@@ -76,9 +70,6 @@ all_system_ext_mac_perms_keys :=
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := product_mac_permissions.xml
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT)/etc/selinux
@@ -92,9 +83,9 @@ all_product_mac_perms_files := $(call build_policy, mac_permissions.xml, $(PRODU
 product_mac_perms_keys.tmp := $(intermediates)/product_keys.tmp
 $(product_mac_perms_keys.tmp): PRIVATE_ADDITIONAL_M4DEFS := $(LOCAL_ADDITIONAL_M4DEFS)
 $(product_mac_perms_keys.tmp): PRIVATE_KEYS := $(all_product_mac_perms_keys)
-$(product_mac_perms_keys.tmp): $(all_product_mac_perms_keys) $(M4)
+$(product_mac_perms_keys.tmp): $(all_product_mac_perms_keys)
 	@mkdir -p $(dir $@)
-	$(hide) $(M4) --fatal-warnings -s $(PRIVATE_ADDITIONAL_M4DEFS) $(PRIVATE_KEYS) > $@
+	$(hide) $(M4) --fatal-warnings -s $(PRIVATE_ADDITIONAL_M4DEFS) $^ > $@
 
 $(LOCAL_BUILT_MODULE): PRIVATE_MAC_PERMS_FILES := $(all_product_mac_perms_files)
 $(LOCAL_BUILT_MODULE): $(product_mac_perms_keys.tmp) $(HOST_OUT_EXECUTABLES)/insertkeys.py \
@@ -110,9 +101,6 @@ all_product_mac_perms_keys :=
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := vendor_mac_permissions.xml
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/selinux
@@ -145,9 +133,6 @@ all_vendor_mac_perms_keys :=
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := odm_mac_permissions.xml
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_ODM)/etc/selinux

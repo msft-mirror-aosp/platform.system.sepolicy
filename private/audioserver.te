@@ -36,7 +36,6 @@ allow audioserver batterystats_service:service_manager find;
 allow audioserver external_vibrator_service:service_manager find;
 allow audioserver package_native_service:service_manager find;
 allow audioserver permission_service:service_manager find;
-allow audioserver permission_checker_service:service_manager find;
 allow audioserver power_service:service_manager find;
 allow audioserver scheduling_policy_service:service_manager find;
 allow audioserver mediametrics_service:service_manager find;
@@ -99,6 +98,3 @@ neverallow audioserver domain:{ tcp_socket udp_socket rawip_socket } *;
 
 # Allow using wake locks
 wakelock_use(audioserver)
-
-# Allow reading audio config props, e.g. af.fast_track_multiplier
-get_prop(audioserver, audio_config_prop)

@@ -4,7 +4,7 @@
 ### server.
 ###
 
-typeattribute system_app coredomain, mlstrustedsubject;
+typeattribute system_app coredomain;
 
 app_domain(system_app)
 net_domain(system_app)
@@ -20,6 +20,9 @@ allow system_app system_app_data_file:{ file lnk_file } create_file_perms;
 # Read and write to /data/misc/user.
 allow system_app misc_user_data_file:dir create_dir_perms;
 allow system_app misc_user_data_file:file create_file_perms;
+
+# Access to vold-mounted storage for measuring free space
+allow system_app mnt_media_rw_file:dir search;
 
 # Access to apex files stored on /data (b/136063500)
 # Needed so that Settings can access NOTICE files inside apex
@@ -41,16 +44,17 @@ set_prop(system_app, debug_prop)
 set_prop(system_app, system_prop)
 set_prop(system_app, exported_bluetooth_prop)
 set_prop(system_app, exported_system_prop)
+set_prop(system_app, exported2_system_prop)
 set_prop(system_app, exported3_system_prop)
 set_prop(system_app, logd_prop)
 set_prop(system_app, net_radio_prop)
-set_prop(system_app, usb_control_prop)
-set_prop(system_app, usb_prop)
+set_prop(system_app, system_radio_prop)
+set_prop(system_app, exported_system_radio_prop)
 set_prop(system_app, log_tag_prop)
 userdebug_or_eng(`set_prop(system_app, logpersistd_logging_prop)')
 auditallow system_app net_radio_prop:property_service set;
-auditallow system_app usb_control_prop:property_service set;
-auditallow system_app usb_prop:property_service set;
+auditallow system_app system_radio_prop:property_service set;
+auditallow system_app exported_system_radio_prop:property_service set;
 # Allow Settings to enable Dynamic System Update
 set_prop(system_app, dynamic_system_prop)
 
@@ -74,6 +78,9 @@ binder_call(system_app, statsd)
 # Allow system apps to interact with incidentd
 binder_call(system_app, incidentd)
 
+# Allow system apps to interact with gpuservice
+binder_call(system_app, gpuservice)
+
 # Allow system app to interact with Dumpstate HAL
 hal_client_domain(system_app, hal_dumpstate)
 
@@ -88,9 +95,7 @@ allow system_app {
   -iorapd_service
   -lpdump_service
   -netd_service
-  -system_suspend_control_internal_service
   -system_suspend_control_service
-  -tracingproxy_service
   -virtual_touchpad_service
   -vold_service
   -vr_hwc_service
@@ -107,9 +112,6 @@ dontaudit system_app {
   vold_service
   vr_hwc_service
 }:service_manager find;
-
-# suppress denials caused by debugfs_tracing
-dontaudit system_app debugfs_tracing:file rw_file_perms;
 
 allow system_app keystore:keystore_key {
     get_state
@@ -131,24 +133,6 @@ allow system_app keystore:keystore_key {
     user_changed
 };
 
-allow system_app keystore:keystore2_key {
-    delete
-    get_info
-    grant
-    rebind
-    update
-    use
-};
-
-# Allow Settings to manage WI-FI keys.
-allow system_app wifi_key:keystore2_key {
-    delete
-    get_info
-    rebind
-    update
-    use
-};
-
 # settings app reads /proc/version
 allow system_app {
   proc_version
@@ -156,7 +140,6 @@ allow system_app {
 
 # Settings app writes to /dev/stune/foreground/tasks.
 allow system_app cgroup:file w_file_perms;
-allow system_app cgroup_v2:file w_file_perms;
 
 control_logd(system_app)
 read_runtime_log_tags(system_app)
@@ -166,12 +149,6 @@ get_prop(system_app, device_logging_prop)
 # modify them other than to connect
 allow system_app system_server:udp_socket {
         connect getattr read recvfrom sendto write getopt setopt };
-
-# Settings app reads ro.oem_unlock_supported
-get_prop(system_app, oem_unlock_prop)
-
-# Allow system apps to act as Perfetto producers.
-perfetto_producer(system_app)
 
 ###
 ### Neverallow rules

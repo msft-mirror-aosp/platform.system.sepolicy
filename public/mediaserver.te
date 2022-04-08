@@ -9,7 +9,6 @@ net_domain(mediaserver)
 
 r_dir_file(mediaserver, sdcard_type)
 r_dir_file(mediaserver, cgroup)
-r_dir_file(mediaserver, cgroup_v2)
 
 # stat /proc/self
 allow mediaserver proc:lnk_file getattr;
@@ -34,6 +33,8 @@ allow mediaserver sdcard_type:file write;
 allow mediaserver gpu_device:chr_file rw_file_perms;
 allow mediaserver video_device:dir r_dir_perms;
 allow mediaserver video_device:chr_file rw_file_perms;
+
+set_prop(mediaserver, audio_prop)
 
 # Read resources from open apk files passed over Binder.
 allow mediaserver apk_data_file:file { read getattr };
@@ -76,7 +77,6 @@ allow mediaserver mediaextractor_service:service_manager find;
 allow mediaserver mediametrics_service:service_manager find;
 allow mediaserver media_session_service:service_manager find;
 allow mediaserver permission_service:service_manager find;
-allow mediaserver permission_checker_service:service_manager find;
 allow mediaserver power_service:service_manager find;
 allow mediaserver processinfo_service:service_manager find;
 allow mediaserver scheduling_policy_service:service_manager find;
@@ -121,8 +121,6 @@ allow mediaserver media_rw_data_file:file create_file_perms;
 allow mediaserver preloads_media_file:file { getattr read ioctl };
 
 allow mediaserver ion_device:chr_file r_file_perms;
-allow mediaserver dmabuf_system_heap_device:chr_file r_file_perms;
-allow mediaserver dmabuf_system_secure_heap_device:chr_file r_file_perms;
 allow mediaserver hal_graphics_allocator:fd use;
 allow mediaserver hal_graphics_composer:fd use;
 allow mediaserver hal_camera:fd use;

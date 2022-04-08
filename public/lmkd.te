@@ -26,17 +26,18 @@ allow lmkd kernel:process { setsched };
 
 # Clean up old cgroups
 allow lmkd cgroup:dir { remove_name rmdir };
-allow lmkd cgroup_v2:dir { remove_name rmdir };
 
 # Allow to read memcg stats
 allow lmkd cgroup:file r_file_perms;
-allow lmkd cgroup_v2:file r_file_perms;
 
 # Set self to SCHED_FIFO
 allow lmkd self:global_capability_class_set sys_nice;
 
 allow lmkd proc_zoneinfo:file r_file_perms;
 allow lmkd proc_vmstat:file r_file_perms;
+
+# Set sys.lmk.* properties.
+set_prop(lmkd, system_lmk_prop)
 
 # live lock watchdog process allowed to look through /proc/
 allow lmkd domain:dir { search open read };

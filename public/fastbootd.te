@@ -23,11 +23,21 @@ recovery_only(`
 
   allow fastbootd device:dir r_dir_perms;
 
+  # Reboot the device
+  set_prop(fastbootd, powerctl_prop)
+
+  # Read serial number of the device from system properties
+  get_prop(fastbootd, serialno_prop)
+
   # For dev/block/by-name dir
   allow fastbootd block_device:dir r_dir_perms;
 
   # Needed for DM_DEV_CREATE ioctl call
   allow fastbootd self:capability sys_admin;
+
+  # Set sys.usb.ffs.ready.
+  set_prop(fastbootd, ffs_prop)
+  set_prop(fastbootd, exported_ffs_prop)
 
   unix_socket_connect(fastbootd, recovery, recovery)
 
@@ -48,9 +58,9 @@ recovery_only(`
   # libfiemap.
   allow fastbootd metadata_block_device:blk_file r_file_perms;
   allow fastbootd {rootfs tmpfs}:dir mounton;
-  allow fastbootd metadata_file:dir { search getattr mounton };
-  allow fastbootd gsi_metadata_file_type:dir rw_dir_perms;
-  allow fastbootd gsi_metadata_file_type:file create_file_perms;
+  allow fastbootd metadata_file:dir { search getattr };
+  allow fastbootd gsi_metadata_file:dir rw_dir_perms;
+  allow fastbootd gsi_metadata_file:file create_file_perms;
 
   allowxperm fastbootd super_block_device_type:blk_file ioctl { BLKIOMIN BLKALIGNOFF };
 
@@ -97,14 +107,27 @@ recovery_only(`
       vendor_file_type
     }:{ file lnk_file } unlink;
     allow fastbootd tmpfs:dir rw_dir_perms;
-    # Fetch vendor_boot partition
-    allow fastbootd boot_block_device:blk_file r_file_perms;
+    allow fastbootd labeledfs:filesystem { mount unmount };
+    get_prop(fastbootd, persistent_properties_ready_prop)
   ')
 
   # Allow using libfiemap/gsid directly (no binder in recovery).
-  allow fastbootd gsi_metadata_file_type:dir search;
+  set_prop(fastbootd, gsid_prop)
+  allow fastbootd gsi_metadata_file:dir search;
   allow fastbootd ota_metadata_file:dir rw_dir_perms;
   allow fastbootd ota_metadata_file:file create_file_perms;
+
+  # Determine allocation scheme (whether B partitions needs to be
+  # at the second half of super.
+  get_prop(fastbootd, virtual_ab_prop)
+
+  # Needed for TCP protocol
+  allow fastbootd node:tcp_socket node_bind;
+  allow fastbootd port:tcp_socket name_bind;
+  allow fastbootd self:tcp_socket { create_socket_perms_no_ioctl listen accept };
+
+  # Get fastbootd protocol property
+  get_prop(fastbootd, fastbootd_protocol_prop)
 ')
 
 ###

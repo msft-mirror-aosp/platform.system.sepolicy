@@ -26,7 +26,6 @@ allow installd apk_tmp_file:dir { relabelfrom create_dir_perms };
 allow installd oemfs:dir r_dir_perms;
 allow installd oemfs:file r_file_perms;
 allow installd cgroup:dir create_dir_perms;
-allow installd cgroup_v2:dir create_dir_perms;
 allow installd mnt_expand_file:dir { search getattr };
 # Check validity of SELinux context before use.
 selinux_check_context(installd)
@@ -112,17 +111,36 @@ allow installd system_data_file:notdevfile_class_set { getattr relabelfrom unlin
 # upon creation via setfilecon or running restorecon_recursive,
 # setting owner/mode, creating symlinks within them, and deleting them
 # upon package uninstall.
-allow installd app_data_file_type:dir { create_dir_perms relabelfrom relabelto };
-allow installd app_data_file_type:notdevfile_class_set { create_file_perms relabelfrom relabelto };
 
-# Similar for the files under /data/misc/profiles/
-allow installd user_profile_root_file:dir { create_dir_perms relabelfrom };
-allow installd user_profile_data_file:dir { create_dir_perms relabelto };
-allow installd user_profile_data_file:file create_file_perms;
-allow installd user_profile_data_file:file unlink;
+# Types extracted from seapp_contexts type= fields.
+allow installd {
+    system_app_data_file
+    bluetooth_data_file
+    nfc_data_file
+    radio_data_file
+    shell_data_file
+    app_data_file
+    privapp_data_file
+}:dir { create_dir_perms relabelfrom relabelto };
+
+allow installd {
+    system_app_data_file
+    bluetooth_data_file
+    nfc_data_file
+    radio_data_file
+    shell_data_file
+    app_data_file
+    privapp_data_file
+}:notdevfile_class_set { create_file_perms relabelfrom relabelto };
 
 # Allow zygote to unmount mirror directories
 allow installd labeledfs:filesystem unmount;
+
+# Similar for the files under /data/misc/profiles/
+allow installd user_profile_data_file:dir create_dir_perms;
+allow installd user_profile_data_file:file create_file_perms;
+allow installd user_profile_data_file:dir rmdir;
+allow installd user_profile_data_file:file unlink;
 
 # Files created/updated by profman dumps.
 allow installd profman_dump_data_file:dir { search add_name write };
@@ -156,13 +174,6 @@ allow installd preloads_media_file:dir { r_dir_perms write remove_name rmdir };
 
 # Allow installd to read /proc/filesystems
 allow installd proc_filesystems:file r_file_perms;
-
-#add for move app to sd card
-get_prop(installd, storage_config_prop)
-
-# Allow installd to access apps installed on the Incremental File System
-# Accessing files on the Incremental File System uses fds opened in the context of vold.
-allow installd vold:fd use;
 
 ###
 ### Neverallow rules

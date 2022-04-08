@@ -21,9 +21,6 @@ allow hal_neuralnetworks_server ion_device:chr_file r_file_perms;
 # Allow NN HAL service to use a client-provided fd residing in /storage
 allow hal_neuralnetworks_server storage_file:file { getattr map read };
 
-# Allow NN HAL service to read a client-provided fd residing in /data/app/.
-allow hal_neuralnetworks_server apk_data_file:file { getattr map read };
-
 # Allow NN HAL client to check the ro.nnapi.extensions.deny_on_product
 # property to determine whether to deny NNAPI extensions use for apps
 # on product partition (apps in GSI are not allowed to use NNAPI extensions).
@@ -31,11 +28,3 @@ get_prop(hal_neuralnetworks_client, nnapi_ext_deny_product_prop);
 # This property is only expected to be found in /product/build.prop,
 # allow to be set only by init.
 neverallow { domain -init } nnapi_ext_deny_product_prop:property_service set;
-
-# Define sepolicy for NN AIDL HAL service
-hal_attribute_service(hal_neuralnetworks, hal_neuralnetworks_service)
-binder_call(hal_neuralnetworks_server, servicemanager)
-
-binder_use(hal_neuralnetworks_server)
-
-allow hal_neuralnetworks_server dumpstate:fifo_file write;

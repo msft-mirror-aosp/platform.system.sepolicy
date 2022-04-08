@@ -52,11 +52,11 @@ class Policy:
     __policydbP = None
     __BUFSIZE = 2048
 
-    def AssertPathTypesDoNotHaveAttr(self, MatchPrefix, DoNotMatchPrefix, Attr, ExcludedTypes = []):
+    def AssertPathTypesDoNotHaveAttr(self, MatchPrefix, DoNotMatchPrefix, Attr):
         # Query policy for the types associated with Attr
-        TypesPol = self.QueryTypeAttribute(Attr, True) - set(ExcludedTypes)
+        TypesPol = self.QueryTypeAttribute(Attr, True)
         # Search file_contexts to find types associated with input paths.
-        TypesFc, Files = self.__GetTypesAndFilesByFilePathPrefix(MatchPrefix, DoNotMatchPrefix)
+        TypesFc = self.__GetTypesByFilePathPrefix(MatchPrefix, DoNotMatchPrefix)
         violators = TypesFc.intersection(TypesPol)
         ret = ""
         if len(violators) > 0:
@@ -65,8 +65,6 @@ class Policy:
             ret += " must not be associated with the "
             ret += "\"" + Attr + "\" attribute: "
             ret += " ".join(str(x) for x in sorted(violators)) + "\n"
-            ret += " corresponding to files: "
-            ret += " ".join(str(x) for x in sorted(Files)) + "\n"
         return ret
 
     # Check that all types for "filesystem" have "attribute" associated with them
@@ -93,7 +91,7 @@ class Policy:
         TypesPol = self.QueryTypeAttribute(Attr, True)
         # Search file_contexts to find paths/types that should be associated with
         # Attr.
-        TypesFc, Files = self.__GetTypesAndFilesByFilePathPrefix(MatchPrefix, DoNotMatchPrefix)
+        TypesFc = self.__GetTypesByFilePathPrefix(MatchPrefix, DoNotMatchPrefix)
         violators = TypesFc.difference(TypesPol)
 
         ret = ""
@@ -102,19 +100,6 @@ class Policy:
             ret += " ".join(str(x) for x in sorted(MatchPrefix))
             ret += " must be associated with the "
             ret += "\"" + Attr + "\" attribute: "
-            ret += " ".join(str(x) for x in sorted(violators)) + "\n"
-            ret += " corresponding to files: "
-            ret += " ".join(str(x) for x in sorted(Files)) + "\n"
-        return ret
-
-    def AssertPropertyOwnersAreExclusive(self):
-        systemProps = self.QueryTypeAttribute('system_property_type', True)
-        vendorProps = self.QueryTypeAttribute('vendor_property_type', True)
-        violators = systemProps.intersection(vendorProps)
-        ret = ""
-        if len(violators) > 0:
-            ret += "The following types have both system_property_type "
-            ret += "and vendor_property_type: "
             ret += " ".join(str(x) for x in sorted(violators)) + "\n"
         return ret
 
@@ -276,9 +261,8 @@ class Policy:
 
     # Return types that match MatchPrefixes but do not match
     # DoNotMatchPrefixes
-    def __GetTypesAndFilesByFilePathPrefix(self, MatchPrefixes, DoNotMatchPrefixes):
+    def __GetTypesByFilePathPrefix(self, MatchPrefixes, DoNotMatchPrefixes):
         Types = set()
-        Files = set()
 
         MatchPrefixesWithIndex = []
         for MatchPrefix in MatchPrefixes:
@@ -290,8 +274,7 @@ class Policy:
                 if MatchPathPrefixes(PathType[0], DoNotMatchPrefixes):
                     continue
                 Types.add(PathType[1])
-                Files.add(PathType[0])
-        return Types, Files
+        return Types
 
     def __GetTERules(self, policydbP, avtabIterP, Rules):
         if Rules is None:

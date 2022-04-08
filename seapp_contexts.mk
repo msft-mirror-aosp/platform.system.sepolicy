@@ -1,8 +1,5 @@
 include $(CLEAR_VARS)
 LOCAL_MODULE := plat_seapp_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT)/etc/selinux
@@ -23,9 +20,6 @@ plat_sc_files :=
 ##################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := system_ext_seapp_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_SYSTEM_EXT)/etc/selinux
@@ -49,9 +43,6 @@ plat_sc_neverallow_files :=
 ##################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := product_seapp_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_PRODUCT)/etc/selinux
@@ -75,9 +66,6 @@ plat_sc_neverallow_files :=
 ##################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := vendor_seapp_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/selinux
@@ -101,9 +89,6 @@ vendor_sc_files :=
 ##################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := odm_seapp_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := optional
 LOCAL_MODULE_PATH := $(TARGET_OUT_ODM)/etc/selinux
@@ -127,9 +112,6 @@ odm_sc_files :=
 ##################################
 include $(CLEAR_VARS)
 LOCAL_MODULE := plat_seapp_neverallows
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
 LOCAL_MODULE_CLASS := ETC
 LOCAL_MODULE_TAGS := tests
 

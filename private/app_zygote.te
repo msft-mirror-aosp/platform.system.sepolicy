@@ -41,9 +41,6 @@ selinux_check_context(app_zygote)
 # Check SELinux permissions.
 selinux_check_access(app_zygote)
 
-# Read and inspect temporary files managed by zygote.
-allow app_zygote zygote_tmpfs:file { read getattr };
-
 ######
 ###### Policy below is shared with regular zygote-spawned apps
 ######
@@ -55,11 +52,6 @@ allow app_zygote zygote:process sigchld;
 # For ART (read /data/dalvik-cache).
 r_dir_file(app_zygote, dalvikcache_data_file);
 allow app_zygote dalvikcache_data_file:file execute;
-
-# Read /data/misc/apexdata/ to (get to com.android.art/dalvik-cache).
-allow app_zygote apex_module_data_file:dir search;
-# For ART APEX (read /data/misc/apexdata/com.android.art/dalvik-cache).
-r_dir_file(app_zygote, apex_art_data_file)
 
 # Allow reading/executing installed binaries to enable preloading
 # application data
@@ -77,13 +69,6 @@ allow app_zygote system_data_file:file { getattr read map };
 
 # Send unsolicited message to system_server
 unix_socket_send(app_zygote, system_unsolzygote, system_server)
-
-# Allow the app_zygote to access the runtime feature flag properties.
-get_prop(app_zygote, device_config_runtime_native_prop)
-get_prop(app_zygote, device_config_runtime_native_boot_prop)
-
-# Allow app_zygote to access odsign verification status
-get_prop(app_zygote, odsign_prop)
 
 #####
 ##### Neverallow
@@ -108,7 +93,14 @@ neverallow app_zygote property_socket:sock_file write;
 neverallow app_zygote property_type:property_service set;
 
 # Should not have any access to data files.
-neverallow app_zygote app_data_file_type:file { rwx_file_perms };
+neverallow app_zygote {
+    bluetooth_data_file
+    nfc_data_file
+    radio_data_file
+    shell_data_file
+    app_data_file
+    privapp_data_file
+}:file { rwx_file_perms };
 
 neverallow app_zygote {
     service_manager_type

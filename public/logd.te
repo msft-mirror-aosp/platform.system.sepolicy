@@ -4,7 +4,6 @@ type logd_exec, system_file_type, exec_type, file_type;
 
 # Read access to pseudo filesystems.
 r_dir_file(logd, cgroup)
-r_dir_file(logd, cgroup_v2)
 r_dir_file(logd, proc_kmsg)
 r_dir_file(logd, proc_meminfo)
 
@@ -24,6 +23,9 @@ userdebug_or_eng(`
 ')
 allow logd runtime_event_log_tags_file:file rw_file_perms;
 
+# Access device logging gating property
+get_prop(logd, device_logging_prop)
+
 r_dir_file(logd, domain)
 
 allow logd kernel:system syslog_mod;
@@ -38,9 +40,6 @@ allow runtime_event_log_tags_file tmpfs:filesystem associate;
 # event log tag service (albeit at a performance penalty,
 # expected to be locally cached).
 dontaudit domain runtime_event_log_tags_file:file { map open read };
-
-# Logd sets defaults if certain properties are empty.
-set_prop(logd, logd_prop)
 
 ###
 ### Neverallow rules

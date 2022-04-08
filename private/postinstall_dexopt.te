@@ -3,9 +3,7 @@
 # Note: otapreopt is a driver for dex2oat, and reuses parts of installd. As such,
 # this is derived and adapted from installd.te.
 
-type postinstall_dexopt, domain, coredomain, mlstrustedsubject;
-type postinstall_dexopt_exec, system_file_type, exec_type, file_type;
-type postinstall_dexopt_tmpfs, file_type;
+type postinstall_dexopt, domain, coredomain;
 
 # Run dex2oat/patchoat in its own sandbox.
 # We have to manually transition, as we don't have an entrypoint.
@@ -16,24 +14,13 @@ domain_auto_trans(postinstall_dexopt, dex2oat_exec, dex2oat)
 #   with the `postinstall_file` type by update_engine.
 domain_auto_trans(postinstall_dexopt, postinstall_file, dex2oat)
 
-# Run derive_classpath to get the current BCP.
-domain_auto_trans(postinstall_dexopt, derive_classpath_exec, derive_classpath)
-# Allow postinstall_dexopt to make a tempfile for derive_classpath to write into
-tmpfs_domain(postinstall_dexopt);
-allow postinstall_dexopt postinstall_dexopt_tmpfs:file open;
-
 allow postinstall_dexopt self:global_capability_class_set { chown dac_override dac_read_search fowner fsetid setgid setuid };
 
 allow postinstall_dexopt postinstall_file:filesystem getattr;
 allow postinstall_dexopt postinstall_file:dir { getattr read search };
 allow postinstall_dexopt postinstall_file:lnk_file { getattr read };
 allow postinstall_dexopt proc_filesystems:file { getattr open read };
-allow postinstall_dexopt rootfs:file r_file_perms;
-
 allow postinstall_dexopt tmpfs:file read;
-
-# Allow access odsign verification status
-get_prop(postinstall_dexopt, odsign_prop)
 
 # Allow access to /postinstall/apex.
 allow postinstall_dexopt postinstall_apex_mnt_dir:dir { getattr search };
@@ -51,7 +38,7 @@ r_dir_file(postinstall_dexopt, vendor_overlay_file)
 r_dir_file(postinstall_dexopt, dalvikcache_data_file)
 
 # Read profile data.
-allow postinstall_dexopt { user_profile_root_file user_profile_data_file }:dir { getattr search };
+allow postinstall_dexopt user_profile_data_file:dir { getattr search };
 allow postinstall_dexopt user_profile_data_file:file r_file_perms;
 # Suppress deletion denial (we do not want to update the profile).
 dontaudit postinstall_dexopt user_profile_data_file:file { write };

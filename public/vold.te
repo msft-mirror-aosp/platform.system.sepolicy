@@ -23,7 +23,6 @@ r_dir_file(vold, rootfs)
 r_dir_file(vold, metadata_file)
 allow vold {
   proc # b/67049235 processes /proc/<pid>/* files are mislabeled.
-  proc_bootconfig
   proc_cmdline
   proc_drop_caches
   proc_filesystems
@@ -67,14 +66,9 @@ neverallowxperm {
   -vold
 } data_file_type:dir ioctl { FS_IOC_ADD_ENCRYPTION_KEY FS_IOC_REMOVE_ENCRYPTION_KEY };
 
-# Allow securely erasing crypto key files. F2FS_IOC_SEC_TRIM_FILE is
-# tried first. Otherwise, FS_IOC_FIEMAP is needed to get the
-# location of the file's blocks on the raw block device to erase.
-allowxperm vold {
-  vold_data_file
-  vold_metadata_file
-}:file ioctl {
-  F2FS_IOC_SEC_TRIM_FILE
+# Find the location on the raw block device where the
+# crypto key is stored so it can be destroyed
+allowxperm vold vold_data_file:file ioctl {
   FS_IOC_FIEMAP
 };
 
@@ -130,7 +124,7 @@ allow vold shell_data_file:dir { create getattr setattr };
 # Allow to mount incremental file system on /data/incremental and create files
 allow vold apk_data_file:dir { mounton rw_dir_perms };
 # Allow to create and write files in /data/incremental
-allow vold apk_data_file:file { rw_file_perms unlink };
+allow vold apk_data_file:file rw_file_perms;
 # Allow to bind-mount incremental file system on /data/app/vmdl*.tmp and read files
 allow vold apk_tmp_file:dir { mounton r_dir_perms };
 # Allow to read incremental control file and call selinux restorecon on it
@@ -154,7 +148,7 @@ allow vold vold_device:blk_file { create setattr unlink rw_file_perms };
 allowxperm vold vold_device:blk_file ioctl { BLKDISCARD BLKGETSIZE };
 allow vold dm_device:chr_file rw_file_perms;
 allow vold dm_device:blk_file rw_file_perms;
-allowxperm vold dm_device:blk_file ioctl { BLKDISCARD BLKSECDISCARD };
+allowxperm vold dm_device:blk_file ioctl BLKSECDISCARD;
 # For vold Process::killProcessesWithOpenFiles function.
 allow vold domain:dir r_dir_perms;
 allow vold domain:{ file lnk_file } r_file_perms;
@@ -196,6 +190,19 @@ allow vold system_data_file:file read;
 
 # Set scheduling policy of kernel processes
 allow vold kernel:process setsched;
+
+# Property Service
+set_prop(vold, vold_prop)
+set_prop(vold, exported_vold_prop)
+set_prop(vold, exported2_vold_prop)
+set_prop(vold, powerctl_prop)
+set_prop(vold, ctl_fuse_prop)
+set_prop(vold, restorecon_prop)
+set_prop(vold, ota_prop)
+set_prop(vold, boottime_prop)
+set_prop(vold, boottime_public_prop)
+get_prop(vold, storage_config_prop)
+get_prop(vold, incremental_prop)
 
 # ASEC
 allow vold asec_image_file:file create_file_perms;
@@ -241,7 +248,6 @@ allowxperm vold userdata_block_device:blk_file ioctl BLKSECDISCARD;
 
 # Access metadata block device used for encryption meta-data.
 allow vold metadata_block_device:blk_file rw_file_perms;
-allowxperm vold metadata_block_device:blk_file ioctl BLKSECDISCARD;
 
 # Allow vold to manipulate /data/unencrypted
 allow vold unencrypted_data_file:{ file } create_file_perms;
@@ -281,7 +287,7 @@ allow vold app_fuse_file:file { read write open getattr append };
 allow vold toolbox_exec:file rx_file_perms;
 
 # Prepare profile dir for users.
-allow vold { user_profile_data_file user_profile_root_file }:dir create_dir_perms;
+allow vold user_profile_data_file:dir create_dir_perms;
 
 # Raw writes to misc block device
 allow vold misc_block_device:blk_file w_file_perms;
@@ -291,11 +297,9 @@ allow vold mnt_vendor_file:dir search;
 
 dontaudit vold self:global_capability_class_set sys_resource;
 
-# Allow ReadDefaultFstab().
-read_fstab(vold)
-
-# vold might need to search loopback apex files
-allow vold vendor_apex_file:file r_file_perms;
+# vold needs to know whether we're running a GSI.
+allow vold gsi_metadata_file:dir r_dir_perms;
+allow vold gsi_metadata_file:file r_file_perms;
 
 neverallow {
     domain
@@ -340,6 +344,15 @@ neverallow {
 
 neverallow { domain -vold -init } restorecon_prop:property_service set;
 
+neverallow {
+    domain
+    -system_server
+    -vdc
+    -vold
+    -update_verifier
+    -apexd
+} vold_service:service_manager find;
+
 neverallow vold {
   domain
   -hal_health_storage_server
@@ -349,7 +362,6 @@ neverallow vold {
   -healthd
   -hwservicemanager
   -iorapd_service
-  -keystore
   -servicemanager
   -system_server
   userdebug_or_eng(`-su')

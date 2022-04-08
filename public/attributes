@@ -7,9 +7,6 @@
 # in tools/checkfc.c
 attribute dev_type;
 
-# Attribute for block devices.
-attribute bdev_type;
-
 # All types used for processes.
 attribute domain;
 
@@ -37,11 +34,6 @@ expandattribute data_file_type false;
 attribute core_data_file_type;
 expandattribute core_data_file_type false;
 
-# All types used for app private data files in seapp_contexts.
-# Such types should not be applied to any other files.
-attribute app_data_file_type;
-expandattribute app_data_file_type false;
-
 # All types in /system
 attribute system_file_type;
 
@@ -62,14 +54,8 @@ expandattribute proc_net_type true;
 # All types used for sysfs files.
 attribute sysfs_type;
 
-# Attribute for /sys/class/block files.
-attribute sysfs_block_type;
-
 # All types use for debugfs files.
 attribute debugfs_type;
-
-# All types used for tracefs files.
-attribute tracefs_type;
 
 # Attribute used for all sdcards
 attribute sdcard_type;
@@ -105,46 +91,35 @@ attribute extended_core_property_type;
 
 # All properties defined by /system.
 attribute system_property_type;
-expandattribute system_property_type false;
 
 # All /system-defined properties used only in /system.
 attribute system_internal_property_type;
-expandattribute system_internal_property_type false;
 
 # All /system-defined properties which can't be written outside /system.
 attribute system_restricted_property_type;
-expandattribute system_restricted_property_type false;
 
 # All /system-defined properties with no restrictions.
 attribute system_public_property_type;
-expandattribute system_public_property_type false;
-
-# All keystore2_key labels.
-attribute keystore2_key_type;
 
 # All properties defined by /product.
 # Currently there are no enforcements between /system and /product, so for now
 # /product attributes are just replaced to /system attributes.
 define(`product_property_type',   `system_property_type')
-define(`product_internal_property_type',   `system_internal_property_type')
-define(`product_restricted_property_type', `system_restricted_property_type')
-define(`product_public_property_type',     `system_public_property_type')
+define(`product_internal_type',   `system_internal_property_type')
+define(`product_restricted_type', `system_restricted_property_type')
+define(`product_public_type',     `system_public_property_type')
 
 # All properties defined by /vendor.
 attribute vendor_property_type;
-expandattribute vendor_property_type false;
 
 # All /vendor-defined properties used only in /vendor.
 attribute vendor_internal_property_type;
-expandattribute vendor_internal_property_type false;
 
 # All /vendor-defined properties which can't be written outside /vendor.
 attribute vendor_restricted_property_type;
-expandattribute vendor_restricted_property_type false;
 
 # All /vendor-defined properties with no restrictions.
 attribute vendor_public_property_type;
-expandattribute vendor_public_property_type false;
 
 # All service_manager types created by system_server
 attribute system_server_service;
@@ -157,9 +132,6 @@ attribute ephemeral_app_api_service;
 
 # services which export only system_api
 attribute system_api_service;
-
-# services which are explicitly disallowed for untrusted apps to access
-attribute protected_service;
 
 # services which served by vendor and also using the copy of libbinder on
 # system (for instance via libbinder_ndk). services using a different copy
@@ -201,7 +173,7 @@ attribute mlstrustedobject;
 # All domains used for apps.
 attribute appdomain;
 
-# All third party apps (except isolated_app and ephemeral_app)
+# All third party apps.
 attribute untrusted_app_all;
 
 # All domains used for apps with network access.
@@ -221,12 +193,14 @@ attribute update_engine_common;
 # All core domains (as opposed to vendor/device-specific domains)
 attribute coredomain;
 
-# All vendor hwservice.
-attribute vendor_hwservice_type;
-
 # All socket devices owned by core domain components
 attribute coredomain_socket;
 expandattribute coredomain_socket false;
+
+# All vendor domains which violate the requirement of not using Binder
+# TODO(b/35870313): Remove this once there are no violations
+attribute binder_in_vendor_violators;
+expandattribute binder_in_vendor_violators false;
 
 # All vendor domains which violate the requirement of not using sockets for
 # communicating with core components
@@ -343,7 +317,6 @@ hal_attribute(identity);
 hal_attribute(input_classifier);
 hal_attribute(ir);
 hal_attribute(keymaster);
-hal_attribute(keymint);
 hal_attribute(light);
 hal_attribute(lowpan);
 hal_attribute(memtrack);
@@ -364,7 +337,6 @@ hal_attribute(tv_input);
 hal_attribute(tv_tuner);
 hal_attribute(usb);
 hal_attribute(usb_gadget);
-hal_attribute(uwb);
 hal_attribute(vehicle);
 hal_attribute(vibrator);
 hal_attribute(vr);
@@ -386,16 +358,8 @@ attribute display_service_server;
 attribute scheduler_service_server;
 attribute sensor_service_server;
 attribute stats_service_server;
-attribute system_suspend_internal_server;
 attribute system_suspend_server;
 attribute wifi_keystore_service_server;
 
 # All types used for super partition block devices.
 attribute super_block_device_type;
-
-# All types used for DMA-BUF heaps
-attribute dmabuf_heap_device_type;
-expandattribute dmabuf_heap_device_type false;
-
-# All types used for DSU metadata files.
-attribute gsi_metadata_file_type;

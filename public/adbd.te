@@ -7,7 +7,5 @@ type adbd_exec, exec_type, file_type, system_file_type;
 neverallow { domain -init } adbd:process transition;
 neverallow * adbd:process dyntransition;
 
-# Access /data/local/tests.
-allow adbd shell_test_data_file:dir create_dir_perms;
-allow adbd shell_test_data_file:file create_file_perms;
-allow adbd shell_test_data_file:lnk_file create_file_perms;
+# Allow adbd start/stop mdnsd via ctl.start
+set_prop(adbd, ctl_mdnsd_prop)

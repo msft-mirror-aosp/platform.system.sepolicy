@@ -10,8 +10,6 @@ typeattribute webview_zygote mlstrustedsubject;
 # a domain macro.
 tmpfs_domain(webview_zygote);
 
-userfaultfd_use(webview_zygote)
-
 # Allow reading/executing installed binaries to enable preloading the
 # installed WebView implementation.
 allow webview_zygote apk_data_file:dir r_dir_perms;
@@ -30,10 +28,9 @@ allow webview_zygote self:process setcurrent;
 allow webview_zygote isolated_app:process dyntransition;
 
 # For art.
-allow webview_zygote { apex_art_data_file dalvikcache_data_file }:dir r_dir_perms;
+allow webview_zygote dalvikcache_data_file:dir r_dir_perms;
 allow webview_zygote dalvikcache_data_file:lnk_file r_file_perms;
-allow webview_zygote { apex_art_data_file dalvikcache_data_file }:file { r_file_perms execute };
-allow webview_zygote apex_module_data_file:dir search;
+allow webview_zygote dalvikcache_data_file:file { r_file_perms execute };
 
 # Allow webview_zygote to create JIT memory.
 allow webview_zygote self:process execmem;
@@ -83,13 +80,6 @@ allow webview_zygote system_data_file:lnk_file r_file_perms;
 # Send unsolicited message to system_server
 unix_socket_send(webview_zygote, system_unsolzygote, system_server)
 
-# Allow the webview_zygote to access the runtime feature flag properties.
-get_prop(webview_zygote, device_config_runtime_native_prop)
-get_prop(webview_zygote, device_config_runtime_native_boot_prop)
-
-# Allow webview_zygote to access odsign verification status
-get_prop(zygote, odsign_prop)
-
 #####
 ##### Neverallow
 #####
@@ -113,7 +103,15 @@ neverallow webview_zygote property_socket:sock_file write;
 neverallow webview_zygote property_type:property_service set;
 
 # Should not have any access to app data files.
-neverallow webview_zygote app_data_file_type:file { rwx_file_perms };
+neverallow webview_zygote {
+    app_data_file
+    privapp_data_file
+    system_app_data_file
+    bluetooth_data_file
+    nfc_data_file
+    radio_data_file
+    shell_data_file
+}:file { rwx_file_perms };
 
 neverallow webview_zygote {
     service_manager_type

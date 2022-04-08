@@ -163,21 +163,6 @@ define(`init_daemon_domain', `
 domain_auto_trans(init, $1_exec, $1)
 ')
 
-####################################
-# userfaultfd_use(domain)
-# Allow domain to create/use userfaultfd.
-define(`userfaultfd_use', `
-# Set up a type_transition to "userfaultfd" named anonymous inode object.
-type $1_userfaultfd;
-type_transition $1 $1:anon_inode $1_userfaultfd "[userfaultfd]";
-# Allow domain to create/use userfaultfd anon_inode.
-allow $1 $1_userfaultfd:anon_inode { create ioctl read };
-# Other domains may not use userfaultfd anon_inodes created by this domain.
-neverallow { domain -$1 } $1_userfaultfd:anon_inode *;
-# This domain may not use userfaultfd anon_inodes created by other domains.
-neverallow $1 ~$1_userfaultfd:anon_inode *;
-')
-
 #####################################
 # app_domain(domain)
 # Allow a base set of permissions required for all apps.
@@ -185,7 +170,6 @@ define(`app_domain', `
 typeattribute $1 appdomain;
 # Label tmpfs objects for all apps.
 type_transition $1 tmpfs:file appdomain_tmpfs;
-userfaultfd_use($1)
 allow $1 appdomain_tmpfs:file { execute getattr map read write };
 neverallow { $1 -runas_app -shell -simpleperf } { domain -$1 }:file no_rw_file_perms;
 neverallow { appdomain -runas_app -shell -simpleperf -$1 } $1:file no_rw_file_perms;
@@ -483,12 +467,6 @@ define(`non_system_app_set', `{ appdomain -system_app }')
 define(`recovery_only', ifelse(target_recovery, `true', $1, ))
 
 #####################################
-# Not recovery
-# SELinux rules which apply only to non-recovery (normal) mode
-#
-define(`not_recovery', ifelse(target_recovery, `true', , $1))
-
-#####################################
 # Full TREBLE only
 # SELinux rules which apply only to full TREBLE devices
 #
@@ -504,23 +482,6 @@ $1
 # SELinux rules which apply only to devices which are not full TREBLE devices
 #
 define(`not_full_treble', ifelse(target_full_treble, `true', , $1))
-
-#####################################
-# enforce_debugfs_restriction
-# SELinux rules which apply to devices that enable debugfs restrictions.
-# The keyword "cts" is used to insert markers to only CTS test the neverallows
-# added by the macro for S-launch devices and newer.
-define(`enforce_debugfs_restriction', ifelse(target_enforce_debugfs_restriction, `true', $1,
-ifelse(target_enforce_debugfs_restriction, `cts',
-# BEGIN_LAUNCHING_WITH_S_ONLY -- this marker is used by CTS -- do not modify
-$1
-# END_LAUNCHING_WITH_S_ONLY -- this marker is used by CTS -- do not modify
-, )))
-
-#####################################
-# no_debugfs_restriction
-# SELinux rules which apply to devices that do not have debugfs restrictions in non-user builds.
-define(`no_debugfs_restriction', ifelse(target_enforce_debugfs_restriction, `true', , $1))
 
 #####################################
 # Compatible property only
@@ -633,9 +594,7 @@ define(`use_keystore', `
   allow keystore $1:dir search;
   allow keystore $1:file { read open };
   allow keystore $1:process getattr;
-  allow $1 apc_service:service_manager find;
   allow $1 keystore_service:service_manager find;
-  allow $1 legacykeystore_service:service_manager find;
   binder_call($1, keystore)
   binder_call(keystore, $1)
 ')
@@ -695,47 +654,46 @@ define(`hal_attribute_hwservice', `
   add_hwservice($1_server, $2)
 
   build_test_only(`
-    # if you are hitting this neverallow, try using:
-    #     hal_client_domain(<your domain>, hal_<foo>)
-    # instead
     neverallow { domain -$1_client -$1_server } $2:hwservice_manager find;
-  ')
-')
-
-###########################################
-# hal_attribute_service(attribute, service)
-# Ability for domain to get a service to service_manager
-# and find it. It also creates a neverallow preventing
-# others from adding it.
-#
-# Used to pair hal_foo_client with hal_foo_service
-define(`hal_attribute_service', `
-  allow $1_client $2:service_manager find;
-  add_service($1_server, $2)
-
-  build_test_only(`
-    # if you are hitting this neverallow, try using:
-    #     hal_client_domain(<your domain>, hal_<foo>)
-    # instead
-    neverallow {
-        domain
-        -$1_client
-        -$1_server
-        # some services are allowed to find all services
-        -atrace
-        -dumpstate
-        -shell
-        -system_app
-        -traceur_app
-    } $2:service_manager find;
   ')
 ')
 
 ###################################
 # can_profile_heap(domain)
+# Allow processes within the domain to have their heap profiled by heapprofd.
+#
+# Note that profiling is performed differently between debug and user builds.
+# There are two modes for profiling:
+# * forked
+# * central.
+# On user builds, the default is to allow only forked mode. If it is desired
+# to allow central mode as well for a domain, use can_profile_heap_central.
+# On userdebug, this macro allows both forked and central.
+define(`can_profile_heap', `
+  # Allow central daemon to send signal for client initialization.
+  allow heapprofd $1:process signal;
+
+  # Allow executing a private heapprofd process to handle profiling on
+  # user builds (also debug builds for testing & development purposes).
+  allow $1 heapprofd_exec:file rx_file_perms;
+
+  # Allow directory & file read to the central heapprofd daemon, as it scans
+  # /proc/[pid]/cmdline for by-process-name profiling configs.
+  # Note that this excludes /proc/[pid]/mem, as it requires ptrace capabilities.
+  allow heapprofd $1:file r_file_perms;
+  allow heapprofd $1:dir r_dir_perms;
+
+  # Profilability on user implies profilability on userdebug and eng.
+  userdebug_or_eng(`
+    can_profile_heap_central($1)
+  ')
+')
+
+###################################
+# can_profile_heap_central(domain)
 # Allow processes within the domain to have their heap profiled by central
 # heapprofd.
-define(`can_profile_heap', `
+define(`can_profile_heap_central', `
   # Allow central daemon to send signal for client initialization.
   allow heapprofd $1:process signal;
   # Allow connecting to the daemon.
@@ -826,43 +784,24 @@ define(`dump_hal', `
 
 #####################################
 # treble_sysprop_neverallow(rules)
-# SELinux neverallow rules which enforces the accessibility of each property
+# SELinux neverallow rules which enforces the owner of each property and accessibility
 # outside the owner.
 #
-# For devices launching with R or later, exported properties must be explicitly marked as
-# "restricted" or "public", depending on the accessibility outside the owner.
+# For devices launching with R or later, all properties must be explicitly marked as one of:
+# system_property_type, vendor_property_type, or product_property_type.
+# Also, exported properties must be explicitly marked as "restricted" or "public",
+# depending on the accessibility outside the owner.
 # For devices launching with Q or eariler, this neverallow rules can be relaxed with defining
 # BUILD_BROKEN_TREBLE_SYSPROP_NEVERALLOW := true on BoardConfig.mk.
 # See {partition}_{accessibility}_prop macros below.
 #
 # CTS uses these rules only for devices launching with R or later.
 #
-# TODO(b/131162102): deprecate BUILD_BROKEN_TREBLE_SYSPROP_NEVERALLOW
-#
 define(`treble_sysprop_neverallow', ifelse(target_treble_sysprop_neverallow, `true', $1,
 ifelse(target_treble_sysprop_neverallow, `cts',
 # BEGIN_LAUNCHING_WITH_R_ONLY -- this marker is used by CTS -- do not modify
 $1
 # END_LAUNCHING_WITH_R_ONLY -- this marker is used by CTS -- do not modify
-, )))
-
-#####################################
-# enforce_sysprop_owner(rules)
-# SELinux neverallow rules which enforces the owner of each property.
-#
-# For devices launching with S or later, all properties must be explicitly marked as one of:
-# system_property_type, vendor_property_type, or product_property_type.
-# For devices launching with R or eariler, this neverallow rules can be relaxed with defining
-# BUILD_BROKEN_ENFORCE_SYSPROP_OWNER := true on BoardConfig.mk.
-# See {partition}_{accessibility}_prop macros below.
-#
-# CTS uses these ules only for devices launching with S or later.
-#
-define(`enforce_sysprop_owner', ifelse(target_enforce_sysprop_owner, `true', $1,
-ifelse(target_enforce_sysprop_owner, `cts',
-# BEGIN_LAUNCHING_WITH_S_ONLY -- this marker is used by CTS -- do not modify
-$1
-# END_LAUNCHING_WITH_S_ONLY -- this marker is used by CTS -- do not modify
 , )))
 
 ###########################################
@@ -982,12 +921,3 @@ define(`vendor_restricted_prop', `
 # Define a /vendor-owned property with no restrictions
 #
 define(`vendor_public_prop', `define_prop($1, vendor, public)')
-
-#####################################
-# read_fstab(domain)
-# Ability to call ReadDefaultFstab() and ReadFstabFromFile().
-#
-define(`read_fstab', `
-  allow $1 { metadata_file gsi_metadata_file_type }:dir search;
-  allow $1 gsi_public_metadata_file:file r_file_perms;
-')

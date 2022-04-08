@@ -138,7 +138,6 @@ common cap2
 	wake_alarm
 	block_suspend
 	audit_read
-	perfmon
 }
 
 #
@@ -181,9 +180,6 @@ inherits file
 	execute_no_trans
 	entrypoint
 }
-
-class anon_inode
-inherits file
 
 class lnk_file
 inherits file
@@ -712,40 +708,6 @@ class keystore_key
 	add_auth
 	user_changed
 	gen_unique_id
-}
-
-class keystore2
-{
-	add_auth
-	change_password
-	change_user
-	clear_ns
-	clear_uid
-	early_boot_ended
-	get_auth_token
-	get_state
-	list
-	lock
-	pull_metrics
-	report_off_body
-	reset
-	unlock
-	delete_all_keys
-}
-
-class keystore2_key
-{
-	convert_storage_key_to_ephemeral
-	delete
-	gen_unique_id
-	get_info
-	grant
-	manage_blob
-	rebind
-	req_forced_op
-	update
-	use
-	use_dev_id
 }
 
 class drmservice {

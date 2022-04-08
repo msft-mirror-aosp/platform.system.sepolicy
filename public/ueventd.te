@@ -31,18 +31,14 @@ r_dir_file(ueventd, selinuxfs)
 # Access for /vendor/ueventd.rc and /vendor/firmware
 r_dir_file(ueventd, { vendor_file_type -vendor_app_file -vendor_overlay_file })
 
-# Access for /apex/*/firmware
-allow ueventd apex_mnt_dir:dir r_dir_perms;
-
 # Get file contexts for new device nodes
 allow ueventd file_contexts_file:file r_file_perms;
 
 # Use setfscreatecon() to label /dev directories and files.
 allow ueventd self:process setfscreate;
 
-# Allow ueventd to read androidboot.android_dt_dir from kernel cmdline or bootconfig.
+# Allow ueventd to read androidboot.android_dt_dir from kernel cmdline.
 allow ueventd proc_cmdline:file r_file_perms;
-allow ueventd proc_bootconfig:file r_file_perms;
 
 # Everything is labeled as rootfs in recovery mode. ueventd has to execute
 # the dynamic linker and shared libraries.
@@ -62,6 +58,10 @@ allow ueventd kernel:key search;
 # ueventd is using bootstrap bionic
 allow ueventd system_bootstrap_lib_file:dir r_dir_perms;
 allow ueventd system_bootstrap_lib_file:file { execute read open getattr map };
+
+# ueventd can set properties, particularly it sets ro.cold_boot_done to signal
+# to init that cold boot has completed.
+set_prop(ueventd, cold_boot_done_prop)
 
 # Allow ueventd to run shell scripts from vendor
 allow ueventd vendor_shell_exec:file execute;

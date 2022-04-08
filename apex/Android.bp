@@ -13,14 +13,6 @@
 // limitations under the License.
 
 
-package {
-    // http://go/android-license-faq
-    // A large-scale-change added 'default_applicable_licenses' to import
-    // the below license kinds from "system_sepolicy_license":
-    //   legacy_unencumbered
-    default_applicable_licenses: ["system_sepolicy_license"],
-}
-
 filegroup {
   name: "apex.test-file_contexts",
   srcs: [
@@ -43,16 +35,16 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.art-file_contexts",
+  name: "com.android.art.debug-file_contexts",
   srcs: [
-    "com.android.art-file_contexts",
+    "com.android.art.debug-file_contexts",
   ],
 }
 
 filegroup {
-  name: "com.android.art.debug-file_contexts",
+  name: "com.android.art.release-file_contexts",
   srcs: [
-    "com.android.art.debug-file_contexts",
+    "com.android.art.release-file_contexts",
   ],
 }
 
@@ -71,13 +63,6 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.compos-file_contexts",
-  srcs: [
-    "com.android.compos-file_contexts",
-  ],
-}
-
-filegroup {
   name: "com.android.conscrypt-file_contexts",
   srcs: [
     "com.android.conscrypt-file_contexts",
@@ -88,20 +73,6 @@ filegroup {
   name: "com.android.cronet-file_contexts",
   srcs: [
     "com.android.cronet-file_contexts",
-  ],
-}
-
-filegroup {
-  name: "com.android.geotz-file_contexts",
-  srcs: [
-    "com.android.geotz-file_contexts",
-  ],
-}
-
-filegroup {
-  name: "com.android.gki-file_contexts",
-  srcs: [
-    "com.android.gki-file_contexts",
   ],
 }
 
@@ -176,13 +147,6 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.scheduling-file_contexts",
-  srcs: [
-    "com.android.scheduling-file_contexts",
-  ],
-}
-
-filegroup {
   name: "com.android.telephony-file_contexts",
   srcs: [
     "com.android.telephony-file_contexts",
@@ -193,13 +157,6 @@ filegroup {
   name: "com.android.tzdata-file_contexts",
   srcs: [
     "com.android.tzdata-file_contexts",
-  ],
-}
-
-filegroup {
-  name: "com.android.virt-file_contexts",
-  srcs: [
-    "com.android.virt-file_contexts",
   ],
 }
 

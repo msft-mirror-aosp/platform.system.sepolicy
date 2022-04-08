@@ -88,7 +88,7 @@ neverallow isolated_app *:hwservice_manager *;
 neverallow isolated_app vndbinder_device:chr_file *;
 
 # Isolated apps must not be permitted to perform actions on Binder and VndBinder service_manager
-# except the find actions for services allowlisted below.
+# except the find actions for services whitelisted below.
 neverallow isolated_app *:service_manager ~find;
 
 # b/17487348
@@ -128,7 +128,6 @@ neverallow isolated_app {
   -sysfs_devices_system_cpu
   -sysfs_transparent_hugepage
   -sysfs_usb # TODO: check with audio team if needed for isolated_app (b/28417852)
-  -sysfs_fs_incfs_features
 }:file no_rw_file_perms;
 
 # No creation of sockets families other than AF_UNIX sockets.

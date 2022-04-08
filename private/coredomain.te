@@ -1,33 +1,5 @@
-get_prop(coredomain, boot_status_prop)
-get_prop(coredomain, camera_config_prop)
-get_prop(coredomain, dalvik_config_prop)
-get_prop(coredomain, dalvik_runtime_prop)
-get_prop(coredomain, exported_pm_prop)
-get_prop(coredomain, ffs_config_prop)
-get_prop(coredomain, graphics_config_prop)
-get_prop(coredomain, hdmi_config_prop)
-get_prop(coredomain, init_service_status_private_prop)
-get_prop(coredomain, lmkd_config_prop)
-get_prop(coredomain, localization_prop)
 get_prop(coredomain, pm_prop)
-get_prop(coredomain, radio_control_prop)
-get_prop(coredomain, rollback_test_prop)
-get_prop(coredomain, setupwizard_prop)
-get_prop(coredomain, sqlite_log_prop)
-get_prop(coredomain, storagemanager_config_prop)
-get_prop(coredomain, surfaceflinger_color_prop)
-get_prop(coredomain, systemsound_config_prop)
-get_prop(coredomain, telephony_config_prop)
-get_prop(coredomain, usb_config_prop)
-get_prop(coredomain, usb_control_prop)
-get_prop(coredomain, userspace_reboot_config_prop)
-get_prop(coredomain, vold_config_prop)
-get_prop(coredomain, vts_status_prop)
-get_prop(coredomain, zygote_config_prop)
-get_prop(coredomain, zygote_wrap_prop)
-
-# TODO(b/170590987): remove this after cleaning up default_prop
-get_prop(coredomain, default_prop)
+get_prop(coredomain, exported_pm_prop)
 
 full_treble_only(`
 neverallow {
@@ -43,7 +15,7 @@ neverallow {
 ')
 
 # On TREBLE devices, a limited set of files in /vendor are accessible to
-# only a few allowlisted coredomains to keep system/vendor separation.
+# only a few whitelisted coredomains to keep system/vendor separation.
 full_treble_only(`
     # Limit access to /vendor/app
     neverallow {
@@ -54,7 +26,7 @@ full_treble_only(`
         -idmap
         -init
         -installd
-        -heapprofd
+        userdebug_or_eng(`-heapprofd')
         -postinstall_dexopt
         -rs # spawned by appdomain, so carryover the exception above
         -system_server
@@ -71,8 +43,7 @@ full_treble_only(`
         -idmap
         -init
         -installd
-        -heapprofd
-        userdebug_or_eng(`-profcollectd')
+        userdebug_or_eng(`-heapprofd')
         -postinstall_dexopt
         -rs # spawned by appdomain, so carryover the exception above
         -system_server
@@ -98,7 +69,7 @@ full_treble_only(`
         -app_zygote
         -webview_zygote
         -zygote
-        -heapprofd
+        userdebug_or_eng(`-heapprofd')
     } vendor_overlay_file:dir { getattr open read search };
 ')
 
@@ -118,8 +89,7 @@ full_treble_only(`
         -app_zygote
         -webview_zygote
         -zygote
-        -heapprofd
-        userdebug_or_eng(`-profcollectd')
+        userdebug_or_eng(`-heapprofd')
     } vendor_overlay_file:file open;
 ')
 
@@ -153,11 +123,9 @@ full_treble_only(`
   # debugfs
   neverallow {
     coredomain
-    no_debugfs_restriction(`
-      -dumpstate
-      -init
-      -system_server
-    ')
+    -dumpstate
+    -init
+    -system_server
   } debugfs:file no_rw_file_perms;
 
   # tracefs
@@ -165,14 +133,11 @@ full_treble_only(`
     coredomain
     -atrace
     -dumpstate
-    -gpuservice
     -init
-    -traced_perf
     -traced_probes
     -shell
     -system_server
     -traceur_app
-    userdebug_or_eng(`-profcollectd')
   } debugfs_tracing:file no_rw_file_perms;
 
   # inotifyfs
@@ -219,17 +184,6 @@ full_treble_only(`
     coredomain
     -init
   }{ usbfs binfmt_miscfs }:file no_rw_file_perms;
-
-  # dmabuf heaps
-  neverallow {
-    coredomain
-    -init
-    -ueventd
-  }{
-    dmabuf_heap_device_type
-    -dmabuf_system_heap_device
-    -dmabuf_system_secure_heap_device
-  }:chr_file no_rw_file_perms;
 ')
 
 # Following /dev nodes must not be directly accessed by coredomain, but should

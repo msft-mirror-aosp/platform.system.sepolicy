@@ -11,7 +11,6 @@ allow healthd sysfs_type:dir search;
 allow healthd sysfs:dir r_dir_perms;
 r_dir_file(healthd, rootfs)
 r_dir_file(healthd, cgroup)
-r_dir_file(healthd, cgroup_v2)
 
 allow healthd self:global_capability_class_set { sys_tty_config };
 allow healthd self:global_capability_class_set sys_boot;
@@ -48,3 +47,10 @@ allow healthd input_device:chr_file r_file_perms;
 allow healthd tty_device:chr_file rw_file_perms;
 allow healthd ashmem_device:chr_file execute;
 allow healthd proc_sysrq:file rw_file_perms;
+
+# Healthd needs to tell init to continue the boot
+# process when running in charger mode.
+set_prop(healthd, system_prop)
+set_prop(healthd, exported_system_prop)
+set_prop(healthd, exported2_system_prop)
+set_prop(healthd, exported3_system_prop)

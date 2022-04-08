@@ -11,6 +11,8 @@ hal_client_domain(mediaswcodec, hal_omx)
 hal_client_domain(mediaswcodec, hal_allocator)
 hal_client_domain(mediaswcodec, hal_graphics_allocator)
 
+get_prop(mediaswcodec, device_config_media_native_prop)
+
 crash_dump_fallback(mediaswcodec)
 
 # mediaswcodec_server should never execute any executable without a
@@ -23,5 +25,3 @@ neverallow mediaswcodec { file_type fs_type }:file execute_no_trans;
 # https://android-developers.googleblog.com/2016/05/hardening-media-stack.html
 neverallow mediaswcodec domain:{ tcp_socket udp_socket rawip_socket } *;
 
-allow mediaswcodec dmabuf_system_heap_device:chr_file r_file_perms;
-allow mediaswcodec dmabuf_system_secure_heap_device:chr_file r_file_perms;

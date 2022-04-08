@@ -41,8 +41,8 @@ allow dumpstate anr_data_file:file create_file_perms;
 # TODO: scope this down.
 allow dumpstate system_data_file:file r_file_perms;
 
-# Allow dumpstate to append into apps' private files.
-allow dumpstate { privapp_data_file app_data_file }:file append;
+# Allow dumpstate to append into privileged apps private files.
+allow dumpstate privapp_data_file:file append;
 
 # Read dmesg
 allow dumpstate self:global_capability2_class_set syslog;
@@ -76,12 +76,10 @@ allow dumpstate {
 
   # This list comes from hal_interfaces_to_dump in dumputils/dump_utils.c
   hal_audio_server
-  hal_audiocontrol_server
   hal_bluetooth_server
   hal_camera_server
   hal_codec2_server
   hal_drm_server
-  hal_evs_server
   hal_face_server
   hal_fingerprint_server
   hal_graphics_allocator_server
@@ -93,7 +91,6 @@ allow dumpstate {
   hal_power_stats_server
   hal_sensors_server
   hal_thermal_server
-  hal_vehicle_server
   hal_vr_server
   system_suspend_server
 }:process signal;
@@ -113,12 +110,10 @@ allow dumpstate {
 }:file r_file_perms;
 
 # Other random bits of data we want to collect
-no_debugfs_restriction(`
-  allow dumpstate debugfs:file r_file_perms;
-  auditallow dumpstate debugfs:file r_file_perms;
+allow dumpstate debugfs:file r_file_perms;
+auditallow dumpstate debugfs:file r_file_perms;
 
-  allow dumpstate debugfs_mmc:file r_file_perms;
-')
+allow dumpstate debugfs_mmc:file r_file_perms;
 
 # df for
 allow dumpstate {
@@ -136,25 +131,16 @@ allow dumpstate { cache_file rootfs }:lnk_file { getattr read };
 
 # Read /dev/cpuctl and /dev/cpuset
 r_dir_file(dumpstate, cgroup)
-r_dir_file(dumpstate, cgroup_v2)
 
 # Allow dumpstate to make binder calls to any binder service
 binder_call(dumpstate, binderservicedomain)
 binder_call(dumpstate, { appdomain netd wificond })
 
+dump_hal(hal_identity)
 dump_hal(hal_dumpstate)
 dump_hal(hal_wifi)
 dump_hal(hal_graphics_allocator)
-dump_hal(hal_light)
 dump_hal(hal_neuralnetworks)
-dump_hal(hal_thermal)
-dump_hal(hal_power)
-dump_hal(hal_power_stats)
-dump_hal(hal_identity)
-dump_hal(hal_face)
-dump_hal(hal_fingerprint)
-dump_hal(hal_gnss)
-
 # Vibrate the device after we are done collecting the bugreport
 hal_client_domain(dumpstate, hal_vibrator)
 
@@ -177,10 +163,6 @@ allow dumpstate zygote_exec:file rx_file_perms;
 allow dumpstate bluetooth_data_file:dir search;
 allow dumpstate bluetooth_logs_data_file:dir r_dir_perms;
 allow dumpstate bluetooth_logs_data_file:file r_file_perms;
-
-# For Nfc
-allow dumpstate nfc_logs_data_file:dir r_dir_perms;
-allow dumpstate nfc_logs_data_file:file r_file_perms;
 
 # Dumpstate calls screencap, which grabs a screenshot. Needs gpu access
 allow dumpstate gpu_device:chr_file rw_file_perms;
@@ -232,7 +214,7 @@ allow dumpstate update_engine_log_data_file:file r_file_perms;
 
 # Access /data/misc/profiles/{cur,ref}/
 userdebug_or_eng(`
-  allow dumpstate { user_profile_root_file user_profile_data_file}:dir r_dir_perms;
+  allow dumpstate user_profile_data_file:dir r_dir_perms;
   allow dumpstate user_profile_data_file:file r_file_perms;
 ')
 
@@ -275,6 +257,13 @@ allow dumpstate hwservicemanager:hwservice_manager list;
 
 allow dumpstate devpts:chr_file rw_file_perms;
 
+# Set properties.
+# dumpstate_prop is used to share state with the Shell app.
+set_prop(dumpstate, dumpstate_prop)
+set_prop(dumpstate, exported_dumpstate_prop)
+# dumpstate_options_prop is used to pass extra command-line args.
+set_prop(dumpstate, dumpstate_options_prop)
+
 # Read any system properties
 get_prop(dumpstate, property_type)
 
@@ -297,9 +286,6 @@ allow dumpstate proc_stat:file r_file_perms;
 allow dumpstate proc_pressure_cpu:file r_file_perms;
 allow dumpstate proc_pressure_mem:file r_file_perms;
 allow dumpstate proc_pressure_io:file r_file_perms;
-
-# Allow dumpstate to run ps
-allow dumpstate proc_pid_max:file r_file_perms;
 
 # Allow dumpstate to talk to installd over binder
 binder_call(dumpstate, installd);
@@ -345,25 +331,8 @@ binder_call(dumpstate, hal_rebootescrow_server)
 allow hal_rebootescrow_server dumpstate:fifo_file write;
 allow hal_rebootescrow_server dumpstate:fd use;
 
-binder_call(dumpstate, hal_authsecret_server)
-allow hal_authsecret_server dumpstate:fifo_file write;
-allow hal_authsecret_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_keymint_server)
-allow hal_keymint_server dumpstate:fifo_file write;
-allow hal_keymint_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_memtrack_server)
-allow hal_memtrack_server dumpstate:fifo_file write;
-allow hal_memtrack_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_oemlock_server)
-allow hal_oemlock_server dumpstate:fifo_file write;
-allow hal_oemlock_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_weaver_server)
-allow hal_weaver_server dumpstate:fifo_file write;
-allow hal_weaver_server dumpstate:fd use;
+# Allow dumpstate to kill vendor dumpstate service by init
+set_prop(dumpstate, ctl_dumpstate_prop)
 
 #Access /data/misc/snapshotctl_log
 allow dumpstate snapshotctl_log_data_file:dir r_dir_perms;
@@ -372,9 +341,6 @@ allow dumpstate snapshotctl_log_data_file:file r_file_perms;
 #Allow access to /dev/binderfs/binder_logs
 allow dumpstate binderfs_logs:dir r_dir_perms;
 allow dumpstate binderfs_logs:file r_file_perms;
-allow dumpstate binderfs_logs_proc:file r_file_perms;
-
-allow dumpstate apex_info_file:file getattr;
 
 ###
 ### neverallow rules
