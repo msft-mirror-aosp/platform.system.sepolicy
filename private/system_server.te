@@ -221,6 +221,11 @@ allow system_server proc_sysrq:file rw_file_perms;
 allow system_server stats_data_file:dir { open read remove_name search write };
 allow system_server stats_data_file:file unlink;
 
+# Read metric file & upload to statsd
+allow system_server odsign_data_file:dir search;
+allow system_server odsign_metrics_file:dir { r_dir_perms write remove_name };
+allow system_server odsign_metrics_file:file { r_file_perms unlink };
+
 # Read /sys/kernel/debug/wakeup_sources.
 no_debugfs_restriction(`
   allow system_server debugfs_wakeup_sources:file r_file_perms;
@@ -472,6 +477,7 @@ allow system_server ota_package_file:file create_file_perms;
 allow system_server system_data_file:dir create_dir_perms;
 allow system_server system_data_file:notdevfile_class_set create_file_perms;
 allow system_server packages_list_file:file create_file_perms;
+allow system_server game_mode_intervention_list_file:file create_file_perms;
 allow system_server keychain_data_file:dir create_dir_perms;
 allow system_server keychain_data_file:file create_file_perms;
 allow system_server keychain_data_file:lnk_file create_file_perms;
@@ -1134,7 +1140,6 @@ with_asan(`
 # allow system_server to read the eBPF maps that stores the traffic stats information and update
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
-allow system_server fs_bpf:dir search;
 allow system_server fs_bpf:file { read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
