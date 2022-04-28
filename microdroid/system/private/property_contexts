@@ -26,6 +26,7 @@ ctl.stop$apexd u:object_r:ctl_apexd_prop:s0
 ctl.start$apexd-vm      u:object_r:ctl_apexd_vm_prop:s0
 ctl.start$apkdmverity   u:object_r:ctl_apkdmverity_prop:s0
 ctl.start$seriallogging u:object_r:ctl_seriallogging_prop:s0
+ctl.start$tombstone_transmit     u:object_r:ctl_tombstone_transmit_prop:s0
 ctl.start$zipfuse       u:object_r:ctl_zipfuse_prop:s0
 
 ctl.console     u:object_r:ctl_console_prop:s0
@@ -92,6 +93,7 @@ ro.boot.logd.enabled               u:object_r:bootloader_prop:s0 exact bool
 ro.boot.microdroid.app_debuggable  u:object_r:bootloader_prop:s0 exact bool
 ro.boot.microdroid.debuggable      u:object_r:bootloader_prop:s0 exact bool
 ro.boot.slot_suffix                u:object_r:bootloader_prop:s0 exact string
+ro.boot.tombstone_transmit.enabled u:object_r:bootloader_prop:s0 exact bool
 ro.boot.vbmeta.avb_version         u:object_r:bootloader_prop:s0 exact string
 ro.boot.vbmeta.device_state        u:object_r:bootloader_prop:s0 exact string
 ro.boot.vbmeta.digest              u:object_r:bootloader_prop:s0 exact string

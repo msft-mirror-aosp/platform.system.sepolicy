@@ -13,13 +13,6 @@ allow installd apk_data_file:dir { create_dir_perms relabelfrom };
 allow installd apk_data_file:file { create_file_perms relabelfrom link };
 allow installd apk_data_file:lnk_file { create r_file_perms unlink };
 
-# FS_IOC_ENABLE_VERITY and FS_IOC_MEASURE_VERITY (or in old implementation used in installd,
-# FS_IOC_SET_VERITY_MEASUREMENT) ioctls on APKs in /data/app, to support fsverity.
-# TODO(b/120629632): this path is deprecated, remove when possible.
-allowxperm installd apk_data_file:file ioctl {
-  FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY
-};
-
 allow installd asec_apk_file:file r_file_perms;
 allow installd apk_tmp_file:file { r_file_perms unlink };
 allow installd apk_tmp_file:dir { relabelfrom create_dir_perms };
@@ -114,6 +107,16 @@ allow installd system_data_file:notdevfile_class_set { getattr relabelfrom unlin
 # upon package uninstall.
 allow installd app_data_file_type:dir { create_dir_perms relabelfrom relabelto };
 allow installd app_data_file_type:notdevfile_class_set { create_file_perms relabelfrom relabelto };
+
+# Allow setting extended attributes (for project quota IDs) on dirs and files
+# and to enable project ID inheritance through FS_IOC_SETFLAGS
+# Added install_data_file to be able to create file under /data/misc/installd/ioctl_check
+allowxperm installd { app_data_file_type system_data_file install_data_file}:{ dir file } ioctl {
+  FS_IOC_FSGETXATTR
+  FS_IOC_FSSETXATTR
+  FS_IOC_GETFLAGS
+  FS_IOC_SETFLAGS
+};
 
 # Similar for the files under /data/misc/profiles/
 allow installd user_profile_root_file:dir { create_dir_perms relabelfrom };
