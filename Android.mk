@@ -341,15 +341,18 @@ ifneq ($(PRODUCT_SEPOLICY_SPLIT),true)
 # The following files are only allowed for non-Treble devices.
 LOCAL_REQUIRED_MODULES += \
     sepolicy \
-    vendor_service_contexts \
 
 endif # ($(PRODUCT_SEPOLICY_SPLIT),true)
 
 ifneq ($(with_asan),true)
 ifneq ($(SELINUX_IGNORE_NEVERALLOWS),true)
 LOCAL_REQUIRED_MODULES += \
-    sepolicy_tests \
     sepolicy_compat_test \
+
+# HACK: sepolicy_test is implemented as genrule
+# genrule modules aren't installable, so LOCAL_REQUIRED_MODULES doesn't work.
+# Instead, use LOCAL_ADDITIONAL_DEPENDENCIES with intermediate output
+LOCAL_ADDITIONAL_DEPENDENCIES += $(call intermediates-dir-for,ETC,sepolicy_test)/sepolicy_test
 
 ifeq ($(PRODUCT_SEPOLICY_SPLIT),true)
 LOCAL_REQUIRED_MODULES += \
@@ -482,7 +485,6 @@ ifdef HAS_PRODUCT_SEPOLICY
 LOCAL_REQUIRED_MODULES += precompiled_sepolicy.product_sepolicy_and_mapping.sha256
 endif
 
-LOCAL_REQUIRED_MODULES += precompiled_sepolicy.apex_sepolicy.sha256
 endif # ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
 
 
@@ -501,10 +503,12 @@ LOCAL_REQUIRED_MODULES += \
     vendor_property_contexts_test \
     vendor_seapp_contexts \
     vendor_service_contexts \
+    vendor_service_contexts_test \
     vendor_hwservice_contexts \
     vendor_hwservice_contexts_test \
     vendor_bug_map \
     vndservice_contexts \
+    vndservice_contexts_test \
 
 ifdef BOARD_ODM_SEPOLICY_DIRS
 LOCAL_REQUIRED_MODULES += \
@@ -532,32 +536,15 @@ include $(BUILD_PHONY_PACKAGE)
 # Policy files are now built with Android.bp. Grab them from intermediate.
 # See Android.bp for details of policy files.
 #
-reqd_policy_mask.cil := $(call intermediates-dir-for,ETC,reqd_policy_mask.cil)/reqd_policy_mask.cil
-
-pub_policy.cil := $(call intermediates-dir-for,ETC,pub_policy.cil)/pub_policy.cil
-system_ext_pub_policy.cil := $(call intermediates-dir-for,ETC,system_ext_pub_policy.cil)/system_ext_pub_policy.cil
-plat_pub_policy.cil := $(call intermediates-dir-for,ETC,plat_pub_policy.cil)/plat_pub_policy.cil
-
 built_plat_cil := $(call intermediates-dir-for,ETC,plat_sepolicy.cil)/plat_sepolicy.cil
-built_plat_mapping_cil := $(call intermediates-dir-for,ETC,plat_mapping_file)/plat_mapping_file
 
 ifdef HAS_SYSTEM_EXT_SEPOLICY
 built_system_ext_cil := $(call intermediates-dir-for,ETC,system_ext_sepolicy.cil)/system_ext_sepolicy.cil
-built_system_ext_mapping_cil := $(call intermediates-dir-for,ETC,system_ext_mapping_file)/system_ext_mapping_file
 endif # ifdef HAS_SYSTEM_EXT_SEPOLICY
 
 ifdef HAS_PRODUCT_SEPOLICY
 built_product_cil := $(call intermediates-dir-for,ETC,product_sepolicy.cil)/product_sepolicy.cil
-built_product_mapping_cil := $(call intermediates-dir-for,ETC,product_mapping_file)/product_mapping_file
 endif # ifdef HAS_PRODUCT_SEPOLICY
-
-built_pub_vers_cil := $(call intermediates-dir-for,ETC,plat_pub_versioned.cil)/plat_pub_versioned.cil
-
-built_vendor_cil := $(call intermediates-dir-for,ETC,vendor_sepolicy.cil)/vendor_sepolicy.cil
-
-ifdef BOARD_ODM_SEPOLICY_DIRS
-built_odm_cil := $(call intermediates-dir-for,ETC,odm_sepolicy.cil)/odm_sepolicy.cil
-endif
 
 built_sepolicy := $(call intermediates-dir-for,ETC,precompiled_sepolicy)/precompiled_sepolicy
 built_sepolicy_neverallows := $(call intermediates-dir-for,ETC,sepolicy_neverallows)/sepolicy_neverallows
@@ -681,52 +668,7 @@ file_contexts.local.tmp :=
 file_contexts.modules.tmp :=
 
 ##################################
-include $(LOCAL_PATH)/contexts_tests.mk
-
-##################################
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := vndservice_contexts
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-LOCAL_MODULE_CLASS := ETC
-LOCAL_MODULE_TAGS := optional
-LOCAL_MODULE_PATH := $(TARGET_OUT_VENDOR)/etc/selinux
-
-include $(BUILD_SYSTEM)/base_rules.mk
-
-vnd_svcfiles := $(call build_policy, vndservice_contexts, $(BOARD_PLAT_VENDOR_POLICY) $(BOARD_VENDOR_SEPOLICY_DIRS) $(BOARD_REQD_MASK_POLICY))
-
-vndservice_contexts.tmp := $(intermediates)/vndservice_contexts.tmp
-$(vndservice_contexts.tmp): PRIVATE_SVC_FILES := $(vnd_svcfiles)
-$(vndservice_contexts.tmp): PRIVATE_ADDITIONAL_M4DEFS := $(LOCAL_ADDITIONAL_M4DEFS)
-$(vndservice_contexts.tmp): $(vnd_svcfiles) $(M4)
-	@mkdir -p $(dir $@)
-	$(hide) $(M4) --fatal-warnings -s $(PRIVATE_ADDITIONAL_M4DEFS) $(PRIVATE_SVC_FILES) > $@
-
-$(LOCAL_BUILT_MODULE): PRIVATE_SEPOLICY := $(built_sepolicy)
-$(LOCAL_BUILT_MODULE): $(vndservice_contexts.tmp) $(built_sepolicy) $(HOST_OUT_EXECUTABLES)/checkfc $(ACP)
-	@mkdir -p $(dir $@)
-	sed -e 's/#.*$$//' -e '/^$$/d' $< > $@
-	$(hide) $(HOST_OUT_EXECUTABLES)/checkfc -e -v $(PRIVATE_SEPOLICY) $@
-
-vnd_svcfiles :=
-vndservice_contexts.tmp :=
-
-##################################
 include $(LOCAL_PATH)/mac_permissions.mk
-
-#################################
-include $(CLEAR_VARS)
-LOCAL_MODULE := sepolicy_tests
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-LOCAL_MODULE_CLASS := FAKE
-LOCAL_MODULE_TAGS := optional
-
-include $(BUILD_SYSTEM)/base_rules.mk
 
 all_fc_files := $(TARGET_OUT)/etc/selinux/plat_file_contexts
 all_fc_files += $(TARGET_OUT_VENDOR)/etc/selinux/vendor_file_contexts
@@ -740,13 +682,6 @@ ifdef BOARD_ODM_SEPOLICY_DIRS
 all_fc_files += $(TARGET_OUT_ODM)/etc/selinux/odm_file_contexts
 endif
 all_fc_args := $(foreach file, $(all_fc_files), -f $(file))
-
-$(LOCAL_BUILT_MODULE): ALL_FC_ARGS := $(all_fc_args)
-$(LOCAL_BUILT_MODULE): PRIVATE_SEPOLICY := $(built_sepolicy)
-$(LOCAL_BUILT_MODULE): $(HOST_OUT_EXECUTABLES)/sepolicy_tests $(all_fc_files) $(built_sepolicy)
-	@mkdir -p $(dir $@)
-	$(hide) $(HOST_OUT_EXECUTABLES)/sepolicy_tests $(ALL_FC_ARGS) -p $(PRIVATE_SEPOLICY)
-	$(hide) touch $@
 
 ##################################
 # Tests for Treble compatibility of current platform policy and vendor policy of
@@ -785,12 +720,6 @@ build_policy :=
 built_plat_cil :=
 built_system_ext_cil :=
 built_product_cil :=
-built_pub_vers_cil :=
-built_plat_mapping_cil :=
-built_system_ext_mapping_cil :=
-built_product_mapping_cil :=
-built_vendor_cil :=
-built_odm_cil :=
 built_sepolicy :=
 built_sepolicy_neverallows :=
 built_plat_svc :=
@@ -798,12 +727,7 @@ built_vendor_svc :=
 treble_sysprop_neverallow :=
 enforce_sysprop_owner :=
 enforce_debugfs_restriction :=
-mapping_policy :=
 my_target_arch :=
-pub_policy.cil :=
-system_ext_pub_policy.cil :=
-plat_pub_policy.cil :=
-reqd_policy_mask.cil :=
 sepolicy_build_files :=
 sepolicy_build_cil_workaround_files :=
 with_asan :=

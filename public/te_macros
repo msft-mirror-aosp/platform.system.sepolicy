@@ -172,6 +172,8 @@ type $1_userfaultfd;
 type_transition $1 $1:anon_inode $1_userfaultfd "[userfaultfd]";
 # Allow domain to create/use userfaultfd anon_inode.
 allow $1 $1_userfaultfd:anon_inode { create ioctl read };
+# Suppress errors generate during bugreport
+dontaudit su $1_userfaultfd:anon_inode *;
 # Other domains may not use userfaultfd anon_inodes created by this domain.
 neverallow { domain -$1 } $1_userfaultfd:anon_inode *;
 # This domain may not use userfaultfd anon_inodes created by other domains.
@@ -191,6 +193,8 @@ binder_call(virtualizationservice, $1)
 # Let the client pass file descriptors to virtualizationservice and on
 # to crosvm
 allow { virtualizationservice crosvm } $1:fd use;
+# Allow piping console log to the client
+allow { virtualizationservice crosvm } $1:fifo_file write;
 # Allow client to read/write vsock created by virtualizationservice to
 # communicate with the VM that it created. Notice that we do not grant
 # permission to create a vsock; the client can only connect to VMs
@@ -1021,7 +1025,7 @@ define(`vendor_public_prop', `define_prop($1, vendor, public)')
 define(`read_fstab', `
   allow $1 { metadata_file gsi_metadata_file_type }:dir search;
   allow $1 gsi_public_metadata_file:file r_file_perms;
-  allow $1 proc_bootconfig:file r_file_perms;
+  allow $1 { proc_bootconfig proc_cmdline }:file r_file_perms;
 ')
 
 ######################################
