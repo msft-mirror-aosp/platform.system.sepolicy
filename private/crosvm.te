@@ -19,6 +19,9 @@ tmpfs_domain(crosvm)
 # Let crosvm receive file descriptors from VirtualizationService.
 allow crosvm virtualizationservice:fd use;
 
+# Allow sending VirtualizationService the failure reason from the VM via pipe.
+allow crosvm virtualizationservice:fifo_file write;
+
 # Let crosvm read the composite disk images (virtualizationservice_data_file), APEXes
 # (staging_data_file), APKs (apk_data_file and shell_data_file where the latter is for test apks in
 # /data/local/tmp), and instance.img (app_data_file). Note that the open permission is not given as
@@ -29,7 +32,7 @@ allow crosvm {
   apk_data_file
   app_data_file
   apex_compos_data_file
-  userdebug_or_eng(`shell_data_file')
+  shell_data_file
 }:file { getattr read ioctl lock };
 
 # Allow searching the directory where the composite disk images are.
@@ -60,6 +63,9 @@ allow crosvm {
 allow crosvm adbd:fd use;
 allow crosvm adbd:unix_stream_socket { read write };
 
+# For ACPI
+allow crosvm self:netlink_generic_socket create_socket_perms_no_ioctl;
+
 # The console log can also be written to /data/local/tmp. This is not safe as the log then can be
 # visible to the processes which don't own the VM. Therefore, this is a debugging only feature.
 userdebug_or_eng(`allow crosvm shell_data_file:file w_file_perms;')
@@ -78,15 +84,14 @@ full_treble_only(`
   }:file *;
 ')
 
-# app_data_file (and shell_data_file for debuggable builds) is the only
-# app_data_file_type that is allowed for crosvm to read.  Note that the use of
-# app_data_file is allowed only for the instance disk image.  This is enforced
-# inside the virtualizationservice by checking the file context of all disk
-# image files.
+# app_data_file and shell_data_file is the only app_data_file_type that is
+# allowed for crosvm to read.  Note that the use of app_data_file is allowed
+# only for the instance disk image.  This is enforced inside the
+# virtualizationservice by checking the file context of all disk image files.
 neverallow crosvm {
   app_data_file_type
   -app_data_file
-  userdebug_or_eng(`-shell_data_file')
+  -shell_data_file
 }:file read;
 
 # Only virtualizationservice can run crosvm
