@@ -85,6 +85,7 @@ allow shell rs_exec:file rx_file_perms;
 # Allow (host-driven) ART run-tests to execute dex2oat, in order to
 # check ART's compiler.
 allow shell dex2oat_exec:file rx_file_perms;
+allow shell dex2oat_exec:lnk_file read;
 
 # Allow shell to start and comminicate with lpdumpd.
 set_prop(shell, lpdumpd_prop);
@@ -129,6 +130,10 @@ neverallow shell self:perf_event ~{ open read write kernel };
 allow shell apex_info_file:file r_file_perms;
 allow shell vendor_apex_file:file r_file_perms;
 allow shell vendor_apex_file:dir r_dir_perms;
+
+# Allow shell to read updated APEXes under /data/apex
+allow shell apex_data_file:dir search;
+allow shell staging_data_file:file r_file_perms;
 
 # Set properties.
 set_prop(shell, shell_prop)
@@ -223,3 +228,9 @@ allow shell apex_info_file:file r_file_perms;
 # Let the shell user call virtualizationservice (and
 # virtualizationservice call back to shell) for debugging.
 virtualizationservice_use(shell)
+
+# Allow shell to set persist.wm.debug properties
+userdebug_or_eng(`set_prop(shell, persist_wm_debug_prop)')
+
+# Allow shell to write GWP-ASan properties even on user builds.
+set_prop(shell, gwp_asan_prop)
