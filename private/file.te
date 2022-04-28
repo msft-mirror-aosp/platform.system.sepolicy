@@ -19,6 +19,9 @@ type perfetto_traces_bugreport_data_file, file_type, data_file_type, core_data_f
 # /data/misc/perfetto-configs for perfetto configs
 type perfetto_configs_data_file, file_type, data_file_type, core_data_file_type;
 
+# /data/misc_{ce/de}/<user>/sdksandbox/<app-name>/* subdirectory for sdk sandbox processes
+type sdk_sandbox_data_file, file_type, data_file_type, core_data_file_type, app_data_file_type;
+
 # /sys/kernel/debug/kcov for coverage guided kernel fuzzing in userdebug builds.
 type debugfs_kcov, fs_type, debugfs_type;
 
@@ -73,6 +76,9 @@ type odrefresh_data_file, file_type, data_file_type, core_data_file_type;
 # /data/misc/odsign
 type odsign_data_file, file_type, data_file_type, core_data_file_type;
 
+# /data/misc/odsign_metrics
+type odsign_metrics_file, file_type, data_file_type, core_data_file_type;
+
 # /data/misc/virtualizationservice
 type virtualizationservice_data_file, file_type, data_file_type, core_data_file_type;
 
@@ -87,6 +93,11 @@ type kvm_device, dev_type;
 
 # /apex/com.android.virt/bin/fd_server
 type fd_server_exec, system_file_type, exec_type, file_type;
+
+# /apex/com.android.compos/bin/compsvc
+type compos_exec, exec_type, file_type, system_file_type;
+# /apex/com.android.compos/bin/compos_key_helper
+type compos_key_helper_exec, exec_type, file_type, system_file_type;
 
 # /metadata/sepolicy
 type sepolicy_metadata_file, file_type;
