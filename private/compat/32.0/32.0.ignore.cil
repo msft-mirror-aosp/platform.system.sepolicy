@@ -5,6 +5,7 @@
 (typeattribute new_objects)
 (typeattributeset new_objects
   ( new_objects
+    adservices_manager_service
     apexd_select_prop
     artd_service
     attestation_verification_service
@@ -13,6 +14,7 @@
     charger_vendor
     cloudsearch
     cloudsearch_service
+    connectivity_native_service
     device_config_nnapi_native_prop
     device_config_surface_flinger_native_boot_prop
     dice_maintenance_service
@@ -25,7 +27,9 @@
     extra_free_kbytes
     extra_free_kbytes_exec
     fs_bpf_vendor
+    game_mode_intervention_list_file
     gesture_prop
+    gwp_asan_prop
     hal_contexthub_service
     hal_camera_service
     hal_evs_service
@@ -62,6 +66,8 @@
     smart_idle_maint_enabled_prop
     snapuserd_proxy_socket
     sysfs_fs_fuse_bpf
+    sysfs_gpu
+    sysfs_lru_gen_enabled
     system_dlkm_file
     tare_service
     tv_iapp_service
