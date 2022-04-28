@@ -13,6 +13,7 @@ type dice_node_service,         service_manager_type;
 type dnsresolver_service,       service_manager_type;
 type drmserver_service,         service_manager_type;
 type dumpstate_service,         service_manager_type;
+type evsmanagerd_service,       service_manager_type;
 type fingerprintd_service,      service_manager_type;
 type fwk_automotive_display_service, service_manager_type;
 type gatekeeper_service,        app_api_service, service_manager_type;
@@ -60,6 +61,7 @@ type account_service, app_api_service, ephemeral_app_api_service, system_server_
 type activity_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type activity_task_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type adb_service, system_api_service, system_server_service, service_manager_type;
+type adservices_manager_service, system_api_service, system_server_service, service_manager_type;
 type alarm_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type app_binding_service, system_server_service, service_manager_type;
 type app_hibernation_service, app_api_service, system_api_service, system_server_service, service_manager_type;
@@ -88,6 +90,7 @@ type contexthub_service, app_api_service,  system_server_service, service_manage
 type crossprofileapps_service, app_api_service, system_server_service, service_manager_type;
 type IProxyService_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type companion_device_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+type connectivity_native_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type connectivity_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type connmetrics_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type consumer_ir_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -160,7 +163,7 @@ type memtrackproxy_service, app_api_service, ephemeral_app_api_service, system_s
 type midi_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type mount_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type music_recognition_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
-type nearby_service, system_api_service, system_server_service, service_manager_type;
+type nearby_service, app_api_service, system_server_service, service_manager_type;
 type netpolicy_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type netstats_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type network_management_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -210,7 +213,7 @@ type slice_service, app_api_service, system_server_service, service_manager_type
 type smartspace_service, app_api_service, system_server_service, service_manager_type;
 type statusbar_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type storagestats_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
-type supplemental_process_service, app_api_service, system_server_service, service_manager_type;
+type sdk_sandbox_service, app_api_service, system_server_service, service_manager_type;
 type system_config_service, system_api_service, system_server_service, service_manager_type;
 type system_server_dumper_service, system_api_service, system_server_service, service_manager_type;
 type system_update_service, system_server_service, service_manager_type;
@@ -259,52 +262,54 @@ type inputflinger_service, system_api_service, system_server_service, service_ma
 type wpantund_service, system_api_service, service_manager_type;
 type tethering_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type emergency_affordance_service, system_server_service, service_manager_type;
-type hal_wifi_hostapd_service, vendor_service, protected_service, service_manager_type;
-type hal_wifi_supplicant_service, vendor_service, protected_service, service_manager_type;
 
 ###
 ### HAL Services
 ###
 
-type hal_audio_service, vendor_service, protected_service, service_manager_type;
-type hal_audiocontrol_service, vendor_service, service_manager_type;
-type hal_authsecret_service, vendor_service, protected_service, service_manager_type;
-type hal_contexthub_service, vendor_service, protected_service, service_manager_type;
-type hal_dice_service, vendor_service, protected_service, service_manager_type;
-type hal_drm_service, vendor_service, service_manager_type;
-type hal_dumpstate_service, vendor_service, protected_service, service_manager_type;
-type hal_face_service, vendor_service, protected_service, service_manager_type;
-type hal_fingerprint_service, vendor_service, protected_service, service_manager_type;
-type hal_gnss_service, vendor_service, protected_service, service_manager_type;
-type hal_graphics_allocator_service, vendor_service, service_manager_type;
-type hal_graphics_composer_service, vendor_service, protected_service, service_manager_type;
-type hal_health_service, vendor_service, protected_service, service_manager_type;
-type hal_health_storage_service, vendor_service, protected_service, service_manager_type;
-type hal_identity_service, vendor_service, protected_service, service_manager_type;
-type hal_input_processor_service, vendor_service, protected_service, service_manager_type;
-type hal_ir_service, vendor_service, protected_service, service_manager_type;
-type hal_keymint_service, vendor_service, protected_service, service_manager_type;
-type hal_light_service, vendor_service, protected_service, service_manager_type;
-type hal_memtrack_service, vendor_service, protected_service, service_manager_type;
-type hal_neuralnetworks_service, vendor_service, service_manager_type;
-type hal_nfc_service, vendor_service, protected_service, service_manager_type;
-type hal_oemlock_service, vendor_service, protected_service, service_manager_type;
-type hal_power_service, vendor_service, protected_service, service_manager_type;
-type hal_power_stats_service, vendor_service, protected_service, service_manager_type;
-type hal_radio_service, vendor_service, protected_service, service_manager_type;
-type hal_rebootescrow_service, vendor_service, protected_service, service_manager_type;
-type hal_remotelyprovisionedcomponent_service, vendor_service, protected_service, service_manager_type;
-type hal_sensors_service, vendor_service, protected_service, service_manager_type;
-type hal_secureclock_service, vendor_service, protected_service, service_manager_type;
-type hal_sharedsecret_service, vendor_service, protected_service, service_manager_type;
-type hal_system_suspend_service, protected_service, service_manager_type;
-type hal_tv_tuner_service, vendor_service, protected_service, service_manager_type;
-type hal_usb_service, vendor_service, protected_service, service_manager_type;
-type hal_uwb_service, vendor_service, protected_service, service_manager_type;
-type hal_vehicle_service, vendor_service, protected_service, service_manager_type;
-type hal_vibrator_service, vendor_service, protected_service, service_manager_type;
-type hal_weaver_service, vendor_service, protected_service, service_manager_type;
-type hal_nlinterceptor_service, vendor_service, protected_service, service_manager_type;
+type hal_audio_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_audiocontrol_service, vendor_service, hal_service_type, service_manager_type;
+type hal_authsecret_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_camera_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_contexthub_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_dice_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_drm_service, vendor_service, hal_service_type, service_manager_type;
+type hal_dumpstate_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_evs_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_face_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_fingerprint_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_gnss_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_graphics_allocator_service, vendor_service, hal_service_type, service_manager_type;
+type hal_graphics_composer_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_health_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_health_storage_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_identity_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_input_processor_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_ir_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_keymint_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_light_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_memtrack_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_neuralnetworks_service, vendor_service, hal_service_type, service_manager_type;
+type hal_nfc_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_oemlock_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_power_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_power_stats_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_radio_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_rebootescrow_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_remotelyprovisionedcomponent_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_sensors_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_secureclock_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_sharedsecret_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_system_suspend_service, protected_service, hal_service_type, service_manager_type;
+type hal_tv_tuner_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_usb_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_uwb_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_vehicle_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_vibrator_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_weaver_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_nlinterceptor_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_wifi_hostapd_service, vendor_service, protected_service, hal_service_type, service_manager_type;
+type hal_wifi_supplicant_service, vendor_service, protected_service, hal_service_type, service_manager_type;
 
 ###
 ### Neverallow rules

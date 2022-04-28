@@ -26,6 +26,7 @@
 # isEphemeralApp=true will match apps marked by PackageManager as Ephemeral
 # user=_app will match any regular app process.
 # user=_isolated will match any isolated service process.
+# user=_sdksandbox will match sdk sandbox process for an app.
 # Other values of user are matched against the name associated with the process
 # UID.
 # seinfo= matches aginst the seinfo tag for the app, determined from
@@ -137,13 +138,13 @@ neverallow isEphemeralApp=true domain=((?!ephemeral_app).)*
 
 isSystemServer=true domain=system_server_startup
 
-# supplemental_process must run in the supplemental_process domain
-neverallow name=com.android.supplemental.process domain=((?!supplemental_process).)*
+# sdksandbox must run in the sdksandbox domain
+neverallow name=com.android.sdksandbox domain=((?!sdk_sandbox).)*
 
-user=_app isPrivApp=true name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
+user=_app seinfo=platform name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.remoteprovisioner domain=remote_prov_app type=app_data_file levelFrom=all
 user=system seinfo=platform domain=system_app type=system_app_data_file
-user=bluetooth seinfo=platform domain=bluetooth type=bluetooth_data_file
+user=bluetooth seinfo=bluetooth domain=bluetooth type=bluetooth_data_file
 user=network_stack seinfo=network_stack domain=network_stack type=radio_data_file
 user=nfc seinfo=platform domain=nfc type=nfc_data_file
 user=secure_element seinfo=platform domain=secure_element levelFrom=all
@@ -152,6 +153,7 @@ user=shared_relro domain=shared_relro levelFrom=all
 user=shell seinfo=platform domain=shell name=com.android.shell type=shell_data_file
 user=webview_zygote seinfo=webview_zygote domain=webview_zygote
 user=_isolated domain=isolated_app levelFrom=user
+user=_sdksandbox domain=sdk_sandbox type=sdk_sandbox_data_file levelFrom=all
 user=_app seinfo=app_zygote domain=app_zygote levelFrom=user
 user=_app seinfo=media domain=mediaprovider type=app_data_file levelFrom=user
 user=_app seinfo=platform domain=platform_app type=app_data_file levelFrom=user
@@ -174,4 +176,4 @@ user=_app minTargetSdkVersion=26 domain=untrusted_app_27 type=app_data_file leve
 user=_app domain=untrusted_app_25 type=app_data_file levelFrom=user
 user=_app minTargetSdkVersion=28 fromRunAs=true domain=runas_app levelFrom=all
 user=_app fromRunAs=true domain=runas_app levelFrom=user
-user=_app seinfo=supplemental_process name=com.android.supplemental.process domain=supplemental_process type=app_data_file levelFrom=user
+

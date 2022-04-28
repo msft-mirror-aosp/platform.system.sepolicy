@@ -88,6 +88,8 @@ allowxperm domain binder_device:chr_file ioctl { unpriv_binder_ioctls };
 # /dev/binderfs needs to be accessed by everyone too!
 allow domain binderfs:dir { getattr search };
 allow domain binderfs_logs_proc:dir search;
+allow domain binderfs_features:dir search;
+allow domain binderfs_features:file r_file_perms;
 
 allow { domain -servicemanager -vndservicemanager -isolated_app } hwbinder_device:chr_file rw_file_perms;
 allow domain ptmx_device:chr_file rw_file_perms;
@@ -100,6 +102,7 @@ allow domain property_info:file r_file_perms;
 
 # Public readable properties
 get_prop(domain, aaudio_config_prop)
+get_prop(domain, apexd_select_prop)
 get_prop(domain, arm64_memtag_prop)
 get_prop(domain, bluetooth_config_prop)
 get_prop(domain, bootloader_prop)
@@ -113,6 +116,7 @@ get_prop(domain, exported_dumpstate_prop)
 get_prop(domain, exported_secure_prop)
 get_prop(domain, exported_system_prop)
 get_prop(domain, fingerprint_prop)
+get_prop(domain, gwp_asan_prop)
 get_prop(domain, hal_instrumentation_prop)
 get_prop(domain, hw_timeout_multiplier_prop)
 get_prop(domain, init_service_status_prop)
@@ -1026,19 +1030,7 @@ neverallow { domain -system_server -webview_zygote -app_zygote } webview_zygote:
 neverallow { domain -system_server } webview_zygote:sock_file write;
 neverallow { domain -system_server } app_zygote:sock_file write;
 
-neverallow {
-  domain
-  -tombstoned
-  -crash_dump
-  -dumpstate
-  -incidentd
-  -system_server
-
-  # Processes that can't exec crash_dump
-  -hal_codec2_server
-  -hal_omx_server
-  -mediaextractor
-} tombstoned_crash_socket:unix_stream_socket connectto;
+neverallow domain tombstoned_crash_socket:unix_stream_socket connectto;
 
 # Never allow anyone except dumpstate, incidentd, or the system server to connect or write to
 # the tombstoned intercept socket.
@@ -1243,8 +1235,9 @@ neverallow {
 
 # Enforce restrictions on kernel module origin.
 # Do not allow kernel module loading except from system,
-# vendor, and boot partitions.
-neverallow * ~{ system_file_type vendor_file_type rootfs }:system module_load;
+# vendor, boot, and system_dlkm partitions.
+# TODO(b/218951883): Remove usage of system and rootfs as origin
+neverallow * ~{ system_file_type vendor_file_type rootfs system_dlkm_file_type }:system module_load;
 
 # Only allow filesystem caps to be set at build time. Runtime changes
 # to filesystem capabilities are not permitted.

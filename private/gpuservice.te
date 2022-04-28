@@ -1,5 +1,7 @@
 # gpuservice - server for gpu stats and other gpu related services
 typeattribute gpuservice coredomain;
+typeattribute gpuservice bpfdomain;
+
 type gpuservice_exec, system_file_type, exec_type, file_type;
 
 init_daemon_domain(gpuservice)
@@ -52,7 +54,6 @@ neverallow gpuservice self:perf_event ~{ cpu kernel open write };
 
 # Needed for interact with bpf fs.
 # Write is needed to open read/write bpf maps.
-allow gpuservice fs_bpf:dir search;
 allow gpuservice fs_bpf:file { read write };
 
 # Needed for enabling bpf programs and accessing bpf maps (read-only and read/write).
