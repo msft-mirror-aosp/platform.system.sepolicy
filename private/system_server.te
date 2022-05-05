@@ -855,8 +855,8 @@ allow system_server usb_device:dir r_dir_perms;
 
 # Read and delete files under /dev/fscklogs.
 r_dir_file(system_server, fscklogs)
-allow system_server fscklogs:dir { write remove_name };
-allow system_server fscklogs:file unlink;
+allow system_server fscklogs:dir { write remove_name add_name };
+allow system_server fscklogs:file rename;
 
 # logd access, system_server inherit logd write socket
 # (urge is to deprecate this long term)
@@ -1073,6 +1073,10 @@ allow system_server toolbox_exec:file rx_file_perms;
 # Allow system process to setup and measure fs-verity
 allowxperm system_server apk_data_file:file ioctl {
   FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY
+};
+
+allowxperm system_server system_file:file ioctl {
+  FS_IOC_MEASURE_VERITY
 };
 
 # Postinstall
@@ -1364,12 +1368,14 @@ allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
+  apex_tethering_data_file
   apex_wifi_data_file
 }:dir create_dir_perms;
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
+  apex_tethering_data_file
   apex_wifi_data_file
 }:file create_file_perms;
 
