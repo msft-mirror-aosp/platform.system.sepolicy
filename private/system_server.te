@@ -221,6 +221,11 @@ allow system_server proc_sysrq:file rw_file_perms;
 allow system_server stats_data_file:dir { open read remove_name search write };
 allow system_server stats_data_file:file unlink;
 
+# Read metric file & upload to statsd
+allow system_server odsign_data_file:dir search;
+allow system_server odsign_metrics_file:dir { r_dir_perms write remove_name };
+allow system_server odsign_metrics_file:file { r_file_perms unlink };
+
 # Read /sys/kernel/debug/wakeup_sources.
 no_debugfs_restriction(`
   allow system_server debugfs_wakeup_sources:file r_file_perms;
@@ -390,8 +395,10 @@ allow system_server {
   hal_light_server
   hal_neuralnetworks_server
   hal_omx_server
+  hal_power_server
   hal_power_stats_server
   hal_sensors_server
+  hal_vibrator_server
   hal_vr_server
   system_suspend_server
 }:process { signal };
@@ -446,6 +453,8 @@ allow system_server sysfs_usb:file w_file_perms;
 allow system_server device:dir r_dir_perms;
 allow system_server mdns_socket:sock_file rw_file_perms;
 allow system_server gpu_device:chr_file rw_file_perms;
+allow system_server gpu_device:dir r_dir_perms;
+allow system_server sysfs_gpu:file r_file_perms;
 allow system_server input_device:dir r_dir_perms;
 allow system_server input_device:chr_file rw_file_perms;
 allow system_server tty_device:chr_file rw_file_perms;
@@ -472,6 +481,7 @@ allow system_server ota_package_file:file create_file_perms;
 allow system_server system_data_file:dir create_dir_perms;
 allow system_server system_data_file:notdevfile_class_set create_file_perms;
 allow system_server packages_list_file:file create_file_perms;
+allow system_server game_mode_intervention_list_file:file create_file_perms;
 allow system_server keychain_data_file:dir create_dir_perms;
 allow system_server keychain_data_file:file create_file_perms;
 allow system_server keychain_data_file:lnk_file create_file_perms;
@@ -707,6 +717,7 @@ set_prop(system_server, provisioned_prop)
 set_prop(system_server, retaildemo_prop)
 set_prop(system_server, dmesgd_start_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
+userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
 # ctl interface
 set_prop(system_server, ctl_default_prop)
@@ -725,6 +736,7 @@ set_prop(system_server, device_config_runtime_native_boot_prop)
 set_prop(system_server, device_config_runtime_native_prop)
 set_prop(system_server, device_config_lmkd_native_prop)
 set_prop(system_server, device_config_media_native_prop)
+set_prop(system_server, device_config_mglru_native_prop)
 set_prop(system_server, device_config_profcollect_native_boot_prop)
 set_prop(system_server, device_config_statsd_native_prop)
 set_prop(system_server, device_config_statsd_native_boot_prop)
@@ -735,7 +747,9 @@ set_prop(system_server, device_config_window_manager_native_boot_prop)
 set_prop(system_server, device_config_configuration_prop)
 set_prop(system_server, device_config_connectivity_prop)
 set_prop(system_server, device_config_surface_flinger_native_boot_prop)
+set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
+set_prop(system_server, smart_idle_maint_enabled_prop)
 
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
@@ -799,6 +813,9 @@ get_prop(system_server, net_464xlat_fromvendor_prop)
 # Read hypervisor capabilities ro.boot.hypervisor.*
 get_prop(system_server, hypervisor_prop)
 
+# Read persist.wm.debug. properties
+get_prop(system_server, persist_wm_debug_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
@@ -838,8 +855,8 @@ allow system_server usb_device:dir r_dir_perms;
 
 # Read and delete files under /dev/fscklogs.
 r_dir_file(system_server, fscklogs)
-allow system_server fscklogs:dir { write remove_name };
-allow system_server fscklogs:file unlink;
+allow system_server fscklogs:dir { write remove_name add_name };
+allow system_server fscklogs:file rename;
 
 # logd access, system_server inherit logd write socket
 # (urge is to deprecate this long term)
@@ -1058,6 +1075,10 @@ allowxperm system_server apk_data_file:file ioctl {
   FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY
 };
 
+allowxperm system_server system_file:file ioctl {
+  FS_IOC_MEASURE_VERITY
+};
+
 # Postinstall
 #
 # For OTA dexopt, allow calls coming from postinstall.
@@ -1130,11 +1151,14 @@ with_asan(`
 # allow system_server to read the eBPF maps that stores the traffic stats information and update
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
-allow system_server fs_bpf:dir search;
 allow system_server fs_bpf:file { read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
+
+# Allow system_server to start clatd in its own domain and kill it.
+domain_auto_trans(system_server, clatd_exec, clatd)
+allow system_server clatd:process signal;
 
 # ART Profiles.
 # Allow system_server to open profile snapshots for read.
@@ -1223,8 +1247,8 @@ neverallow system_server {
 }:file execute_no_trans;
 
 # Ensure that system_server doesn't perform any domain transitions other than
-# transitioning to the crash_dump domain when a crash occurs.
-neverallow system_server { domain -crash_dump }:process transition;
+# transitioning to the crash_dump domain when a crash occurs or fork clatd.
+neverallow system_server { domain -clatd -crash_dump }:process transition;
 neverallow system_server *:process dyntransition;
 
 # Only allow crash_dump to connect to system_ndebug_socket.
@@ -1256,6 +1280,7 @@ neverallow {
   device_config_runtime_native_boot_prop
   device_config_runtime_native_prop
   device_config_media_native_prop
+  device_config_mglru_native_prop
   device_config_storage_native_boot_prop
   device_config_surface_flinger_native_boot_prop
   device_config_sys_traced_prop
@@ -1343,12 +1368,14 @@ allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
+  apex_tethering_data_file
   apex_wifi_data_file
 }:dir create_dir_perms;
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
+  apex_tethering_data_file
   apex_wifi_data_file
 }:file create_file_perms;
 

@@ -36,8 +36,9 @@ allow init runtime_event_log_tags_file:file { open write setattr relabelto creat
 allow init { device socket_device dm_user_device }:dir relabelto;
 # allow init to establish connection and communicate with lmkd
 unix_socket_connect(init, lmkd, lmkd)
-# Relabel /dev nodes created in first stage init, /dev/null, /dev/ptmx, /dev/random, /dev/urandom
-allow init { null_device ptmx_device random_device } : chr_file relabelto;
+# Relabel /dev nodes created in first stage init: /dev/console, /dev/null, /dev/ptmx, /dev/random
+# and /dev/urandom
+allow init { console_device null_device ptmx_device random_device } : chr_file relabelto;
 # /dev/device-mapper, /dev/block(/.*)?
 allow init tmpfs:{ chr_file blk_file } relabelfrom;
 allow init tmpfs:blk_file getattr;
@@ -143,7 +144,7 @@ allow init configfs:{ file lnk_file } create_file_perms;
 # /metadata
 allow init metadata_file:dir mounton;
 
-# Use tmpfs as /data, used for booting when /data is encrypted
+# Run restorecon on /dev
 allow init tmpfs:dir relabelfrom;
 
 # Create directories under /dev/cpuctl after chowning it to system.
@@ -157,6 +158,7 @@ allow init self:global_capability_class_set { sys_rawio mknod };
 # Mounting filesystems from block devices.
 allow init dev_type:blk_file r_file_perms;
 allowxperm init dev_type:blk_file ioctl BLKROSET;
+allowxperm init system_data_root_file:dir ioctl F2FS_IOC_SHUTDOWN;
 
 # Mounting filesystems.
 # Only allow relabelto for types used in context= mount options,
@@ -422,6 +424,7 @@ allow init {
   sysfs_power
   sysfs_fs_f2fs
   sysfs_dm
+  sysfs_lru_gen_enabled
 }:file w_file_perms;
 
 allow init {
@@ -624,6 +627,9 @@ allow init fuse:dir { search getattr };
 
 # allow filesystem tuning
 allow init userdata_sysdev:file create_file_perms;
+
+# allow disk tuning
+allow init rootdisk_sysdev:file create_file_perms;
 
 ###
 ### neverallow rules

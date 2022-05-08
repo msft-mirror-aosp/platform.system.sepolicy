@@ -1,3 +1,5 @@
+android.hardware.audio.core.IConfig/default                          u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/default                          u:object_r:hal_audio_service:s0
 android.hardware.authsecret.IAuthSecret/default                      u:object_r:hal_authsecret_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/0                  u:object_r:hal_evs_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/1                  u:object_r:hal_evs_service:s0
@@ -5,6 +7,7 @@ android.hardware.automotive.vehicle.IVehicle/default                 u:object_r:
 android.hardware.automotive.audiocontrol.IAudioControl/default       u:object_r:hal_audiocontrol_service:s0
 android.hardware.biometrics.face.IFace/default                       u:object_r:hal_face_service:s0
 android.hardware.biometrics.fingerprint.IFingerprint/default         u:object_r:hal_fingerprint_service:s0
+android.hardware.biometrics.fingerprint.IFingerprint/virtual         u:object_r:hal_fingerprint_service:s0
 android.hardware.bluetooth.audio.IBluetoothAudioProviderFactory/default u:object_r:hal_audio_service:s0
 # The instance here is internal/0 following naming convention for ICameraProvider.
 # It advertises internal camera devices.
@@ -73,6 +76,7 @@ account                                   u:object_r:account_service:s0
 activity                                  u:object_r:activity_service:s0
 activity_task                             u:object_r:activity_task_service:s0
 adb                                       u:object_r:adb_service:s0
+adservices_manager                        u:object_r:adservices_manager_service:s0
 aidl_lazy_test_1                          u:object_r:aidl_lazy_test_service:s0
 aidl_lazy_test_2                          u:object_r:aidl_lazy_test_service:s0
 aidl_lazy_cb_test                         u:object_r:aidl_lazy_test_service:s0
@@ -134,6 +138,7 @@ companiondevice                           u:object_r:companion_device_service:s0
 platform_compat                           u:object_r:platform_compat_service:s0
 platform_compat_native                    u:object_r:platform_compat_service:s0
 connectivity                              u:object_r:connectivity_service:s0
+connectivity_native                       u:object_r:connectivity_native_service:s0
 connmetrics                               u:object_r:connmetrics_service:s0
 consumer_ir                               u:object_r:consumer_ir_service:s0
 content                                   u:object_r:content_service:s0
@@ -294,6 +299,7 @@ runtime                                   u:object_r:runtime_service:s0
 safety_center                             u:object_r:safety_center_service:s0
 samplingprofiler                          u:object_r:samplingprofiler_service:s0
 scheduling_policy                         u:object_r:scheduling_policy_service:s0
+sdk_sandbox                               u:object_r:sdk_sandbox_service:s0
 search                                    u:object_r:search_service:s0
 search_ui                                 u:object_r:search_ui_service:s0
 secure_element                            u:object_r:secure_element_service:s0

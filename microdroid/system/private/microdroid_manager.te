@@ -6,6 +6,9 @@ type microdroid_manager_exec, exec_type, file_type, system_file_type;
 # allow domain transition from init
 init_daemon_domain(microdroid_manager)
 
+# Allow microdroid_manager to set boot status
+set_prop(microdroid_manager, boot_status_prop)
+
 # microdroid_manager accesses a virtual disk block device to read VM payload
 # It needs write access as it updates the instance image
 allow microdroid_manager block_device:dir r_dir_perms;
@@ -13,6 +16,9 @@ allow microdroid_manager block_device:lnk_file r_file_perms;
 allow microdroid_manager vd_device:blk_file rw_file_perms;
 # microdroid_manager verifies DM-verity mounted APK payload
 allow microdroid_manager dm_device:blk_file r_file_perms;
+
+# microdroid_manager can query AVF flags in the device tree
+allow microdroid_manager sysfs_dt_avf:file r_file_perms;
 
 # Allow microdroid_manager to do blkflsbuf on instance disk image. The ioctl
 # requires sys_admin cap as well.
@@ -53,10 +59,11 @@ allow microdroid_manager diced:diced { derive demote_self };
 allow microdroid_manager apex_mnt_dir:dir w_dir_perms;
 allow microdroid_manager apex_mnt_dir:file create_file_perms;
 
-# Allow microdroid_manager to start the services apexd-vm, apkdmverity and zipfuse
+# Allow microdroid_manager to start the services apexd-vm, apkdmverity,tombstone_transmit & zipfuse
 set_prop(microdroid_manager, ctl_apexd_vm_prop)
 set_prop(microdroid_manager, ctl_apkdmverity_prop)
 set_prop(microdroid_manager, ctl_seriallogging_prop)
+set_prop(microdroid_manager, ctl_tombstone_transmit_prop)
 set_prop(microdroid_manager, ctl_zipfuse_prop)
 
 # Allow microdroid_manager to wait for linkerconfig to be ready
