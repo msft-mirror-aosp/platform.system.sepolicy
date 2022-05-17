@@ -33,9 +33,12 @@ allow apexd apex_module_data_file:file { create_file_perms relabelfrom };
 allow apexd apex_rollback_data_file:dir create_dir_perms;
 allow apexd apex_rollback_data_file:file create_file_perms;
 
-# Allow apexd to read directories under /data/misc_de in order to snapshot and
-# restore apex data for all users.
-allow apexd system_data_file:dir r_dir_perms;
+# Allow apexd to read /data/misc_de and the directories under it, in order to
+# snapshot and restore apex data for all users.
+allow apexd {
+    system_userdir_file
+    system_data_file
+}:dir r_dir_perms;
 
 # allow apexd to create loop devices with /dev/loop-control
 allow apexd loop_control_device:chr_file rw_file_perms;
@@ -86,7 +89,6 @@ allow apexd apex_mnt_dir:file { create_file_perms relabelfrom mounton };
 allow apexd apex_info_file:file relabelto;
 # apexd needs to update /apex/apex-info-list.xml after non-staged APEX update.
 allow apexd apex_info_file:file rw_file_perms;
-allow apexd apex_info_file:file mounton;
 
 # allow apexd to unlink apex files in /data/apex/active
 # note that apexd won't be able to unlink files in /data/app-staging/session_XXXX,

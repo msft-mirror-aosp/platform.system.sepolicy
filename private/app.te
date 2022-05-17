@@ -73,6 +73,9 @@ get_prop(appdomain, camera_calibration_prop)
 # Allow to read db.log.detailed, db.log.slow_query_threshold*
 get_prop(appdomain, sqlite_log_prop)
 
+# Allow to read system_user_mode_emulation_prop, which is used by UserManager.java
+userdebug_or_eng(`get_prop(appdomain, system_user_mode_emulation_prop)')
+
 # Allow font file read by apps.
 allow appdomain font_data_file:file r_file_perms;
 allow appdomain font_data_file:dir r_dir_perms;
@@ -302,6 +305,9 @@ userdebug_or_eng(`
 # Grant GPU access to all processes started by Zygote.
 # They need that to render the standard UI.
 allow { appdomain -isolated_app } gpu_device:chr_file rw_file_perms;
+allow { appdomain -isolated_app } gpu_device:dir r_dir_perms;
+allow { appdomain -isolated_app } sysfs_gpu:file r_file_perms;
+
 
 # Use the Binder.
 binder_use(appdomain)

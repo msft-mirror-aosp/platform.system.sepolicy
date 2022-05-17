@@ -67,7 +67,9 @@ system_restricted_prop(device_config_nnapi_native_prop)
 system_restricted_prop(device_config_runtime_native_boot_prop)
 system_restricted_prop(device_config_runtime_native_prop)
 system_restricted_prop(device_config_surface_flinger_native_boot_prop)
+system_restricted_prop(device_config_vendor_system_native_prop)
 system_restricted_prop(fingerprint_prop)
+system_restricted_prop(gwp_asan_prop)
 system_restricted_prop(hal_instrumentation_prop)
 system_restricted_prop(hypervisor_prop)
 system_restricted_prop(init_service_status_prop)
@@ -217,6 +219,7 @@ system_public_prop(radio_prop)
 system_public_prop(serialno_prop)
 system_public_prop(surfaceflinger_color_prop)
 system_public_prop(system_prop)
+system_public_prop(system_user_mode_emulation_prop)
 system_public_prop(telephony_status_prop)
 system_public_prop(usb_control_prop)
 system_public_prop(vold_post_fs_data_prop)
@@ -230,6 +233,12 @@ system_internal_prop(default_prop)
 
 # Properties used in default HAL implementations
 vendor_internal_prop(rebootescrow_hal_prop)
+
+# Properties used in the default Face HAL implementations
+vendor_internal_prop(virtual_face_hal_prop)
+
+# Properties used in the default Fingerprint HAL implementations
+vendor_internal_prop(virtual_fingerprint_hal_prop)
 
 vendor_public_prop(persist_vendor_debug_wifi_prop)
 
