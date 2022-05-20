@@ -33,6 +33,7 @@ allow sdk_sandbox font_service:service_manager find;
 allow sdk_sandbox game_service:service_manager find;
 allow sdk_sandbox gpu_service:service_manager find;
 allow sdk_sandbox graphicsstats_service:service_manager find;
+allow sdk_sandbox hardware_properties_service:service_manager find;
 allow sdk_sandbox hint_service:service_manager find;
 allow sdk_sandbox imms_service:service_manager find;
 allow sdk_sandbox input_method_service:service_manager find;
@@ -89,6 +90,8 @@ allow sdk_sandbox uimode_service:service_manager find;
 allow sdk_sandbox vcn_management_service:service_manager find;
 allow sdk_sandbox webviewupdate_service:service_manager find;
 
+allow sdk_sandbox system_linker_exec:file execute_no_trans;
+
 # Write app-specific trace data to the Perfetto traced damon. This requires
 # connecting to its producer socket and obtaining a (per-process) tmpfs fd.
 perfetto_producer(sdk_sandbox)
@@ -102,7 +105,10 @@ can_profile_perf(sdk_sandbox)
 allow sdk_sandbox system_server:udp_socket {
         connect getattr read recvfrom sendto write getopt setopt };
 
-# allow access to sdksandbox data directory
+# allow sandbox to search in sdk system server directory
+# additionally, for webview to work, getattr has been permitted
+allow sdk_sandbox sdk_sandbox_system_data_file:dir { getattr search };
+# allow sandbox to create files and dirs in sdk data directory
 allow sdk_sandbox sdk_sandbox_data_file:dir create_dir_perms;
 allow sdk_sandbox sdk_sandbox_data_file:file create_file_perms;
 
@@ -151,3 +157,20 @@ neverallow sdk_sandbox { media_rw_data_file }:file no_rw_file_perms;
 neverallow { sdk_sandbox } tmpfs:dir no_rw_file_perms;
 
 neverallow sdk_sandbox hal_drm_service:service_manager find;
+
+# Only certain system components should have access to sdk_sandbox_system_data_file
+# sdk_sandbox only needs search. Restricted in follow up neverallow rule.
+neverallow {
+    domain
+    -init
+    -installd
+    -sdk_sandbox
+    -system_server
+    -vold_prepare_subdirs
+} sdk_sandbox_system_data_file:dir { create_dir_perms relabelfrom relabelto };
+
+# sdk_sandbox only needs to traverse through the sdk_sandbox_system_data_file
+neverallow sdk_sandbox sdk_sandbox_system_data_file:dir ~{ getattr search };
+
+# Only dirs should be created at sdk_sandbox_system_data_file level
+neverallow { domain -init } sdk_sandbox_system_data_file:file *;

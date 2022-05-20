@@ -589,6 +589,7 @@
 /data/misc/apexdata/com\.android\.compos(/.*)?        u:object_r:apex_compos_data_file:s0
 /data/misc/apexdata/com\.android\.permission(/.*)?    u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.scheduling(/.*)?    u:object_r:apex_system_server_data_file:s0
+/data/misc/apexdata/com\.android\.tethering(/.*)?     u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.uwb(/.*)?           u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.wifi(/.*)?          u:object_r:apex_system_server_data_file:s0
 /data/misc/apexrollback(/.*)?   u:object_r:apex_rollback_data_file:s0
@@ -689,6 +690,10 @@
 
 # Bootchart data
 /data/bootchart(/.*)?		u:object_r:bootchart_data_file:s0
+
+# Sandbox sdk data (managed by installd)
+/data/misc_de/[0-9]+/sdksandbox       u:object_r:sdk_sandbox_system_data_file:s0
+/data/misc_ce/[0-9]+/sdksandbox       u:object_r:sdk_sandbox_system_data_file:s0
 
 # App data snapshots (managed by installd).
 /data/misc_de/[0-9]+/rollback(/.*)?       u:object_r:rollback_data_file:s0
