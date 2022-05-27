@@ -32,6 +32,7 @@ allow fsck mirror_data_file:dir search;
 allowxperm fsck dev_type:blk_file ioctl {
   BLKDISCARDZEROES
   BLKROGET
+  BLKREPORTZONE
 };
 
 # To determine if it is safe to run fsck on a filesystem, e2fsck
@@ -48,8 +49,10 @@ allow fsck dev_type:blk_file getattr;
 allow fsck {
   proc_mounts
   proc_swaps
+  sysfs_dm
 }:file r_file_perms;
 allow fsck rootfs:dir r_dir_perms;
+allow fsck sysfs_dm:dir r_dir_perms;
 
 ###
 ### neverallow rules
