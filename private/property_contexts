@@ -810,7 +810,8 @@ ro.build.version.security_patch           u:object_r:build_prop:s0 exact string
 
 ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
-ro.debuggable u:object_r:build_prop:s0 exact bool
+ro.debuggable       u:object_r:build_prop:s0 exact bool
+ro.force.debuggable u:object_r:build_prop:s0 exact bool
 
 ro.treble.enabled u:object_r:build_prop:s0 exact bool
 
@@ -1207,6 +1208,9 @@ cache_key.telephony.                     u:object_r:binder_cache_telephony_serve
 # Framework watchdog configuration properties.
 framework_watchdog.fatal_count                u:object_r:framework_watchdog_config_prop:s0 exact int
 framework_watchdog.fatal_window.second        u:object_r:framework_watchdog_config_prop:s0 exact int
+
+# Framework configuration properties.
+framework.pause_bg_animations.enabled         u:object_r:framework_status_prop:s0 exact bool
 
 gsm.operator.iso-country       u:object_r:telephony_status_prop:s0 exact string
 gsm.sim.operator.iso-country   u:object_r:telephony_status_prop:s0 exact string
