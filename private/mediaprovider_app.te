@@ -1,7 +1,7 @@
 ###
 ### A domain for further sandboxing the MediaProvider mainline module.
 ###
-type mediaprovider_app, domain, coredomain, bpfdomain;
+type mediaprovider_app, domain, coredomain;
 
 app_domain(mediaprovider_app)
 
@@ -20,12 +20,6 @@ allow mediaprovider_app drmserver_service:service_manager find;
 
 # Talk to the MediaServer service
 allow mediaprovider_app mediaserver_service:service_manager find;
-
-# Talk to the AudioServer service
-allow mediaprovider_app audioserver_service:service_manager find;
-
-# Talk to the MediaCodec APIs that log media metrics
-allow mediaprovider_app mediametrics_service:service_manager find;
 
 # Talk to regular app services
 allow mediaprovider_app app_api_service:service_manager find;
@@ -59,12 +53,4 @@ get_prop(mediaprovider_app, storage_config_prop)
 
 get_prop(mediaprovider_app, drm_service_config_prop)
 
-allow mediaprovider_app gpu_device:chr_file rw_file_perms;
-allow mediaprovider_app gpu_device:dir r_dir_perms;
-
-dontaudit mediaprovider_app sysfs_vendor_sched:dir search;
-dontaudit mediaprovider_app sysfs_vendor_sched:file w_file_perms;
-
-# bpfprog access for FUSE BPF
-allow mediaprovider_app fs_bpf:file read;
-allow mediaprovider_app bpfloader:bpf { map_read map_write prog_run };
+allow mediaprovider_app gpu_device:dir search;

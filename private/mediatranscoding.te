@@ -1,4 +1,5 @@
 # mediatranscoding - daemon for transcoding video and image.
+type mediatranscoding, domain;
 type mediatranscoding_exec, system_file_type, exec_type, file_type;
 type mediatranscoding_tmpfs, file_type;
 typeattribute mediatranscoding coredomain;
@@ -18,7 +19,6 @@ hal_client_domain(mediatranscoding, hal_graphics_allocator)
 hal_client_domain(mediatranscoding, hal_configstore)
 hal_client_domain(mediatranscoding, hal_omx)
 hal_client_domain(mediatranscoding, hal_codec2)
-hal_client_domain(mediatranscoding, hal_allocator)
 
 allow mediatranscoding mediaserver_service:service_manager find;
 allow mediatranscoding mediametrics_service:service_manager find;
@@ -42,8 +42,7 @@ unix_socket_send(mediatranscoding, statsdw, statsd)
 # Allow mediatranscoding to access the DMA-BUF system heap
 allow mediatranscoding dmabuf_system_heap_device:chr_file r_file_perms;
 
-allow mediatranscoding gpu_device:chr_file rw_file_perms;
-allow mediatranscoding gpu_device:dir r_dir_perms;
+allow mediatranscoding gpu_device:dir search;
 
 # Allow mediatranscoding service to access media-related system properties
 get_prop(mediatranscoding, media_config_prop)
@@ -62,5 +61,4 @@ neverallow mediatranscoding { file_type fs_type }:file execute_no_trans;
 # permissions and be isolated from the rest of the system and network.
 # Lengthier explanation here:
 # https://android-developers.googleblog.com/2016/05/hardening-media-stack.html
-neverallow mediatranscoding domain:{ udp_socket rawip_socket } *;
-neverallow mediatranscoding { domain userdebug_or_eng(`-su') }:tcp_socket *;
+neverallow mediatranscoding domain:{ tcp_socket udp_socket rawip_socket } *;

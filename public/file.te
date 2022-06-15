@@ -7,14 +7,12 @@ type proc, fs_type, proc_type;
 type binderfs, fs_type;
 type binderfs_logs, fs_type;
 type binderfs_logs_proc, fs_type;
-type binderfs_features, fs_type;
 # Security-sensitive proc nodes that should not be writable to most.
 type proc_security, fs_type, proc_type;
 type proc_drop_caches, fs_type, proc_type;
 type proc_overcommit_memory, fs_type, proc_type;
 type proc_min_free_order_shift, fs_type, proc_type;
 type proc_kpageflags, fs_type, proc_type;
-type proc_watermark_boost_factor, fs_type, proc_type;
 # proc, sysfs, or other nodes that permit configuration of kernel usermodehelpers.
 type usermodehelper, fs_type, proc_type;
 type sysfs_usermodehelper, fs_type, sysfs_type;
@@ -24,10 +22,8 @@ type proc_bluetooth_writable, fs_type, proc_type;
 type proc_abi, fs_type, proc_type;
 type proc_asound, fs_type, proc_type;
 type proc_bootconfig, fs_type, proc_type;
-type proc_bpf, fs_type, proc_type;
 type proc_buddyinfo, fs_type, proc_type;
 type proc_cmdline, fs_type, proc_type;
-type proc_cpu_alignment, fs_type, proc_type;
 type proc_cpuinfo, fs_type, proc_type;
 type proc_dirty, fs_type, proc_type;
 type proc_diskstats, fs_type, proc_type;
@@ -80,7 +76,6 @@ type proc_uptime, fs_type, proc_type;
 type proc_version, fs_type, proc_type;
 type proc_vmallocinfo, fs_type, proc_type;
 type proc_vmstat, fs_type, proc_type;
-type proc_watermark_scale_factor, fs_type, proc_type;
 type proc_zoneinfo, fs_type, proc_type;
 type proc_vendor_sched, proc_type, fs_type;
 type selinuxfs, fs_type, mlstrustedobject;
@@ -91,6 +86,7 @@ type sysfs, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_android_usb, fs_type, sysfs_type;
 type sysfs_uio, sysfs_type, fs_type;
 type sysfs_batteryinfo, fs_type, sysfs_type;
+type sysfs_block, fs_type, sysfs_type, sysfs_block_type;
 type sysfs_bluetooth_writable, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_devfreq_cur, fs_type, sysfs_type;
 type sysfs_devfreq_dir, fs_type, sysfs_type;
@@ -106,7 +102,6 @@ type sysfs_ipv4, fs_type, sysfs_type;
 type sysfs_kernel_notes, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_leds, fs_type, sysfs_type;
 type sysfs_loop, fs_type, sysfs_type;
-type sysfs_gpu, fs_type, sysfs_type;
 type sysfs_hwrandom, fs_type, sysfs_type;
 type sysfs_nfc_power_writable, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_wake_lock, fs_type, sysfs_type;
@@ -116,13 +111,11 @@ type sysfs_rtc, fs_type, sysfs_type;
 type sysfs_suspend_stats, fs_type, sysfs_type;
 type sysfs_switch, fs_type, sysfs_type;
 type sysfs_transparent_hugepage, fs_type, sysfs_type;
-type sysfs_lru_gen_enabled, fs_type, sysfs_type;
 type sysfs_usb, fs_type, sysfs_type;
 type sysfs_wakeup, fs_type, sysfs_type;
 type sysfs_wakeup_reasons, fs_type, sysfs_type;
 type sysfs_fs_ext4_features, sysfs_type, fs_type;
 type sysfs_fs_f2fs, sysfs_type, fs_type;
-type sysfs_fs_fuse_bpf, sysfs_type, fs_type;
 type sysfs_fs_incfs_features, sysfs_type, fs_type;
 type sysfs_fs_incfs_metrics, sysfs_type, fs_type;
 type sysfs_vendor_sched, sysfs_type, fs_type;
@@ -131,7 +124,6 @@ userdebug_or_eng(`
 ')
 type fs_bpf, fs_type;
 type fs_bpf_tethering, fs_type;
-type fs_bpf_vendor, fs_type;
 type configfs, fs_type;
 # /sys/devices/cs_etm
 type sysfs_devices_cs_etm, fs_type, sysfs_type;
@@ -152,7 +144,7 @@ type devpts, fs_type, mlstrustedobject;
 type tmpfs, fs_type;
 type shm, fs_type;
 type mqueue, fs_type;
-type fuse, fusefs_type, fs_type, mlstrustedobject;
+type fuse, sdcard_type, fs_type, mlstrustedobject;
 type sdcardfs, sdcard_type, fs_type, mlstrustedobject;
 type vfat, sdcard_type, fs_type, mlstrustedobject;
 type exfat, sdcard_type, fs_type, mlstrustedobject;
@@ -174,7 +166,7 @@ type functionfs, fs_type, mlstrustedobject;
 type oemfs, fs_type, contextmount_type;
 type usbfs, fs_type;
 type binfmt_miscfs, fs_type;
-type app_fusefs, fs_type, fusefs_type, contextmount_type;
+type app_fusefs, fs_type, contextmount_type;
 
 # File types
 type unlabeled, file_type;
@@ -254,14 +246,6 @@ type vendor_keylayout_file, vendor_file_type, file_type;
 type vendor_keychars_file, vendor_file_type, file_type;
 type vendor_idc_file, vendor_file_type, file_type;
 
-# Type for vendor uuid mapping config file
-type vendor_uuid_mapping_config_file, vendor_file_type, file_type;
-
-# SoC-specific virtual machine disk files
-type vendor_vm_file, vendor_file_type, file_type;
-# SoC-specific virtual machine disk files that are mutable
-type vendor_vm_data_file, vendor_file_type, file_type;
-
 # /metadata partition itself
 type metadata_file, file_type;
 # Vold files within /metadata
@@ -303,7 +287,6 @@ type system_data_file, file_type, data_file_type, core_data_file_type;
 # TODO(b/129332765): Narrow down permissions to this.
 # Find out users of system_data_file that should be granted only this.
 type packages_list_file, file_type, data_file_type, core_data_file_type;
-type game_mode_intervention_list_file, file_type, data_file_type, core_data_file_type;
 # Default type for anything under /data/vendor{_ce,_de}.
 type vendor_data_file, file_type, data_file_type;
 # Unencrypted data
@@ -408,10 +391,13 @@ type mirror_data_file, file_type, core_data_file_type;
 
 # /data/misc subdirectories
 type adb_keys_file, file_type, data_file_type, core_data_file_type;
-type apex_system_server_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
+type apex_appsearch_data_file, file_type, data_file_type, core_data_file_type;
 type apex_module_data_file, file_type, data_file_type, core_data_file_type;
 type apex_ota_reserved_file, file_type, data_file_type, core_data_file_type;
+type apex_permission_data_file, file_type, data_file_type, core_data_file_type;
 type apex_rollback_data_file, file_type, data_file_type, core_data_file_type;
+type apex_scheduling_data_file, file_type, data_file_type, core_data_file_type;
+type apex_wifi_data_file, file_type, data_file_type, core_data_file_type;
 type appcompat_data_file, file_type, data_file_type, core_data_file_type;
 type audio_data_file, file_type, data_file_type, core_data_file_type;
 type audioserver_data_file, file_type, data_file_type, core_data_file_type;
@@ -521,7 +507,6 @@ type recovery_socket, file_type, coredomain_socket;
 type rild_socket, file_type;
 type rild_debug_socket, file_type;
 type snapuserd_socket, file_type, coredomain_socket;
-type snapuserd_proxy_socket, file_type, coredomain_socket;
 type statsdw_socket, file_type, coredomain_socket, mlstrustedobject;
 type system_wpa_socket, file_type, data_file_type, core_data_file_type, coredomain_socket;
 type system_ndebug_socket, file_type, data_file_type, core_data_file_type, coredomain_socket, mlstrustedobject;
@@ -575,6 +560,9 @@ type keystore2_key_contexts_file, system_file_type, file_type;
 # vendor service_contexts file
 type vendor_service_contexts_file, vendor_file_type, file_type;
 
+# nonplat service_contexts file (only accessible on non full-treble devices)
+type nonplat_service_contexts_file, vendor_file_type, file_type;
+
 # hwservice_contexts file
 type hwservice_contexts_file, system_file_type, file_type;
 
@@ -586,9 +574,6 @@ type debugfs_bootreceiver_tracing, fs_type, debugfs_type, tracefs_type;
 
 # kernel modules
 type vendor_kernel_modules, vendor_file_type, file_type;
-
-# system_dlkm
-type system_dlkm_file, system_dlkm_file_type, file_type;
 
 # Allow files to be created in their appropriate filesystems.
 allow fs_type self:filesystem associate;

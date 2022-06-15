@@ -62,10 +62,9 @@ allow zygote apex_art_data_file:file { r_file_perms execute };
 # Bind mount on /data/data and mounted volumes
 allow zygote { system_data_file mnt_expand_file }:dir mounton;
 
-# Relabel /data/user /data/user_de /data/data and /data/misc_{ce,de}/<user-id>/sdksandbox
+# Relabel /data/user /data/user_de and /data/data
 allow zygote tmpfs:{ dir lnk_file } relabelfrom;
 allow zygote system_data_file:{ dir lnk_file } relabelto;
-allow zygote sdk_sandbox_system_data_file:dir { search relabelto };
 
 # Zygote opens /mnt/expand to mount CE DE storage on each vol
 allow zygote mnt_expand_file:dir { open read search relabelto };
@@ -95,7 +94,6 @@ allow zygote {
   app_data_file_type
   system_data_file
   mnt_expand_file
-  sdk_sandbox_system_data_file
 }:dir getattr;
 
 # Allow zygote to create JIT memory.
@@ -114,7 +112,7 @@ r_dir_file(zygote, vendor_overlay_file)
 
 # Control cgroups.
 allow zygote cgroup:dir create_dir_perms;
-allow zygote cgroup:{ file lnk_file } { r_file_perms setattr };
+allow zygote cgroup:{ file lnk_file } r_file_perms;
 allow zygote cgroup_v2:dir create_dir_perms;
 allow zygote cgroup_v2:{ file lnk_file } { r_file_perms setattr };
 allow zygote self:global_capability_class_set sys_admin;
@@ -141,7 +139,6 @@ allow zygote rootfs:dir mounton;
 allow zygote tmpfs:filesystem { mount unmount };
 allow zygote fuse:filesystem { unmount };
 allow zygote sdcardfs:filesystem { unmount };
-allow zygote labeledfs:filesystem { unmount };
 
 # Allow creating user-specific storage source if started before vold.
 allow zygote mnt_user_file:dir { create_dir_perms mounton };
@@ -155,8 +152,8 @@ allow zygote mnt_pass_through_file:dir { create_dir_perms mounton };
 allow zygote storage_file:dir { search mounton };
 
 # Allow mounting and creating files, dirs on sdcardfs.
-allow zygote { sdcard_type fuse }:dir { create_dir_perms mounton };
-allow zygote { sdcard_type fuse }:file { create_file_perms };
+allow zygote { sdcard_type }:dir { create_dir_perms mounton };
+allow zygote { sdcard_type }:file { create_file_perms };
 
 # Handle --invoke-with command when launching Zygote with a wrapper command.
 allow zygote zygote_exec:file rx_file_perms;
@@ -231,14 +228,6 @@ get_prop(zygote, qemu_sf_lcd_density_prop)
 
 # Allow zygote to read /apex/apex-info-list.xml
 allow zygote apex_info_file:file r_file_perms;
-
-# Allow zygote to canonicalize vendor APEX paths. This is used when zygote is checking the
-# preinstalled path of APEXes that contain runtime resource overlays for the 'android' package.
-allow zygote vendor_apex_file:dir { getattr search };
-allow zygote vendor_apex_file:file { getattr };
-
-# Allow zygote to query for compression/features.
-r_dir_file(zygote, sysfs_fs_f2fs)
 
 ###
 ### neverallow rules

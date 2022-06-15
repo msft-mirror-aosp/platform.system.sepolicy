@@ -1,10 +1,13 @@
 typeattribute netd coredomain;
-typeattribute netd bpfdomain;
 
 init_daemon_domain(netd)
 
 # Allow netd to spawn dnsmasq in it's own domain
 domain_auto_trans(netd, dnsmasq_exec, dnsmasq)
+
+# Allow netd to start clatd in its own domain and kill it
+domain_auto_trans(netd, clatd_exec, clatd)
+allow netd clatd:process signal;
 
 # give netd permission to setup iptables rule with xt_bpf, attach program to cgroup, and read/write
 # the map created by bpfloader
@@ -12,7 +15,6 @@ allow netd bpfloader:bpf { prog_run map_read map_write };
 
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 # TODO: Remove this permission when 4.9 kernel is deprecated.
-# TODO: Remove this after we remove all bpf interactions from netd.
 allow netd self:key_socket create;
 
 set_prop(netd, ctl_mdnsd_prop)

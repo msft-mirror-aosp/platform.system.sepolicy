@@ -86,12 +86,14 @@ allow vold block_device:dir create_dir_perms;
 allow vold device:dir write;
 allow vold devpts:chr_file rw_file_perms;
 allow vold rootfs:dir mounton;
-allow vold { sdcard_type fuse }:dir mounton; # TODO: deprecated in M
-allow vold { sdcard_type fuse }:filesystem { mount remount unmount }; # TODO: deprecated in M
+allow vold sdcard_type:dir mounton; # TODO: deprecated in M
+allow vold sdcard_type:filesystem { mount remount unmount }; # TODO: deprecated in M
+allow vold sdcard_type:dir create_dir_perms; # TODO: deprecated in M
+allow vold sdcard_type:file create_file_perms; # TODO: deprecated in M
 
 # Manage locations where storage is mounted
-allow vold { mnt_media_rw_file storage_file sdcard_type fuse }:dir create_dir_perms;
-allow vold { mnt_media_rw_file storage_file sdcard_type fuse }:file create_file_perms;
+allow vold { mnt_media_rw_file storage_file sdcard_type }:dir create_dir_perms;
+allow vold { mnt_media_rw_file storage_file sdcard_type }:file create_file_perms;
 
 # Access to storage that backs emulated FUSE daemons for migration optimization
 allow vold media_rw_data_file:dir create_dir_perms;
@@ -168,8 +170,16 @@ allow vold fsck_exec:file { r_file_perms execute };
 allow vold fscklogs:dir rw_dir_perms;
 allow vold fscklogs:file create_file_perms;
 
-# Mount and unmount filesystems.
+#
+# Rules to support encrypted fs support.
+#
+
+# Unmount and mount the fs.
 allow vold labeledfs:filesystem { mount unmount remount };
+
+# Access /efs/userdata_footer.
+# XXX Split into a separate type?
+allow vold efs_file:file rw_file_perms;
 
 # Create and mount on /data/tmp_mnt and management of expansion mounts
 allow vold {
@@ -202,7 +212,7 @@ allow vold unlabeled:file { r_file_perms setattr relabelfrom };
 allow vold fusectlfs:file rw_file_perms;
 allow vold fusectlfs:dir rw_dir_perms;
 
-# Allow vold to use wake locks.  Needed for idle maintenance and moving storage.
+# Handle wake locks (used for device encryption)
 wakelock_use(vold)
 
 # Allow vold to publish a binder service and make binder calls.
@@ -212,6 +222,12 @@ add_service(vold, vold_service)
 # Allow vold to call into the system server so it can check permissions.
 binder_call(vold, system_server)
 allow vold permission_service:service_manager find;
+
+# talk to batteryservice
+binder_call(vold, healthd)
+
+# talk to keymaster
+hal_client_domain(vold, hal_keymaster)
 
 # talk to health storage HAL
 hal_client_domain(vold, hal_health_storage)
@@ -261,7 +277,7 @@ allow vold app_fusefs:filesystem { mount unmount };
 allow vold app_fuse_file:dir rw_dir_perms;
 allow vold app_fuse_file:file { read write open getattr append };
 
-# MoveStorage.cpp executes cp and rm
+# MoveTask.cpp executes cp and rm
 allow vold toolbox_exec:file rx_file_perms;
 
 # Prepare profile dir for users.
@@ -327,8 +343,10 @@ neverallow { domain -vold -init } restorecon_prop:property_service set;
 neverallow vold {
   domain
   -hal_health_storage_server
+  -hal_keymaster_server
   -system_suspend_server
   -hal_bootctl_server
+  -healthd
   -hwservicemanager
   -iorapd_service
   -keystore

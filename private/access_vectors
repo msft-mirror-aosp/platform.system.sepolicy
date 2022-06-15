@@ -395,7 +395,6 @@ inherits socket
 	nlmsg_read
 	nlmsg_write
 	nlmsg_readpriv
-	nlmsg_getneigh
 }
 
 class netlink_tcpdiag_socket
@@ -722,9 +721,7 @@ class keystore2
 	change_user
 	clear_ns
 	clear_uid
-	delete_all_keys
 	early_boot_ended
-	get_attestation_key
 	get_auth_token
 	get_state
 	list
@@ -733,6 +730,7 @@ class keystore2
 	report_off_body
 	reset
 	unlock
+	delete_all_keys
 }
 
 class keystore2_key
@@ -748,16 +746,6 @@ class keystore2_key
 	update
 	use
 	use_dev_id
-}
-
-class diced
-{
-	demote
-	demote_self
-	derive
-	get_attestation_chain
-	use_seal
-	use_sign
 }
 
 class drmservice {

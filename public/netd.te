@@ -64,6 +64,7 @@ allow netd sysfs_usb:file write;
 
 r_dir_file(netd, cgroup_v2)
 
+allow netd fs_bpf:dir search;
 allow netd fs_bpf:file { read write };
 
 # TODO: netd previously thought it needed these permissions to do WiFi related
@@ -86,7 +87,6 @@ allow netd dnsmasq:process signal;
 binder_use(netd)
 add_service(netd, netd_service)
 add_service(netd, dnsresolver_service)
-add_service(netd, mdns_service)
 allow netd dumpstate:fifo_file  { getattr write };
 
 # Allow netd to call into the system server so it can check permissions.
@@ -149,16 +149,6 @@ neverallow {
     -netd
     -netutils_wrapper
 } dnsresolver_service:service_manager find;
-
-# only system_server, dumpstate and network stack app may find mdns service
-neverallow {
-    domain
-    -system_server
-    -dumpstate
-    -network_stack
-    -netd
-    -netutils_wrapper
-} mdns_service:service_manager find;
 
 # apps may not interact with netd over binder.
 neverallow { appdomain -network_stack } netd:binder call;

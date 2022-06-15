@@ -85,7 +85,6 @@ allow shell rs_exec:file rx_file_perms;
 # Allow (host-driven) ART run-tests to execute dex2oat, in order to
 # check ART's compiler.
 allow shell dex2oat_exec:file rx_file_perms;
-allow shell dex2oat_exec:lnk_file read;
 
 # Allow shell to start and comminicate with lpdumpd.
 set_prop(shell, lpdumpd_prop);
@@ -94,9 +93,6 @@ binder_call(shell, lpdumpd)
 # Allow shell to set and read value of properties used for CTS tests of
 # userspace reboot
 set_prop(shell, userspace_reboot_test_prop)
-
-# Allow shell to set this property to disable charging.
-set_prop(shell, power_debug_prop)
 
 # Allow shell to set this property used for rollback tests
 set_prop(shell, rollback_test_prop)
@@ -110,16 +106,8 @@ allowxperm shell shell_data_file:dir ioctl {
 # Allow shell to execute simpleperf without a domain transition.
 allow shell simpleperf_exec:file rx_file_perms;
 
-userdebug_or_eng(`
-  # Allow shell to execute profcollectctl without a domain transition.
-  allow shell profcollectd_exec:file rx_file_perms;
-
-  # Allow shell to read profcollectd data files.
-  r_dir_file(shell, profcollectd_data_file)
-
-  # Allow to issue control commands to profcollectd binder service.
-  allow shell profcollectd:binder call;
-')
+# Allow shell to execute profcollectctl without a domain transition.
+allow shell profcollectd_exec:file rx_file_perms;
 
 # Allow shell to call perf_event_open for profiling other shell processes, but
 # not the whole system.
@@ -130,10 +118,6 @@ neverallow shell self:perf_event ~{ open read write kernel };
 allow shell apex_info_file:file r_file_perms;
 allow shell vendor_apex_file:file r_file_perms;
 allow shell vendor_apex_file:dir r_dir_perms;
-
-# Allow shell to read updated APEXes under /data/apex
-allow shell apex_data_file:dir search;
-allow shell staging_data_file:file r_file_perms;
 
 # Set properties.
 set_prop(shell, shell_prop)
@@ -187,21 +171,18 @@ get_prop(shell, init_perf_lsm_hooks_prop)
 # Allow shell to read boot image timestamps and fingerprints.
 get_prop(shell, build_bootimage_prop)
 
-# Allow shell to read odsign verification properties
-get_prop(shell, odsign_prop)
-
 userdebug_or_eng(`set_prop(shell, persist_debug_prop)')
+
+# Allow to issue control commands to profcollectd binder service.
+userdebug_or_eng(`
+  allow shell profcollectd:binder call;
+')
 
 # Allow shell to read the keystore key contexts files. Used by native tests to test label lookup.
 allow shell keystore2_key_contexts_file:file r_file_perms;
 
 # Allow shell to access the keystore2_key namespace shell_key. Mainly used for native tests.
 allow shell shell_key:keystore2_key { delete rebind use get_info update };
-
-# Allow shell to open and execute memfd files for minijail unit tests.
-userdebug_or_eng(`
-  allow shell appdomain_tmpfs:file { open execute_no_trans };
-')
 
 # Allow shell to write db.log.detailed, db.log.slow_query_threshold*
 set_prop(shell, sqlite_log_prop)
@@ -224,13 +205,3 @@ read_fstab(shell)
 
 # Allow shell read access to /apex/apex-info-list.xml for CTS.
 allow shell apex_info_file:file r_file_perms;
-
-# Let the shell user call virtualizationservice (and
-# virtualizationservice call back to shell) for debugging.
-virtualizationservice_use(shell)
-
-# Allow shell to set persist.wm.debug properties
-userdebug_or_eng(`set_prop(shell, persist_wm_debug_prop)')
-
-# Allow shell to write GWP-ASan properties even on user builds.
-set_prop(shell, gwp_asan_prop)
