@@ -259,6 +259,7 @@ persist.device_config.swcodec_native.               u:object_r:device_config_swc
 persist.device_config.vendor_system_native.         u:object_r:device_config_vendor_system_native_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
+persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 
 # F2FS smart idle maint prop
 persist.device_config.storage_native_boot.smart_idle_maint_enabled u:object_r:smart_idle_maint_enabled_prop:s0 exact bool
@@ -742,6 +743,7 @@ net.redirect_socket_calls.hooked u:object_r:socket_hook_prop:s0 exact bool
 
 persist.sys.locale       u:object_r:exported_system_prop:s0 exact string
 persist.sys.timezone     u:object_r:exported_system_prop:s0 exact string
+persist.sys.mte.permissive u:object_r:permissive_mte_prop:s0 exact string
 persist.sys.test_harness u:object_r:test_harness_prop:s0 exact bool
 
 ro.arch u:object_r:build_prop:s0 exact string
