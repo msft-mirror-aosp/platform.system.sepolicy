@@ -72,6 +72,9 @@ allow system_server sysfs_fs_incfs_metrics:file r_file_perms;
 allow system_server sysfs_fs_f2fs:dir r_dir_perms;
 allow system_server sysfs_fs_f2fs:file r_file_perms;
 
+# For SdkSandboxManagerService
+allow system_server sdk_sandbox_system_data_file:dir create_dir_perms;
+
 # For art.
 allow system_server { apex_art_data_file dalvikcache_data_file }:dir r_dir_perms;
 allow system_server { apex_art_data_file dalvikcache_data_file }:file r_file_perms;
@@ -156,10 +159,13 @@ allow system_server self:global_capability2_class_set wake_alarm;
 allow system_server self:netlink_netfilter_socket create_socket_perms_no_ioctl;
 
 # Create/use netlink_tcpdiag_socket for looking up connection UIDs for VPN apps.
-allow system_server self:netlink_tcpdiag_socket { create_socket_perms_no_ioctl nlmsg_read };
+allow system_server self:netlink_tcpdiag_socket
+    { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
 
 # Use netlink uevent sockets.
 allow system_server self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
+
+allow system_server self:netlink_nflog_socket create_socket_perms_no_ioctl;
 
 # Use generic netlink sockets.
 allow system_server self:netlink_socket create_socket_perms_no_ioctl;
@@ -176,6 +182,9 @@ allow system_server self:socket create_socket_perms_no_ioctl;
 
 # Set and get routes directly via netlink.
 allow system_server self:netlink_route_socket nlmsg_write;
+
+# Use XFRM (IPsec) netlink sockets
+allow system_server self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write nlmsg_read };
 
 # Kill apps.
 allow system_server appdomain:process { getpgid sigkill signal };
@@ -278,6 +287,7 @@ allow system_server app_zygote:unix_stream_socket { read write connectto setopt 
 # Perform Binder IPC.
 binder_use(system_server)
 binder_call(system_server, appdomain)
+binder_call(system_server, artd)
 binder_call(system_server, binderservicedomain)
 binder_call(system_server, composd)
 binder_call(system_server, dumpstate)
@@ -287,7 +297,6 @@ binder_call(system_server, gpuservice)
 binder_call(system_server, idmap)
 binder_call(system_server, installd)
 binder_call(system_server, incidentd)
-binder_call(system_server, iorapd)
 binder_call(system_server, netd)
 userdebug_or_eng(`binder_call(system_server, profcollectd)')
 binder_call(system_server, statsd)
@@ -469,9 +478,9 @@ allow system_server uhid_device:chr_file rw_file_perms;
 # write access to ALSA interfaces (/dev/snd/*) needed for MIDI
 allow system_server audio_device:chr_file rw_file_perms;
 
-# tun device used for 3rd party vpn apps
+# tun device used for 3rd party vpn apps and test network manager
 allow system_server tun_device:chr_file rw_file_perms;
-allowxperm system_server tun_device:chr_file ioctl { TUNGETIFF TUNSETIFF };
+allowxperm system_server tun_device:chr_file ioctl { TUNGETIFF TUNSETIFF TUNSETLINK TUNSETCARRIER };
 
 # Manage data/ota_package
 allow system_server ota_package_file:dir rw_dir_perms;
@@ -485,6 +494,10 @@ allow system_server game_mode_intervention_list_file:file create_file_perms;
 allow system_server keychain_data_file:dir create_dir_perms;
 allow system_server keychain_data_file:file create_file_perms;
 allow system_server keychain_data_file:lnk_file create_file_perms;
+
+# Read the user parent directories like /data/user.  Don't allow write access,
+# as vold is responsible for creating and deleting the subdirectories.
+allow system_server system_userdir_file:dir r_dir_perms;
 
 # Manage /data/app.
 allow system_server apk_data_file:dir create_dir_perms;
@@ -609,10 +622,6 @@ allow system_server vpn_data_file:file create_file_perms;
 # Manage /data/misc/wifi.
 allow system_server wifi_data_file:dir create_dir_perms;
 allow system_server wifi_data_file:file create_file_perms;
-
-# Manage /data/misc/zoneinfo.
-allow system_server zoneinfo_data_file:dir create_dir_perms;
-allow system_server zoneinfo_data_file:file create_file_perms;
 
 # Manage /data/app-staging.
 allow system_server staging_data_file:dir create_dir_perms;
@@ -749,6 +758,7 @@ set_prop(system_server, device_config_connectivity_prop)
 set_prop(system_server, device_config_surface_flinger_native_boot_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
+set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
 
 # Allow query ART device config properties
@@ -882,6 +892,7 @@ allow system_server sysfs_zram:dir search;
 allow system_server sysfs_zram:file rw_file_perms;
 
 add_service(system_server, system_server_service);
+allow system_server artd_service:service_manager find;
 allow system_server audioserver_service:service_manager find;
 allow system_server authorization_service:service_manager find;
 allow system_server batteryproperties_service:service_manager find;
@@ -899,7 +910,6 @@ allow system_server idmap_service:service_manager find;
 allow system_server incident_service:service_manager find;
 allow system_server incremental_service:service_manager find;
 allow system_server installd_service:service_manager find;
-allow system_server iorapd_service:service_manager find;
 allow system_server keystore_maintenance_service:service_manager find;
 allow system_server keystore_metrics_service:service_manager find;
 allow system_server keystore_service:service_manager find;
@@ -1151,7 +1161,8 @@ with_asan(`
 # allow system_server to read the eBPF maps that stores the traffic stats information and update
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
-allow system_server fs_bpf:file { read write };
+allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:dir search;
+allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
@@ -1421,6 +1432,8 @@ neverallow {
 
 # Read/Write /proc/pressure/memory
 allow system_server proc_pressure_mem:file rw_file_perms;
+# Read /proc/pressure/cpu and /proc/pressure/io
+allow system_server { proc_pressure_cpu proc_pressure_io }:file r_file_perms;
 
 # dexoptanalyzer is currently used only for secondary dex files which
 # system_server should never access.

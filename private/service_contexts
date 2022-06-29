@@ -2,6 +2,7 @@ android.hardware.audio.core.IConfig/default                          u:object_r:
 android.hardware.audio.core.IModule/default                          u:object_r:hal_audio_service:s0
 android.hardware.authsecret.IAuthSecret/default                      u:object_r:hal_authsecret_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/0                  u:object_r:hal_evs_service:s0
+android.hardware.boot.IBootControl/default                           u:object_r:hal_bootctl_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/1                  u:object_r:hal_evs_service:s0
 android.hardware.automotive.vehicle.IVehicle/default                 u:object_r:hal_vehicle_service:s0
 android.hardware.automotive.audiocontrol.IAudioControl/default       u:object_r:hal_audiocontrol_service:s0
@@ -69,6 +70,7 @@ android.hardware.wifi.supplicant.ISupplicant/default                 u:object_r:
 android.frameworks.stats.IStats/default                              u:object_r:fwk_stats_service:s0
 android.se.omapi.ISecureElementService/default                       u:object_r:secure_element_service:s0
 android.system.keystore2.IKeystoreService/default                    u:object_r:keystore_service:s0
+android.system.net.netd.INetd/default                                u:object_r:system_net_netd_service:s0
 android.system.suspend.ISystemSuspend/default                        u:object_r:hal_system_suspend_service:s0
 
 accessibility                             u:object_r:accessibility_service:s0
@@ -197,7 +199,6 @@ inputflinger                              u:object_r:inputflinger_service:s0
 input_method                              u:object_r:input_method_service:s0
 input                                     u:object_r:input_service:s0
 installd                                  u:object_r:installd_service:s0
-iorapd                                    u:object_r:iorapd_service:s0
 iphonesubinfo_msim                        u:object_r:radio_service:s0
 iphonesubinfo2                            u:object_r:radio_service:s0
 iphonesubinfo                             u:object_r:radio_service:s0
@@ -348,7 +349,6 @@ textservices                              u:object_r:textservices_service:s0
 texttospeech                              u:object_r:texttospeech_service:s0
 time_detector                             u:object_r:timedetector_service:s0
 time_zone_detector                        u:object_r:timezonedetector_service:s0
-timezone                                  u:object_r:timezone_service:s0
 thermalservice                            u:object_r:thermal_service:s0
 tracing.proxy                             u:object_r:tracingproxy_service:s0
 translation                               u:object_r:translation_service:s0

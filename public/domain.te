@@ -116,6 +116,7 @@ get_prop(domain, exported_dumpstate_prop)
 get_prop(domain, exported_secure_prop)
 get_prop(domain, exported_system_prop)
 get_prop(domain, fingerprint_prop)
+get_prop(domain, framework_status_prop)
 get_prop(domain, gwp_asan_prop)
 get_prop(domain, hal_instrumentation_prop)
 get_prop(domain, hw_timeout_multiplier_prop)
@@ -226,11 +227,10 @@ full_treble_only(`
 # read and stat any sysfs symlinks
 allow domain sysfs:lnk_file { getattr read };
 
-# libc references /data/misc/zoneinfo and /system/usr/share/zoneinfo for
-# timezone related information.
+# libc references /system/usr/share/zoneinfo for timezone related information.
 # This directory is considered to be a VNDK-stable
-allow domain { system_zoneinfo_file zoneinfo_data_file }:file r_file_perms;
-allow domain { system_zoneinfo_file zoneinfo_data_file }:dir r_dir_perms;
+allow domain { system_zoneinfo_file }:file r_file_perms;
+allow domain { system_zoneinfo_file }:dir r_dir_perms;
 
 # Lots of processes access current CPU information
 r_dir_file(domain, sysfs_devices_system_cpu)
@@ -242,16 +242,30 @@ r_dir_file(domain, sysfs_usb);
 allow domain sysfs_transparent_hugepage:dir search;
 allow domain sysfs_transparent_hugepage:file r_file_perms;
 
-# files under /data.
+# Allow search access, and sometimes getattr access, to various directories
+# under /data.  We are fairly lenient in allowing search access to top-level
+# dirs that commonly need to be traversed to get access to the "real" files, as
+# this greatly simplifies the policy and doesn't open up much attack surface.
 not_full_treble(`
   allow domain system_data_file:dir getattr;
 ')
 allow { coredomain appdomain } system_data_file:dir getattr;
-# /data has the label system_data_root_file. Vendor components need the search
-# permission on system_data_root_file for path traversal to /data/vendor.
+# Anything that accesses anything in /data needs search access to /data itself.
+# This includes vendor components, as they need to access /data/vendor.
 allow domain system_data_root_file:dir { search getattr } ;
+# system_data_file is the default type for directories in /data.  Anything
+# accessing data files with a more specific type often has to traverse a
+# system_data_file directory such as /data/misc to get there.
 allow domain system_data_file:dir search;
+# Anything that accesses files in /data/user (and /data/user_de, etc.) needs
+# search access to these directories themselves.  getattr access is sometimes
+# needed too.
+allow { coredomain appdomain } system_userdir_file:dir { search getattr };
+# Anything that accesses files in /data/media needs search access to /data/media
+# itself.
+allow { coredomain appdomain } media_userdir_file:dir search;
 # TODO restrict this to non-coredomain
+allow domain vendor_userdir_file:dir { getattr search };
 allow domain vendor_data_file:dir { getattr search };
 
 # required by the dynamic linker
@@ -821,11 +835,6 @@ full_treble_only(`
     -vendor_init
   } {
     core_data_file_type
-    # libc includes functions like mktime and localtime which attempt to access
-    # files in /data/misc/zoneinfo/tzdata and /system/usr/share/zoneinfo/tzdata.
-    # These functions are considered vndk-stable and thus must be allowed for
-    # all processes.
-    -zoneinfo_data_file
     with_native_coverage(`-method_trace_data_file')
   }:file_class_set ~{ append getattr ioctl read write map };
   neverallow {
@@ -834,7 +843,6 @@ full_treble_only(`
   } {
     core_data_file_type
     -unencrypted_data_file
-    -zoneinfo_data_file
     with_native_coverage(`-method_trace_data_file')
   }:file_class_set ~{ append getattr ioctl read write map };
   # vendor init needs to be able to read unencrypted_data_file to create directories with FBE.
@@ -853,8 +861,8 @@ full_treble_only(`
     core_data_file_type
     -system_data_file # default label for files on /data. Covered below...
     -system_data_root_file
+    -vendor_userdir_file
     -vendor_data_file
-    -zoneinfo_data_file
     with_native_coverage(`-method_trace_data_file')
   }:dir *;
   neverallow {
@@ -865,8 +873,8 @@ full_treble_only(`
     -unencrypted_data_file
     -system_data_file
     -system_data_root_file
+    -vendor_userdir_file
     -vendor_data_file
-    -zoneinfo_data_file
     with_native_coverage(`-method_trace_data_file')
   }:dir *;
   # vendor init needs to be able to read unencrypted_data_file to create directories with FBE.
@@ -934,8 +942,6 @@ full_treble_only(`
         -system_lib_file
         -system_linker_exec
         -crash_dump_exec
-        -iorap_prefetcherd_exec
-        -iorap_inode2filename_exec
         -netutils_wrapper_exec
         userdebug_or_eng(`-tcpdump_exec')
     }:file { entrypoint execute execute_no_trans };
@@ -1003,7 +1009,6 @@ full_treble_only(`
     system_file_type
     -crash_dump_exec
     -file_contexts_file
-    -iorap_inode2filename_exec
     -netutils_wrapper_exec
     -property_contexts_file
     -system_event_log_tags_file
@@ -1176,7 +1181,6 @@ neverallow {
   -dumpstate
   -init
   -installd
-  -iorap_inode2filename
   -simpleperf_app_runner
   -system_server # why?
   userdebug_or_eng(`-uncrypt')

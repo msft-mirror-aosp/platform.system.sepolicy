@@ -193,12 +193,14 @@ system_public_prop(ctl_start_prop)
 system_public_prop(ctl_stop_prop)
 system_public_prop(dalvik_runtime_prop)
 system_public_prop(debug_prop)
+system_public_prop(device_config_memory_safety_native_prop)
 system_public_prop(dumpstate_options_prop)
 system_public_prop(exported_system_prop)
 system_public_prop(exported_bluetooth_prop)
 system_public_prop(exported_overlay_prop)
 system_public_prop(exported_pm_prop)
 system_public_prop(ffs_control_prop)
+system_public_prop(framework_status_prop)
 system_public_prop(gesture_prop)
 system_public_prop(hal_dumpstate_config_prop)
 system_public_prop(sota_prop)
@@ -211,6 +213,7 @@ system_public_prop(log_tag_prop)
 system_public_prop(lowpan_prop)
 system_public_prop(nfc_prop)
 system_public_prop(ota_prop)
+system_public_prop(permissive_mte_prop)
 system_public_prop(powerctl_prop)
 system_public_prop(qemu_hw_prop)
 system_public_prop(qemu_sf_lcd_density_prop)
@@ -233,6 +236,12 @@ system_internal_prop(default_prop)
 
 # Properties used in default HAL implementations
 vendor_internal_prop(rebootescrow_hal_prop)
+
+# Properties used in the default Face HAL implementations
+vendor_internal_prop(virtual_face_hal_prop)
+
+# Properties used in the default Fingerprint HAL implementations
+vendor_internal_prop(virtual_fingerprint_hal_prop)
 
 vendor_public_prop(persist_vendor_debug_wifi_prop)
 

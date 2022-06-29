@@ -112,6 +112,9 @@ allow dumpstate {
   sysfs_zram
 }:file r_file_perms;
 
+# Ignore other file access under /sys.
+dontaudit dumpstate sysfs:file r_file_perms;
+
 # Other random bits of data we want to collect
 no_debugfs_restriction(`
   allow dumpstate debugfs:file r_file_perms;
@@ -309,9 +312,6 @@ allow dumpstate proc_pid_max:file r_file_perms;
 # Allow dumpstate to talk to installd over binder
 binder_call(dumpstate, installd);
 
-# Allow dumpstate to talk to iorapd over binder.
-binder_call(dumpstate, iorapd)
-
 # Allow dumpstate to run ip xfrm policy
 allow dumpstate self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read };
 
@@ -331,6 +331,7 @@ dontaudit dumpstate {
   mnt_vendor_file
   mirror_data_file
   mnt_user_file
+  mnt_product_file
 }:dir search;
 dontaudit dumpstate {
   apex_mnt_dir

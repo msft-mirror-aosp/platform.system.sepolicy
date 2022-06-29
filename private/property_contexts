@@ -259,6 +259,7 @@ persist.device_config.swcodec_native.               u:object_r:device_config_swc
 persist.device_config.vendor_system_native.         u:object_r:device_config_vendor_system_native_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
+persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 
 # F2FS smart idle maint prop
 persist.device_config.storage_native_boot.smart_idle_maint_enabled u:object_r:smart_idle_maint_enabled_prop:s0 exact bool
@@ -742,6 +743,7 @@ net.redirect_socket_calls.hooked u:object_r:socket_hook_prop:s0 exact bool
 
 persist.sys.locale       u:object_r:exported_system_prop:s0 exact string
 persist.sys.timezone     u:object_r:exported_system_prop:s0 exact string
+persist.sys.mte.permissive u:object_r:permissive_mte_prop:s0 exact string
 persist.sys.test_harness u:object_r:test_harness_prop:s0 exact bool
 
 ro.arch u:object_r:build_prop:s0 exact string
@@ -810,7 +812,8 @@ ro.build.version.security_patch           u:object_r:build_prop:s0 exact string
 
 ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
-ro.debuggable u:object_r:build_prop:s0 exact bool
+ro.debuggable       u:object_r:build_prop:s0 exact bool
+ro.force.debuggable u:object_r:build_prop:s0 exact bool
 
 ro.treble.enabled u:object_r:build_prop:s0 exact bool
 
@@ -1208,6 +1211,9 @@ cache_key.telephony.                     u:object_r:binder_cache_telephony_serve
 framework_watchdog.fatal_count                u:object_r:framework_watchdog_config_prop:s0 exact int
 framework_watchdog.fatal_window.second        u:object_r:framework_watchdog_config_prop:s0 exact int
 
+# Framework configuration properties.
+framework.pause_bg_animations.enabled         u:object_r:framework_status_prop:s0 exact bool
+
 gsm.operator.iso-country       u:object_r:telephony_status_prop:s0 exact string
 gsm.sim.operator.iso-country   u:object_r:telephony_status_prop:s0 exact string
 gsm.sim.operator.numeric       u:object_r:telephony_status_prop:s0 exact string
@@ -1339,3 +1345,37 @@ ro.gms.dck.eligible_wcc u:object_r:dck_prop:s0 exact int
 
 # virtualization service properties
 virtualizationservice.state.last_cid u:object_r:virtualizationservice_prop:s0 exact uint
+
+# properties for the virtual Face HAL
+persist.vendor.face.virtual.type u:object_r:virtual_face_hal_prop:s0 exact string
+persist.vendor.face.virtual.strength u:object_r:virtual_face_hal_prop:s0 exact string
+persist.vendor.face.virtual.enrollments u:object_r:virtual_face_hal_prop:s0 exact string
+persist.vendor.face.virtual.features u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.operation_start_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.authenticator_id u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.challenge u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.lockout u:object_r:virtual_face_hal_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_hal_prop:s0 exact bool
+vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_hal_prop:s0 exact bool
+vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_hal_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
+
+# properties for the virtual Fingerprint HAL
+persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+persist.vendor.fingerprint.virtual.enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.enrollment_hit u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.next_enrollment u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.challenge u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_authenticate_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_detect_interaction_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_enroll_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int

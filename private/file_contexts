@@ -323,14 +323,9 @@
 /system/bin/preloads_copy\.sh u:object_r:preloads_copy_exec:s0
 /system/bin/preopt2cachename u:object_r:preopt2cachename_exec:s0
 /system/bin/viewcompiler     u:object_r:viewcompiler_exec:s0
-/system/bin/iorapd          u:object_r:iorapd_exec:s0
-/system/bin/iorap\.inode2filename u:object_r:iorap_inode2filename_exec:s0
-/system/bin/iorap\.prefetcherd u:object_r:iorap_prefetcherd_exec:s0
 /system/bin/sgdisk      u:object_r:sgdisk_exec:s0
 /system/bin/blkid       u:object_r:blkid_exec:s0
-/system/bin/tzdatacheck u:object_r:tzdatacheck_exec:s0
 /system/bin/flags_health_check -- u:object_r:flags_health_check_exec:s0
-/system/bin/idmap u:object_r:idmap_exec:s0
 /system/bin/idmap2(d)?           u:object_r:idmap_exec:s0
 /system/bin/update_engine        u:object_r:update_engine_exec:s0
 /system/bin/profcollectd         u:object_r:profcollectd_exec:s0
@@ -340,7 +335,7 @@
 /system/bin/virtual_touchpad     u:object_r:virtual_touchpad_exec:s0
 /system/bin/hw/android\.frameworks\.bufferhub@1\.0-service    u:object_r:fwk_bufferhub_exec:s0
 /system/bin/hw/android\.hidl\.allocator@1\.0-service          u:object_r:hal_allocator_default_exec:s0
-/system/bin/hw/android\.system\.suspend@1\.0-service          u:object_r:system_suspend_exec:s0
+/system/bin/hw/android\.system\.suspend-service               u:object_r:system_suspend_exec:s0
 /system/etc/cgroups\.json               u:object_r:cgroup_desc_file:s0
 /system/etc/task_profiles/cgroups_[0-9]+\.json               u:object_r:cgroup_desc_api_file:s0
 /system/etc/event-log-tags              u:object_r:system_event_log_tags_file:s0
@@ -563,7 +558,8 @@
 /data/local/tmp(/.*)?	u:object_r:shell_data_file:s0
 /data/local/tmp/ltp(/.*)?   u:object_r:nativetest_data_file:s0
 /data/local/traces(/.*)?	u:object_r:trace_data_file:s0
-/data/media(/.*)?	u:object_r:media_rw_data_file:s0
+/data/media             u:object_r:media_userdir_file:s0
+/data/media/.*          u:object_r:media_rw_data_file:s0
 /data/mediadrm(/.*)?	u:object_r:media_data_file:s0
 /data/nativetest(/.*)?	u:object_r:nativetest_data_file:s0
 /data/nativetest64(/.*)?	u:object_r:nativetest_data_file:s0
@@ -580,6 +576,12 @@
 /data/rollback/\d+/[^/]+/.*\.apk  u:object_r:apk_data_file:s0
 /data/rollback/\d+/[^/]+/.*\.apex u:object_r:staging_data_file:s0
 /data/fonts/files(/.*)?     u:object_r:font_data_file:s0
+/data/misc_ce             u:object_r:system_userdir_file:s0
+/data/misc_de             u:object_r:system_userdir_file:s0
+/data/system_ce           u:object_r:system_userdir_file:s0
+/data/system_de           u:object_r:system_userdir_file:s0
+/data/user                u:object_r:system_userdir_file:s0
+/data/user_de             u:object_r:system_userdir_file:s0
 
 # Misc data
 /data/misc/adb(/.*)?            u:object_r:adb_keys_file:s0
@@ -649,9 +651,7 @@
 /data/misc_ce/[0-9]+/wifi(/.*)? u:object_r:wifi_data_file:s0
 /data/misc/wifi/sockets(/.*)?   u:object_r:wpa_socket:s0
 /data/misc/wifi/sockets/wpa_ctrl.*   u:object_r:system_wpa_socket:s0
-/data/misc/zoneinfo(/.*)?       u:object_r:zoneinfo_data_file:s0
 /data/misc/vold(/.*)?           u:object_r:vold_data_file:s0
-/data/misc/iorapd(/.*)?         u:object_r:iorapd_data_file:s0
 /data/misc/update_engine(/.*)?  u:object_r:update_engine_data_file:s0
 /data/misc/update_engine_log(/.*)?  u:object_r:update_engine_log_data_file:s0
 /data/system/dropbox(/.*)?      u:object_r:dropbox_data_file:s0
@@ -665,8 +665,10 @@
 /data/misc/profiles/ref(/.*)?       u:object_r:user_profile_data_file:s0
 /data/misc/profman(/.*)?        u:object_r:profman_dump_data_file:s0
 /data/vendor(/.*)?              u:object_r:vendor_data_file:s0
-/data/vendor_ce(/.*)?           u:object_r:vendor_data_file:s0
-/data/vendor_de(/.*)?           u:object_r:vendor_data_file:s0
+/data/vendor_ce                 u:object_r:vendor_userdir_file:s0
+/data/vendor_ce/.*              u:object_r:vendor_data_file:s0
+/data/vendor_de                 u:object_r:vendor_userdir_file:s0
+/data/vendor_de/.*              u:object_r:vendor_data_file:s0
 
 # storaged proto files
 /data/misc_de/[0-9]+/storaged(/.*)?       u:object_r:storaged_data_file:s0
@@ -690,6 +692,10 @@
 
 # Bootchart data
 /data/bootchart(/.*)?		u:object_r:bootchart_data_file:s0
+
+# Sandbox sdk data (managed by installd)
+/data/misc_de/[0-9]+/sdksandbox       u:object_r:sdk_sandbox_system_data_file:s0
+/data/misc_ce/[0-9]+/sdksandbox       u:object_r:sdk_sandbox_system_data_file:s0
 
 # App data snapshots (managed by installd).
 /data/misc_de/[0-9]+/rollback(/.*)?       u:object_r:rollback_data_file:s0
@@ -721,8 +727,17 @@
 #############################
 # Expanded data files
 #
-/mnt/expand(/.*)?                                   u:object_r:mnt_expand_file:s0
-/mnt/expand/[^/]+(/.*)?                             u:object_r:system_data_file:s0
+/mnt/expand                                         u:object_r:mnt_expand_file:s0
+# CAREFUL: the two system_data_file patterns below can't be replaced with one
+# pattern "/mnt/expand/[^/]+(/.*)?", since SELinux would prioritize that over
+# "/mnt/expand/[^/]+/user".  This is because when a path is matched by two
+# patterns that contain regex meta-characters, SELinux just chooses the longer
+# pattern (or the later pattern if the patterns are the same length), rather
+# than the pattern containing fewer regex meta-characters.  Splitting the
+# pattern into "/mnt/expand/[^/]+" and "/mnt/expand/[^/]+/.*" works around this
+# problem, except for 1-character filenames which we aren't using.
+/mnt/expand/[^/]+                                   u:object_r:system_data_file:s0
+/mnt/expand/[^/]+/.*                                u:object_r:system_data_file:s0
 /mnt/expand/[^/]+/app(/.*)?                         u:object_r:apk_data_file:s0
 /mnt/expand/[^/]+/app/[^/]+/oat(/.*)?               u:object_r:dalvikcache_data_file:s0
 # /mnt/expand/..../app/[randomStringA]/[packageName]-[randomStringB]/base.apk layout
@@ -730,8 +745,13 @@
 /mnt/expand/[^/]+/app/vmdl[^/]+\.tmp(/.*)?          u:object_r:apk_tmp_file:s0
 /mnt/expand/[^/]+/app/vmdl[^/]+\.tmp/oat(/.*)?      u:object_r:dalvikcache_data_file:s0
 /mnt/expand/[^/]+/local/tmp(/.*)?                   u:object_r:shell_data_file:s0
-/mnt/expand/[^/]+/media(/.*)?                       u:object_r:media_rw_data_file:s0
+/mnt/expand/[^/]+/media                             u:object_r:media_userdir_file:s0
+/mnt/expand/[^/]+/media/.*                          u:object_r:media_rw_data_file:s0
 /mnt/expand/[^/]+/misc/vold(/.*)?                   u:object_r:vold_data_file:s0
+/mnt/expand/[^/]+/misc_ce                           u:object_r:system_userdir_file:s0
+/mnt/expand/[^/]+/misc_de                           u:object_r:system_userdir_file:s0
+/mnt/expand/[^/]+/user                              u:object_r:system_userdir_file:s0
+/mnt/expand/[^/]+/user_de                           u:object_r:system_userdir_file:s0
 
 # coredump directory for userdebug/eng devices
 /cores(/.*)?                    u:object_r:coredump_file:s0
@@ -755,9 +775,6 @@
 # vold per-user data
 /data/misc_de/[0-9]+/vold(/.*)?           u:object_r:vold_data_file:s0
 /data/misc_ce/[0-9]+/vold(/.*)?           u:object_r:vold_data_file:s0
-
-# iorapd per-user data
-/data/misc_ce/[0-9]+/iorapd(/.*)?           u:object_r:iorapd_data_file:s0
 
 # Backup service persistent per-user bookkeeping
 /data/system_ce/[0-9]+/backup(/.*)?		u:object_r:backup_data_file:s0

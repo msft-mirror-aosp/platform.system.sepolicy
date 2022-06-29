@@ -1,6 +1,13 @@
 # /proc/config.gz
 type config_gz, fs_type, proc_type;
 
+# /sys/fs/bpf/<dir> for mainline tethering use
+# TODO: move S+ fs_bpf_tethering here from public/file.te
+type fs_bpf_net_private, fs_type, bpffs_type;
+type fs_bpf_net_shared, fs_type, bpffs_type;
+type fs_bpf_netd_readonly, fs_type, bpffs_type;
+type fs_bpf_netd_shared, fs_type, bpffs_type;
+
 # /data/misc/storaged
 type storaged_data_file, file_type, data_file_type, core_data_file_type;
 
@@ -19,6 +26,8 @@ type perfetto_traces_bugreport_data_file, file_type, data_file_type, core_data_f
 # /data/misc/perfetto-configs for perfetto configs
 type perfetto_configs_data_file, file_type, data_file_type, core_data_file_type;
 
+# /data/misc_{ce/de}/<user>/sdksandbox root data directory for sdk sandbox processes
+type sdk_sandbox_system_data_file, file_type, data_file_type, core_data_file_type;
 # /data/misc_{ce/de}/<user>/sdksandbox/<app-name>/* subdirectory for sdk sandbox processes
 type sdk_sandbox_data_file, file_type, data_file_type, core_data_file_type, app_data_file_type;
 

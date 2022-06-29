@@ -64,8 +64,6 @@ allow netd sysfs_usb:file write;
 
 r_dir_file(netd, cgroup_v2)
 
-allow netd fs_bpf:file { read write };
-
 # TODO: netd previously thought it needed these permissions to do WiFi related
 #       work.  However, after all the WiFi stuff is gone, we still need them.
 #       Why?
@@ -112,6 +110,10 @@ allow netd self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write n
 # Allow netd to register as hal server.
 add_hwservice(netd, system_net_netd_hwservice)
 hwbinder_use(netd)
+
+# AIDL hal server
+binder_call(system_net_netd_service, servicemanager)
+add_service(netd, system_net_netd_service)
 
 ###
 ### Neverallow rules
