@@ -48,6 +48,7 @@ allow domain zero_device:chr_file rw_file_perms;
 
 # /dev/binder can be accessed by ... everyone! :)
 allow domain binder_device:chr_file rw_file_perms;
+get_prop(domain, servicemanager_prop)
 
 # Restrict binder ioctls to an allowlist. Additional ioctl commands may be
 # added to individual domains, but this sets safe defaults for all processes.
@@ -417,11 +418,6 @@ neverallow { domain -init } build_prop:property_service set;
 # The service managers are only allowed to access their own device node
 neverallow servicemanager hwbinder_device:chr_file no_rw_file_perms;
 neverallow servicemanager vndbinder_device:chr_file no_rw_file_perms;
-
-# system services cant add vendor services
-neverallow {
-  coredomain
-} vendor_service:service_manager add;
 
 # Never allow anyone to connect or write to
 # the tombstoned intercept socket.
