@@ -15,11 +15,6 @@ tmpfs_domain(system_server)
 
 userfaultfd_use(system_server)
 
-# TODO(b/217368496): remove this.
-perfetto_producer(system_server)
-can_profile_heap(system_server)
-can_profile_perf(system_server)
-
 # Create a socket for connections from crash_dump.
 type_transition system_server system_data_file:sock_file system_ndebug_socket "ndebugsocket";
 
@@ -401,6 +396,7 @@ allow system_server {
   hal_graphics_allocator_server
   hal_graphics_composer_server
   hal_health_server
+  hal_input_processor_server
   hal_light_server
   hal_neuralnetworks_server
   hal_omx_server
@@ -608,12 +604,9 @@ allow system_server systemkeys_data_file:file create_file_perms;
 allow system_server textclassifier_data_file:dir create_dir_perms;
 allow system_server textclassifier_data_file:file create_file_perms;
 
-# Access /data/tombstones.
-allow system_server tombstone_data_file:dir r_dir_perms;
-allow system_server tombstone_data_file:file r_file_perms;
-
-# Allow write access to be able to truncate tombstones.
-allow system_server tombstone_data_file:file write;
+# Manage /data/tombstones.
+allow system_server tombstone_data_file:dir rw_dir_perms;
+allow system_server tombstone_data_file:file create_file_perms;
 
 # Manage /data/misc/vpn.
 allow system_server vpn_data_file:dir create_dir_perms;
@@ -963,9 +956,7 @@ allow system_server keystore:keystore2 {
 	clear_ns
 	clear_uid
 	get_state
-	list
 	lock
-	migrate_any_key
 	pull_metrics
 	reset
 	unlock

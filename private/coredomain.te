@@ -7,6 +7,7 @@ get_prop(coredomain, ffs_config_prop)
 get_prop(coredomain, graphics_config_prop)
 get_prop(coredomain, hdmi_config_prop)
 get_prop(coredomain, init_service_status_private_prop)
+get_prop(coredomain, init_apex_status_private_prop)
 get_prop(coredomain, lmkd_config_prop)
 get_prop(coredomain, localization_prop)
 get_prop(coredomain, pm_prop)
@@ -77,6 +78,7 @@ full_treble_only(`
         -heapprofd
         userdebug_or_eng(`-profcollectd')
         -postinstall_dexopt
+        -profman
         -rs # spawned by appdomain, so carryover the exception above
         userdebug_or_eng(`-simpleperf_boot')
         -system_server

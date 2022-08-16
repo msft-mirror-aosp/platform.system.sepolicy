@@ -162,6 +162,8 @@ ctl.restart$            u:object_r:ctl_restart_prop:s0
 ctl.interface_start$    u:object_r:ctl_interface_start_prop:s0
 ctl.interface_stop$     u:object_r:ctl_interface_stop_prop:s0
 ctl.interface_restart$  u:object_r:ctl_interface_restart_prop:s0
+ctl.apex_load$          u:object_r:ctl_apex_load_prop:s0
+ctl.apex_unload$        u:object_r:ctl_apex_load_prop:s0
 
  # Restrict access to starting/stopping adbd
 ctl.start$adbd             u:object_r:ctl_adbd_prop:s0
@@ -217,6 +219,9 @@ ro.lowpan.              u:object_r:lowpan_prop:s0
 
 # heapprofd properties
 heapprofd.              u:object_r:heapprofd_prop:s0
+
+# servicemanager properties
+servicemanager.ready    u:object_r:servicemanager_prop:s0 exact bool
 
 # hwservicemanager properties
 hwservicemanager.       u:object_r:hwservicemanager_prop:s0
@@ -274,8 +279,10 @@ persist.mm_events.enabled                           u:object_r:mm_events_config_
 persist.device_config.global_settings.sys_traced u:object_r:device_config_sys_traced_prop:s0
 
 apexd.                  u:object_r:apexd_prop:s0
+apexd.config.           u:object_r:apexd_config_prop:s0
 apexd.config.dm_delete.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.dm_create.timeout           u:object_r:apexd_config_prop:s0 exact uint
+apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact uint
 persist.apexd.          u:object_r:apexd_prop:s0
 persist.vendor.apex.    u:object_r:apexd_select_prop:s0
 ro.boot.vendor.apex.    u:object_r:apexd_select_prop:s0
@@ -490,6 +497,7 @@ bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -522,6 +530,15 @@ bluetooth.profile.pbap.client.enabled                u:object_r:bluetooth_config
 bluetooth.profile.pbap.server.enabled                u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.profile.sap.server.enabled                 u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.profile.vcp.controller.enabled             u:object_r:bluetooth_config_prop:s0 exact bool
+
+bluetooth.core.acl.link_supervision_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.page_scan_type                u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.page_scan_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.page_scan_window              u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.inq_scan_type                 u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.inq_scan_interval             u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.inq_scan_window               u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.page_timeout                  u:object_r:bluetooth_config_prop:s0 exact uint
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
 
@@ -726,13 +743,18 @@ init.svc.surfaceflinger u:object_r:init_service_status_prop:s0 exact string
 init.svc.tombstoned     u:object_r:init_service_status_prop:s0 exact string
 init.svc.zygote         u:object_r:init_service_status_prop:s0 exact string
 
+# apexd reads this property to check if init has done with ctl.apex_* messages
+# This should be the form of init.apex.<apex_name>.
+init.apex. u:object_r:init_apex_status_private_prop:s0 prefix enum loaded unloaded
+
 libc.debug.malloc.options u:object_r:libc_debug_prop:s0 exact string
 libc.debug.malloc.program u:object_r:libc_debug_prop:s0 exact string
 libc.debug.hooks.enable   u:object_r:libc_debug_prop:s0 exact string
 
 # GWP-ASan props. Separate from other libc.debug.* props, because we want users
 # to be able to set them from `adb shell` even on release devices.
-libc.debug.gwp_asan.  u:object_r:gwp_asan_prop:s0 prefix string
+libc.debug.gwp_asan.          u:object_r:gwp_asan_prop:s0 prefix string
+persist.libc.debug.gwp_asan.  u:object_r:gwp_asan_prop:s0 prefix string
 
 # shell-only props for ARM memory tagging (MTE).
 arm64.memtag. u:object_r:arm64_memtag_prop:s0 prefix string
@@ -1178,6 +1200,7 @@ ro.surface_flinger.use_content_detection_for_refresh_rate u:object_r:surfaceflin
 ro.surface_flinger.color_space_agnostic_dataspace         u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.refresh_rate_switching                 u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.update_device_product_info_on_hotplug_reconnect u:object_r:surfaceflinger_prop:s0 exact bool
+ro.surface_flinger.enable_adpf_cpu_hint                   u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.enable_frame_rate_override             u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.enable_layer_caching                   u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.display_update_imminent_timeout_ms     u:object_r:surfaceflinger_prop:s0 exact int

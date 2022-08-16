@@ -173,12 +173,6 @@ attribute system_api_service;
 # services which are explicitly disallowed for untrusted apps to access
 attribute protected_service;
 
-# services which served by vendor and also using the copy of libbinder on
-# system (for instance via libbinder_ndk). services using a different copy
-# of libbinder currently need their own context manager (e.g.
-# vndservicemanager)
-attribute vendor_service;
-
 # All types used for services managed by servicemanager.
 # On change, update CHECK_SC_ASSERT_ATTRS
 # definition in tools/checkfc.c.
