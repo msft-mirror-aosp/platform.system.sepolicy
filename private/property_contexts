@@ -262,6 +262,7 @@ persist.device_config.storage_native_boot.          u:object_r:device_config_sto
 persist.device_config.surface_flinger_native_boot.  u:object_r:device_config_surface_flinger_native_boot_prop:s0
 persist.device_config.swcodec_native.               u:object_r:device_config_swcodec_native_prop:s0
 persist.device_config.vendor_system_native.         u:object_r:device_config_vendor_system_native_prop:s0
+persist.device_config.vendor_system_native_boot.    u:object_r:device_config_vendor_system_native_boot_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
@@ -539,6 +540,22 @@ bluetooth.core.classic.inq_scan_type                 u:object_r:bluetooth_config
 bluetooth.core.classic.inq_scan_interval             u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.classic.inq_scan_window               u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.classic.page_timeout                  u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.sniff_max_intervals           u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_min_intervals           u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_attempts                u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_timeouts                u:object_r:bluetooth_config_prop:s0 exact string
+
+bluetooth.core.le.min_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_latency                 u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_supervision_timeout     u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.direct_connection_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_interval_fast      u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_fast        u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_2m_fast     u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_coded_fast  u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
 
@@ -678,6 +695,7 @@ sys.usb.mtp.device_type u:object_r:usb_config_prop:s0 exact int
 sys.usb.config. u:object_r:usb_prop:s0
 
 sys.usb.ffs.aio_compat u:object_r:ffs_config_prop:s0 exact bool
+sys.usb.ffs.io_uring_enabled u:object_r:ffs_config_prop:s0 exact bool
 sys.usb.ffs.max_read   u:object_r:ffs_config_prop:s0 exact int
 sys.usb.ffs.max_write  u:object_r:ffs_config_prop:s0 exact int
 
@@ -778,6 +796,7 @@ ro.boot.bootdevice         u:object_r:bootloader_prop:s0 exact string
 ro.boot.bootloader         u:object_r:bootloader_prop:s0 exact string
 ro.boot.boottime           u:object_r:bootloader_prop:s0 exact string
 ro.boot.console            u:object_r:bootloader_prop:s0 exact string
+ro.boot.ddr_size           u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware           u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware.color     u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware.sku       u:object_r:bootloader_prop:s0 exact string
@@ -834,7 +853,7 @@ ro.build.version.security_patch           u:object_r:build_prop:s0 exact string
 
 ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
-ro.debuggable       u:object_r:build_prop:s0 exact bool
+ro.debuggable       u:object_r:userdebug_or_eng_prop:s0 exact bool
 ro.force.debuggable u:object_r:build_prop:s0 exact bool
 
 ro.treble.enabled u:object_r:build_prop:s0 exact bool
@@ -862,7 +881,7 @@ ro.system.build.version.release_or_codename u:object_r:build_prop:s0 exact strin
 ro.system.build.version.sdk                 u:object_r:build_prop:s0 exact int
 
 ro.adb.secure u:object_r:build_prop:s0 exact bool
-ro.secure     u:object_r:build_prop:s0 exact int
+ro.secure     u:object_r:userdebug_or_eng_prop:s0 exact int
 
 ro.product.system_ext.brand        u:object_r:build_prop:s0 exact string
 ro.product.system_ext.device       u:object_r:build_prop:s0 exact string
@@ -1205,6 +1224,7 @@ ro.surface_flinger.enable_frame_rate_override             u:object_r:surfaceflin
 ro.surface_flinger.enable_layer_caching                   u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.display_update_imminent_timeout_ms     u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.uclamp.min                             u:object_r:surfaceflinger_prop:s0 exact int
+ro.surface_flinger.ignore_hdr_camera_layers               u:object_r:surfaceflinger_prop:s0 exact bool
 
 ro.sf.disable_triple_buffer u:object_r:surfaceflinger_prop:s0 exact bool
 ro.sf.lcd_density           u:object_r:surfaceflinger_prop:s0 exact int
@@ -1402,3 +1422,7 @@ vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fin
 vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+
+# properties for tuner
+ro.tuner.lazyhal    u:object_r:tuner_config_prop:s0 exact bool
+tuner.server.enable u:object_r:tuner_server_ctl_prop:s0 exact bool

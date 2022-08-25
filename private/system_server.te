@@ -604,12 +604,9 @@ allow system_server systemkeys_data_file:file create_file_perms;
 allow system_server textclassifier_data_file:dir create_dir_perms;
 allow system_server textclassifier_data_file:file create_file_perms;
 
-# Access /data/tombstones.
-allow system_server tombstone_data_file:dir r_dir_perms;
-allow system_server tombstone_data_file:file r_file_perms;
-
-# Allow write access to be able to truncate tombstones.
-allow system_server tombstone_data_file:file write;
+# Manage /data/tombstones.
+allow system_server tombstone_data_file:dir rw_dir_perms;
+allow system_server tombstone_data_file:file create_file_perms;
 
 # Manage /data/misc/vpn.
 allow system_server vpn_data_file:dir create_dir_perms;
@@ -753,6 +750,7 @@ set_prop(system_server, device_config_configuration_prop)
 set_prop(system_server, device_config_connectivity_prop)
 set_prop(system_server, device_config_surface_flinger_native_boot_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
+set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
@@ -821,6 +819,11 @@ get_prop(system_server, hypervisor_prop)
 
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
+
+# Read ro.tuner.lazyhal
+get_prop(system_server, tuner_config_prop)
+# Write tuner.server.enable
+set_prop(system_server, tuner_server_ctl_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1292,6 +1295,13 @@ neverallow {
   device_config_swcodec_native_prop
   device_config_window_manager_native_boot_prop
 }:property_service set;
+
+# Only allow system_server and init to set tuner_server_ctl_prop
+neverallow {
+  domain
+  -system_server
+  -init
+} tuner_server_ctl_prop:property_service set;
 
 # system_server should never be executing dex2oat. This is either
 # a bug (for example, bug 16317188), or represents an attempt by

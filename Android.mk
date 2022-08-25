@@ -477,7 +477,6 @@ ifdef HAS_PRODUCT_SEPOLICY
 LOCAL_REQUIRED_MODULES += precompiled_sepolicy.product_sepolicy_and_mapping.sha256
 endif
 
-LOCAL_REQUIRED_MODULES += precompiled_sepolicy.apex_sepolicy.sha256
 endif # ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
 
 
@@ -661,7 +660,6 @@ file_contexts.local.tmp :=
 file_contexts.modules.tmp :=
 
 ##################################
-include $(LOCAL_PATH)/mac_permissions.mk
 
 all_fc_files := $(TARGET_OUT)/etc/selinux/plat_file_contexts
 all_fc_files += $(TARGET_OUT_VENDOR)/etc/selinux/vendor_file_contexts

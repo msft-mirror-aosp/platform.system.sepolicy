@@ -33,14 +33,11 @@ domain_auto_trans(microdroid_manager, compos_exec, compos)
 domain_auto_trans(microdroid_manager, apkdmverity_exec, apkdmverity)
 domain_auto_trans(microdroid_manager, zipfuse_exec, zipfuse)
 
+# Allow microdroid_manager to run kexec to load crashkernel
+domain_auto_trans(microdroid_manager, kexec_exec, kexec)
+
 # Let microdroid_manager kernel-log.
 allow microdroid_manager kmsg_device:chr_file w_file_perms;
-
-# Let microdroid_manager read a config file from /mnt/apk (fusefs)
-# TODO(b/188400186) remove the below rule
-userdebug_or_eng(`
-  r_dir_file(microdroid_manager, fuse)
-')
 
 # Let microdroid_manager to create a vsock connection back to the host VM
 allow microdroid_manager self:vsock_socket { create_socket_perms_no_ioctl };
@@ -81,6 +78,10 @@ set_prop(microdroid_manager, powerctl_prop)
 # Allow microdroid_manager to read bootconfig so that it can reject a bootconfig
 # that is different from what is recorded in the instance.img file.
 allow microdroid_manager proc_bootconfig:file r_file_perms;
+
+# microdroid_manager needs to read /proc/cmdline to see if crashkernel= parameter is set
+# or not; if set, it executes kexec to load the crashkernel into memory.
+allow microdroid_manager proc_cmdline:file r_file_perms;
 
 # Allow microdroid_manager to read/write failure serial device
 allow microdroid_manager serial_device:chr_file w_file_perms;
