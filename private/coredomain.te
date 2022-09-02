@@ -1,3 +1,4 @@
+get_prop(coredomain, apex_ready_prop)
 get_prop(coredomain, boot_status_prop)
 get_prop(coredomain, camera_config_prop)
 get_prop(coredomain, dalvik_config_prop)
@@ -50,6 +51,7 @@ full_treble_only(`
     neverallow {
         coredomain
         -appdomain
+        -artd
         -dex2oat
         -dexoptanalyzer
         -idmap
@@ -67,6 +69,7 @@ full_treble_only(`
     neverallow {
         coredomain
         -appdomain
+        -artd
         -dex2oat
         -dexoptanalyzer
         -idmap
@@ -75,6 +78,7 @@ full_treble_only(`
         -heapprofd
         userdebug_or_eng(`-profcollectd')
         -postinstall_dexopt
+        -profman
         -rs # spawned by appdomain, so carryover the exception above
         userdebug_or_eng(`-simpleperf_boot')
         -system_server
@@ -91,8 +95,6 @@ full_treble_only(`
         -idmap
         -init
         -installd
-        -iorap_inode2filename
-        -iorap_prefetcherd
         -postinstall_dexopt
         -rs # spawned by appdomain, so carryover the exception above
         -system_server
@@ -111,8 +113,6 @@ full_treble_only(`
         -idmap
         -init
         -installd
-        -iorap_inode2filename
-        -iorap_prefetcherd
         -postinstall_dexopt
         -rs # spawned by appdomain, so carryover the exception above
         -system_server

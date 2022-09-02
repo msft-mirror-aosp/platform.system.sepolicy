@@ -172,6 +172,8 @@ type $1_userfaultfd;
 type_transition $1 $1:anon_inode $1_userfaultfd "[userfaultfd]";
 # Allow domain to create/use userfaultfd anon_inode.
 allow $1 $1_userfaultfd:anon_inode { create ioctl read };
+# Suppress errors generate during bugreport
+dontaudit su $1_userfaultfd:anon_inode *;
 # Other domains may not use userfaultfd anon_inodes created by this domain.
 neverallow { domain -$1 } $1_userfaultfd:anon_inode *;
 # This domain may not use userfaultfd anon_inodes created by other domains.
@@ -197,9 +199,11 @@ allow { virtualizationservice crosvm } $1:fifo_file write;
 # communicate with the VM that it created. Notice that we do not grant
 # permission to create a vsock; the client can only connect to VMs
 # that it owns.
-allow $1 virtualizationservice:vsock_socket { getattr read write };
+allow $1 virtualizationservice:vsock_socket { getattr getopt read write };
 # Allow client to inspect hypervisor capabilities
 get_prop($1, hypervisor_prop)
+# Allow client to read (but not open) the crashdump provided by virtualizationservice
+allow $1 virtualizationservice_data_file:file { getattr read };
 ')
 
 #####################################
@@ -756,7 +760,6 @@ define(`hal_attribute_service', `
         -$1_server
         # some services are allowed to find all services
         -atrace
-        -dumpstate
         -shell
         -system_app
         -traceur_app

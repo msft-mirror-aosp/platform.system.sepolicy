@@ -6,6 +6,9 @@ type microdroid_manager_exec, exec_type, file_type, system_file_type;
 # allow domain transition from init
 init_daemon_domain(microdroid_manager)
 
+# Allow microdroid_manager to set boot status
+set_prop(microdroid_manager, boot_status_prop)
+
 # microdroid_manager accesses a virtual disk block device to read VM payload
 # It needs write access as it updates the instance image
 allow microdroid_manager block_device:dir r_dir_perms;
@@ -30,14 +33,11 @@ domain_auto_trans(microdroid_manager, compos_exec, compos)
 domain_auto_trans(microdroid_manager, apkdmverity_exec, apkdmverity)
 domain_auto_trans(microdroid_manager, zipfuse_exec, zipfuse)
 
+# Allow microdroid_manager to run kexec to load crashkernel
+domain_auto_trans(microdroid_manager, kexec_exec, kexec)
+
 # Let microdroid_manager kernel-log.
 allow microdroid_manager kmsg_device:chr_file w_file_perms;
-
-# Let microdroid_manager read a config file from /mnt/apk (fusefs)
-# TODO(b/188400186) remove the below rule
-userdebug_or_eng(`
-  r_dir_file(microdroid_manager, fuse)
-')
 
 # Let microdroid_manager to create a vsock connection back to the host VM
 allow microdroid_manager self:vsock_socket { create_socket_perms_no_ioctl };
@@ -56,11 +56,15 @@ allow microdroid_manager diced:diced { derive demote_self };
 allow microdroid_manager apex_mnt_dir:dir w_dir_perms;
 allow microdroid_manager apex_mnt_dir:file create_file_perms;
 
-# Allow microdroid_manager to start the services apexd-vm, apkdmverity and zipfuse
+# Allow microdroid_manager to start the services apexd-vm, apkdmverity,tombstone_transmit & zipfuse
 set_prop(microdroid_manager, ctl_apexd_vm_prop)
 set_prop(microdroid_manager, ctl_apkdmverity_prop)
 set_prop(microdroid_manager, ctl_seriallogging_prop)
+set_prop(microdroid_manager, ctl_tombstone_transmit_prop)
 set_prop(microdroid_manager, ctl_zipfuse_prop)
+
+# Allow microdroid_manager to stop tombstoned
+set_prop(microdroid_manager, ctl_tombstoned_prop)
 
 # Allow microdroid_manager to wait for linkerconfig to be ready
 get_prop(microdroid_manager, apex_config_prop)
@@ -74,6 +78,13 @@ set_prop(microdroid_manager, powerctl_prop)
 # Allow microdroid_manager to read bootconfig so that it can reject a bootconfig
 # that is different from what is recorded in the instance.img file.
 allow microdroid_manager proc_bootconfig:file r_file_perms;
+
+# microdroid_manager needs to read /proc/cmdline to see if crashkernel= parameter is set
+# or not; if set, it executes kexec to load the crashkernel into memory.
+allow microdroid_manager proc_cmdline:file r_file_perms;
+
+# Allow microdroid_manager to read/write failure serial device
+allow microdroid_manager serial_device:chr_file w_file_perms;
 
 # Allow microdroid_manager to handle extra_apks
 allow microdroid_manager extra_apk_file:dir create_dir_perms;

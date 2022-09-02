@@ -2,9 +2,6 @@
 type compos, domain, coredomain, microdroid_payload;
 type compos_exec, exec_type, file_type, system_file_type;
 
-# Expose RPC Binder service over vsock
-allow compos self:vsock_socket { create_socket_perms_no_ioctl listen accept };
-
 # Allow using various binder services
 binder_use(compos);
 allow compos authfs_binder_service:service_manager find;
@@ -24,6 +21,10 @@ allow compos apex_mnt_dir:dir r_dir_perms;
 dontaudit compos self:dir write;
 # See b/35323867#comment3
 dontaudit compos self:global_capability_class_set dac_override;
+
+# Allow settings system properties that ART expects.
+set_prop(compos, dalvik_config_prop)
+set_prop(compos, device_config_runtime_native_boot_prop)
 
 # Allow running odrefresh in its own domain
 domain_auto_trans(compos, odrefresh_exec, odrefresh)

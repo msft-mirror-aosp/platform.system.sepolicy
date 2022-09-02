@@ -43,6 +43,9 @@ allow traced_probes proc_kallsyms:file r_file_perms;
 # Allow to read packages.list file.
 allow traced_probes packages_list_file:file r_file_perms;
 
+# Allow to read game_mode_intervention.list file.
+allow traced_probes game_mode_intervention_list_file:file r_file_perms;
+
 # Allow to log to kernel dmesg when starting / stopping ftrace.
 allow traced_probes kmsg_device:chr_file write;
 
@@ -80,6 +83,7 @@ allow traced_probes {
   proc_meminfo
   proc_vmstat
   proc_stat
+  proc_buddyinfo
 }:file r_file_perms;
 
 # Allow access to read /sys/class/devfreq/ and /$DEVICE/cur_freq files
@@ -123,6 +127,9 @@ neverallow traced_probes {
   -dalvikcache_data_file
   -system_data_file
   -system_data_root_file
+  -media_userdir_file
+  -system_userdir_file
+  -vendor_userdir_file
   -system_app_data_file
   -backup_data_file
   -bootstat_data_file
@@ -133,17 +140,14 @@ neverallow traced_probes {
   # TODO(b/72998741) Remove vendor_data_file exemption. Further restricted in a
   # subsequent neverallow. Currently only getattr and search are allowed.
   -vendor_data_file
-  -zoneinfo_data_file
   with_native_coverage(`-method_trace_data_file')
 }:dir *;
 neverallow traced_probes system_data_file:dir ~{ getattr userdebug_or_eng(`open read') search };
-neverallow traced_probes zoneinfo_data_file:dir ~r_dir_perms;
-neverallow traced_probes { data_file_type -zoneinfo_data_file }:lnk_file *;
 neverallow traced_probes {
   data_file_type
-  -zoneinfo_data_file
   -packages_list_file
   with_native_coverage(`-method_trace_data_file')
+  -game_mode_intervention_list_file
 }:file *;
 
 # Only init is allowed to enter the traced_probes domain via exec()

@@ -54,15 +54,7 @@ PLAT_VENDOR_POLICY := $(LOCAL_PATH)/vendor
 REQD_MASK_POLICY := $(LOCAL_PATH)/reqd_mask
 
 SYSTEM_EXT_PUBLIC_POLICY := $(SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS)
-ifneq (,$(BOARD_PLAT_PUBLIC_SEPOLICY_DIR))
-  # TODO: Disallow BOARD_PLAT_*
-  SYSTEM_EXT_PUBLIC_POLICY += $(BOARD_PLAT_PUBLIC_SEPOLICY_DIR)
-endif
 SYSTEM_EXT_PRIVATE_POLICY := $(SYSTEM_EXT_PRIVATE_SEPOLICY_DIRS)
-ifneq (,$(BOARD_PLAT_PRIVATE_SEPOLICY_DIR))
-  # TODO: Disallow BOARD_PLAT_*
-  SYSTEM_EXT_PRIVATE_POLICY += $(BOARD_PLAT_PRIVATE_SEPOLICY_DIR)
-endif
 
 PRODUCT_PUBLIC_POLICY := $(PRODUCT_PUBLIC_SEPOLICY_DIRS)
 PRODUCT_PRIVATE_POLICY := $(PRODUCT_PRIVATE_SEPOLICY_DIRS)
@@ -669,7 +661,6 @@ file_contexts.local.tmp :=
 file_contexts.modules.tmp :=
 
 ##################################
-include $(LOCAL_PATH)/mac_permissions.mk
 
 all_fc_files := $(TARGET_OUT)/etc/selinux/plat_file_contexts
 all_fc_files += $(TARGET_OUT_VENDOR)/etc/selinux/vendor_file_contexts

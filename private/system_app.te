@@ -87,7 +87,6 @@ allow system_app {
   -dnsresolver_service
   -dumpstate_service
   -installd_service
-  -iorapd_service
   -lpdump_service
   -mdns_service
   -netd_service
@@ -103,7 +102,6 @@ dontaudit system_app {
   dnsresolver_service
   dumpstate_service
   installd_service
-  iorapd_service
   mdns_service
   netd_service
   virtual_touchpad_service
@@ -112,6 +110,9 @@ dontaudit system_app {
 
 # suppress denials caused by debugfs_tracing
 dontaudit system_app debugfs_tracing:file rw_file_perms;
+
+# Ignore access to zram when Debug.getMemInfo is called.
+dontaudit system_app sysfs_zram:dir search;
 
 allow system_app keystore:keystore_key {
     get_state

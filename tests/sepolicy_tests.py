@@ -15,10 +15,14 @@
 from optparse import OptionParser
 from optparse import Option, OptionValueError
 import os
+import pkgutil
 import policy
 import re
+import shutil
 import sys
-import distutils.ccompiler
+import tempfile
+
+SHARED_LIB_EXTENSION = '.dylib' if sys.platform == 'darwin' else '.so'
 
 #############################################################
 # Tests
@@ -43,6 +47,9 @@ def TestSystemTypeViolations(pol):
     ]
 
     return pol.AssertPathTypesHaveAttr(partitions, exceptions, "system_file_type")
+
+def TestBpffsTypeViolations(pol):
+    return pol.AssertGenfsFilesystemTypesHaveAttr("bpf", "bpffs_type")
 
 def TestProcTypeViolations(pol):
     return pol.AssertGenfsFilesystemTypesHaveAttr("proc", "proc_type")
@@ -128,6 +135,7 @@ class MultipleOption(Option):
             Option.take_action(self, action, dest, opt, value, values, parser)
 
 Tests = [
+    "TestBpffsTypeViolations",
     "TestDataTypeViolators",
     "TestProcTypeViolations",
     "TestSysfsTypeViolations",
@@ -141,7 +149,11 @@ Tests = [
     "TestDmaHeapDevTypeViolations",
 ]
 
-if __name__ == '__main__':
+def do_main(libpath):
+    """
+    Args:
+        libpath: string, path to libsepolwrap.so
+    """
     usage = "sepolicy_tests -f vendor_file_contexts -f "
     usage +="plat_file_contexts -p policy [--test test] [--help]"
     parser = OptionParser(option_class=MultipleOption, usage=usage)
@@ -152,11 +164,6 @@ if __name__ == '__main__':
             help="Test options include "+str(Tests))
 
     (options, args) = parser.parse_args()
-
-    libpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-        "libsepolwrap" + distutils.ccompiler.new_compiler().shared_lib_extension)
-    if not os.path.exists(libpath):
-        sys.exit("Error: libsepolwrap does not exist. Is this binary corrupted?\n")
 
     if not options.policy:
         sys.exit("Must specify monolithic policy file\n" + parser.usage)
@@ -175,6 +182,8 @@ if __name__ == '__main__':
 
     results = ""
     # If an individual test is not specified, run all tests.
+    if options.test is None or "TestBpffsTypeViolations" in options.test:
+        results += TestBpffsTypeViolations(pol)
     if options.test is None or "TestDataTypeViolations" in options.test:
         results += TestDataTypeViolations(pol)
     if options.test is None or "TestProcTypeViolations" in options.test:
@@ -200,3 +209,17 @@ if __name__ == '__main__':
 
     if len(results) > 0:
         sys.exit(results)
+
+if __name__ == '__main__':
+    temp_dir = tempfile.mkdtemp()
+    try:
+        libname = "libsepolwrap" + SHARED_LIB_EXTENSION
+        libpath = os.path.join(temp_dir, libname)
+        with open(libpath, "wb") as f:
+            blob = pkgutil.get_data("sepolicy_tests", libname)
+            if not blob:
+                sys.exit("Error: libsepolwrap does not exist. Is this binary corrupted?\n")
+            f.write(blob)
+        do_main(libpath)
+    finally:
+        shutil.rmtree(temp_dir)

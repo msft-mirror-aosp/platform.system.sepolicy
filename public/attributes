@@ -7,8 +7,8 @@
 # in tools/checkfc.c
 attribute dev_type;
 
-# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
-attribute bdev_type;
+# Attribute for all bpf filesystem subtypes.
+attribute bpffs_type;
 
 # All types used for processes.
 attribute domain;
@@ -70,9 +70,6 @@ expandattribute proc_net_type true;
 
 # All types used for sysfs files.
 attribute sysfs_type;
-
-# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
-attribute sysfs_block_type;
 
 # All types use for debugfs files.
 attribute debugfs_type;
@@ -169,12 +166,6 @@ attribute system_api_service;
 
 # services which are explicitly disallowed for untrusted apps to access
 attribute protected_service;
-
-# services which served by vendor and also using the copy of libbinder on
-# system (for instance via libbinder_ndk). services using a different copy
-# of libbinder currently need their own context manager (e.g.
-# vndservicemanager)
-attribute vendor_service;
 
 # All types used for services managed by servicemanager.
 # On change, update CHECK_SC_ASSERT_ATTRS

@@ -60,7 +60,6 @@ allow shell input_device:chr_file r_file_perms;
 r_dir_file(shell, system_file)
 allow shell system_file:file x_file_perms;
 allow shell toolbox_exec:file rx_file_perms;
-allow shell tzdatacheck_exec:file rx_file_perms;
 allow shell shell_exec:file rx_file_perms;
 allow shell zygote_exec:file rx_file_perms;
 
@@ -84,7 +83,6 @@ allow shell {
   -gatekeeper_service
   -incident_service
   -installd_service
-  -iorapd_service
   -mdns_service
   -netd_service
   -system_suspend_control_internal_service
