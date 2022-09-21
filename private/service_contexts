@@ -140,6 +140,7 @@ cloudsearch_service                       u:object_r:cloudsearch_service:s0
 com.android.net.IProxyService             u:object_r:IProxyService_service:s0
 companiondevice                           u:object_r:companion_device_service:s0
 communal                                  u:object_r:communal_service:s0
+credential                                u:object_r:credential_service:s0
 platform_compat                           u:object_r:platform_compat_service:s0
 platform_compat_native                    u:object_r:platform_compat_service:s0
 connectivity                              u:object_r:connectivity_service:s0
@@ -193,6 +194,7 @@ gpu                                       u:object_r:gpu_service:s0
 hardware                                  u:object_r:hardware_service:s0
 hardware_properties                       u:object_r:hardware_properties_service:s0
 hdmi_control                              u:object_r:hdmi_control_service:s0
+healthconnect                             u:object_r:healthconnect_service:s0
 ions                                      u:object_r:radio_service:s0
 idmap                                     u:object_r:idmap_service:s0
 incident                                  u:object_r:incident_service:s0
