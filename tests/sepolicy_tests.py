@@ -18,7 +18,8 @@ import os
 import policy
 import re
 import sys
-import distutils.ccompiler
+
+SHARED_LIB_EXTENSION = '.dylib' if sys.platform == 'darwin' else '.so'
 
 #############################################################
 # Tests
@@ -43,6 +44,9 @@ def TestSystemTypeViolations(pol):
     ]
 
     return pol.AssertPathTypesHaveAttr(partitions, exceptions, "system_file_type")
+
+def TestBpffsTypeViolations(pol):
+    return pol.AssertGenfsFilesystemTypesHaveAttr("bpf", "bpffs_type")
 
 def TestProcTypeViolations(pol):
     return pol.AssertGenfsFilesystemTypesHaveAttr("proc", "proc_type")
@@ -128,6 +132,7 @@ class MultipleOption(Option):
             Option.take_action(self, action, dest, opt, value, values, parser)
 
 Tests = [
+    "TestBpffsTypeViolations",
     "TestDataTypeViolators",
     "TestProcTypeViolations",
     "TestSysfsTypeViolations",
@@ -154,7 +159,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     libpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-        "libsepolwrap" + distutils.ccompiler.new_compiler().shared_lib_extension)
+                           "libsepolwrap" + SHARED_LIB_EXTENSION)
     if not os.path.exists(libpath):
         sys.exit("Error: libsepolwrap does not exist. Is this binary corrupted?\n")
 
@@ -175,6 +180,8 @@ if __name__ == '__main__':
 
     results = ""
     # If an individual test is not specified, run all tests.
+    if options.test is None or "TestBpffsTypeViolations" in options.test:
+        results += TestBpffsTypeViolations(pol)
     if options.test is None or "TestDataTypeViolations" in options.test:
         results += TestDataTypeViolations(pol)
     if options.test is None or "TestProcTypeViolations" in options.test:
