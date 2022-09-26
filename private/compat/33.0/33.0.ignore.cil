@@ -11,14 +11,18 @@
     device_config_memory_safety_native_prop
     device_config_vendor_system_native_prop
     hal_bootctl_service
+    hal_remoteaccess_service
     hal_tv_input_service
     healthconnect_service
     keystore_config_prop
     permissive_mte_prop
+    prng_seeder
     servicemanager_prop
     system_net_netd_service
     tuner_config_prop
     tuner_server_ctl_prop
     virtual_face_hal_prop
     virtual_fingerprint_hal_prop
+    hal_gatekeeper_service
+    hal_broadcastradio_service
   ))
