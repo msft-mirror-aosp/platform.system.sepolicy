@@ -10,6 +10,7 @@
     credential_service
     device_config_memory_safety_native_prop
     device_config_vendor_system_native_prop
+    devicelock_service
     hal_bootctl_service
     hal_remoteaccess_service
     hal_tv_input_service
@@ -19,6 +20,7 @@
     prng_seeder
     servicemanager_prop
     system_net_netd_service
+    timezone_metadata_prop
     tuner_config_prop
     tuner_server_ctl_prop
     virtual_face_hal_prop
