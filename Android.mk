@@ -324,6 +324,7 @@ LOCAL_REQUIRED_MODULES += \
     plat_service_contexts_test \
     plat_hwservice_contexts \
     plat_hwservice_contexts_test \
+    fuzzer_bindings_test \
     plat_bug_map \
     searchpolicy \
 
@@ -477,7 +478,6 @@ ifdef HAS_PRODUCT_SEPOLICY
 LOCAL_REQUIRED_MODULES += precompiled_sepolicy.product_sepolicy_and_mapping.sha256
 endif
 
-LOCAL_REQUIRED_MODULES += precompiled_sepolicy.apex_sepolicy.sha256
 endif # ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
 
 
@@ -511,6 +511,8 @@ LOCAL_REQUIRED_MODULES += \
     odm_seapp_contexts \
     odm_property_contexts \
     odm_property_contexts_test \
+    odm_service_contexts \
+    odm_service_contexts_test \
     odm_hwservice_contexts \
     odm_hwservice_contexts_test \
     odm_mac_permissions.xml

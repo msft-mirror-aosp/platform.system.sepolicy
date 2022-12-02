@@ -22,12 +22,18 @@ add_service(virtualizationservice, virtualization_service)
 # When virtualizationservice execs a file with the crosvm_exec label, run it in the crosvm domain.
 domain_auto_trans(virtualizationservice, crosvm_exec, crosvm)
 
+# Let virtualizationservice (and specifically its children) mlock VM memory and page tables.
+allow virtualizationservice self:capability sys_resource;
+
 # Let virtualizationservice kill crosvm.
 allow virtualizationservice crosvm:process sigkill;
 
 # Let virtualizationservice access its data directory.
 allow virtualizationservice virtualizationservice_data_file:file create_file_perms;
 allow virtualizationservice virtualizationservice_data_file:dir create_dir_perms;
+
+# Let virtualizationservice manage crosvm control sockets.
+allow virtualizationservice virtualizationservice_data_file:sock_file create_file_perms;
 
 # Allow to use fd (e.g. /dev/pts/0) inherited from adbd so that we can redirect output from
 # crosvm to the console
@@ -41,6 +47,7 @@ allow virtualizationservice apk_data_file:file { getattr read };
 allow virtualizationservice {
   app_data_file
   apex_compos_data_file
+  privapp_data_file
 }:file { getattr read write };
 
 # shell_data_file is used for automated tests and manual debugging.
@@ -64,8 +71,9 @@ allow virtualizationservice self:vsock_socket { create_socket_perms_no_ioctl lis
 # Allow virtualizationservice to read/write its own sysprop. Only the process can do so.
 set_prop(virtualizationservice, virtualizationservice_prop)
 
-# Allow virtualizationservice to inspect hypervisor capabilities.
+# Allow virtualizationservice to inspect all hypervisor capabilities.
 get_prop(virtualizationservice, hypervisor_prop)
+get_prop(virtualizationservice, hypervisor_restricted_prop)
 
 # Allow writing stats to statsd
 unix_socket_send(virtualizationservice, statsdw, statsd)
@@ -76,6 +84,9 @@ unix_socket_connect(virtualizationservice, tombstoned_crash, tombstoned)
 # Append to tombstone files passed as fds from tombstoned
 allow virtualizationservice tombstone_data_file:file { append getattr };
 allow virtualizationservice tombstoned:fd use;
+
+# Allow reading files under /proc/[crosvm pid]/, for collecting CPU & memory usage inside VM.
+r_dir_file(virtualizationservice, crosvm);
 
 neverallow {
   domain

@@ -330,6 +330,8 @@ hal_client_domain(system_server, hal_sensors)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
 hal_client_domain(system_server, hal_tv_cec)
+hal_client_domain(system_server, hal_tv_hdmi)
+hal_client_domain(system_server, hal_tv_hdmi_cec)
 hal_client_domain(system_server, hal_tv_input)
 hal_client_domain(system_server, hal_usb)
 hal_client_domain(system_server, hal_usb_gadget)
@@ -691,6 +693,7 @@ allow system_server server_configurable_flags_data_file:file r_file_perms;
 # Property Service write
 set_prop(system_server, system_prop)
 set_prop(system_server, bootanim_system_prop)
+set_prop(system_server, bluetooth_prop)
 set_prop(system_server, exported_system_prop)
 set_prop(system_server, exported3_system_prop)
 set_prop(system_server, safemode_prop)
@@ -717,6 +720,9 @@ set_prop(system_server, surfaceflinger_color_prop)
 set_prop(system_server, provisioned_prop)
 set_prop(system_server, retaildemo_prop)
 set_prop(system_server, dmesgd_start_prop)
+set_prop(system_server, locale_prop)
+set_prop(system_server, timezone_metadata_prop)
+set_prop(system_server, timezone_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
 userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
@@ -752,6 +758,7 @@ set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
+set_prop(system_server, device_config_remote_key_provisioning_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
 
 # Allow query ART device config properties
@@ -1210,8 +1217,8 @@ get_prop(system_server, framework_watchdog_config_prop)
 # Font files are written by system server
 allow system_server font_data_file:file create_file_perms;
 allow system_server font_data_file:dir create_dir_perms;
-# Allow system process to setup fs-verity for font files
-allowxperm system_server font_data_file:file ioctl FS_IOC_ENABLE_VERITY;
+# Allow system process to setup and measure fs-verity for font files
+allowxperm system_server font_data_file:file ioctl { FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY };
 
 # Read qemu.hw.mainkeys property
 get_prop(system_server, qemu_hw_prop)
@@ -1285,6 +1292,7 @@ neverallow {
   device_config_runtime_native_prop
   device_config_media_native_prop
   device_config_mglru_native_prop
+  device_config_remote_key_provisioning_native_prop
   device_config_storage_native_boot_prop
   device_config_surface_flinger_native_boot_prop
   device_config_sys_traced_prop

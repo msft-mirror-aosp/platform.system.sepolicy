@@ -43,6 +43,7 @@ ro.khungtask.           u:object_r:llkd_prop:s0
 log.                    u:object_r:log_prop:s0
 log.tag                 u:object_r:log_tag_prop:s0
 log.tag.WifiHAL         u:object_r:wifi_log_prop:s0
+ro.log.file_logger.path    u:object_r:log_file_logger_prop:s0 exact string
 security.perf_harden    u:object_r:shell_prop:s0
 persist.simpleperf.profile_app_uid              u:object_r:shell_prop:s0
 persist.simpleperf.profile_app_expiration_time  u:object_r:shell_prop:s0
@@ -254,6 +255,7 @@ persist.device_config.media_native.                 u:object_r:device_config_med
 persist.device_config.netd_native.                  u:object_r:device_config_netd_native_prop:s0
 persist.device_config.nnapi_native.                 u:object_r:device_config_nnapi_native_prop:s0
 persist.device_config.profcollect_native_boot.      u:object_r:device_config_profcollect_native_boot_prop:s0
+persist.device_config.remote_key_provisioning_native.  u:object_r:device_config_remote_key_provisioning_native_prop:s0
 persist.device_config.runtime_native.               u:object_r:device_config_runtime_native_prop:s0
 persist.device_config.runtime_native_boot.          u:object_r:device_config_runtime_native_boot_prop:s0
 persist.device_config.statsd_native.                u:object_r:device_config_statsd_native_prop:s0
@@ -559,6 +561,10 @@ bluetooth.core.le.connection_scan_window_2m_fast     u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_coded_fast  u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
+
+bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
 
@@ -633,6 +639,10 @@ external_storage.casefold.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.sdcardfs.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.cross_user.enabled u:object_r:storage_config_prop:s0 exact bool
 ro.fuse.bpf.enabled u:object_r:storage_config_prop:s0 exact bool
+
+# hypervisor.*: configured by the vendor to advertise capabilities of their
+# hypervisor to virtualizationservice.
+hypervisor.memory_reclaim.supported u:object_r:hypervisor_restricted_prop:s0 exact bool
 
 ro.config.per_app_memcg         u:object_r:lmkd_config_prop:s0 exact bool
 ro.lmk.critical                 u:object_r:lmkd_config_prop:s0 exact int
@@ -780,8 +790,25 @@ persist.arm64.memtag.app_default u:object_r:arm64_memtag_prop:s0 exact string
 
 net.redirect_socket_calls.hooked u:object_r:socket_hook_prop:s0 exact bool
 
-persist.sys.locale       u:object_r:exported_system_prop:s0 exact string
-persist.sys.timezone     u:object_r:exported_system_prop:s0 exact string
+# Settings system properties containing mutable "global" device settings.
+#
+# These can't be Android settings because they are also read by low-level
+# binaries that don't have access to "real" SettingsProvider settings. This
+# will usually be because of when they execute, e.g. during boot when Android
+# services are not yet running, and/or because they are needed by binaries that
+# are not "Android aware", i.e. they have light integration with the Android
+# platform via the low-level system properties lib.  Processes like shell may
+# modify these for testing purposes, but doing so is generally discouraged;
+# updates to these props will generally require intents to be sent to
+# long-running Android apps so they can update cached data and their UI state.
+persist.sys.locale       u:object_r:locale_prop:s0 exact string
+persist.sys.timezone     u:object_r:timezone_prop:s0 exact string
+
+# Time zone metadata system properties. Holds information associated with the
+# device's time zone and will therefore be written to at the same time.  Unlike
+# timezone_prop props, these do not need to be read by other processes.
+persist.sys.timezone_confidence u:object_r:timezone_metadata_prop:s0 exact uint
+
 persist.sys.mte.permissive u:object_r:permissive_mte_prop:s0 exact string
 persist.sys.test_harness u:object_r:test_harness_prop:s0 exact bool
 
@@ -1147,6 +1174,9 @@ ro.kernel.qemu             u:object_r:exported_default_prop:s0 exact bool
 ro.kernel.qemu.            u:object_r:exported_default_prop:s0
 ro.kernel.android.bootanim u:object_r:exported_default_prop:s0 exact int
 
+# This property is used by init to store the original value or /proc/sys/vm/watermark_scale_factor
+ro.kernel.watermark_scale_factor          u:object_r:init_storage_prop:s0 exact int
+
 ro.oem.key1 u:object_r:exported_default_prop:s0 exact string
 
 ro.product.vndk.version u:object_r:vndk_prop:s0 exact string
@@ -1412,19 +1442,34 @@ vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_
 # properties for the virtual Fingerprint HAL
 persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_hal_prop:s0 exact string
 persist.vendor.fingerprint.virtual.enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+persist.vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_location u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+persist.vendor.fingerprint.virtual.sensor_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_strength u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.max_enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.navigation_guesture u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.detect_interaction u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.display_touch u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.control_illumination u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_enable u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_timed_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_timed_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_permanent_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.enrollment_hit u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.next_enrollment u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.challenge u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_authenticate_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_detect_interaction_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_enroll_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
 vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 
 # properties for tuner
 ro.tuner.lazyhal    u:object_r:tuner_config_prop:s0 exact bool
 tuner.server.enable u:object_r:tuner_server_ctl_prop:s0 exact bool
+
+# Adaptive haptics settings property
+vibrator.adaptive_haptics.enabled u:object_r:adaptive_haptics_prop:s0 exact string

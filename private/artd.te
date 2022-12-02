@@ -1,5 +1,6 @@
 # ART service daemon.
 typeattribute artd coredomain;
+typeattribute artd mlstrustedsubject;
 type artd_exec, system_file_type, exec_type, file_type;
 type artd_tmpfs, file_type;
 
@@ -62,8 +63,15 @@ allow artd apex_info_file:file r_file_perms;
 allow artd self:global_capability_class_set { dac_override dac_read_search fowner chown };
 
 # Read/write access to profiles (/data/misc/profiles/{ref,cur}/...).
-allow artd user_profile_data_file:dir { getattr search };
+allow artd user_profile_root_file:dir { getattr search };
+allow artd user_profile_data_file:dir rw_dir_perms;
 allow artd user_profile_data_file:file create_file_perms;
+
+# Read/write access to secondary dex files, their profiles, and their
+# compilation artifacts
+# ({/data,/mnt/expand/<volume-uuid>}/{user,user_de}/<user-id>/<package-name>/...).
+allow artd app_data_file_type:dir { create_dir_perms relabelfrom relabelto };
+allow artd app_data_file_type:file { create_file_perms relabelfrom relabelto };
 
 # Never allow running other binaries without a domain transition.
 # The only exception is art_exec. It is allowed to use the artd domain because
@@ -77,3 +85,8 @@ domain_auto_trans(artd, dex2oat_exec, dex2oat)
 
 # Allow sending sigkill to subprocesses.
 allow artd { profman dex2oat }:process sigkill;
+
+# Allow reading process info (/proc/<pid>/...).
+# This is needed for getting CPU time and wall time spent on subprocesses.
+r_dir_file(artd, profman);
+r_dir_file(artd, dex2oat);

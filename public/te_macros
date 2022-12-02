@@ -194,7 +194,7 @@ binder_call(virtualizationservice, $1)
 # to crosvm
 allow { virtualizationservice crosvm } $1:fd use;
 # Allow piping console log to the client
-allow { virtualizationservice crosvm } $1:fifo_file write;
+allow { virtualizationservice crosvm } $1:fifo_file { getattr write};
 # Allow client to read/write vsock created by virtualizationservice to
 # communicate with the VM that it created. Notice that we do not grant
 # permission to create a vsock; the client can only connect to VMs
@@ -1035,4 +1035,12 @@ define(`read_fstab', `
 define(`use_bootstrap_libs', `
   allow $1 system_bootstrap_lib_file:dir r_dir_perms;
   allow $1 system_bootstrap_lib_file:file { execute read open getattr map };
+')
+
+######################################
+# use_apex_info(domain)
+# Allow access to apex information
+define(`use_apex_info', `
+  allow $1 apex_mnt_dir:dir r_dir_perms;
+  allow $1 apex_info_file:file r_file_perms;
 ')
