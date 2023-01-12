@@ -342,22 +342,15 @@ func (c *policyCil) stem() string {
 func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Path) android.OutputPath {
 	cil := android.PathForModuleOut(ctx, c.stem()).OutputPath
 	rule := android.NewRuleBuilder(pctx, ctx)
+	checkpolicyCmd := rule.Command().BuiltTool("checkpolicy").
+		Flag("-C"). // Write CIL
+		Flag("-M"). // Enable MLS
+		FlagWithArg("-c ", strconv.Itoa(PolicyVers)).
+		FlagWithOutput("-o ", cil).
+		Input(conf)
 
 	if proptools.Bool(c.properties.Decompile_binary) {
-		rule.Command().BuiltTool("checkpolicy").
-			Flag("-b"). // Read binary
-			Flag("-C"). // Write CIL
-			Flag("-M"). // Enable MLS
-			FlagWithArg("-c ", strconv.Itoa(PolicyVers)).
-			FlagWithOutput("-o ", cil).
-			Input(conf)
-	} else {
-		rule.Command().BuiltTool("checkpolicy").
-			Flag("-C"). // Write CIL
-			Flag("-M"). // Enable MLS
-			FlagWithArg("-c ", strconv.Itoa(PolicyVers)).
-			FlagWithOutput("-o ", cil).
-			Input(conf)
+		checkpolicyCmd.Flag("-b") // Read binary
 	}
 
 	if len(c.properties.Filter_out) > 0 {
@@ -463,6 +456,9 @@ type policyBinaryProperties struct {
 
 	// Whether this module is directly installable to one of the partitions. Default is true
 	Installable *bool
+
+	// List of domains that are allowed to be in permissive mode on user builds.
+	Permissive_domains_on_user_builds []string
 }
 
 type policyBinary struct {
@@ -519,11 +515,19 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	// permissive check is performed only in user build (not debuggable).
 	if !ctx.Config().Debuggable() {
 		permissiveDomains := android.PathForModuleOut(ctx, c.stem()+"_permissive")
-		rule.Command().BuiltTool("sepolicy-analyze").
+		cmd := rule.Command().BuiltTool("sepolicy-analyze").
 			Input(bin).
-			Text("permissive").
-			Text(" > ").
-			Output(permissiveDomains)
+			Text("permissive")
+		// Filter-out domains listed in permissive_domains_on_user_builds
+		allowedDomains := c.properties.Permissive_domains_on_user_builds
+		if len(allowedDomains) != 0 {
+			cmd.Text("| { grep -Fxv")
+			for _, d := range allowedDomains {
+				cmd.FlagWithArg("-e ", proptools.ShellEscape(d))
+			}
+			cmd.Text(" || true; }") // no match doesn't fail the cmd
+		}
+		cmd.Text(" > ").Output(permissiveDomains)
 		rule.Temporary(permissiveDomains)
 
 		msg := `==========\n` +

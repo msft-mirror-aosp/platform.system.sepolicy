@@ -46,19 +46,6 @@ allow domain owntty_device:chr_file rw_file_perms;
 allow domain null_device:chr_file rw_file_perms;
 allow domain zero_device:chr_file rw_file_perms;
 
-# /dev/binder can be accessed by ... everyone! :)
-allow domain binder_device:chr_file rw_file_perms;
-get_prop(domain, servicemanager_prop)
-
-# Restrict binder ioctls to an allowlist. Additional ioctl commands may be
-# added to individual domains, but this sets safe defaults for all processes.
-allowxperm domain binder_device:chr_file ioctl { unpriv_binder_ioctls };
-
-# /dev/binderfs needs to be accessed by everyone too!
-allow domain binderfs:dir { getattr search };
-allow domain binderfs_logs_proc:dir search;
-
-allow { domain -servicemanager } hwbinder_device:chr_file rw_file_perms;
 allow domain ptmx_device:chr_file rw_file_perms;
 allow domain random_device:chr_file rw_file_perms;
 allow domain proc_random:dir r_dir_perms;
@@ -73,8 +60,9 @@ dontaudit domain property_type:file audit_access;
 
 allow domain init:key search;
 
-# logd access
-unix_socket_send(domain, logdw, logd)
+# Everyone can send log and read ro.log.file_logger.* properties
+allow domain log_device:chr_file ra_file_perms;
+get_prop(domain, log_prop)
 
 # Directory/link file access for path resolution.
 allow domain {
@@ -216,9 +204,6 @@ allowxperm domain dev_type:blk_file ioctl { BLKGETSIZE64 BLKSSZGET };
 allow domain apex_mnt_dir:dir { getattr search };
 allow domain apex_mnt_dir:lnk_file r_file_perms;
 
-allow domain self:global_capability_class_set audit_control;
-allow domain self:netlink_audit_socket { create_socket_perms_no_ioctl nlmsg_write };
-
 # globally readable properties
 get_prop(domain, arm64_memtag_prop)
 get_prop(domain, bootloader_prop)
@@ -228,7 +213,6 @@ get_prop(domain, fingerprint_prop)
 get_prop(domain, init_service_status_prop)
 get_prop(domain, libc_debug_prop)
 get_prop(domain, log_tag_prop)
-get_prop(domain, logd_prop)
 get_prop(domain, property_service_version_prop)
 
 allow domain linkerconfig_file:dir search;
@@ -248,6 +232,9 @@ allow domain cgroup_rc_file:dir search;
 allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
 allow domain task_profiles_api_file:file r_file_perms;
+
+# Allow all processes to connect to PRNG seeder daemon.
+unix_socket_connect(domain, prng_seeder, prng_seeder)
 
 # cgroupfs directories can be created, but not files within them.
 neverallow domain cgroup:file create;
@@ -339,6 +326,7 @@ neverallow { domain -init } kernel:security setsecparam;
 # Only the kernel hwrng thread should be able to read from the HW RNG.
 neverallow {
   domain
+  -prng_seeder # PRNG seeder daemon periodically reseeds itself from HW RNG
   -shell # For CTS, restricted to just getattr in shell.te
   -ueventd # To create the /dev/hw_random file
 } hw_random_device:chr_file *;
@@ -399,25 +387,13 @@ neverallow * {fs_type -contextmount_type}:filesystem relabelto;
 # Ensure that context mount types are not writable, to ensure that
 # the write to /system restriction above is not bypassed via context=
 # mount to another type.
-neverallow * { contextmount_type -authfs_fuse }:dir_file_class_set
+neverallow * { contextmount_type -authfs_fuse -encryptedstore_file }:dir_file_class_set
     { create relabelfrom relabelto append link rename };
-neverallow domain { contextmount_type -authfs_fuse }:dir_file_class_set { write unlink };
-
-# Do not allow service_manager add for default service labels.
-# Instead domains should use a more specific type such as
-# system_app_service rather than the generic type.
-# New service_types are defined in {,hw,vnd}service.te and new mappings
-# from service name to service_type are defined in {,hw,vnd}service_contexts.
-neverallow * default_android_service:service_manager *;
+neverallow domain { contextmount_type -authfs_fuse -encryptedstore_file }:dir_file_class_set { write unlink };
 
 neverallow { domain -init -vendor_init } vendor_default_prop:property_service set;
 
 neverallow { domain -init } build_prop:property_service set;
-
-# Only (hw|vnd|)servicemanager should be able to register with binder as the context manager
-# The service managers are only allowed to access their own device node
-neverallow servicemanager hwbinder_device:chr_file no_rw_file_perms;
-neverallow servicemanager vndbinder_device:chr_file no_rw_file_perms;
 
 # Never allow anyone to connect or write to
 # the tombstoned intercept socket.
@@ -445,11 +421,6 @@ neverallow * *:{ shm sem msg msgq } *;
 # Do not mount on top of symlinks, fifos, or sockets.
 # Feature parity with Chromium LSM.
 neverallow * { file_type fs_type dev_type }:{ lnk_file fifo_file sock_file } mounton;
-
-# Nobody should be able to execute su on user builds.
-# On userdebug/eng builds, only shell, and
-# su itself execute su.
-neverallow { domain userdebug_or_eng(`-shell -su') } su_exec:file no_x_file_perms;
 
 neverallow { domain -init } proc:{ file dir } mounton;
 
@@ -514,15 +485,6 @@ neverallow {
   -vendor_init
   -shell
 } shell_data_file:dir { open search };
-
-# servicemanager is the only process which handles the
-# service_manager list request
-neverallow * ~{
-    servicemanager
-    }:service_manager list;
-
-# only service_manager_types can be added to service_manager
-# TODO - rework this: neverallow * ~service_manager_type:service_manager { add find };
 
 # Prevent assigning non property types to properties
 # TODO - rework this: neverallow * ~property_type:property_service set;
@@ -592,3 +554,6 @@ neverallow { domain userdebug_or_eng(`-domain') } self:lockdown integrity;
 # These domains must not be crash dumped
 neverallow no_crash_dump_domain crash_dump_exec:file no_x_file_perms;
 neverallow no_crash_dump_domain crash_dump:process { transition dyntransition };
+
+# Ensure that no one can execute from encrypted storage, which is a writable partition in VM.
+neverallow domain encryptedstore_file:file no_x_file_perms;

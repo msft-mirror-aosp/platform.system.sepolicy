@@ -43,6 +43,7 @@ ro.khungtask.           u:object_r:llkd_prop:s0
 log.                    u:object_r:log_prop:s0
 log.tag                 u:object_r:log_tag_prop:s0
 log.tag.WifiHAL         u:object_r:wifi_log_prop:s0
+ro.log.file_logger.path    u:object_r:log_file_logger_prop:s0 exact string
 security.perf_harden    u:object_r:shell_prop:s0
 persist.simpleperf.profile_app_uid              u:object_r:shell_prop:s0
 persist.simpleperf.profile_app_expiration_time  u:object_r:shell_prop:s0
@@ -246,6 +247,7 @@ persist.time.           u:object_r:time_prop:s0
 device_config.reset_performed                       u:object_r:device_config_reset_performed_prop:s0
 persist.device_config.activity_manager_native_boot. u:object_r:device_config_activity_manager_native_boot_prop:s0
 persist.device_config.attempted_boot_count          u:object_r:device_config_boot_count_prop:s0
+persist.device_config.camera_native.                u:object_r:device_config_camera_native_prop:s0
 persist.device_config.configuration.                u:object_r:device_config_configuration_prop:s0
 persist.device_config.connectivity.                 u:object_r:device_config_connectivity_prop:s0
 persist.device_config.input_native_boot.            u:object_r:device_config_input_native_boot_prop:s0
@@ -254,6 +256,7 @@ persist.device_config.media_native.                 u:object_r:device_config_med
 persist.device_config.netd_native.                  u:object_r:device_config_netd_native_prop:s0
 persist.device_config.nnapi_native.                 u:object_r:device_config_nnapi_native_prop:s0
 persist.device_config.profcollect_native_boot.      u:object_r:device_config_profcollect_native_boot_prop:s0
+persist.device_config.remote_key_provisioning_native.  u:object_r:device_config_remote_key_provisioning_native_prop:s0
 persist.device_config.runtime_native.               u:object_r:device_config_runtime_native_prop:s0
 persist.device_config.runtime_native_boot.          u:object_r:device_config_runtime_native_boot_prop:s0
 persist.device_config.statsd_native.                u:object_r:device_config_statsd_native_prop:s0
@@ -262,6 +265,7 @@ persist.device_config.storage_native_boot.          u:object_r:device_config_sto
 persist.device_config.surface_flinger_native_boot.  u:object_r:device_config_surface_flinger_native_boot_prop:s0
 persist.device_config.swcodec_native.               u:object_r:device_config_swcodec_native_prop:s0
 persist.device_config.vendor_system_native.         u:object_r:device_config_vendor_system_native_prop:s0
+persist.device_config.vendor_system_native_boot.    u:object_r:device_config_vendor_system_native_boot_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
@@ -286,6 +290,9 @@ apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact u
 persist.apexd.          u:object_r:apexd_prop:s0
 persist.vendor.apex.    u:object_r:apexd_select_prop:s0
 ro.boot.vendor.apex.    u:object_r:apexd_select_prop:s0
+
+# Property that indicates if an apex is ready: apex.<apex-name>.ready
+apex.                   u:object_r:apex_ready_prop:s0 prefix bool
 
 bpf.progs_loaded        u:object_r:bpf_progs_loaded_prop:s0 exact bool
 
@@ -315,6 +322,8 @@ ro.virtual_ab.compression.enabled  u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.compression.xor.enabled   u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.userspace.snapshots.enabled u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.io_uring.enabled u:object_r:virtual_ab_prop:s0 exact bool
+ro.virtual_ab.compression.threads u:object_r:virtual_ab_prop:s0 exact bool
+ro.virtual_ab.batch_writes u:object_r:virtual_ab_prop:s0 exact bool
 snapuserd.ready         u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.proxy_ready   u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.test.dm.snapshots u:object_r:snapuserd_prop:s0 exact bool
@@ -354,6 +363,11 @@ audio.deep_buffer.media         u:object_r:audio_config_prop:s0 exact bool
 audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
 
+# spatializer tuning
+audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact int
+
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool
 ro.audio.offload_wakelock u:object_r:audio_config_prop:s0 exact bool
@@ -371,6 +385,7 @@ config.disable_cameraservice u:object_r:camera_config_prop:s0 exact bool
 camera.disable_preview_scheduler u:object_r:camera_config_prop:s0 exact bool
 camera.disable_zsl_mode       u:object_r:camera_config_prop:s0 exact bool
 camera.fifo.disable           u:object_r:camera_config_prop:s0 exact bool
+camera.enable_landscape_to_portrait u:object_r:camera_config_prop:s0 exact bool
 ro.camera.notify_nfc          u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableLazyHal       u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
@@ -459,7 +474,6 @@ dalvik.vm.ps-resolved-classes-delay-ms        u:object_r:dalvik_config_prop:s0 e
 dalvik.vm.restore-dex2oat-cpu-set             u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.restore-dex2oat-threads             u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.usejit                              u:object_r:dalvik_config_prop:s0 exact bool
-dalvik.vm.usejitprofiles                      u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.zygote.max-boot-retry               u:object_r:dalvik_config_prop:s0 exact int
 
 persist.sys.dalvik.vm.lib.2 u:object_r:dalvik_runtime_prop:s0 exact string
@@ -498,6 +512,7 @@ bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config
 
 bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.core.gap.le.conn.only_init_1m_phy.enabled  u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -539,6 +554,26 @@ bluetooth.core.classic.inq_scan_type                 u:object_r:bluetooth_config
 bluetooth.core.classic.inq_scan_interval             u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.classic.inq_scan_window               u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.classic.page_timeout                  u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.classic.sniff_max_intervals           u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_min_intervals           u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_attempts                u:object_r:bluetooth_config_prop:s0 exact string
+bluetooth.core.classic.sniff_timeouts                u:object_r:bluetooth_config_prop:s0 exact string
+
+bluetooth.core.le.min_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_latency                 u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_supervision_timeout     u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.direct_connection_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_interval_fast      u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_fast        u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_2m_fast     u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_coded_fast  u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
+
+bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
 
@@ -613,6 +648,11 @@ external_storage.casefold.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.sdcardfs.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.cross_user.enabled u:object_r:storage_config_prop:s0 exact bool
 ro.fuse.bpf.enabled u:object_r:storage_config_prop:s0 exact bool
+ro.fuse.bpf.is_running u:object_r:vold_status_prop:s0 exact bool
+
+# hypervisor.*: configured by the vendor to advertise capabilities of their
+# hypervisor to virtualizationservice.
+hypervisor.memory_reclaim.supported u:object_r:hypervisor_restricted_prop:s0 exact bool
 
 ro.config.per_app_memcg         u:object_r:lmkd_config_prop:s0 exact bool
 ro.lmk.critical                 u:object_r:lmkd_config_prop:s0 exact int
@@ -678,6 +718,7 @@ sys.usb.mtp.device_type u:object_r:usb_config_prop:s0 exact int
 sys.usb.config. u:object_r:usb_prop:s0
 
 sys.usb.ffs.aio_compat u:object_r:ffs_config_prop:s0 exact bool
+sys.usb.ffs.io_uring_enabled u:object_r:ffs_config_prop:s0 exact bool
 sys.usb.ffs.max_read   u:object_r:ffs_config_prop:s0 exact int
 sys.usb.ffs.max_write  u:object_r:ffs_config_prop:s0 exact int
 
@@ -743,10 +784,6 @@ init.svc.surfaceflinger u:object_r:init_service_status_prop:s0 exact string
 init.svc.tombstoned     u:object_r:init_service_status_prop:s0 exact string
 init.svc.zygote         u:object_r:init_service_status_prop:s0 exact string
 
-# apexd reads this property to check if init has done with ctl.apex_* messages
-# This should be the form of init.apex.<apex_name>.
-init.apex. u:object_r:init_apex_status_private_prop:s0 prefix enum loaded unloaded
-
 libc.debug.malloc.options u:object_r:libc_debug_prop:s0 exact string
 libc.debug.malloc.program u:object_r:libc_debug_prop:s0 exact string
 libc.debug.hooks.enable   u:object_r:libc_debug_prop:s0 exact string
@@ -763,8 +800,25 @@ persist.arm64.memtag.app_default u:object_r:arm64_memtag_prop:s0 exact string
 
 net.redirect_socket_calls.hooked u:object_r:socket_hook_prop:s0 exact bool
 
-persist.sys.locale       u:object_r:exported_system_prop:s0 exact string
-persist.sys.timezone     u:object_r:exported_system_prop:s0 exact string
+# Settings system properties containing mutable "global" device settings.
+#
+# These can't be Android settings because they are also read by low-level
+# binaries that don't have access to "real" SettingsProvider settings. This
+# will usually be because of when they execute, e.g. during boot when Android
+# services are not yet running, and/or because they are needed by binaries that
+# are not "Android aware", i.e. they have light integration with the Android
+# platform via the low-level system properties lib.  Processes like shell may
+# modify these for testing purposes, but doing so is generally discouraged;
+# updates to these props will generally require intents to be sent to
+# long-running Android apps so they can update cached data and their UI state.
+persist.sys.locale       u:object_r:locale_prop:s0 exact string
+persist.sys.timezone     u:object_r:timezone_prop:s0 exact string
+
+# Time zone metadata system properties. Holds information associated with the
+# device's time zone and will therefore be written to at the same time.  Unlike
+# timezone_prop props, these do not need to be read by other processes.
+persist.sys.timezone_confidence u:object_r:timezone_metadata_prop:s0 exact uint
+
 persist.sys.mte.permissive u:object_r:permissive_mte_prop:s0 exact string
 persist.sys.test_harness u:object_r:test_harness_prop:s0 exact bool
 
@@ -778,6 +832,7 @@ ro.boot.bootdevice         u:object_r:bootloader_prop:s0 exact string
 ro.boot.bootloader         u:object_r:bootloader_prop:s0 exact string
 ro.boot.boottime           u:object_r:bootloader_prop:s0 exact string
 ro.boot.console            u:object_r:bootloader_prop:s0 exact string
+ro.boot.ddr_size           u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware           u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware.color     u:object_r:bootloader_prop:s0 exact string
 ro.boot.hardware.sku       u:object_r:bootloader_prop:s0 exact string
@@ -834,7 +889,7 @@ ro.build.version.security_patch           u:object_r:build_prop:s0 exact string
 
 ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
-ro.debuggable       u:object_r:build_prop:s0 exact bool
+ro.debuggable       u:object_r:userdebug_or_eng_prop:s0 exact bool
 ro.force.debuggable u:object_r:build_prop:s0 exact bool
 
 ro.treble.enabled u:object_r:build_prop:s0 exact bool
@@ -862,7 +917,7 @@ ro.system.build.version.release_or_codename u:object_r:build_prop:s0 exact strin
 ro.system.build.version.sdk                 u:object_r:build_prop:s0 exact int
 
 ro.adb.secure u:object_r:build_prop:s0 exact bool
-ro.secure     u:object_r:build_prop:s0 exact int
+ro.secure     u:object_r:userdebug_or_eng_prop:s0 exact int
 
 ro.product.system_ext.brand        u:object_r:build_prop:s0 exact string
 ro.product.system_ext.device       u:object_r:build_prop:s0 exact string
@@ -1129,6 +1184,9 @@ ro.kernel.qemu             u:object_r:exported_default_prop:s0 exact bool
 ro.kernel.qemu.            u:object_r:exported_default_prop:s0
 ro.kernel.android.bootanim u:object_r:exported_default_prop:s0 exact int
 
+# This property is used by init to store the original value or /proc/sys/vm/watermark_scale_factor
+ro.kernel.watermark_scale_factor          u:object_r:init_storage_prop:s0 exact int
+
 ro.oem.key1 u:object_r:exported_default_prop:s0 exact string
 
 ro.product.vndk.version u:object_r:vndk_prop:s0 exact string
@@ -1304,6 +1362,9 @@ keystore.boot_level u:object_r:keystore_listen_prop:s0 exact int
 # Property that tracks keystore crash counts during a boot cycle.
 keystore.crash_count u:object_r:keystore_crash_prop:s0 exact int
 
+# Configure the means by which we protect the L0 key from the future
+ro.keystore.boot_level_key.strategy u:object_r:keystore_config_prop:s0 exact string
+
 partition.system.verified     u:object_r:verity_status_prop:s0 exact string
 partition.system_ext.verified u:object_r:verity_status_prop:s0 exact string
 partition.product.verified    u:object_r:verity_status_prop:s0 exact string
@@ -1391,15 +1452,34 @@ vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_
 # properties for the virtual Fingerprint HAL
 persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_hal_prop:s0 exact string
 persist.vendor.fingerprint.virtual.enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+persist.vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_location u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+persist.vendor.fingerprint.virtual.sensor_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_strength u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.max_enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.navigation_guesture u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.detect_interaction u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.display_touch u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.control_illumination u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_enable u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_timed_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_timed_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_permanent_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.enrollment_hit u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.next_enrollment u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
 vendor.fingerprint.virtual.challenge u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_authenticate_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_detect_interaction_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
 vendor.fingerprint.virtual.operation_enroll_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
+vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
 vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+
+# properties for tuner
+ro.tuner.lazyhal    u:object_r:tuner_config_prop:s0 exact bool
+tuner.server.enable u:object_r:tuner_server_ctl_prop:s0 exact bool
+
+# Adaptive haptics settings property
+vibrator.adaptive_haptics.enabled u:object_r:adaptive_haptics_prop:s0 exact string

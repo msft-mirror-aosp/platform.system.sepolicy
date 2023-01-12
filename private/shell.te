@@ -121,6 +121,9 @@ userdebug_or_eng(`
   allow shell profcollectd:binder call;
 ')
 
+# Allow shell to run remount command.
+allow shell remount_exec:file rx_file_perms;
+
 # Allow shell to call perf_event_open for profiling other shell processes, but
 # not the whole system.
 allow shell self:perf_event { open read write kernel };
@@ -180,6 +183,9 @@ get_prop(shell, device_logging_prop)
 get_prop(shell, bootloader_boot_reason_prop)
 get_prop(shell, last_boot_reason_prop)
 get_prop(shell, system_boot_reason_prop)
+
+# Allow shell to execute the remote key provisioning factory tool
+binder_call(shell, hal_keymint)
 
 # Allow reading the outcome of perf_event_open LSM support test for CTS.
 get_prop(shell, init_perf_lsm_hooks_prop)
