@@ -2,7 +2,9 @@
 # This occurs when the process crashes.
 # We do not apply this to the su domain to avoid interfering with
 # tests (b/114136122)
-domain_auto_trans({ domain userdebug_or_eng(`-su') }, crash_dump_exec, crash_dump);
+# We exempt crosvm because parts of its memory are inaccessible to the
+# kernel. TODO(b/238324526): Remove this.
+domain_auto_trans({ domain userdebug_or_eng(`-su') -crosvm }, crash_dump_exec, crash_dump);
 allow domain crash_dump:process sigchld;
 
 # Allow every process to check the heapprofd.enable properties to determine
@@ -77,6 +79,11 @@ get_prop(domain, module_sdkextensions_prop)
 # Read access to bq configuration values
 get_prop(domain, bq_config_prop);
 
+# Allow all domains to check whether MTE is set to permissive mode.
+get_prop(domain, permissive_mte_prop);
+
+get_prop(domain, device_config_memory_safety_native_prop);
+
 # For now, everyone can access core property files
 # Device specific properties are not granted by default
 not_compatible_property(`
@@ -96,6 +103,48 @@ compatible_property_only(`
     get_prop({domain -coredomain -appdomain}, vendor_default_prop)
 ')
 
+# Public readable properties
+get_prop(domain, aaudio_config_prop)
+get_prop(domain, apexd_select_prop)
+get_prop(domain, arm64_memtag_prop)
+get_prop(domain, bluetooth_config_prop)
+get_prop(domain, bootloader_prop)
+get_prop(domain, build_odm_prop)
+get_prop(domain, build_prop)
+get_prop(domain, build_vendor_prop)
+get_prop(domain, debug_prop)
+get_prop(domain, exported_config_prop)
+get_prop(domain, exported_default_prop)
+get_prop(domain, exported_dumpstate_prop)
+get_prop(domain, exported_secure_prop)
+get_prop(domain, exported_system_prop)
+get_prop(domain, fingerprint_prop)
+get_prop(domain, framework_status_prop)
+get_prop(domain, gwp_asan_prop)
+get_prop(domain, hal_instrumentation_prop)
+get_prop(domain, hw_timeout_multiplier_prop)
+get_prop(domain, init_service_status_prop)
+get_prop(domain, libc_debug_prop)
+get_prop(domain, locale_prop)
+get_prop(domain, logd_prop)
+get_prop(domain, mediadrm_config_prop)
+get_prop(domain, property_service_version_prop)
+get_prop(domain, soc_prop)
+get_prop(domain, socket_hook_prop)
+get_prop(domain, surfaceflinger_prop)
+get_prop(domain, telephony_status_prop)
+get_prop(domain, timezone_prop)
+get_prop({domain -untrusted_app_all -isolated_app -ephemeral_app },  userdebug_or_eng_prop)
+get_prop(domain, vendor_socket_hook_prop)
+get_prop(domain, vndk_prop)
+get_prop(domain, vold_status_prop)
+get_prop(domain, vts_config_prop)
+
+# Binder cache properties are world-readable
+get_prop(domain, binder_cache_bluetooth_server_prop)
+get_prop(domain, binder_cache_system_server_prop)
+get_prop(domain, binder_cache_telephony_server_prop)
+
 # Allow access to fsverity keyring.
 allow domain kernel:key search;
 # Allow access to keys in the fsverity keyring that were installed at boot.
@@ -111,6 +160,13 @@ allow domain linkerconfig_file:file r_file_perms;
 
 # Allow all processes to check for the existence of the boringssl_self_test_marker files.
 allow domain boringssl_self_test_marker:dir search;
+
+# Allow all processes to read the file_logger property that liblog uses to check if file_logger
+# should be used.
+get_prop(domain, log_file_logger_prop)
+
+# Allow all processes to connect to PRNG seeder daemon.
+unix_socket_connect(domain, prng_seeder, prng_seeder)
 
 # No domains other than a select few can access the misc_block_device. This
 # block device is reserved for OTA use.
@@ -169,6 +225,7 @@ neverallow { domain -init -system_server } dropbox_data_file:file ~{ getattr rea
 neverallow {
   domain
   -appdomain
+  -artd # compile secondary dex files
   -installd # creation of sandbox
 } { privapp_data_file app_data_file }:dir_file_class_set { create unlink };
 
@@ -179,10 +236,9 @@ neverallow {
   -adbd
   -appdomain
   -app_zygote
+  -artd # compile secondary dex files
   -dexoptanalyzer
   -installd
-  -iorap_inode2filename
-  -iorap_prefetcherd
   -profman
   -rs # spawned by appdomain, so carryover the exception above
   -runas
@@ -196,6 +252,7 @@ neverallow {
 neverallow {
   domain
   -appdomain
+  -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
 } { privapp_data_file app_data_file }:dir ~r_dir_perms;
@@ -204,19 +261,21 @@ neverallow {
   domain
   -appdomain
   -app_zygote
+  -artd # compile secondary dex files
   -installd
-  -iorap_prefetcherd
   -rs # spawned by appdomain, so carryover the exception above
 } { privapp_data_file app_data_file }:file_class_set open;
 
 neverallow {
   domain
   -appdomain
+  -artd # compile secondary dex files
   -installd # creation of sandbox
 } { privapp_data_file app_data_file }:dir_file_class_set { create unlink };
 
 neverallow {
   domain
+  -artd # compile secondary dex files
   -installd
 } { privapp_data_file app_data_file }:dir_file_class_set { relabelfrom relabelto };
 
@@ -230,9 +289,8 @@ neverallow {
   -system_server
   -apexd
   -installd
-  -iorap_inode2filename
   -priv_app
-  -virtualizationservice
+  -virtualizationmanager
 } staging_data_file:dir *;
 neverallow {
   domain
@@ -243,10 +301,9 @@ neverallow {
   -adbd
   -kernel
   -installd
-  -iorap_inode2filename
   -priv_app
   -shell
-  -virtualizationservice
+  -virtualizationmanager
   -crosvm
 } staging_data_file:file *;
 neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
@@ -273,7 +330,6 @@ neverallow {
     domain
     -appdomain
     with_asan(`-asan_extract')
-    -iorap_prefetcherd
     -shell
     userdebug_or_eng(`-su')
     -system_server_startup # for memfd backed executable regions
@@ -309,6 +365,7 @@ neverallow {
   -cppreopts
   -dex2oat
   -otapreopt_slot
+  -artd
 } dalvikcache_data_file:file no_w_file_perms;
 
 neverallow {
@@ -320,6 +377,7 @@ neverallow {
   -dex2oat
   -zygote
   -otapreopt_slot
+  -artd
 } dalvikcache_data_file:dir no_w_dir_perms;
 
 # Only authorized processes should be writing to /data/misc/apexdata/com.android.art as it
@@ -367,6 +425,7 @@ neverallow {
 # a Unix group or change the permissions of a file.
 define(`dac_override_allowed', `{
   apexd
+  artd
   dnsmasq
   dumpstate
   init
@@ -394,8 +453,6 @@ neverallow ~dac_override_allowed self:global_capability_class_set dac_override;
 # this list should be a superset of the one above.
 neverallow ~{
   dac_override_allowed
-  iorap_inode2filename
-  iorap_prefetcherd
   traced_perf
   traced_probes
   heapprofd
@@ -475,8 +532,6 @@ full_treble_only(`
     -heapprofd
     userdebug_or_eng(`-profcollectd')
     -init
-    -iorap_inode2filename
-    -iorap_prefetcherd
     -kernel
     userdebug_or_eng(`-simpleperf_boot')
     -traced_perf
@@ -496,6 +551,7 @@ full_treble_only(`
     -logd # Logging by writing to logd Unix domain socket is public API
     -netd # netdomain needs this
     -mdnsd # netdomain needs this
+    -prng_seeder # Any process using libcrypto needs this
     userdebug_or_eng(`-su') # communications with su are permitted only on userdebug or eng builds
     -init
     -tombstoned # linker to tombstoned
@@ -514,8 +570,6 @@ full_treble_only(`
     -crash_dump
     -crosvm # loads vendor-specific disk images
     -init # starts vendor executables
-    -iorap_inode2filename
-    -iorap_prefetcherd
     -kernel # loads /vendor/firmware
     -heapprofd
     userdebug_or_eng(`-profcollectd')
@@ -598,14 +652,18 @@ enforce_debugfs_restriction(`
 # Restrict write access to etm sysfs interface.
 neverallow { domain -ueventd -vendor_init } sysfs_devices_cs_etm:file no_w_file_perms;
 
-# Restrict write access to shell owned files. The /data/local/tmp directory is
+# Restrict direct access to shell owned files. The /data/local/tmp directory is
 # untrustworthy, and non-allowed domains should not be trusting any content in
 # those directories. We allow shell files to be passed around by file
 # descriptor, but not directly opened.
+# artd doesn't need to access /data/local/tmp, but it needs to access
+# /data/{user,user_de}/<user-id>/com.android.shell/... for compiling secondary
+# dex files.
 neverallow {
   domain
   -adbd
   -appdomain
+  -artd
   -dumpstate
   -installd
   userdebug_or_eng(`-uncrypt')
@@ -613,13 +671,58 @@ neverallow {
   userdebug_or_eng(`-crosvm')
 } shell_data_file:file open;
 
+# In addition to the symlink reading restrictions above, restrict
+# write access to shell owned directories. The /data/local/tmp
+# directory is untrustworthy, and non-allowed domains should
+# not be trusting any content in those directories.
+# artd doesn't need to access /data/local/tmp, but it needs to access
+# /data/{user,user_de}/<user-id>/com.android.shell/... for compiling secondary
+# dex files.
+neverallow {
+  domain
+  -adbd
+  -artd
+  -dumpstate
+  -installd
+  -init
+  -shell
+  -vold
+} shell_data_file:dir no_w_dir_perms;
+
+neverallow {
+  domain
+  -adbd
+  -appdomain
+  -artd
+  -dumpstate
+  -init
+  -installd
+  -simpleperf_app_runner
+  -system_server # why?
+  userdebug_or_eng(`-uncrypt')
+} shell_data_file:dir open;
+
+neverallow {
+  domain
+  -adbd
+  -appdomain
+  -artd
+  -dumpstate
+  -init
+  -installd
+  -simpleperf_app_runner
+  -system_server # why?
+  userdebug_or_eng(`-uncrypt')
+  userdebug_or_eng(`-crosvm')
+} shell_data_file:dir search;
+
 # respect system_app sandboxes
 neverallow {
   domain
   -appdomain
+  -artd # compile secondary dex files
   -system_server #populate com.android.providers.settings/databases/settings.db.
   -installd # creation of app sandbox
-  -iorap_inode2filename
   -traced_probes # resolve inodes for i/o tracing.
                  # only needs open and read, the rest is neverallow in
                  # traced_probes.te.
@@ -631,3 +734,5 @@ neverallow {
   sdk_sandbox
   untrusted_app_all
 } system_app_data_file:dir_file_class_set { create unlink open };
+
+neverallow { domain -init } mtectrl:process { dyntransition transition };

@@ -49,6 +49,9 @@ allow surfaceflinger graphics_device:chr_file rw_file_perms;
 allow surfaceflinger video_device:dir r_dir_perms;
 allow surfaceflinger video_device:chr_file rw_file_perms;
 
+# Access the secure heap.
+allow surfaceflinger dmabuf_system_secure_heap_device:chr_file r_file_perms;
+
 # Create and use netlink kobject uevent sockets.
 allow surfaceflinger self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
 
@@ -58,7 +61,9 @@ set_prop(surfaceflinger, bootanim_system_prop)
 set_prop(surfaceflinger, exported_system_prop)
 set_prop(surfaceflinger, exported3_system_prop)
 set_prop(surfaceflinger, ctl_bootanim_prop)
+set_prop(surfaceflinger, locale_prop)
 set_prop(surfaceflinger, surfaceflinger_display_prop)
+set_prop(surfaceflinger, timezone_prop)
 
 # Get properties.
 get_prop(surfaceflinger, qemu_sf_lcd_density_prop)
@@ -129,6 +134,9 @@ binder_call(surfaceflinger, statsd);
 
 # Allow to use files supplied by hal_evs
 allow surfaceflinger hal_evs:fd use;
+
+# Allow to use release fence fds supplied by hal_camera
+allow surfaceflinger hal_camera:fd use;
 
 # Allow pushing jank event atoms to statsd
 userdebug_or_eng(`

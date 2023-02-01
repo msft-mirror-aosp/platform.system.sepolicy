@@ -75,9 +75,11 @@ allow dumpstate {
   vold
 
   # This list comes from hal_interfaces_to_dump in dumputils/dump_utils.c
+  evsmanagerd
   hal_audio_server
   hal_audiocontrol_server
   hal_bluetooth_server
+  hal_broadcastradio_server
   hal_camera_server
   hal_codec2_server
   hal_drm_server
@@ -87,6 +89,7 @@ allow dumpstate {
   hal_graphics_allocator_server
   hal_graphics_composer_server
   hal_health_server
+  hal_input_processor_server
   hal_neuralnetworks_server
   hal_omx_server
   hal_power_server
@@ -146,21 +149,29 @@ binder_call(dumpstate, binderservicedomain)
 binder_call(dumpstate, { appdomain netd wificond })
 
 # Allow dumpstate to call dump() on specific hals.
+dump_hal(hal_authsecret)
+dump_hal(hal_bluetooth)
+dump_hal(hal_contexthub)
+dump_hal(hal_drm)
 dump_hal(hal_dumpstate)
-dump_hal(hal_wifi)
-dump_hal(hal_graphics_allocator)
-dump_hal(hal_light)
-dump_hal(hal_neuralnetworks)
-dump_hal(hal_nfc)
-dump_hal(hal_thermal)
-dump_hal(hal_power)
-dump_hal(hal_power_stats)
-dump_hal(hal_identity)
 dump_hal(hal_face)
 dump_hal(hal_fingerprint)
 dump_hal(hal_gnss)
-dump_hal(hal_contexthub)
-dump_hal(hal_drm)
+dump_hal(hal_graphics_allocator)
+dump_hal(hal_identity)
+dump_hal(hal_input_processor)
+dump_hal(hal_keymint)
+dump_hal(hal_light)
+dump_hal(hal_memtrack)
+dump_hal(hal_neuralnetworks)
+dump_hal(hal_nfc)
+dump_hal(hal_oemlock)
+dump_hal(hal_power)
+dump_hal(hal_power_stats)
+dump_hal(hal_rebootescrow)
+dump_hal(hal_thermal)
+dump_hal(hal_weaver)
+dump_hal(hal_wifi)
 
 # Vibrate the device after we are done collecting the bugreport
 hal_client_domain(dumpstate, hal_vibrator)
@@ -234,9 +245,9 @@ allow dumpstate cache_recovery_file:file r_file_perms;
 allow dumpstate recovery_data_file:dir r_dir_perms;
 allow dumpstate recovery_data_file:file r_file_perms;
 
-#Access /data/misc/update_engine_log
-allow dumpstate update_engine_log_data_file:dir r_dir_perms;
-allow dumpstate update_engine_log_data_file:file r_file_perms;
+# Access /data/misc/update_engine & /data/misc/update_engine_log
+allow dumpstate { update_engine_data_file update_engine_log_data_file }:dir r_dir_perms;
+allow dumpstate { update_engine_data_file update_engine_log_data_file }:file r_file_perms;
 
 # Access /data/misc/profiles/{cur,ref}/
 userdebug_or_eng(`
@@ -312,9 +323,6 @@ allow dumpstate proc_pid_max:file r_file_perms;
 # Allow dumpstate to talk to installd over binder
 binder_call(dumpstate, installd);
 
-# Allow dumpstate to talk to iorapd over binder.
-binder_call(dumpstate, iorapd)
-
 # Allow dumpstate to run ip xfrm policy
 allow dumpstate self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read };
 
@@ -334,6 +342,7 @@ dontaudit dumpstate {
   mnt_vendor_file
   mirror_data_file
   mnt_user_file
+  mnt_product_file
 }:dir search;
 dontaudit dumpstate {
   apex_mnt_dir
@@ -348,31 +357,6 @@ binder_call(dumpstate, bufferhubd);
 # Allow dumpstate to talk to mediaswcodec over binder
 binder_call(dumpstate, mediaswcodec);
 
-# Allow dumpstate to talk to these stable AIDL services over binder
-binder_call(dumpstate, hal_rebootescrow_server)
-allow hal_rebootescrow_server dumpstate:fifo_file write;
-allow hal_rebootescrow_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_authsecret_server)
-allow hal_authsecret_server dumpstate:fifo_file write;
-allow hal_authsecret_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_keymint_server)
-allow hal_keymint_server dumpstate:fifo_file write;
-allow hal_keymint_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_memtrack_server)
-allow hal_memtrack_server dumpstate:fifo_file write;
-allow hal_memtrack_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_oemlock_server)
-allow hal_oemlock_server dumpstate:fifo_file write;
-allow hal_oemlock_server dumpstate:fd use;
-
-binder_call(dumpstate, hal_weaver_server)
-allow hal_weaver_server dumpstate:fifo_file write;
-allow hal_weaver_server dumpstate:fd use;
-
 #Access /data/misc/snapshotctl_log
 allow dumpstate snapshotctl_log_data_file:dir r_dir_perms;
 allow dumpstate snapshotctl_log_data_file:file r_file_perms;
@@ -382,7 +366,7 @@ allow dumpstate binderfs_logs:dir r_dir_perms;
 allow dumpstate binderfs_logs:file r_file_perms;
 allow dumpstate binderfs_logs_proc:file r_file_perms;
 
-allow dumpstate apex_info_file:file getattr;
+use_apex_info(dumpstate)
 
 ###
 ### neverallow rules

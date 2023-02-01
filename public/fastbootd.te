@@ -13,6 +13,7 @@ recovery_only(`
   # fastbootd can use AIDL HALs in binder mode
   binder_use(fastbootd)
   hal_client_domain(fastbootd, hal_health)
+  hal_client_domain(fastbootd, hal_fastboot)
 
   # Access /dev/usb-ffs/fastbootd/ep0
   allow fastbootd functionfs:dir search;
@@ -103,6 +104,13 @@ recovery_only(`
     allow fastbootd tmpfs:dir rw_dir_perms;
     # Fetch vendor_boot partition
     allow fastbootd boot_block_device:blk_file r_file_perms;
+
+    # popen(/system/bin/dmesg) and associated permissions. We only allow this
+    # on unlocked devices running userdebug builds.
+    allow fastbootd rootfs:file execute_no_trans;
+    allow fastbootd system_file:file execute_no_trans;
+    allow fastbootd kmsg_device:chr_file read;
+    allow fastbootd kernel:system syslog_read;
   ')
 
   # Allow using libfiemap/gsid directly (no binder in recovery).

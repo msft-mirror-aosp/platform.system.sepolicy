@@ -6,23 +6,20 @@
 
 neverallow {
   mlstrustedsubject
+  -artd # compile secondary dex files
   -installd
-  -iorap_prefetcherd
-  -iorap_inode2filename
 } { app_data_file privapp_data_file }:file ~{ read write map getattr ioctl lock append };
 
 neverallow {
   mlstrustedsubject
+  -artd # compile secondary dex files
   -installd
-  -iorap_prefetcherd
-  -iorap_inode2filename
 } { app_data_file privapp_data_file }:dir ~{ read getattr search };
 
 neverallow {
   mlstrustedsubject
+  -artd # compile secondary dex files
   -installd
-  -iorap_prefetcherd
-  -iorap_inode2filename
   -system_server
   -adbd
   -runas

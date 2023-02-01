@@ -5,6 +5,7 @@
 
 typeattribute system_server coredomain;
 typeattribute system_server mlstrustedsubject;
+typeattribute system_server remote_provisioning_service_server;
 typeattribute system_server scheduler_service_server;
 typeattribute system_server sensor_service_server;
 typeattribute system_server stats_service_server;
@@ -282,6 +283,7 @@ allow system_server app_zygote:unix_stream_socket { read write connectto setopt 
 # Perform Binder IPC.
 binder_use(system_server)
 binder_call(system_server, appdomain)
+binder_call(system_server, artd)
 binder_call(system_server, binderservicedomain)
 binder_call(system_server, composd)
 binder_call(system_server, dumpstate)
@@ -291,7 +293,6 @@ binder_call(system_server, gpuservice)
 binder_call(system_server, idmap)
 binder_call(system_server, installd)
 binder_call(system_server, incidentd)
-binder_call(system_server, iorapd)
 binder_call(system_server, netd)
 userdebug_or_eng(`binder_call(system_server, profcollectd)')
 binder_call(system_server, statsd)
@@ -300,7 +301,6 @@ binder_call(system_server, update_engine)
 binder_call(system_server, vold)
 binder_call(system_server, logd)
 binder_call(system_server, wificond)
-binder_call(system_server, wpantund)
 binder_service(system_server)
 
 # Use HALs
@@ -331,6 +331,9 @@ hal_client_domain(system_server, hal_sensors)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
 hal_client_domain(system_server, hal_tv_cec)
+hal_client_domain(system_server, hal_tv_hdmi_cec)
+hal_client_domain(system_server, hal_tv_hdmi_connection)
+hal_client_domain(system_server, hal_tv_hdmi_earc)
 hal_client_domain(system_server, hal_tv_input)
 hal_client_domain(system_server, hal_usb)
 hal_client_domain(system_server, hal_usb_gadget)
@@ -396,6 +399,7 @@ allow system_server {
   hal_graphics_allocator_server
   hal_graphics_composer_server
   hal_health_server
+  hal_input_processor_server
   hal_light_server
   hal_neuralnetworks_server
   hal_omx_server
@@ -489,6 +493,10 @@ allow system_server game_mode_intervention_list_file:file create_file_perms;
 allow system_server keychain_data_file:dir create_dir_perms;
 allow system_server keychain_data_file:file create_file_perms;
 allow system_server keychain_data_file:lnk_file create_file_perms;
+
+# Read the user parent directories like /data/user.  Don't allow write access,
+# as vold is responsible for creating and deleting the subdirectories.
+allow system_server system_userdir_file:dir r_dir_perms;
 
 # Manage /data/app.
 allow system_server apk_data_file:dir create_dir_perms;
@@ -599,12 +607,9 @@ allow system_server systemkeys_data_file:file create_file_perms;
 allow system_server textclassifier_data_file:dir create_dir_perms;
 allow system_server textclassifier_data_file:file create_file_perms;
 
-# Access /data/tombstones.
-allow system_server tombstone_data_file:dir r_dir_perms;
-allow system_server tombstone_data_file:file r_file_perms;
-
-# Allow write access to be able to truncate tombstones.
-allow system_server tombstone_data_file:file write;
+# Manage /data/tombstones.
+allow system_server tombstone_data_file:dir rw_dir_perms;
+allow system_server tombstone_data_file:file create_file_perms;
 
 # Manage /data/misc/vpn.
 allow system_server vpn_data_file:dir create_dir_perms;
@@ -613,10 +618,6 @@ allow system_server vpn_data_file:file create_file_perms;
 # Manage /data/misc/wifi.
 allow system_server wifi_data_file:dir create_dir_perms;
 allow system_server wifi_data_file:file create_file_perms;
-
-# Manage /data/misc/zoneinfo.
-allow system_server zoneinfo_data_file:dir create_dir_perms;
-allow system_server zoneinfo_data_file:file create_file_perms;
 
 # Manage /data/app-staging.
 allow system_server staging_data_file:dir create_dir_perms;
@@ -694,6 +695,7 @@ allow system_server server_configurable_flags_data_file:file r_file_perms;
 # Property Service write
 set_prop(system_server, system_prop)
 set_prop(system_server, bootanim_system_prop)
+set_prop(system_server, bluetooth_prop)
 set_prop(system_server, exported_system_prop)
 set_prop(system_server, exported3_system_prop)
 set_prop(system_server, safemode_prop)
@@ -720,6 +722,9 @@ set_prop(system_server, surfaceflinger_color_prop)
 set_prop(system_server, provisioned_prop)
 set_prop(system_server, retaildemo_prop)
 set_prop(system_server, dmesgd_start_prop)
+set_prop(system_server, locale_prop)
+set_prop(system_server, timezone_metadata_prop)
+set_prop(system_server, timezone_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
 userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
@@ -740,6 +745,7 @@ set_prop(system_server, device_config_runtime_native_boot_prop)
 set_prop(system_server, device_config_runtime_native_prop)
 set_prop(system_server, device_config_lmkd_native_prop)
 set_prop(system_server, device_config_media_native_prop)
+set_prop(system_server, device_config_camera_native_prop)
 set_prop(system_server, device_config_mglru_native_prop)
 set_prop(system_server, device_config_profcollect_native_boot_prop)
 set_prop(system_server, device_config_statsd_native_prop)
@@ -752,8 +758,12 @@ set_prop(system_server, device_config_configuration_prop)
 set_prop(system_server, device_config_connectivity_prop)
 set_prop(system_server, device_config_surface_flinger_native_boot_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
+set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
+set_prop(system_server, device_config_memory_safety_native_prop)
+set_prop(system_server, device_config_remote_key_provisioning_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
+set_prop(system_server, arm64_memtag_prop)
 
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
@@ -820,6 +830,11 @@ get_prop(system_server, hypervisor_prop)
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
 
+# Read ro.tuner.lazyhal
+get_prop(system_server, tuner_config_prop)
+# Write tuner.server.enable
+set_prop(system_server, tuner_server_ctl_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
@@ -859,8 +874,8 @@ allow system_server usb_device:dir r_dir_perms;
 
 # Read and delete files under /dev/fscklogs.
 r_dir_file(system_server, fscklogs)
-allow system_server fscklogs:dir { write remove_name };
-allow system_server fscklogs:file unlink;
+allow system_server fscklogs:dir { write remove_name add_name };
+allow system_server fscklogs:file rename;
 
 # logd access, system_server inherit logd write socket
 # (urge is to deprecate this long term)
@@ -886,6 +901,7 @@ allow system_server sysfs_zram:dir search;
 allow system_server sysfs_zram:file rw_file_perms;
 
 add_service(system_server, system_server_service);
+allow system_server artd_service:service_manager find;
 allow system_server audioserver_service:service_manager find;
 allow system_server authorization_service:service_manager find;
 allow system_server batteryproperties_service:service_manager find;
@@ -903,7 +919,6 @@ allow system_server idmap_service:service_manager find;
 allow system_server incident_service:service_manager find;
 allow system_server incremental_service:service_manager find;
 allow system_server installd_service:service_manager find;
-allow system_server iorapd_service:service_manager find;
 allow system_server keystore_maintenance_service:service_manager find;
 allow system_server keystore_metrics_service:service_manager find;
 allow system_server keystore_service:service_manager find;
@@ -1072,10 +1087,11 @@ set_prop(system_server, system_adbd_prop)
 # Allow invoking tools like "timeout"
 allow system_server toolbox_exec:file rx_file_perms;
 
-# Allow system process to setup and measure fs-verity
-allowxperm system_server apk_data_file:file ioctl {
-  FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY
-};
+# Allow system process to setup fs-verity
+allowxperm system_server { apk_data_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
+
+# Allow system process to measure fs-verity for apps, apps being installed and system files
+allowxperm system_server { apk_data_file apk_tmp_file system_file }:file ioctl FS_IOC_MEASURE_VERITY;
 
 # Postinstall
 #
@@ -1168,8 +1184,9 @@ allow system_server user_profile_data_file:file { getattr open read };
 
 # System server may dump profile data for debuggable apps in the /data/misc/profman.
 # As such it needs to be able create files but it should never read from them.
+# It also needs to stat the directory to check if it has the right permissions.
 allow system_server profman_dump_data_file:file { create getattr setattr w_file_perms};
-allow system_server profman_dump_data_file:dir w_dir_perms;
+allow system_server profman_dump_data_file:dir rw_dir_perms;
 
 # On userdebug build we may profile system server. Allow it to write and create its own profile.
 userdebug_or_eng(`
@@ -1205,8 +1222,8 @@ get_prop(system_server, framework_watchdog_config_prop)
 # Font files are written by system server
 allow system_server font_data_file:file create_file_perms;
 allow system_server font_data_file:dir create_dir_perms;
-# Allow system process to setup fs-verity for font files
-allowxperm system_server font_data_file:file ioctl FS_IOC_ENABLE_VERITY;
+# Allow system process to setup and measure fs-verity for font files
+allowxperm system_server font_data_file:file ioctl { FS_IOC_ENABLE_VERITY FS_IOC_MEASURE_VERITY };
 
 # Read qemu.hw.mainkeys property
 get_prop(system_server, qemu_hw_prop)
@@ -1280,12 +1297,20 @@ neverallow {
   device_config_runtime_native_prop
   device_config_media_native_prop
   device_config_mglru_native_prop
+  device_config_remote_key_provisioning_native_prop
   device_config_storage_native_boot_prop
   device_config_surface_flinger_native_boot_prop
   device_config_sys_traced_prop
   device_config_swcodec_native_prop
   device_config_window_manager_native_boot_prop
 }:property_service set;
+
+# Only allow system_server and init to set tuner_server_ctl_prop
+neverallow {
+  domain
+  -system_server
+  -init
+} tuner_server_ctl_prop:property_service set;
 
 # system_server should never be executing dex2oat. This is either
 # a bug (for example, bug 16317188), or represents an attempt by
@@ -1420,6 +1445,8 @@ neverallow {
 
 # Read/Write /proc/pressure/memory
 allow system_server proc_pressure_mem:file rw_file_perms;
+# Read /proc/pressure/cpu and /proc/pressure/io
+allow system_server { proc_pressure_cpu proc_pressure_io }:file r_file_perms;
 
 # dexoptanalyzer is currently used only for secondary dex files which
 # system_server should never access.

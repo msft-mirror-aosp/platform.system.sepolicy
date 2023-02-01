@@ -31,6 +31,7 @@ neverallow hal_configstore_server {
   domain
   -hal_configstore_server
   -logd
+  -prng_seeder
   userdebug_or_eng(`-su')
   -tombstoned
   userdebug_or_eng(`-heapprofd')
@@ -42,18 +43,17 @@ neverallow hal_configstore_server {
   data_file_type
   -anr_data_file # for crash dump collection
   -tombstone_data_file # for crash dump collection
-  -zoneinfo_data_file # granted to domain
   with_native_coverage(`-method_trace_data_file')
 }:{ file fifo_file sock_file } *;
 
 # Should never need sdcard access
 neverallow hal_configstore_server {
     sdcard_type
-    fuse sdcardfs vfat exfat        # manual expansion for completeness
+    fuse sdcardfs vfat exfat ntfs     # manual expansion for completeness
 }:dir ~getattr;
 neverallow hal_configstore_server {
     sdcard_type
-    fuse sdcardfs vfat exfat        # manual expansion for completeness
+    fuse sdcardfs vfat exfat ntfs     # manual expansion for completeness
 }:file *;
 
 # Do not permit access to service_manager and vndservice_manager

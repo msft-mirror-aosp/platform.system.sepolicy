@@ -7,9 +7,6 @@
 # in tools/checkfc.c
 attribute dev_type;
 
-# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
-attribute bdev_type;
-
 # Attribute for all bpf filesystem subtypes.
 attribute bpffs_type;
 
@@ -73,9 +70,6 @@ expandattribute proc_net_type true;
 
 # All types used for sysfs files.
 attribute sysfs_type;
-
-# TODO(b/202520796) Remove this attribute once the sc-dev branch stops using it.
-attribute sysfs_block_type;
 
 # All types use for debugfs files.
 attribute debugfs_type;
@@ -172,12 +166,6 @@ attribute system_api_service;
 
 # services which are explicitly disallowed for untrusted apps to access
 attribute protected_service;
-
-# services which served by vendor and also using the copy of libbinder on
-# system (for instance via libbinder_ndk). services using a different copy
-# of libbinder currently need their own context manager (e.g.
-# vndservicemanager)
-attribute vendor_service;
 
 # All types used for services managed by servicemanager.
 # On change, update CHECK_SC_ASSERT_ATTRS
@@ -350,6 +338,7 @@ hal_attribute(drm);
 hal_attribute(dumpstate);
 hal_attribute(evs);
 hal_attribute(face);
+hal_attribute(fastboot);
 hal_attribute(fingerprint);
 hal_attribute(gatekeeper);
 hal_attribute(gnss);
@@ -374,12 +363,16 @@ hal_attribute(omx);
 hal_attribute(power);
 hal_attribute(power_stats);
 hal_attribute(rebootescrow);
+hal_attribute(remoteaccess);
 hal_attribute(secure_element);
 hal_attribute(sensors);
 hal_attribute(telephony);
 hal_attribute(tetheroffload);
 hal_attribute(thermal);
 hal_attribute(tv_cec);
+hal_attribute(tv_hdmi_cec);
+hal_attribute(tv_hdmi_connection);
+hal_attribute(tv_hdmi_earc);
 hal_attribute(tv_input);
 hal_attribute(tv_tuner);
 hal_attribute(usb);
@@ -407,6 +400,7 @@ attribute automotive_display_service_server;
 attribute camera_service_server;
 attribute display_service_server;
 attribute evsmanager_service_server;
+attribute remote_provisioning_service_server;
 attribute scheduler_service_server;
 attribute sensor_service_server;
 attribute stats_service_server;

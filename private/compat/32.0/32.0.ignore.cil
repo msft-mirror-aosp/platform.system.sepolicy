@@ -1,10 +1,11 @@
-;; new_objects - a collection of types that have been introduced that have no
-;;   analogue in older policy.  Thus, we do not need to map these types to
-;;   previous ones.  Add here to pass checkapi tests.
+;; new_objects - a collection of types that have been introduced with ToT policy
+;;   that have no analogue in 32.0 policy.  Thus, we do not need to map
+;;   these types to previous ones.  Add here to pass checkapi tests.
 (type new_objects)
 (typeattribute new_objects)
 (typeattributeset new_objects
   ( new_objects
+    adaptive_haptics_prop
     adservices_manager_service
     apexd_select_prop
     artd_service
@@ -18,6 +19,7 @@
     device_config_nnapi_native_prop
     device_config_surface_flinger_native_boot_prop
     device_config_vendor_system_native_prop
+    device_config_vendor_system_native_boot_prop
     dice_maintenance_service
     dice_node_service
     diced
@@ -59,7 +61,6 @@
     nearby_service
     persist_wm_debug_prop
     proc_watermark_boost_factor
-    proc_watermark_scale_factor
     remotelyprovisionedkeypool_service
     resources_manager_service
     rootdisk_sysdev
@@ -71,6 +72,7 @@
     sysfs_gpu
     sysfs_lru_gen_enabled
     system_dlkm_file
+    system_user_mode_emulation_prop
     tare_service
     tv_iapp_service
     untrusted_app_30

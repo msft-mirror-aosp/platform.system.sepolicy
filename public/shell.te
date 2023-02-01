@@ -60,7 +60,6 @@ allow shell input_device:chr_file r_file_perms;
 r_dir_file(shell, system_file)
 allow shell system_file:file x_file_perms;
 allow shell toolbox_exec:file rx_file_perms;
-allow shell tzdatacheck_exec:file rx_file_perms;
 allow shell shell_exec:file rx_file_perms;
 allow shell zygote_exec:file rx_file_perms;
 
@@ -82,9 +81,11 @@ allow shell {
   -apex_service
   -dnsresolver_service
   -gatekeeper_service
+  -hal_keymint_service
+  -hal_secureclock_service
+  -hal_sharedsecret_service
   -incident_service
   -installd_service
-  -iorapd_service
   -mdns_service
   -netd_service
   -system_suspend_control_internal_service
@@ -197,6 +198,14 @@ recovery_only(`
 ###
 ### Neverallow rules
 ###
+
+# Do not allow shell to talk directly to security HAL services other than
+# hal_remotelyprovisionedcomponent_service
+neverallow shell {
+  hal_keymint_service
+  hal_secureclock_service
+  hal_sharedsecret_service
+}:service_manager find;
 
 # Do not allow shell to hard link to any files.
 # In particular, if shell hard links to app data
