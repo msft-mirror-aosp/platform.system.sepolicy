@@ -79,6 +79,7 @@
 /dev/audio.*		u:object_r:audio_device:s0
 /dev/binder		u:object_r:binder_device:s0
 /dev/block(/.*)?	u:object_r:block_device:s0
+/dev/block/by-name/zoned_device	u:object_r:zoned_block_device:s0
 /dev/block/dm-[0-9]+	u:object_r:dm_device:s0
 /dev/block/loop[0-9]*	u:object_r:loop_device:s0
 /dev/block/vd[a-z][0-9]*  u:object_r:vd_device:s0
@@ -149,6 +150,7 @@
 /dev/socket/pdx/system/vr/display/manager	u:object_r:pdx_display_manager_endpoint_socket:s0
 /dev/socket/pdx/system/vr/display/screenshot	u:object_r:pdx_display_screenshot_endpoint_socket:s0
 /dev/socket/pdx/system/vr/display/vsync	u:object_r:pdx_display_vsync_endpoint_socket:s0
+/dev/socket/prng_seeder	u:object_r:prng_seeder_socket:s0
 /dev/socket/property_service	u:object_r:property_socket:s0
 /dev/socket/racoon	u:object_r:racoon_socket:s0
 /dev/socket/recovery    u:object_r:recovery_socket:s0
@@ -220,14 +222,15 @@
 /system/bin/bcc                 u:object_r:rs_exec:s0
 /system/bin/blank_screen	u:object_r:blank_screen_exec:s0
 /system/bin/boringssl_self_test(32|64) u:object_r:boringssl_self_test_exec:s0
+/system/bin/prng_seeder		u:object_r:prng_seeder_exec:s0
 /system/bin/charger		u:object_r:charger_exec:s0
-/system/bin/canhalconfigurator  u:object_r:canhalconfigurator_exec:s0
 /system/bin/e2fsdroid		u:object_r:e2fs_exec:s0
 /system/bin/mke2fs		u:object_r:e2fs_exec:s0
 /system/bin/e2fsck	--	u:object_r:fsck_exec:s0
 /system/bin/extra_free_kbytes\.sh u:object_r:extra_free_kbytes_exec:s0
 /system/bin/fsck\.exfat	--	u:object_r:fsck_exec:s0
 /system/bin/fsck\.f2fs	--	u:object_r:fsck_exec:s0
+/system/bin/ntfsfix	--	u:object_r:fsck_exec:s0
 /system/bin/init		u:object_r:init_exec:s0
 # TODO(/123600489): merge mini-keyctl into toybox
 /system/bin/mini-keyctl	--	u:object_r:toolbox_exec:s0
@@ -333,7 +336,6 @@
 /system/bin/profcollectd         u:object_r:profcollectd_exec:s0
 /system/bin/profcollectctl       u:object_r:profcollectd_exec:s0
 /system/bin/storaged             u:object_r:storaged_exec:s0
-/system/bin/wpantund             u:object_r:wpantund_exec:s0
 /system/bin/virtual_touchpad     u:object_r:virtual_touchpad_exec:s0
 /system/bin/hw/android\.frameworks\.bufferhub@1\.0-service    u:object_r:fwk_bufferhub_exec:s0
 /system/bin/hw/android\.hidl\.allocator@1\.0-service          u:object_r:hal_allocator_default_exec:s0
@@ -370,8 +372,7 @@
 /system/bin/gsid                 u:object_r:gsid_exec:s0
 /system/bin/simpleperf           u:object_r:simpleperf_exec:s0
 /system/bin/simpleperf_app_runner    u:object_r:simpleperf_app_runner_exec:s0
-/system/bin/migrate_legacy_obb_data\.sh u:object_r:migrate_legacy_obb_data_exec:s0
-/system/bin/android\.frameworks\.automotive\.display@1\.0-service u:object_r:automotive_display_service_exec:s0
+/system/bin/migrate_legacy_obb_data u:object_r:migrate_legacy_obb_data_exec:s0
 /system/bin/snapuserd            u:object_r:snapuserd_exec:s0
 /system/bin/odsign               u:object_r:odsign_exec:s0
 /system/bin/vehicle_binding_util     u:object_r:vehicle_binding_util_exec:s0
@@ -442,13 +443,14 @@
 /odm/etc/selinux/precompiled_sepolicy                           u:object_r:sepolicy_file:s0
 /odm/etc/selinux/precompiled_sepolicy\.plat_and_mapping\.sha256 u:object_r:sepolicy_file:s0
 
-/(odm|vendor/odm)/etc/selinux/odm_sepolicy\.cil                  u:object_r:sepolicy_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_sepolicy\.cil                 u:object_r:sepolicy_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_file_contexts                 u:object_r:file_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_seapp_contexts                u:object_r:seapp_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_property_contexts             u:object_r:property_contexts_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_service_contexts              u:object_r:vendor_service_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_hwservice_contexts            u:object_r:hwservice_contexts_file:s0
-/(odm|vendor/odm)/etc/selinux/odm_keystore2_key_contexts         u:object_r:keystore2_key_contexts_file:s0
-/(odm|vendor/odm)/etc/selinux/odm_mac_permissions\.xml           u:object_r:mac_perms_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_keystore2_key_contexts        u:object_r:keystore2_key_contexts_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_mac_permissions\.xml          u:object_r:mac_perms_file:s0
 
 #############################
 # Product files
@@ -489,6 +491,9 @@
 /(system_ext|system/system_ext)/bin/aidl_lazy_cb_test_server u:object_r:aidl_lazy_test_server_exec:s0
 /(system_ext|system/system_ext)/bin/hidl_lazy_test_server    u:object_r:hidl_lazy_test_server_exec:s0
 /(system_ext|system/system_ext)/bin/hidl_lazy_cb_test_server u:object_r:hidl_lazy_test_server_exec:s0
+
+/(system_ext|system/system_ext)/bin/android\.frameworks\.automotive\.display@1\.0-service u:object_r:automotive_display_service_exec:s0
+/(system_ext|system/system_ext)/bin/canhalconfigurator(-aidl)? u:object_r:canhalconfigurator_exec:s0
 
 /(system_ext|system/system_ext)/lib(64)?(/.*)?      u:object_r:system_lib_file:s0
 

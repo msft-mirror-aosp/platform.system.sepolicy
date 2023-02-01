@@ -48,6 +48,7 @@ allow vendor_init system_data_file:dir getattr;
 
 allow vendor_init {
   file_type
+  -bpffs_type
   -core_data_file_type
   -exec_type
   -system_dlkm_file_type
@@ -67,6 +68,7 @@ allow vendor_init unlabeled:{ dir notdevfile_class_set } { getattr relabelfrom }
 
 allow vendor_init {
   file_type
+  -bpffs_type
   -core_data_file_type
   -exec_type
   -password_slot_metadata_file
@@ -86,6 +88,7 @@ allow vendor_init {
 
 allow vendor_init {
   file_type
+  -bpffs_type
   -core_data_file_type
   -exec_type
   -password_slot_metadata_file
@@ -103,6 +106,7 @@ allow vendor_init {
 allow vendor_init {
   file_type
   -apex_mnt_dir
+  -bpffs_type
   -core_data_file_type
   -exec_type
   -password_slot_metadata_file
@@ -119,6 +123,7 @@ allow vendor_init {
 
 allow vendor_init {
   file_type
+  -bpffs_type
   -core_data_file_type
   -exec_type
   -mnt_product_file
@@ -142,6 +147,7 @@ allow vendor_init debugfs_tracing:file w_file_perms;
 # chown/chmod on pseudo files.
 allow vendor_init {
   fs_type
+  -bpffs_type
   -contextmount_type
   -keychord_device
   -sdcard_type
@@ -157,6 +163,7 @@ allow vendor_init tracefs_type:file { open read setattr map };
 
 allow vendor_init {
   fs_type
+  -bpffs_type
   -contextmount_type
   -sdcard_type
   -fusefs_type
@@ -164,7 +171,7 @@ allow vendor_init {
   -proc_uid_time_in_state
   -proc_uid_concurrent_active_time
   -proc_uid_concurrent_policy_time
-}:dir  { open read setattr search };
+}:dir { open read setattr search };
 
 allow vendor_init dev_type:blk_file getattr;
 
@@ -253,6 +260,7 @@ set_prop(vendor_init, usb_control_prop)
 set_prop(vendor_init, userspace_reboot_config_prop)
 set_prop(vendor_init, vehicle_hal_prop)
 set_prop(vendor_init, vendor_default_prop)
+set_prop(vendor_init, keystore_config_prop)
 set_prop(vendor_init, vendor_security_patch_level_prop)
 set_prop(vendor_init, vndk_prop)
 set_prop(vendor_init, virtual_ab_prop)
@@ -274,13 +282,15 @@ set_prop(vendor_init, dck_prop)
 
 # Allow vendor_init to read vendor_system_native device config changes
 get_prop(vendor_init, device_config_vendor_system_native_prop)
+get_prop(vendor_init, device_config_vendor_system_native_boot_prop)
 
 ###
 ### neverallow rules
 ###
 
 # Vendor init shouldn't communicate with any vendor process, nor most system processes.
-neverallow_establish_socket_comms(vendor_init, { domain -init -logd -su -vendor_init });
+neverallow_establish_socket_comms(vendor_init, {
+    domain -init -logd -prng_seeder -su -vendor_init });
 
 # The vendor_init domain is only entered via an exec based transition from the
 # init domain, never via setcon().

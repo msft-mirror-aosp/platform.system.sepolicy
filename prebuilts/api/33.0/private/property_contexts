@@ -257,6 +257,7 @@ persist.device_config.storage_native_boot.          u:object_r:device_config_sto
 persist.device_config.surface_flinger_native_boot.  u:object_r:device_config_surface_flinger_native_boot_prop:s0
 persist.device_config.swcodec_native.               u:object_r:device_config_swcodec_native_prop:s0
 persist.device_config.vendor_system_native.         u:object_r:device_config_vendor_system_native_prop:s0
+persist.device_config.vendor_system_native_boot.    u:object_r:device_config_vendor_system_native_boot_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
 
@@ -345,6 +346,11 @@ audio.camerasound.force         u:object_r:audio_config_prop:s0 exact bool
 audio.deep_buffer.media         u:object_r:audio_config_prop:s0 exact bool
 audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
+
+# spatializer tuning
+audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact int
 
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool

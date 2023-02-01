@@ -45,4 +45,12 @@ recovery_only(`
 
   # Needed for reading boot properties.
   allow fastbootd proc_bootconfig:file r_file_perms;
+  # Let this domain use the hal fastboot service
+  binder_use(fastbootd)
+  hal_client_domain(fastbootd, hal_fastboot)
 ')
+
+# This capability allows fastbootd to circumvent memlock rlimits while using
+# io_uring. An Alternative would be to up the memlock rlimit for the fastbootd service.
+allow fastbootd self:capability ipc_lock;
+io_uring_use(fastbootd)

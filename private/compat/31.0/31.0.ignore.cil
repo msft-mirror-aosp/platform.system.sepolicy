@@ -1,6 +1,6 @@
-;; new_objects - a collection of types that have been introduced that have no
-;;   analogue in older policy.  Thus, we do not need to map these types to
-;;   previous ones.  Add here to pass checkapi tests.
+;; new_objects - a collection of types that have been introduced with ToT policy
+;;   that have no analogue in 31.0 policy.  Thus, we do not need to map
+;;   these types to previous ones.  Add here to pass checkapi tests.
 (type new_objects)
 (typeattribute new_objects)
 (typeattributeset new_objects
@@ -9,6 +9,7 @@
     artd_service
     attestation_verification_service
     camera2_extensions_prop
+    communal_service
     device_config_nnapi_native_prop
     dice_maintenance_service
     dice_node_service
@@ -38,7 +39,6 @@
     tare_service
     transformer_service
     proc_watermark_boost_factor
-    proc_watermark_scale_factor
     untrusted_app_30
     proc_vendor_sched
     sdk_sandbox_service
