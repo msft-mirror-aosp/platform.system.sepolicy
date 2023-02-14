@@ -126,19 +126,11 @@ allow priv_app preloads_media_file:dir r_dir_perms;
 
 read_runtime_log_tags(priv_app)
 
-# Write app-specific trace data to the Perfetto traced damon. This requires
-# connecting to its producer socket and obtaining a (per-process) tmpfs fd.
-perfetto_producer(priv_app)
-
 # Allow priv_apps to request and collect incident reports.
 # (Also requires DUMP and PACKAGE_USAGE_STATS permissions)
 allow priv_app incident_service:service_manager find;
 binder_call(priv_app, incidentd)
 allow priv_app incidentd:fifo_file { read write };
-
-# Allow profiling if the app opts in by being marked profileable/debuggable.
-can_profile_heap(priv_app)
-can_profile_perf(priv_app)
 
 # Allow priv_apps to check whether Dynamic System Update is enabled
 get_prop(priv_app, dynamic_system_prop)
@@ -190,6 +182,11 @@ allow priv_app staging_data_file:file r_file_perms;
 # Required for Phonesky to be able to read staged files under /data/app-staging.
 allow priv_app staging_data_file:dir r_dir_perms;
 
+# Allow com.android.vending to access files under vendor/apex as well as system apex files.
+# This is required for com.android.vending to handle APEXes for e.g. delta patch optimization.
+allow priv_app vendor_apex_file:dir r_dir_perms;
+allow priv_app vendor_apex_file:file r_file_perms;
+
 # allow priv app to access the system app data files for ContentProvider case.
 allow priv_app system_app_data_file:file { read getattr };
 
@@ -200,6 +197,11 @@ domain_auto_trans(priv_app, rs_exec, rs)
 # within an application home directory. Such shared libraries would be
 # created by things like renderscript or via other mechanisms.
 allow priv_app app_exec_data_file:file { r_file_perms execute unlink };
+
+# Allow privileged apps to create a VM. Note that access is still
+# guarded with the `android.permission.MANAGE_VIRTUAL_MACHINE`
+# permission.
+virtualizationservice_use(priv_app)
 
 ###
 ### neverallow rules

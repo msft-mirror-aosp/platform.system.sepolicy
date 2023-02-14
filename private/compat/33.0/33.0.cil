@@ -10,11 +10,16 @@
 (type iorapd_exec)
 (type iorapd_service)
 (type iorapd_tmpfs)
+(type lowpan_service)
 (type timezone_service)
 (type tzdatacheck)
 (type tzdatacheck_exec)
+(type wpantund)
+(type wpantund_exec)
+(type wpantund_service)
 (type zoneinfo_data_file)
 
+;; mapping information from ToT policy's types to 33.0 policy's types.
 (expandtypeattribute (DockObserver_service_33_0) true)
 (expandtypeattribute (IProxyService_service_33_0) true)
 (expandtypeattribute (aac_drc_prop_33_0) true)
@@ -1455,6 +1460,7 @@
 (typeattributeset build_config_prop_33_0 (build_config_prop))
 (typeattributeset build_odm_prop_33_0 (build_odm_prop))
 (typeattributeset build_prop_33_0 (build_prop))
+(typeattributeset build_prop_33_0 (userdebug_or_eng_prop))
 (typeattributeset build_vendor_prop_33_0 (build_vendor_prop))
 (typeattributeset cache_backup_file_33_0 (cache_backup_file))
 (typeattributeset cache_block_device_33_0 (cache_block_device))
@@ -1632,7 +1638,11 @@
 (typeattributeset exported_overlay_prop_33_0 (exported_overlay_prop))
 (typeattributeset exported_pm_prop_33_0 (exported_pm_prop))
 (typeattributeset exported_secure_prop_33_0 (exported_secure_prop))
-(typeattributeset exported_system_prop_33_0 (exported_system_prop))
+(typeattributeset exported_system_prop_33_0
+  ( exported_system_prop
+    locale_prop
+    timezone_prop
+))
 (typeattributeset external_vibrator_service_33_0 (external_vibrator_service))
 (typeattributeset extra_free_kbytes_33_0 (extra_free_kbytes))
 (typeattributeset extra_free_kbytes_exec_33_0 (extra_free_kbytes_exec))
@@ -2107,7 +2117,7 @@
 (typeattributeset proc_drop_caches_33_0 (proc_drop_caches))
 (typeattributeset proc_extra_free_kbytes_33_0 (proc_extra_free_kbytes))
 (typeattributeset proc_filesystems_33_0 (proc_filesystems))
-(typeattributeset proc_fs_verity_33_0 (proc_fs_verity))
+(typeattributeset proc_fs_verity_33_0 (proc))
 (typeattributeset proc_hostname_33_0 (proc_hostname))
 (typeattributeset proc_hung_task_33_0 (proc_hung_task))
 (typeattributeset proc_interrupts_33_0 (proc_interrupts))
@@ -2480,7 +2490,10 @@
 (typeattributeset untrusted_app_27_33_0 (untrusted_app_27))
 (typeattributeset untrusted_app_29_33_0 (untrusted_app_29))
 (typeattributeset untrusted_app_30_33_0 (untrusted_app_30))
-(typeattributeset untrusted_app_33_0 (untrusted_app))
+(typeattributeset untrusted_app_33_0
+  ( untrusted_app
+    untrusted_app_32
+))
 (typeattributeset update_engine_33_0 (update_engine))
 (typeattributeset update_engine_data_file_33_0 (update_engine_data_file))
 (typeattributeset update_engine_exec_33_0 (update_engine_exec))

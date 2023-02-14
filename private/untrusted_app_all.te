@@ -129,14 +129,6 @@ allow untrusted_app_all vendor_app_file:dir { open getattr read search };
 allow untrusted_app_all vendor_app_file:file { r_file_perms execute };
 allow untrusted_app_all vendor_app_file:lnk_file { open getattr read };
 
-# Write app-specific trace data to the Perfetto traced damon. This requires
-# connecting to its producer socket and obtaining a (per-process) tmpfs fd.
-perfetto_producer(untrusted_app_all)
-
-# Allow profiling if the app opts in by being marked profileable/debuggable.
-can_profile_heap(untrusted_app_all)
-can_profile_perf(untrusted_app_all)
-
 # allow untrusted apps to use UDP sockets provided by the system server but not
 # modify them other than to connect
 allow untrusted_app_all system_server:udp_socket {
@@ -153,9 +145,12 @@ dontaudit untrusted_app_all net_dns_prop:file read;
 
 # These have been disallowed since Android O.
 # For P, we assume that apps are safely handling the denial.
-dontaudit untrusted_app_all proc_stat:file read;
-dontaudit untrusted_app_all proc_vmstat:file read;
-dontaudit untrusted_app_all proc_uptime:file read;
+dontaudit untrusted_app_all {
+  proc_stat
+  proc_uptime
+  proc_vmstat
+  proc_zoneinfo
+}:file read;
 
 # Allow the allocation and use of ptys
 # Used by: https://play.google.com/store/apps/details?id=jackpal.androidterm
@@ -171,11 +166,13 @@ userdebug_or_eng(`
   allow untrusted_app_all self:lockdown integrity;
 ')
 
-# Allow running a VM for test/demo purposes. Note that access the service is
-# still guarded with the `android.permission.MANAGE_VIRTUAL_MACHINE`
-# permission. The protection level of the permission is `signature|development`
-# so that it can only be granted to either platform-key signed apps or
-# test-only apps having `android:testOnly="true"` in its manifest.
+# Allow running a VM for test/demo purposes. Note that access to the
+# service is still guarded with the
+# `android.permission.MANAGE_VIRTUAL_MACHINE` permission. The
+# protection level of the permission is
+# `signature|privileged|development` so that it can only be granted to
+# either platform-key signed apps, privileged apps, or test-only apps
+# having `android:testOnly="true"` in their manifest.
 virtualizationservice_use(untrusted_app_all)
 
 with_native_coverage(`

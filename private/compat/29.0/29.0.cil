@@ -14,6 +14,7 @@
 (type sysfs_mac_address)
 (type wificond_service)
 
+;; mapping information from ToT policy's types to 29.0 policy's types.
 (expandtypeattribute (accessibility_service_29_0) true)
 (expandtypeattribute (account_service_29_0) true)
 (expandtypeattribute (activity_service_29_0) true)
@@ -1577,7 +1578,8 @@
 (typeattributeset proc_29_0
   ( proc
     proc_kpageflags
-    proc_lowmemorykiller))
+    proc_lowmemorykiller
+    proc_watermark_scale_factor))
 (typeattributeset proc_abi_29_0 (proc_abi))
 (typeattributeset proc_asound_29_0 (proc_asound))
 (typeattributeset proc_bluetooth_writable_29_0 (proc_bluetooth_writable))

@@ -5,6 +5,8 @@
 define(`all_untrusted_apps',`{
   ephemeral_app
   isolated_app
+  isolated_app_all
+  isolated_compute_app
   mediaprovider
   mediaprovider_app
   untrusted_app
@@ -123,7 +125,7 @@ neverallow all_untrusted_apps *:{
 # Apps can read/write an already open vsock (e.g. created by
 # virtualizationservice) but nothing more than that (e.g. creating a
 # new vsock, etc.)
-neverallow all_untrusted_apps *:vsock_socket ~{ getattr read write };
+neverallow all_untrusted_apps *:vsock_socket ~{ getattr getopt read write };
 
 # Disallow sending RTM_GETLINK messages on netlink sockets.
 neverallow all_untrusted_apps domain:netlink_route_socket { bind nlmsg_readpriv };
@@ -255,3 +257,41 @@ neverallow {
 
 # Only privileged apps may find the incident service
 neverallow all_untrusted_apps incident_service:service_manager find;
+
+# Do not allow untrusted app to read hidden system proprerties.
+# We do not include in the exclusions other normally untrusted applications such as mediaprovider
+#  due to the specific logging use cases.
+# Context: b/193912100
+neverallow {
+  all_untrusted_apps
+  -mediaprovider
+  -mediaprovider_app
+} { userdebug_or_eng_prop }:file read;
+
+# Do not allow untrusted app to access /dev/socket/mdnsd since U. The socket is
+# used to communicate to the mdnsd responder. The mdnsd responder will be
+# replaced by a java implementation which is integrated into the system server.
+# For untrusted apps running with API level 33-, they still have access to
+# /dev/socket/mdnsd for backward compatibility.
+neverallow {
+  all_untrusted_apps
+  -untrusted_app_25
+  -untrusted_app_27
+  -untrusted_app_29
+  -untrusted_app_30
+  -untrusted_app_32
+} mdnsd_socket:sock_file write;
+neverallow {
+  all_untrusted_apps
+  -untrusted_app_25
+  -untrusted_app_27
+  -untrusted_app_29
+  -untrusted_app_30
+  -untrusted_app_32
+} mdnsd:unix_stream_socket connectto;
+
+# Do not allow untrusted apps to use anonymous inodes. At the moment,
+# type transitions are the only way to distinguish between different
+# anon_inode usages like userfaultfd and io_uring. This prevents us from
+# creating a more fine-grained neverallow policy for each anon_inode usage.
+neverallow all_untrusted_apps domain:anon_inode *;

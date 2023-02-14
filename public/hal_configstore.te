@@ -31,10 +31,9 @@ neverallow hal_configstore_server {
   domain
   -hal_configstore_server
   -logd
+  -prng_seeder
   userdebug_or_eng(`-su')
   -tombstoned
-  userdebug_or_eng(`-heapprofd')
-  userdebug_or_eng(`-traced_perf')
 }:{ unix_dgram_socket unix_stream_socket } *;
 
 # Should never need access to anything on /data
@@ -48,11 +47,11 @@ neverallow hal_configstore_server {
 # Should never need sdcard access
 neverallow hal_configstore_server {
     sdcard_type
-    fuse sdcardfs vfat exfat        # manual expansion for completeness
+    fuse sdcardfs vfat exfat ntfs     # manual expansion for completeness
 }:dir ~getattr;
 neverallow hal_configstore_server {
     sdcard_type
-    fuse sdcardfs vfat exfat        # manual expansion for completeness
+    fuse sdcardfs vfat exfat ntfs     # manual expansion for completeness
 }:file *;
 
 # Do not permit access to service_manager and vndservice_manager

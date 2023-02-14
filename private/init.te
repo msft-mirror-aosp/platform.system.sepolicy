@@ -11,8 +11,10 @@ domain_auto_trans(init, bpfloader_exec, bpfloader)
 recovery_only(`
   # Files in recovery image are labeled as rootfs.
   domain_trans(init, rootfs, adbd)
+  domain_trans(init, rootfs, hal_bootctl_server)
   domain_trans(init, rootfs, charger)
   domain_trans(init, rootfs, fastbootd)
+  domain_trans(init, rootfs, hal_fastboot_server)
   domain_trans(init, rootfs, hal_health_server)
   domain_trans(init, rootfs, recovery)
   domain_trans(init, rootfs, linkerconfig)
@@ -93,9 +95,6 @@ neverallow { domain -init } vts_status_prop:property_service set;
 # Only init can write normal ro.boot. properties
 neverallow { domain -init } bootloader_prop:property_service set;
 
-# Only init can write ro.boot.hypervisor properties
-neverallow { domain -init } hypervisor_prop:property_service set;
-
 # Only init can write hal.instrumentation.enable
 neverallow { domain -init } hal_instrumentation_prop:property_service set;
 
@@ -107,6 +106,9 @@ neverallow { domain -init } keystore_listen_prop:property_service set;
 
 # Allow accessing /sys/kernel/tracing/instances/bootreceiver to set up tracing.
 allow init debugfs_bootreceiver_tracing:file w_file_perms;
+
+# PRNG seeder daemon socket is created and listened on by init before forking.
+allow init prng_seeder:unix_stream_socket { create bind listen };
 
 # Devices with kernels where CONFIG_HIST_TRIGGERS isn't enabled will
 # attempt to write a non exisiting 'synthetic_events' file, when setting

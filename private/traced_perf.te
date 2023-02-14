@@ -28,10 +28,12 @@ allow traced_perf packages_list_file:file r_file_perms;
 # Allow reading files for stack unwinding and symbolization.
 r_dir_file(traced_perf, nativetest_data_file)
 r_dir_file(traced_perf, system_file_type)
-r_dir_file(traced_perf, apex_art_data_file)
 r_dir_file(traced_perf, apk_data_file)
 r_dir_file(traced_perf, dalvikcache_data_file)
 r_dir_file(traced_perf, vendor_file_type)
+# ART apex files and directory access to the containing /data/misc/apexdata.
+r_dir_file(traced_perf, apex_art_data_file)
+allow traced_perf apex_module_data_file:dir { getattr search };
 
 # Allow to temporarily lift the kptr_restrict setting and build a symbolization
 # map reading /proc/kallsyms.
@@ -58,9 +60,14 @@ dontaudit traced_perf domain:process signal;
 # Never allow access to app data files
 neverallow traced_perf { app_data_file privapp_data_file system_app_data_file }:file *;
 
-# Never allow profiling highly privileged processes.
+# Never allow profiling privileged or otherwise incompatible domains.
+# Corresponding allow-rule is in private/domain.te.
 never_profile_perf(`{
+  apexd
+  app_zygote
   bpfloader
+  diced
+  hal_configstore
   init
   kernel
   keystore
@@ -69,4 +76,6 @@ never_profile_perf(`{
   ueventd
   vendor_init
   vold
+  webview_zygote
+  zygote
 }')
