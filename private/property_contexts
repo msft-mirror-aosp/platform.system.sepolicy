@@ -221,6 +221,9 @@ ro.lowpan.              u:object_r:lowpan_prop:s0
 # heapprofd properties
 heapprofd.              u:object_r:heapprofd_prop:s0
 
+# traced properties
+traced.oome_heap_session.count u:object_r:traced_oome_heap_session_count_prop:s0 exact uint
+
 # servicemanager properties
 servicemanager.ready    u:object_r:servicemanager_prop:s0 exact bool
 
@@ -247,8 +250,10 @@ persist.time.           u:object_r:time_prop:s0
 device_config.reset_performed                       u:object_r:device_config_reset_performed_prop:s0
 persist.device_config.activity_manager_native_boot. u:object_r:device_config_activity_manager_native_boot_prop:s0
 persist.device_config.attempted_boot_count          u:object_r:device_config_boot_count_prop:s0
+persist.device_config.camera_native.                u:object_r:device_config_camera_native_prop:s0
 persist.device_config.configuration.                u:object_r:device_config_configuration_prop:s0
 persist.device_config.connectivity.                 u:object_r:device_config_connectivity_prop:s0
+persist.device_config.edgetpu_native.               u:object_r:device_config_edgetpu_native_prop:s0
 persist.device_config.input_native_boot.            u:object_r:device_config_input_native_boot_prop:s0
 persist.device_config.lmkd_native.                  u:object_r:device_config_lmkd_native_prop:s0
 persist.device_config.media_native.                 u:object_r:device_config_media_native_prop:s0
@@ -267,6 +272,7 @@ persist.device_config.vendor_system_native.         u:object_r:device_config_ven
 persist.device_config.vendor_system_native_boot.    u:object_r:device_config_vendor_system_native_boot_prop:s0
 persist.device_config.virtualization_framework_native. u:object_r:device_config_virtualization_framework_native_prop:s0
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
+persist.device_config.memory_safety_native_boot.    u:object_r:device_config_memory_safety_native_boot_prop:s0
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 
 # F2FS smart idle maint prop
@@ -321,6 +327,8 @@ ro.virtual_ab.compression.enabled  u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.compression.xor.enabled   u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.userspace.snapshots.enabled u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.io_uring.enabled u:object_r:virtual_ab_prop:s0 exact bool
+ro.virtual_ab.compression.threads u:object_r:virtual_ab_prop:s0 exact bool
+ro.virtual_ab.batch_writes u:object_r:virtual_ab_prop:s0 exact bool
 snapuserd.ready         u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.proxy_ready   u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.test.dm.snapshots u:object_r:snapuserd_prop:s0 exact bool
@@ -360,6 +368,11 @@ audio.deep_buffer.media         u:object_r:audio_config_prop:s0 exact bool
 audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
 
+# spatializer tuning
+audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact int
+
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool
 ro.audio.offload_wakelock u:object_r:audio_config_prop:s0 exact bool
@@ -377,6 +390,7 @@ config.disable_cameraservice u:object_r:camera_config_prop:s0 exact bool
 camera.disable_preview_scheduler u:object_r:camera_config_prop:s0 exact bool
 camera.disable_zsl_mode       u:object_r:camera_config_prop:s0 exact bool
 camera.fifo.disable           u:object_r:camera_config_prop:s0 exact bool
+camera.enable_landscape_to_portrait u:object_r:camera_config_prop:s0 exact bool
 ro.camera.notify_nfc          u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableLazyHal       u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
@@ -465,7 +479,6 @@ dalvik.vm.ps-resolved-classes-delay-ms        u:object_r:dalvik_config_prop:s0 e
 dalvik.vm.restore-dex2oat-cpu-set             u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.restore-dex2oat-threads             u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.usejit                              u:object_r:dalvik_config_prop:s0 exact bool
-dalvik.vm.usejitprofiles                      u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.zygote.max-boot-retry               u:object_r:dalvik_config_prop:s0 exact int
 
 persist.sys.dalvik.vm.lib.2 u:object_r:dalvik_runtime_prop:s0 exact string
@@ -486,13 +499,19 @@ media.stagefright.enable-scan                u:object_r:media_config_prop:s0 exa
 media.stagefright.thumbnail.prefer_hw_codecs u:object_r:media_config_prop:s0 exact bool
 persist.sys.media.avsync                     u:object_r:media_config_prop:s0 exact bool
 
-persist.bluetooth.a2dp_offload.cap             u:object_r:bluetooth_a2dp_offload_prop:s0 exact string
-persist.bluetooth.a2dp_offload.disabled        u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
-persist.bluetooth.bluetooth_audio_hal.disabled u:object_r:bluetooth_audio_hal_prop:s0 exact bool
-persist.bluetooth.btsnoopenable                u:object_r:exported_bluetooth_prop:s0 exact bool
-persist.bluetooth.btsnoopdefaultmode           u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
-persist.bluetooth.btsnooplogmode               u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
-persist.bluetooth.factoryreset                 u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.a2dp_offload.cap                          u:object_r:bluetooth_a2dp_offload_prop:s0 exact string
+persist.bluetooth.a2dp_offload.disabled                     u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
+persist.bluetooth.bluetooth_audio_hal.disabled              u:object_r:bluetooth_audio_hal_prop:s0 exact bool
+persist.bluetooth.btsnoopenable                             u:object_r:exported_bluetooth_prop:s0 exact bool
+persist.bluetooth.btsnoopdefaultmode                        u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
+persist.bluetooth.btsnooplogmode                            u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
+persist.bluetooth.snooplogfilter.headers.enabled            u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.snooplogfilter.profiles.a2dp.enabled      u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.snooplogfilter.profiles.map               u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
+persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
+persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
 
 bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int
@@ -504,6 +523,8 @@ bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config
 
 bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.core.gap.le.conn.only_init_1m_phy.enabled  u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.le_audio.inband_ringtone.supported    u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -564,9 +585,13 @@ bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
 
+bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
+persist.nfc.vendor_debug_enabled               u:object_r:nfc_prop:s0 exact bool
+persist.nfc.snoop_log_mode                     u:object_r:nfc_prop:s0 exact enum full filtered
+nfc.dta.skip_ndef_read                         u:object_r:nfc_prop:s0 exact bool
 
 persist.radio.multisim.config u:object_r:radio_control_prop:s0 exact string
 persist.radio.allow_mock_modem u:object_r:radio_control_prop:s0 exact bool
@@ -583,21 +608,32 @@ ro.hdmi.wake_on_hotplug                                            u:object_r:hd
 ro.hdmi.cec.source.send_standby_on_sleep                           u:object_r:hdmi_config_prop:s0 exact enum to_tv broadcast none
 ro.hdmi.cec.source.playback_device_action_on_routing_control       u:object_r:hdmi_config_prop:s0 exact enum none wake_up_only wake_up_and_send_active_source
 
-pm.dexopt.ab-ota                            u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.bg-dexopt                         u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.boot                              u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.cmdline                           u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.disable_bg_dexopt                 u:object_r:exported_pm_prop:s0 exact bool
-pm.dexopt.downgrade_after_inactive_days     u:object_r:exported_pm_prop:s0 exact int
-pm.dexopt.first-boot                        u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.inactive                          u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install                           u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install-fast                      u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install-bulk                      u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install-bulk-secondary            u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install-bulk-downgraded           u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.install-bulk-secondary-downgraded u:object_r:exported_pm_prop:s0 exact string
-pm.dexopt.shared                            u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.bg-dexopt                                     u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.bg-dexopt.concurrency                         u:object_r:exported_pm_prop:s0 exact int
+pm.dexopt.first-boot                                    u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.first-boot.concurrency                        u:object_r:exported_pm_prop:s0 exact int
+pm.dexopt.boot-after-ota                                u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.boot-after-ota.concurrency                    u:object_r:exported_pm_prop:s0 exact int
+pm.dexopt.boot-after-mainline-update                    u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.boot-after-mainline-update.concurrency        u:object_r:exported_pm_prop:s0 exact int
+
+pm.dexopt.post-boot                                     u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.ab-ota                                        u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.cmdline                                       u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.inactive                                      u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install                                       u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install-fast                                  u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install-bulk                                  u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install-bulk-secondary                        u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install-bulk-downgraded                       u:object_r:exported_pm_prop:s0 exact string
+pm.dexopt.install-bulk-secondary-downgraded             u:object_r:exported_pm_prop:s0 exact string
+
+pm.dexopt.shared                                        u:object_r:exported_pm_prop:s0 exact string
+
+pm.dexopt.disable_bg_dexopt                             u:object_r:exported_pm_prop:s0 exact bool
+pm.dexopt.downgrade_after_inactive_days                 u:object_r:exported_pm_prop:s0 exact int
+
+pm.dexopt.                                              u:object_r:future_pm_prop:s0 prefix
 
 ro.apk_verity.mode u:object_r:apk_verity_prop:s0 exact int
 
@@ -639,6 +675,7 @@ external_storage.casefold.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.sdcardfs.enabled u:object_r:storage_config_prop:s0 exact bool
 external_storage.cross_user.enabled u:object_r:storage_config_prop:s0 exact bool
 ro.fuse.bpf.enabled u:object_r:storage_config_prop:s0 exact bool
+ro.fuse.bpf.is_running u:object_r:vold_status_prop:s0 exact bool
 
 # hypervisor.*: configured by the vendor to advertise capabilities of their
 # hypervisor to virtualizationservice.
@@ -679,6 +716,10 @@ ro.minui.pixel_format     u:object_r:recovery_config_prop:s0 exact string
 ro.oem_unlock_supported u:object_r:oem_unlock_prop:s0 exact int
 
 ro.rebootescrow.device u:object_r:rebootescrow_hal_prop:s0 exact string
+
+ro.recovery.usb.vid          u:object_r:recovery_usb_config_prop:s0 exact string
+ro.recovery.usb.adb.pid      u:object_r:recovery_usb_config_prop:s0 exact string
+ro.recovery.usb.fastboot.pid u:object_r:recovery_usb_config_prop:s0 exact string
 
 ro.storage_manager.enabled     u:object_r:storagemanager_config_prop:s0 exact bool
 ro.storage_manager.show_opt_in u:object_r:storagemanager_config_prop:s0 exact bool
@@ -1041,6 +1082,11 @@ ro.product.vendor_dlkm.manufacturer u:object_r:build_vendor_prop:s0 exact string
 ro.product.vendor_dlkm.model        u:object_r:build_vendor_prop:s0 exact string
 ro.product.vendor_dlkm.name         u:object_r:build_vendor_prop:s0 exact string
 
+# build props for attestation feature are set by property_service
+ro.product.brand_for_attestation u:object_r:build_attestation_prop:s0 exact string
+ro.product.model_for_attestation u:object_r:build_attestation_prop:s0 exact string
+ro.product.name_for_attestation  u:object_r:build_attestation_prop:s0 exact string
+
 # GRF property for the first api level of the vendor partition
 ro.board.first_api_level u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_level       u:object_r:build_vendor_prop:s0 exact int
@@ -1321,6 +1367,9 @@ ro.localization.locale_filter u:object_r:localization_prop:s0 exact string
 # Graphics related properties
 ro.opengles.version u:object_r:graphics_config_prop:s0 exact int
 
+ro.egl.blobcache.multifile       u:object_r:graphics_config_prop:s0 exact bool
+ro.egl.blobcache.multifile_limit u:object_r:graphics_config_prop:s0 exact int
+
 ro.gfx.driver.0          u:object_r:graphics_config_prop:s0 exact string
 ro.gfx.driver.1          u:object_r:graphics_config_prop:s0 exact string
 ro.gfx.angle.supported   u:object_r:graphics_config_prop:s0 exact bool
@@ -1345,6 +1394,12 @@ ro.zygote.disable_gl_preload u:object_r:zygote_config_prop:s0 exact bool
 # Allows a device to run without batch attestation keys
 remote_provisioning.strongbox.rkp_only u:object_r:remote_prov_prop:s0 exact bool
 remote_provisioning.tee.rkp_only u:object_r:remote_prov_prop:s0 exact bool
+
+# Hostname for the remote provisioning server a device should communicate with
+remote_provisioning.hostname u:object_r:remote_prov_prop:s0 exact string
+
+# Indicates the system should use rkpd instead of RemoteProvisioner
+remote_provisioning.enable_rkpd u:object_r:remote_prov_prop:s0 exact bool
 
 # Broadcast boot stages, which keystore listens to
 keystore.boot_level u:object_r:keystore_listen_prop:s0 exact int
@@ -1417,6 +1472,7 @@ ro.bootanim.quiescent.enabled u:object_r:bootanim_config_prop:s0 exact bool
 
 # dck properties
 ro.gms.dck.eligible_wcc u:object_r:dck_prop:s0 exact int
+ro.gms.dck.se_capability u:object_r:dck_prop:s0 exact int
 
 # virtualization service properties
 virtualizationservice.state.last_cid u:object_r:virtualizationservice_prop:s0 exact uint
@@ -1473,3 +1529,6 @@ tuner.server.enable u:object_r:tuner_server_ctl_prop:s0 exact bool
 
 # Adaptive haptics settings property
 vibrator.adaptive_haptics.enabled u:object_r:adaptive_haptics_prop:s0 exact string
+
+# UVC Gadget property
+ro.usb.uvc.enabled      u:object_r:usb_uvc_enabled_prop:s0 exact bool

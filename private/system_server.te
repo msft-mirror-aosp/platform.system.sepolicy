@@ -5,6 +5,7 @@
 
 typeattribute system_server coredomain;
 typeattribute system_server mlstrustedsubject;
+typeattribute system_server remote_provisioning_service_server;
 typeattribute system_server scheduler_service_server;
 typeattribute system_server sensor_service_server;
 typeattribute system_server stats_service_server;
@@ -221,9 +222,9 @@ allow system_server proc_uid_procstat_set:file { w_file_perms getattr };
 # Write to /proc/sysrq-trigger.
 allow system_server proc_sysrq:file rw_file_perms;
 
-# Delete /data/misc/stats-data/ and /data/misc/stats-service/ directories.
-allow system_server stats_data_file:dir { open read remove_name search write };
-allow system_server stats_data_file:file unlink;
+# Delete /data/misc/stats-service/ directories.
+allow system_server stats_config_data_file:dir { open read remove_name search write };
+allow system_server stats_config_data_file:file unlink;
 
 # Read metric file & upload to statsd
 allow system_server odsign_data_file:dir search;
@@ -330,8 +331,9 @@ hal_client_domain(system_server, hal_sensors)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
 hal_client_domain(system_server, hal_tv_cec)
-hal_client_domain(system_server, hal_tv_hdmi)
 hal_client_domain(system_server, hal_tv_hdmi_cec)
+hal_client_domain(system_server, hal_tv_hdmi_connection)
+hal_client_domain(system_server, hal_tv_hdmi_earc)
 hal_client_domain(system_server, hal_tv_input)
 hal_client_domain(system_server, hal_usb)
 hal_client_domain(system_server, hal_usb_gadget)
@@ -419,7 +421,9 @@ allow system_server mediaserver:udp_socket rw_socket_perms;
 allow system_server mediadrmserver:tcp_socket rw_socket_perms;
 allow system_server mediadrmserver:udp_socket rw_socket_perms;
 
-userdebug_or_eng(`perfetto_producer({ system_server })')
+# Write trace data to the Perfetto traced daemon. This requires connecting to
+# its producer socket and obtaining a (per-process) tmpfs fd.
+perfetto_producer(system_server)
 
 # Get file context
 allow system_server file_contexts_file:file r_file_perms;
@@ -735,6 +739,7 @@ set_prop(system_server, ctl_gsid_prop)
 set_prop(system_server, cppreopt_prop)
 
 # server configurable flags properties
+set_prop(system_server, device_config_edgetpu_native_prop)
 set_prop(system_server, device_config_input_native_boot_prop)
 set_prop(system_server, device_config_netd_native_prop)
 set_prop(system_server, device_config_nnapi_native_prop)
@@ -743,6 +748,7 @@ set_prop(system_server, device_config_runtime_native_boot_prop)
 set_prop(system_server, device_config_runtime_native_prop)
 set_prop(system_server, device_config_lmkd_native_prop)
 set_prop(system_server, device_config_media_native_prop)
+set_prop(system_server, device_config_camera_native_prop)
 set_prop(system_server, device_config_mglru_native_prop)
 set_prop(system_server, device_config_profcollect_native_boot_prop)
 set_prop(system_server, device_config_statsd_native_prop)
@@ -757,9 +763,11 @@ set_prop(system_server, device_config_surface_flinger_native_boot_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
+set_prop(system_server, device_config_memory_safety_native_boot_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, device_config_remote_key_provisioning_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
+set_prop(system_server, arm64_memtag_prop)
 
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
@@ -830,6 +838,9 @@ get_prop(system_server, persist_wm_debug_prop)
 get_prop(system_server, tuner_config_prop)
 # Write tuner.server.enable
 set_prop(system_server, tuner_server_ctl_prop)
+
+# Allow the heap dump ART plugin to the count of sessions waiting for OOME
+get_prop(appdomain, traced_oome_heap_session_count_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1084,7 +1095,7 @@ set_prop(system_server, system_adbd_prop)
 allow system_server toolbox_exec:file rx_file_perms;
 
 # Allow system process to setup fs-verity
-allowxperm system_server apk_data_file:file ioctl FS_IOC_ENABLE_VERITY;
+allowxperm system_server { apk_data_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
 
 # Allow system process to measure fs-verity for apps, apps being installed and system files
 allowxperm system_server { apk_data_file apk_tmp_file system_file }:file ioctl FS_IOC_MEASURE_VERITY;
@@ -1180,8 +1191,9 @@ allow system_server user_profile_data_file:file { getattr open read };
 
 # System server may dump profile data for debuggable apps in the /data/misc/profman.
 # As such it needs to be able create files but it should never read from them.
+# It also needs to stat the directory to check if it has the right permissions.
 allow system_server profman_dump_data_file:file { create getattr setattr w_file_perms};
-allow system_server profman_dump_data_file:dir w_dir_perms;
+allow system_server profman_dump_data_file:dir rw_dir_perms;
 
 # On userdebug build we may profile system server. Allow it to write and create its own profile.
 userdebug_or_eng(`
@@ -1288,6 +1300,7 @@ neverallow {
   device_config_lmkd_native_prop
   device_config_netd_native_prop
   device_config_nnapi_native_prop
+  device_config_edgetpu_native_prop
   device_config_runtime_native_boot_prop
   device_config_runtime_native_prop
   device_config_media_native_prop
@@ -1476,6 +1489,10 @@ neverallow { domain -system_server -init }
 # system_server cannot use this access to read perf event data like process stacks.
 allow system_server self:perf_event { open write cpu kernel };
 neverallow system_server self:perf_event ~{ open write cpu kernel };
+
+# Allow writing files under /data/system/shutdown-checkpoints/
+allow system_server shutdown_checkpoints_system_data_file:dir create_dir_perms;
+allow system_server shutdown_checkpoints_system_data_file:file create_file_perms;
 
 # Do not allow any domain other than init or system server to set the property
 neverallow { domain -init -system_server } socket_hook_prop:property_service set;

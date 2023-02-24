@@ -31,6 +31,9 @@ typeattribute microdroid_manager no_crash_dump_domain;
 allowxperm microdroid_manager vd_device:blk_file ioctl BLKFLSBUF;
 allow microdroid_manager self:global_capability_class_set sys_admin;
 
+# Allow microdroid_manager to remove capabilities from it's capability bounding set.
+allow microdroid_manager self:global_capability_class_set setpcap;
+
 # Allow microdroid_manager to start payload tasks
 domain_auto_trans(microdroid_manager, microdroid_app_exec, microdroid_app)
 domain_auto_trans(microdroid_manager, compos_exec, compos)
@@ -41,6 +44,9 @@ domain_auto_trans(microdroid_manager, zipfuse_exec, zipfuse)
 
 # Allow microdroid_manager to start encryptedstore binary
 domain_auto_trans(microdroid_manager, encryptedstore_exec, encryptedstore)
+
+# Microdroid Manager needs read related permission for syncing encrypted storage fs
+allow microdroid_manager encryptedstore_file:dir r_dir_perms;
 
 # Allow microdroid_manager to run kexec to load crashkernel
 domain_auto_trans(microdroid_manager, kexec_exec, kexec)
@@ -119,6 +125,9 @@ allow microdroid_manager extra_apk_file:dir create_dir_perms;
 
 # Allow microdroid_manager to write kmsg_debug (stdio_to_kmsg).
 allow microdroid_manager kmsg_debug_device:chr_file w_file_perms;
+
+# Read tombstone_transmit_status_prop to wait for initialization of tombstone_transmit
+get_prop(microdroid_manager, tombstone_transmit_status_prop)
 
 # Domains other than microdroid can't write extra_apks
 neverallow { domain -microdroid_manager -init -vendor_init } extra_apk_file:file no_w_file_perms;

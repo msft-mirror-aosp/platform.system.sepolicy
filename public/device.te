@@ -7,9 +7,12 @@ type binder_device, dev_type, mlstrustedobject;
 type hwbinder_device, dev_type, mlstrustedobject;
 type vndbinder_device, dev_type;
 type block_device, dev_type;
+type bt_device, dev_type;
 type camera_device, dev_type;
 type dm_device, dev_type;
+type ublk_block_device, dev_type;
 type dm_user_device, dev_type;
+type ublk_control_device, dev_type;
 type keychord_device, dev_type;
 type loop_control_device, dev_type;
 type loop_device, dev_type;
@@ -93,6 +96,9 @@ type boot_block_device, dev_type;
 # Userdata block device mounted on /data.
 # Documented at https://source.android.com/devices/bootloader/partitions
 type userdata_block_device, dev_type;
+
+# Zoned block device.
+type zoned_block_device, dev_type;
 
 # Cache block device mounted on /cache.
 # Documented at https://source.android.com/devices/bootloader/partitions

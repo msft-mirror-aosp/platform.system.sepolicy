@@ -11,6 +11,7 @@
 #       isPrivApp (boolean)
 #       minTargetSdkVersion (unsigned integer)
 #       fromRunAs (boolean)
+#       isIsolatedComputeApp (boolean)
 #
 # All specified input selectors in an entry must match (i.e. logical AND).
 # An unspecified string or boolean selector with no default will match any
@@ -40,6 +41,11 @@
 #       it has a default value of 0.
 # fromRunAs=true means the process being labeled is started by run-as. Default
 # is false.
+# isIsolatedComputeApp=true means the process re-uses an isolated Uid but not
+# restricted to run in an isolated_app domain. Processes match this selector will
+# be mapped to isolated_compute_app by default. It is expected to be used together
+# with user=_isolated. This selector should not be used unless it is intended
+# to provide isolated processes with relaxed security restrictions.
 #
 # Precedence: entries are compared using the following rules, in the order shown
 # (see external/selinux/libselinux/src/android/android_platform.c,
@@ -57,6 +63,7 @@
 #              minTargetSdkVersion= integer. Note that minTargetSdkVersion=
 #              defaults to 0 if unspecified.
 #       (8) fromRunAs=true before fromRunAs=false.
+#       (9) isIsolatedComputeApp=true before isIsolatedComputeApp=false
 # (A fixed selector is more specific than a prefix, i.e. ending in *, and a
 # longer prefix is more specific than a shorter prefix.)
 # Apps are checked against entries in precedence order until the first match,
@@ -122,8 +129,11 @@ neverallow user=((?!shared_relro).)* domain=shared_relro
 
 # neverallow non-isolated uids into isolated_app domain
 # and vice versa
-neverallow user=_isolated domain=((?!isolated_app).)*
+neverallow user=_isolated isIsolatedComputeApp=false domain=((?!isolated_app).)*
 neverallow user=((?!_isolated).)* domain=isolated_app
+
+# neverallow isolatedComputeApp into domains other than isolated_compute_app
+neverallow user=_isolated isIsolatedComputeApp=true domain=((?!isolated_compute_app).)*
 
 # uid shell should always be in shell domain, however non-shell
 # uid's can be in shell domain
@@ -144,6 +154,7 @@ neverallow name=com.android.sdksandbox domain=((?!sdk_sandbox).)*
 user=_app seinfo=platform name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.remoteprovisioner domain=remote_prov_app type=app_data_file levelFrom=all
 user=system seinfo=platform domain=system_app type=system_app_data_file
+user=system seinfo=platform isPrivApp=true name=com.android.DeviceAsWebcam domain=device_as_webcam type=system_app_data_file levelFrom=all
 user=bluetooth seinfo=bluetooth domain=bluetooth type=bluetooth_data_file
 user=network_stack seinfo=network_stack domain=network_stack type=radio_data_file
 user=nfc seinfo=platform domain=nfc type=nfc_data_file
@@ -153,6 +164,7 @@ user=shared_relro domain=shared_relro levelFrom=all
 user=shell seinfo=platform domain=shell name=com.android.shell type=shell_data_file
 user=webview_zygote seinfo=webview_zygote domain=webview_zygote
 user=_isolated domain=isolated_app levelFrom=user
+user=_isolated isIsolatedComputeApp=true domain=isolated_compute_app levelFrom=user
 user=_sdksandbox domain=sdk_sandbox type=sdk_sandbox_data_file levelFrom=all
 user=_app seinfo=app_zygote domain=app_zygote levelFrom=user
 user=_app seinfo=media domain=mediaprovider type=app_data_file levelFrom=user
@@ -161,15 +173,19 @@ user=_app isEphemeralApp=true domain=ephemeral_app type=app_data_file levelFrom=
 user=_app isPrivApp=true domain=priv_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.permissioncontroller domain=permissioncontroller_app type=privapp_data_file levelFrom=all
 user=_app seinfo=media isPrivApp=true name=com.android.providers.media.module domain=mediaprovider_app type=privapp_data_file levelFrom=all
+user=_app seinfo=media isPrivApp=true name=com.android.providers.media.module:* domain=mediaprovider_app type=privapp_data_file levelFrom=all
 user=_app isPrivApp=true name=com.google.android.providers.media.module domain=mediaprovider_app type=privapp_data_file levelFrom=all
+user=_app isPrivApp=true name=com.google.android.providers.media.module:* domain=mediaprovider_app type=privapp_data_file levelFrom=all
 user=_app seinfo=platform isPrivApp=true name=com.android.permissioncontroller domain=permissioncontroller_app type=privapp_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.vzwomatrigger domain=vzwomatrigger_app type=privapp_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=user
+user=_app isPrivApp=true name=com.google.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms.* domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms:* domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gsf domain=gmscore_app type=privapp_data_file levelFrom=user
-user=_app minTargetSdkVersion=32 domain=untrusted_app type=app_data_file levelFrom=all
+user=_app minTargetSdkVersion=34 domain=untrusted_app type=app_data_file levelFrom=all
+user=_app minTargetSdkVersion=32 domain=untrusted_app_32 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=30 domain=untrusted_app_30 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=29 domain=untrusted_app_29 type=app_data_file levelFrom=all
 user=_app minTargetSdkVersion=28 domain=untrusted_app_27 type=app_data_file levelFrom=all
@@ -177,4 +193,3 @@ user=_app minTargetSdkVersion=26 domain=untrusted_app_27 type=app_data_file leve
 user=_app domain=untrusted_app_25 type=app_data_file levelFrom=user
 user=_app minTargetSdkVersion=28 fromRunAs=true domain=runas_app levelFrom=all
 user=_app fromRunAs=true domain=runas_app levelFrom=user
-

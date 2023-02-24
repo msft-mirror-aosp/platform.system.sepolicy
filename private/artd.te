@@ -29,16 +29,27 @@ tmpfs_domain(artd)
 # Allow testing userfaultfd support.
 userfaultfd_use(artd)
 
-# Read access to primary dex'es on writable partitions (e.g., /data/app/...).
-r_dir_file(artd, apk_data_file)
+# Read access to primary dex'es on writable partitions
+# ({/data,/mnt/expand/<volume-uuid>}/app/...).
+# Also allow creating the "oat" directory before restorecon.
+allow artd mnt_expand_file:dir { getattr search };
+allow artd apk_data_file:dir { rw_dir_perms create setattr relabelfrom };
+allow artd apk_data_file:file r_file_perms;
 
-# Read access to /vendor/app.
+# Read access to vendor APKs ({/vendor,/odm}/{app,priv-app}/...).
 r_dir_file(artd, vendor_app_file)
+
+# Read access to vendor overlay APKs ({/vendor,/odm,/oem}/overlay/...).
+allow artd oemfs:dir { getattr search };
+r_dir_file(artd, vendor_overlay_file)
+
+# Read access to vendor shared libraries ({/vendor,/odm}/framework/...).
+r_dir_file(artd, vendor_framework_file)
 
 # Read/write access to all compilation artifacts generated on device for apps'
 # primary dex'es. (/data/dalvik-cache/..., /data/app/.../oat/..., etc.)
-allow artd dalvikcache_data_file:dir create_dir_perms;
-allow artd dalvikcache_data_file:file create_file_perms;
+allow artd dalvikcache_data_file:dir { create_dir_perms relabelto };
+allow artd dalvikcache_data_file:file { create_file_perms relabelto };
 
 # Read access to the ART APEX data directory.
 # Needed for reading the boot image generated on device.
@@ -62,8 +73,9 @@ allow artd apex_info_file:file r_file_perms;
 #   profile files to the system or apps.
 allow artd self:global_capability_class_set { dac_override dac_read_search fowner chown };
 
-# Read/write access to profiles (/data/misc/profiles/{ref,cur}/...).
-allow artd user_profile_root_file:dir { getattr search };
+# Read/write access to profiles (/data/misc/profiles/{ref,cur}/...). Also allow
+# scanning /data/misc/profiles/cur, for cleaning up obsolete managed files.
+allow artd user_profile_root_file:dir r_dir_perms;
 allow artd user_profile_data_file:dir rw_dir_perms;
 allow artd user_profile_data_file:file create_file_perms;
 
@@ -72,6 +84,38 @@ allow artd user_profile_data_file:file create_file_perms;
 # ({/data,/mnt/expand/<volume-uuid>}/{user,user_de}/<user-id>/<package-name>/...).
 allow artd app_data_file_type:dir { create_dir_perms relabelfrom relabelto };
 allow artd app_data_file_type:file { create_file_perms relabelfrom relabelto };
+
+# Allow symlinks for secondary dex files. This has be to restricted because
+# symlinks can cause various security issues. We allow "privapp_data_file" just
+# for GMS because so far we only see GMS using symlinks.
+allow artd privapp_data_file:lnk_file { getattr read };
+
+# Read access to SELinux context files, for restorecon.
+allow artd file_contexts_file:file r_file_perms;
+allow artd seapp_contexts_file:file r_file_perms;
+
+# Check validity of SELinux context, for restorecon.
+selinux_check_context(artd)
+
+# Allow scanning /, for cleaning up obsolete managed files.
+allow artd rootfs:dir r_dir_perms;
+
+# Allow scanning /data, for cleaning up obsolete managed files.
+allow artd system_data_root_file:dir r_dir_perms;
+
+# Allow scanning /mnt, for cleaning up obsolete managed files.
+allow artd tmpfs:dir r_dir_perms;
+
+# Allow scanning /mnt/expand, for cleaning up obsolete managed files.
+allow artd mnt_expand_file:dir r_dir_perms;
+
+# Allow scanning {/data,/mnt/expand/<volume-uuid>}/{user,user_de}, for cleaning
+# up obsolete managed files.
+allow artd system_userdir_file:dir r_dir_perms;
+
+# Allow scanning {/data,/mnt/expand/<volume-uuid>}/{user,user_de}/<user-id> and
+# /mnt/expand/<volume-uuid>, for cleaning up obsolete managed files.
+allow artd system_data_file:dir r_dir_perms;
 
 # Never allow running other binaries without a domain transition.
 # The only exception is art_exec. It is allowed to use the artd domain because

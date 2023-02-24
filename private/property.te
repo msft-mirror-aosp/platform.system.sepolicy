@@ -432,6 +432,7 @@ neverallow {
   -init
   -shell
   -system_app
+  -system_server
   -mtectrl
 } {
   arm64_memtag_prop
@@ -627,7 +628,7 @@ neverallow {
 neverallow domain system_and_vendor_property_type:{file property_service} *;
 
 neverallow {
-  # Only init and the remote provisioner can set the ro.remote_provisioning.* props
+  # Only init and the remote provisioner can set the remote_provisioning props
   domain
   -init
   -remote_prov_app
@@ -680,3 +681,16 @@ neverallow {
   domain
   -init
 } log_file_logger_prop:property_service set;
+
+neverallow {
+  domain
+  -init
+  -vendor_init
+} usb_uvc_enabled_prop:property_service set;
+
+# Disallow non system apps from reading ro.usb.uvc.enabled
+neverallow {
+  appdomain
+  -system_app
+  -device_as_webcam
+} usb_uvc_enabled_prop:file no_rw_file_perms;

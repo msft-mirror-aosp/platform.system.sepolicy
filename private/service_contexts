@@ -1,11 +1,23 @@
+android.frameworks.cameraservice.service.ICameraService/default      u:object_r:fwk_camera_service:s0
+android.frameworks.location.altitude.IAltitudeService/default        u:object_r:fwk_altitude_service:s0
 android.frameworks.stats.IStats/default                              u:object_r:fwk_stats_service:s0
 android.frameworks.sensorservice.ISensorManager/default              u:object_r:fwk_sensor_service:s0
 android.hardware.audio.core.IConfig/default                          u:object_r:hal_audio_service:s0
+# 'default' IModule is equivalent to 'primary' in HIDL
 android.hardware.audio.core.IModule/default                          u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/a2dp                             u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/bluetooth                        u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/hearing_aid                      u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/msd                              u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/r_submix                         u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/stub                             u:object_r:hal_audio_service:s0
+android.hardware.audio.core.IModule/usb                              u:object_r:hal_audio_service:s0
 android.hardware.audio.effect.IFactory/default                       u:object_r:hal_audio_service:s0
+android.hardware.audio.sounddose.ISoundDoseFactory/default           u:object_r:hal_audio_service:s0
 android.hardware.authsecret.IAuthSecret/default                      u:object_r:hal_authsecret_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/0                  u:object_r:hal_evs_service:s0
 android.hardware.boot.IBootControl/default                           u:object_r:hal_bootctl_service:s0
+android.hardware.automotive.can.ICanController/default               u:object_r:hal_can_controller_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/1                  u:object_r:hal_evs_service:s0
 android.hardware.automotive.audiocontrol.IAudioControl/default       u:object_r:hal_audiocontrol_service:s0
 android.hardware.automotive.remoteaccess.IRemoteAccess/default       u:object_r:hal_remoteaccess_service:s0
@@ -13,6 +25,7 @@ android.hardware.automotive.vehicle.IVehicle/default                 u:object_r:
 android.hardware.biometrics.face.IFace/default                       u:object_r:hal_face_service:s0
 android.hardware.biometrics.fingerprint.IFingerprint/default         u:object_r:hal_fingerprint_service:s0
 android.hardware.biometrics.fingerprint.IFingerprint/virtual         u:object_r:hal_fingerprint_service:s0
+android.hardware.bluetooth.IBluetoothHci/default                     u:object_r:hal_bluetooth_service:s0
 android.hardware.bluetooth.audio.IBluetoothAudioProviderFactory/default u:object_r:hal_audio_service:s0
 android.hardware.broadcastradio.IBroadcastRadio/amfm                 u:object_r:hal_broadcastradio_service:s0
 android.hardware.broadcastradio.IBroadcastRadio/dab                  u:object_r:hal_broadcastradio_service:s0
@@ -58,14 +71,19 @@ android.hardware.radio.modem.IRadioModem/slot3                       u:object_r:
 android.hardware.radio.network.IRadioNetwork/slot1                   u:object_r:hal_radio_service:s0
 android.hardware.radio.network.IRadioNetwork/slot2                   u:object_r:hal_radio_service:s0
 android.hardware.radio.network.IRadioNetwork/slot3                   u:object_r:hal_radio_service:s0
+android.hardware.radio.satellite.IRadioSatellite/slot1               u:object_r:hal_radio_service:s0
+android.hardware.radio.satellite.IRadioSatellite/slot2               u:object_r:hal_radio_service:s0
+android.hardware.radio.satellite.IRadioSatellite/slot3               u:object_r:hal_radio_service:s0
 android.hardware.radio.sim.IRadioSim/slot1                           u:object_r:hal_radio_service:s0
 android.hardware.radio.sim.IRadioSim/slot2                           u:object_r:hal_radio_service:s0
 android.hardware.radio.sim.IRadioSim/slot3                           u:object_r:hal_radio_service:s0
+android.hardware.radio.sap.ISap/slot1                                u:object_r:hal_radio_service:s0
+android.hardware.radio.sap.ISap/slot2                                u:object_r:hal_radio_service:s0
+android.hardware.radio.sap.ISap/slot3                                u:object_r:hal_radio_service:s0
 android.hardware.radio.voice.IRadioVoice/slot1                       u:object_r:hal_radio_service:s0
 android.hardware.radio.voice.IRadioVoice/slot2                       u:object_r:hal_radio_service:s0
 android.hardware.radio.voice.IRadioVoice/slot3                       u:object_r:hal_radio_service:s0
 android.hardware.rebootescrow.IRebootEscrow/default                  u:object_r:hal_rebootescrow_service:s0
-android.hardware.security.dice.IDiceDevice/default                   u:object_r:hal_dice_service:s0
 android.hardware.security.keymint.IKeyMintDevice/default             u:object_r:hal_keymint_service:s0
 android.hardware.security.keymint.IRemotelyProvisionedComponent/default u:object_r:hal_remotelyprovisionedcomponent_service:s0
 android.hardware.gatekeeper.IGatekeeper/default                      u:object_r:hal_gatekeeper_service:s0
@@ -73,9 +91,11 @@ android.hardware.security.secureclock.ISecureClock/default             u:object_
 android.hardware.security.sharedsecret.ISharedSecret/default             u:object_r:hal_sharedsecret_service:s0
 android.hardware.sensors.ISensors/default                            u:object_r:hal_sensors_service:s0
 android.hardware.soundtrigger3.ISoundTriggerHw/default               u:object_r:hal_audio_service:s0
+android.hardware.tetheroffload.IOffload/default                      u:object_r:hal_tetheroffload_service:s0
 android.hardware.thermal.IThermal/default                            u:object_r:hal_thermal_service:s0
-android.hardware.tv.cec.IHdmiCec/default                             u:object_r:hal_tv_hdmi_cec_service:s0
-android.hardware.tv.hdmi.IHdmi/default                               u:object_r:hal_tv_hdmi_service:s0
+android.hardware.tv.hdmi.cec.IHdmiCec/default                        u:object_r:hal_tv_hdmi_cec_service:s0
+android.hardware.tv.hdmi.connection.IHdmiConnection/default          u:object_r:hal_tv_hdmi_connection_service:s0
+android.hardware.tv.hdmi.earc.IEArc/default                          u:object_r:hal_tv_hdmi_earc_service:s0
 android.hardware.tv.tuner.ITuner/default                             u:object_r:hal_tv_tuner_service:s0
 android.hardware.tv.input.ITvInput/default                           u:object_r:hal_tv_input_service:s0
 android.hardware.usb.IUsb/default                                    u:object_r:hal_usb_service:s0
@@ -115,8 +135,6 @@ android.frameworks.automotive.display.ICarDisplayProxy/default u:object_r:fwk_au
 android.security.apc                      u:object_r:apc_service:s0
 android.security.authorization            u:object_r:authorization_service:s0
 android.security.compat                   u:object_r:keystore_compat_hal_service:s0
-android.security.dice.IDiceMaintenance    u:object_r:dice_maintenance_service:s0
-android.security.dice.IDiceNode           u:object_r:dice_node_service:s0
 android.security.identity                 u:object_r:credstore_service:s0
 android.security.keystore                 u:object_r:keystore_service:s0
 android.security.legacykeystore           u:object_r:legacykeystore_service:s0
@@ -182,6 +200,7 @@ crossprofileapps                          u:object_r:crossprofileapps_service:s0
 dataloader_manager                        u:object_r:dataloader_manager_service:s0
 dbinfo                                    u:object_r:dbinfo_service:s0
 device_config                             u:object_r:device_config_service:s0
+device_config_updatable                   u:object_r:device_config_updatable_service:s0
 device_policy                             u:object_r:device_policy_service:s0
 device_identifiers                        u:object_r:device_identifiers_service:s0
 deviceidle                                u:object_r:deviceidle_service:s0
@@ -214,6 +233,7 @@ android.hardware.fingerprint.IFingerprintDaemon u:object_r:fingerprintd_service:
 game                                      u:object_r:game_service:s0
 gfxinfo                                   u:object_r:gfxinfo_service:s0
 gnss_time_update_service                  u:object_r:gnss_time_update_service:s0
+grammatical_inflection                    u:object_r:grammatical_inflection_service:s0
 graphicsstats                             u:object_r:graphicsstats_service:s0
 gpu                                       u:object_r:gpu_service:s0
 hardware                                  u:object_r:hardware_service:s0
@@ -291,6 +311,7 @@ network_time_update_service               u:object_r:network_time_update_service
 nfc                                       u:object_r:nfc_service:s0
 notification                              u:object_r:notification_service:s0
 oem_lock                                  u:object_r:oem_lock_service:s0
+ondevicepersonalization_system_service    u:object_r:ondevicepersonalization_system_service:s0
 otadexopt                                 u:object_r:otadexopt_service:s0
 overlay                                   u:object_r:overlay_service:s0
 pac_proxy                                 u:object_r:pac_proxy_service:s0
@@ -319,6 +340,7 @@ radio.sms                                 u:object_r:radio_service:s0
 rcs                                       u:object_r:radio_service:s0
 reboot_readiness                          u:object_r:reboot_readiness_service:s0
 recovery                                  u:object_r:recovery_service:s0
+remote_provisioning                       u:object_r:remote_provisioning_service:s0
 resolver                                  u:object_r:resolver_service:s0
 resources                                 u:object_r:resources_manager_service:s0
 restrictions                              u:object_r:restrictions_service:s0
