@@ -13,10 +13,13 @@
     credential_service
     device_as_webcam
     device_config_camera_native_prop
+    device_config_edgetpu_native_prop
     device_config_memory_safety_native_boot_prop
     device_config_memory_safety_native_prop
+    device_config_updatable_service
     device_config_vendor_system_native_prop
     devicelock_service
+    fwk_altitude_service
     fwk_camera_service
     fwk_sensor_service
     grammatical_inflection_service
@@ -39,16 +42,26 @@
     keystore_config_prop
     ntfs
     ondevicepersonalization_system_service
+    fuseblk
+    fuseblkd_untrusted
+    fuseblkd_untrusted_exec
+    fuseblkd
+    fuseblkd_exec
     permissive_mte_prop
     prng_seeder
     recovery_usb_config_prop
     remote_provisioning_service
     rkpdapp
     servicemanager_prop
+    shutdown_checkpoints_system_data_file
+    stats_config_data_file
     system_net_netd_service
     timezone_metadata_prop
+    traced_oome_heap_session_count_prop
     tuner_config_prop
     tuner_server_ctl_prop
+    ublk_block_device
+    ublk_control_device
     usb_uvc_enabled_prop
     virtual_face_hal_prop
     virtual_fingerprint_hal_prop

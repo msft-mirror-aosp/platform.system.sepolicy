@@ -221,6 +221,9 @@ ro.lowpan.              u:object_r:lowpan_prop:s0
 # heapprofd properties
 heapprofd.              u:object_r:heapprofd_prop:s0
 
+# traced properties
+traced.oome_heap_session.count u:object_r:traced_oome_heap_session_count_prop:s0 exact uint
+
 # servicemanager properties
 servicemanager.ready    u:object_r:servicemanager_prop:s0 exact bool
 
@@ -250,6 +253,7 @@ persist.device_config.attempted_boot_count          u:object_r:device_config_boo
 persist.device_config.camera_native.                u:object_r:device_config_camera_native_prop:s0
 persist.device_config.configuration.                u:object_r:device_config_configuration_prop:s0
 persist.device_config.connectivity.                 u:object_r:device_config_connectivity_prop:s0
+persist.device_config.edgetpu_native.               u:object_r:device_config_edgetpu_native_prop:s0
 persist.device_config.input_native_boot.            u:object_r:device_config_input_native_boot_prop:s0
 persist.device_config.lmkd_native.                  u:object_r:device_config_lmkd_native_prop:s0
 persist.device_config.media_native.                 u:object_r:device_config_media_native_prop:s0
@@ -495,13 +499,19 @@ media.stagefright.enable-scan                u:object_r:media_config_prop:s0 exa
 media.stagefright.thumbnail.prefer_hw_codecs u:object_r:media_config_prop:s0 exact bool
 persist.sys.media.avsync                     u:object_r:media_config_prop:s0 exact bool
 
-persist.bluetooth.a2dp_offload.cap             u:object_r:bluetooth_a2dp_offload_prop:s0 exact string
-persist.bluetooth.a2dp_offload.disabled        u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
-persist.bluetooth.bluetooth_audio_hal.disabled u:object_r:bluetooth_audio_hal_prop:s0 exact bool
-persist.bluetooth.btsnoopenable                u:object_r:exported_bluetooth_prop:s0 exact bool
-persist.bluetooth.btsnoopdefaultmode           u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
-persist.bluetooth.btsnooplogmode               u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
-persist.bluetooth.factoryreset                 u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.a2dp_offload.cap                          u:object_r:bluetooth_a2dp_offload_prop:s0 exact string
+persist.bluetooth.a2dp_offload.disabled                     u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
+persist.bluetooth.bluetooth_audio_hal.disabled              u:object_r:bluetooth_audio_hal_prop:s0 exact bool
+persist.bluetooth.btsnoopenable                             u:object_r:exported_bluetooth_prop:s0 exact bool
+persist.bluetooth.btsnoopdefaultmode                        u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
+persist.bluetooth.btsnooplogmode                            u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
+persist.bluetooth.snooplogfilter.headers.enabled            u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.snooplogfilter.profiles.a2dp.enabled      u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.snooplogfilter.profiles.map               u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
+persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
+persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
+persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
 
 bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int
@@ -514,6 +524,7 @@ bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config
 bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.core.gap.le.conn.only_init_1m_phy.enabled  u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.le_audio.inband_ringtone.supported    u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -578,6 +589,9 @@ bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
+persist.nfc.vendor_debug_enabled               u:object_r:nfc_prop:s0 exact bool
+persist.nfc.snoop_log_mode                     u:object_r:nfc_prop:s0 exact enum full filtered
+nfc.dta.skip_ndef_read                         u:object_r:nfc_prop:s0 exact bool
 
 persist.radio.multisim.config u:object_r:radio_control_prop:s0 exact string
 persist.radio.allow_mock_modem u:object_r:radio_control_prop:s0 exact bool
@@ -1458,6 +1472,7 @@ ro.bootanim.quiescent.enabled u:object_r:bootanim_config_prop:s0 exact bool
 
 # dck properties
 ro.gms.dck.eligible_wcc u:object_r:dck_prop:s0 exact int
+ro.gms.dck.se_capability u:object_r:dck_prop:s0 exact int
 
 # virtualization service properties
 virtualizationservice.state.last_cid u:object_r:virtualizationservice_prop:s0 exact uint

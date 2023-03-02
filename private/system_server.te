@@ -222,9 +222,9 @@ allow system_server proc_uid_procstat_set:file { w_file_perms getattr };
 # Write to /proc/sysrq-trigger.
 allow system_server proc_sysrq:file rw_file_perms;
 
-# Delete /data/misc/stats-data/ and /data/misc/stats-service/ directories.
-allow system_server stats_data_file:dir { open read remove_name search write };
-allow system_server stats_data_file:file unlink;
+# Delete /data/misc/stats-service/ directories.
+allow system_server stats_config_data_file:dir { open read remove_name search write };
+allow system_server stats_config_data_file:file unlink;
 
 # Read metric file & upload to statsd
 allow system_server odsign_data_file:dir search;
@@ -421,7 +421,9 @@ allow system_server mediaserver:udp_socket rw_socket_perms;
 allow system_server mediadrmserver:tcp_socket rw_socket_perms;
 allow system_server mediadrmserver:udp_socket rw_socket_perms;
 
-userdebug_or_eng(`perfetto_producer({ system_server })')
+# Write trace data to the Perfetto traced daemon. This requires connecting to
+# its producer socket and obtaining a (per-process) tmpfs fd.
+perfetto_producer(system_server)
 
 # Get file context
 allow system_server file_contexts_file:file r_file_perms;
@@ -737,6 +739,7 @@ set_prop(system_server, ctl_gsid_prop)
 set_prop(system_server, cppreopt_prop)
 
 # server configurable flags properties
+set_prop(system_server, device_config_edgetpu_native_prop)
 set_prop(system_server, device_config_input_native_boot_prop)
 set_prop(system_server, device_config_netd_native_prop)
 set_prop(system_server, device_config_nnapi_native_prop)
@@ -835,6 +838,9 @@ get_prop(system_server, persist_wm_debug_prop)
 get_prop(system_server, tuner_config_prop)
 # Write tuner.server.enable
 set_prop(system_server, tuner_server_ctl_prop)
+
+# Allow the heap dump ART plugin to the count of sessions waiting for OOME
+get_prop(appdomain, traced_oome_heap_session_count_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1294,6 +1300,7 @@ neverallow {
   device_config_lmkd_native_prop
   device_config_netd_native_prop
   device_config_nnapi_native_prop
+  device_config_edgetpu_native_prop
   device_config_runtime_native_boot_prop
   device_config_runtime_native_prop
   device_config_media_native_prop
@@ -1482,6 +1489,10 @@ neverallow { domain -system_server -init }
 # system_server cannot use this access to read perf event data like process stacks.
 allow system_server self:perf_event { open write cpu kernel };
 neverallow system_server self:perf_event ~{ open write cpu kernel };
+
+# Allow writing files under /data/system/shutdown-checkpoints/
+allow system_server shutdown_checkpoints_system_data_file:dir create_dir_perms;
+allow system_server shutdown_checkpoints_system_data_file:file create_file_perms;
 
 # Do not allow any domain other than init or system server to set the property
 neverallow { domain -init -system_server } socket_hook_prop:property_service set;

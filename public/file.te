@@ -154,10 +154,10 @@ type tmpfs, fs_type;
 type shm, fs_type;
 type mqueue, fs_type;
 type fuse, fusefs_type, fs_type, mlstrustedobject;
+type fuseblk, sdcard_type, fusefs_type, fs_type, mlstrustedobject;
 type sdcardfs, sdcard_type, fs_type, mlstrustedobject;
 type vfat, sdcard_type, fs_type, mlstrustedobject;
 type exfat, sdcard_type, fs_type, mlstrustedobject;
-type ntfs, sdcard_type, fs_type, mlstrustedobject;
 type debugfs, fs_type, debugfs_type;
 type debugfs_kprobes, fs_type, debugfs_type;
 type debugfs_mmc, fs_type, debugfs_type;
@@ -380,6 +380,8 @@ type server_configurable_flags_data_file, file_type, data_file_type, core_data_f
 type staging_data_file, file_type, data_file_type, core_data_file_type;
 # /vendor/apex
 type vendor_apex_file, vendor_file_type, file_type;
+# /data/system/shutdown-checkpoints
+type shutdown_checkpoints_system_data_file, file_type, data_file_type, core_data_file_type;
 
 # Mount locations managed by vold
 type mnt_media_rw_file, file_type;
@@ -446,6 +448,7 @@ type radio_data_file, file_type, data_file_type, core_data_file_type, app_data_f
 type recovery_data_file, file_type, data_file_type, core_data_file_type;
 type shared_relro_file, file_type, data_file_type, core_data_file_type, mlstrustedobject;
 type snapshotctl_log_data_file, file_type, data_file_type, core_data_file_type;
+type stats_config_data_file, file_type, data_file_type, core_data_file_type;
 type stats_data_file, file_type, data_file_type, core_data_file_type;
 type systemkeys_data_file, file_type, data_file_type, core_data_file_type;
 type textclassifier_data_file, file_type, data_file_type, core_data_file_type;
