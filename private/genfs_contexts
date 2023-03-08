@@ -145,6 +145,7 @@ genfscon sysfs /devices/virtual/misc/hw_random    u:object_r:sysfs_hwrandom:s0
 genfscon sysfs /devices/virtual/net             u:object_r:sysfs_net:s0
 genfscon sysfs /devices/virtual/switch          u:object_r:sysfs_switch:s0
 genfscon sysfs /devices/virtual/wakeup          u:object_r:sysfs_wakeup:s0
+genfscon sysfs /firmware/devicetree/base/avf u:object_r:sysfs_dt_avf:s0
 genfscon sysfs /firmware/devicetree/base/firmware/android u:object_r:sysfs_dt_firmware_android:s0
 genfscon sysfs /fs/ext4/features                  u:object_r:sysfs_fs_ext4_features:s0
 genfscon sysfs /fs/f2fs                           u:object_r:sysfs_fs_f2fs:s0
@@ -185,6 +186,9 @@ genfscon debugfs /tracing/trace                       u:object_r:debugfs_tracing
 genfscon tracefs /trace                               u:object_r:debugfs_tracing:s0
 genfscon debugfs /tracing/per_cpu/cpu                 u:object_r:debugfs_tracing:s0
 genfscon tracefs /per_cpu/cpu                         u:object_r:debugfs_tracing:s0
+
+genfscon debugfs /tracing/hyp                         u:object_r:debugfs_tracing:s0
+genfscon tracefs /hyp                                 u:object_r:debugfs_tracing:s0
 
 genfscon debugfs /tracing/instances                   u:object_r:debugfs_tracing_instances:s0
 genfscon tracefs /instances                           u:object_r:debugfs_tracing_instances:s0
@@ -384,9 +388,9 @@ genfscon inotifyfs / u:object_r:inotify:s0
 genfscon vfat / u:object_r:vfat:s0
 genfscon binder / u:object_r:binderfs:s0
 genfscon exfat / u:object_r:exfat:s0
-genfscon ntfs / u:object_r:ntfs:s0
 genfscon debugfs / u:object_r:debugfs:s0
 genfscon fuse / u:object_r:fuse:s0
+genfscon fuseblk / u:object_r:fuseblk:s0
 genfscon configfs / u:object_r:configfs:s0
 genfscon sdcardfs / u:object_r:sdcardfs:s0
 genfscon esdfs / u:object_r:sdcardfs:s0
