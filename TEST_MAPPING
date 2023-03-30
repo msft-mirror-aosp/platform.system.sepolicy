@@ -19,9 +19,7 @@
         },
         {
             "name": "MicrodroidHostTestCases"
-        }
-    ],
-    "avf-postsubmit": [
+        },
         {
             "name": "ComposHostTestCases"
         }
