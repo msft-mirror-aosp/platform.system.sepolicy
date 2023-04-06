@@ -183,3 +183,6 @@ with_native_coverage(`
   allow domain method_trace_data_file:dir create_dir_perms;
   allow domain method_trace_data_file:file create_file_perms;
 ')
+
+# Allow hidden build props on user builds
+get_prop({ untrusted_app_all userdebug_or_eng(`-untrusted_app_all') }, userdebug_or_eng_prop)
