@@ -2,9 +2,7 @@
 # This occurs when the process crashes.
 # We do not apply this to the su domain to avoid interfering with
 # tests (b/114136122)
-# We exempt crosvm because parts of its memory are inaccessible to the
-# kernel. TODO(b/238324526): Remove this.
-domain_auto_trans({ domain userdebug_or_eng(`-su') -crosvm }, crash_dump_exec, crash_dump);
+domain_auto_trans({ domain userdebug_or_eng(`-su') }, crash_dump_exec, crash_dump);
 allow domain crash_dump:process sigchld;
 
 # Allow every process to check the heapprofd.enable properties to determine
@@ -12,47 +10,54 @@ allow domain crash_dump:process sigchld;
 # heap profiling, as initialization will fail if it does not have the
 # necessary SELinux permissions.
 get_prop(domain, heapprofd_prop);
-# Allow heap profiling on debug builds.
-userdebug_or_eng(`can_profile_heap({
-  domain
-  -bpfloader
-  -init
-  -kernel
-  -keystore
-  -llkd
-  -logd
-  -logpersist
-  -recovery
-  -recovery_persist
-  -recovery_refresh
-  -ueventd
-  -vendor_init
-  -vold
-})')
 
-# As above, allow perf profiling most processes on debug builds.
-# zygote is excluded as system-wide profiling could end up with it
-# (unexpectedly) holding an open fd across a fork.
-userdebug_or_eng(`can_profile_perf({
+# See private/crash_dump.te
+define(`dumpable_domain',`{
   domain
+  -apexd
   -bpfloader
+  -crash_dump
+  -crosvm # TODO(b/236672526): Remove exception for crosvm
   -init
   -kernel
   -keystore
   -llkd
   -logd
+  -ueventd
+  -vendor_init
+  -vold
+}')
+
+# Allow heap profiling by heapprofd.
+# Zygotes are excluded due to potential issues with holding open file
+# descriptors or other state across forks. Other exclusions conflict with
+# neverallows, and are not considered important to profile.
+can_profile_heap({
+  dumpable_domain
+  -app_zygote
+  -hal_configstore_server
   -logpersist
   -recovery
   -recovery_persist
   -recovery_refresh
-  -ueventd
-  -vendor_init
-  -vold
+  -webview_zygote
   -zygote
-})')
+})
+
+# Allow profiling using perf_event_open by traced_perf.
+can_profile_perf({
+  dumpable_domain
+  -app_zygote
+  -hal_configstore_server
+  -webview_zygote
+  -zygote
+})
 
 # Everyone can access the IncFS list of features.
 r_dir_file(domain, sysfs_fs_incfs_features);
+
+# Everyone can access the fuse list of features.
+r_dir_file(domain, sysfs_fs_fuse_features);
 
 # Path resolution access in cgroups.
 allow domain cgroup:dir search;
@@ -82,6 +87,7 @@ get_prop(domain, bq_config_prop);
 # Allow all domains to check whether MTE is set to permissive mode.
 get_prop(domain, permissive_mte_prop);
 
+get_prop(domain, device_config_memory_safety_native_boot_prop);
 get_prop(domain, device_config_memory_safety_native_prop);
 
 # For now, everyone can access core property files
@@ -134,7 +140,7 @@ get_prop(domain, socket_hook_prop)
 get_prop(domain, surfaceflinger_prop)
 get_prop(domain, telephony_status_prop)
 get_prop(domain, timezone_prop)
-get_prop({domain -untrusted_app_all -isolated_app -ephemeral_app },  userdebug_or_eng_prop)
+get_prop({domain -untrusted_app_all -isolated_app_all -ephemeral_app },  userdebug_or_eng_prop)
 get_prop(domain, vendor_socket_hook_prop)
 get_prop(domain, vndk_prop)
 get_prop(domain, vold_status_prop)
@@ -217,8 +223,18 @@ neverallow {
 
 # System_server owns dropbox data, and init creates/restorecons the directory
 # Disallow direct access by other processes.
-neverallow { domain -init -system_server } dropbox_data_file:dir *;
-neverallow { domain -init -system_server } dropbox_data_file:file ~{ getattr read };
+neverallow {
+  domain
+  -init
+  -system_server
+  userdebug_or_eng(`-dumpstate')
+} dropbox_data_file:dir *;
+neverallow {
+  domain
+  -init
+  -system_server
+  userdebug_or_eng(`-dumpstate')
+} dropbox_data_file:file ~{ getattr read };
 
 ###
 # Services should respect app sandboxes
@@ -555,9 +571,9 @@ full_treble_only(`
     userdebug_or_eng(`-su') # communications with su are permitted only on userdebug or eng builds
     -init
     -tombstoned # linker to tombstoned
-    userdebug_or_eng(`-heapprofd')
-    userdebug_or_eng(`-traced')
-    userdebug_or_eng(`-traced_perf')
+    -heapprofd
+    -traced
+    -traced_perf
   });
 ')
 
@@ -728,7 +744,7 @@ neverallow {
                  # traced_probes.te.
 } system_app_data_file:dir_file_class_set { create unlink open };
 neverallow {
-  isolated_app
+  isolated_app_all
   ephemeral_app
   priv_app
   sdk_sandbox
@@ -736,3 +752,6 @@ neverallow {
 } system_app_data_file:dir_file_class_set { create unlink open };
 
 neverallow { domain -init } mtectrl:process { dyntransition transition };
+
+# For now, don't allow processes other than gmscore to access /data/misc_ce/<userid>/checkin
+neverallow { domain -gmscore_app -init -vold_prepare_subdirs } checkin_data_file:{dir file} *;

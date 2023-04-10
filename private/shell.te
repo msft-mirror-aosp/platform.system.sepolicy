@@ -101,6 +101,9 @@ set_prop(shell, power_debug_prop)
 # Allow shell to set this property used for rollback tests
 set_prop(shell, rollback_test_prop)
 
+# Allow shell to set RKP properties for testing purposes
+set_prop(shell, remote_prov_prop)
+
 # Allow shell to get encryption policy of /data/local/tmp/, for CTS
 allowxperm shell shell_data_file:dir ioctl {
   FS_IOC_GET_ENCRYPTION_POLICY
@@ -240,3 +243,7 @@ userdebug_or_eng(`set_prop(shell, persist_wm_debug_prop)')
 
 # Allow shell to write GWP-ASan properties even on user builds.
 set_prop(shell, gwp_asan_prop)
+
+# Allow shell to set persist.sysui.notification.builder_extras_override property
+userdebug_or_eng(`set_prop(shell, persist_sysui_builder_extras_prop)')
+

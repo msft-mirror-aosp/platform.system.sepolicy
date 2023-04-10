@@ -27,6 +27,12 @@ userdebug_or_eng(`
   allow dumpstate wm_trace_data_file:file r_file_perms;
 ')
 
+# /data/system/dropbox for dropbox entries
+userdebug_or_eng(`
+  allow dumpstate dropbox_data_file:dir r_dir_perms;
+  allow dumpstate dropbox_data_file:file r_file_perms;
+')
+
 # Allow dumpstate to make binder calls to incidentd
 binder_call(dumpstate, incidentd)
 
@@ -60,9 +66,11 @@ allow dumpstate {
   netd
 }:process signal;
 
+# Only allow dumpstate to dump Keystore on debuggable builds.
 userdebug_or_eng(`
   allow dumpstate keystore:process signal;
 ')
+dontaudit dumpstate keystore:process { signal };
 
 # For collecting bugreports.
 no_debugfs_restriction(`

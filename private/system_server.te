@@ -102,10 +102,12 @@ allow system_server self:process ptrace;
 allow system_server zygote:fd use;
 allow system_server zygote:process sigchld;
 
-# May kill zygote on crashes.
+# May kill zygote (or its child processes) on crashes.
 allow system_server {
   app_zygote
   crash_dump
+  crosvm
+  virtualizationmanager
   webview_zygote
   zygote
 }:process { getpgid sigkill signull };
@@ -222,9 +224,9 @@ allow system_server proc_uid_procstat_set:file { w_file_perms getattr };
 # Write to /proc/sysrq-trigger.
 allow system_server proc_sysrq:file rw_file_perms;
 
-# Delete /data/misc/stats-data/ and /data/misc/stats-service/ directories.
-allow system_server stats_data_file:dir { open read remove_name search write };
-allow system_server stats_data_file:file unlink;
+# Delete /data/misc/stats-service/ directories.
+allow system_server stats_config_data_file:dir { open read remove_name search write };
+allow system_server stats_config_data_file:file unlink;
 
 # Read metric file & upload to statsd
 allow system_server odsign_data_file:dir search;
@@ -421,7 +423,9 @@ allow system_server mediaserver:udp_socket rw_socket_perms;
 allow system_server mediadrmserver:tcp_socket rw_socket_perms;
 allow system_server mediadrmserver:udp_socket rw_socket_perms;
 
-userdebug_or_eng(`perfetto_producer({ system_server })')
+# Write trace data to the Perfetto traced daemon. This requires connecting to
+# its producer socket and obtaining a (per-process) tmpfs fd.
+perfetto_producer(system_server)
 
 # Get file context
 allow system_server file_contexts_file:file r_file_perms;
@@ -737,6 +741,7 @@ set_prop(system_server, ctl_gsid_prop)
 set_prop(system_server, cppreopt_prop)
 
 # server configurable flags properties
+set_prop(system_server, device_config_edgetpu_native_prop)
 set_prop(system_server, device_config_input_native_boot_prop)
 set_prop(system_server, device_config_netd_native_prop)
 set_prop(system_server, device_config_nnapi_native_prop)
@@ -760,6 +765,7 @@ set_prop(system_server, device_config_surface_flinger_native_boot_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
+set_prop(system_server, device_config_memory_safety_native_boot_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, device_config_remote_key_provisioning_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
@@ -786,6 +792,9 @@ set_prop(system_server, firstboot_prop)
 # Audio service in system server can read audio config properties,
 # such as camera shutter enforcement
 get_prop(system_server, audio_config_prop)
+
+# StorageManager service reads media config while checking if transcoding is supported.
+get_prop(system_server, media_config_prop)
 
 # system server reads this property to keep track of whether server configurable flags have been
 # reset during current boot.
@@ -830,10 +839,16 @@ get_prop(system_server, hypervisor_prop)
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
 
+# Read persist.sysui.notification.builder_extras_override property
+get_prop(system_server, persist_sysui_builder_extras_prop)
+
 # Read ro.tuner.lazyhal
 get_prop(system_server, tuner_config_prop)
 # Write tuner.server.enable
 set_prop(system_server, tuner_server_ctl_prop)
+
+# Allow the heap dump ART plugin to the count of sessions waiting for OOME
+get_prop(system_server, traced_oome_heap_session_count_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1166,14 +1181,14 @@ with_asan(`
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
 allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:dir search;
-allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { read write };
+allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { getattr read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
 
 # Allow system_server to start clatd in its own domain and kill it.
 domain_auto_trans(system_server, clatd_exec, clatd)
-allow system_server clatd:process signal;
+allow system_server clatd:process { sigkill signal };
 
 # ART Profiles.
 # Allow system_server to open profile snapshots for read.
@@ -1293,6 +1308,7 @@ neverallow {
   device_config_lmkd_native_prop
   device_config_netd_native_prop
   device_config_nnapi_native_prop
+  device_config_edgetpu_native_prop
   device_config_runtime_native_boot_prop
   device_config_runtime_native_prop
   device_config_media_native_prop
@@ -1482,6 +1498,10 @@ neverallow { domain -system_server -init }
 allow system_server self:perf_event { open write cpu kernel };
 neverallow system_server self:perf_event ~{ open write cpu kernel };
 
+# Allow writing files under /data/system/shutdown-checkpoints/
+allow system_server shutdown_checkpoints_system_data_file:dir create_dir_perms;
+allow system_server shutdown_checkpoints_system_data_file:file create_file_perms;
+
 # Do not allow any domain other than init or system server to set the property
 neverallow { domain -init -system_server } socket_hook_prop:property_service set;
 
@@ -1513,3 +1533,6 @@ neverallowxperm { domain -system_server } binder_device:chr_file ioctl { BINDER_
 # Only system server can write the font files.
 neverallow { domain -init -system_server } font_data_file:file no_w_file_perms;
 neverallow { domain -init -system_server } font_data_file:dir no_w_dir_perms;
+
+# Allow system server to set dynamic ART properties.
+set_prop(system_server, dalvik_dynamic_config_prop)

@@ -206,6 +206,9 @@ attribute appdomain;
 # All third party apps (except isolated_app and ephemeral_app)
 attribute untrusted_app_all;
 
+# All apps with UID between AID_ISOLATED_START (99000) and AID_ISOLATED_END (99999).
+attribute isolated_app_all;
+
 # All domains used for apps with network access.
 attribute netdomain;
 
@@ -333,7 +336,6 @@ hal_attribute(codec2);
 hal_attribute(configstore);
 hal_attribute(confirmationui);
 hal_attribute(contexthub);
-hal_attribute(dice);
 hal_attribute(drm);
 hal_attribute(dumpstate);
 hal_attribute(evs);
@@ -415,6 +417,9 @@ attribute super_block_device_type;
 attribute dmabuf_heap_device_type;
 expandattribute dmabuf_heap_device_type false;
 
+# Types for VM managers
+attribute vm_manager_device_type;
+
 # All types used for DSU metadata files.
 attribute gsi_metadata_file_type;
 
@@ -428,3 +433,6 @@ attribute apex_data_file_type;
 # permissions to maintain the health loop, writing to kernel log, handling
 # inputs and drawing screens, etc.
 attribute charger_type;
+
+# All types of ART properties.
+attribute dalvik_config_prop_type;

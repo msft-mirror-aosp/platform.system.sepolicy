@@ -1,4 +1,9 @@
 ;; types removed from current policy
+(type dice_maintenance_service)
+(type dice_node_service)
+(type diced)
+(type diced_exec)
+(type hal_dice_service)
 (type iorap_inode2filename)
 (type iorap_inode2filename_exec)
 (type iorap_inode2filename_tmpfs)
@@ -11,6 +16,8 @@
 (type iorapd_service)
 (type iorapd_tmpfs)
 (type lowpan_service)
+(type remotelyprovisionedkeypool_service)
+(type remoteprovisioning_service)
 (type timezone_service)
 (type tzdatacheck)
 (type tzdatacheck_exec)
@@ -19,6 +26,7 @@
 (type wpantund_service)
 (type zoneinfo_data_file)
 
+;; mapping information from ToT policy's types to 33.0 policy's types.
 (expandtypeattribute (DockObserver_service_33_0) true)
 (expandtypeattribute (IProxyService_service_33_0) true)
 (expandtypeattribute (aac_drc_prop_33_0) true)
@@ -1537,7 +1545,10 @@
 (typeattributeset ctl_sigstop_prop_33_0 (ctl_sigstop_prop))
 (typeattributeset ctl_start_prop_33_0 (ctl_start_prop))
 (typeattributeset ctl_stop_prop_33_0 (ctl_stop_prop))
-(typeattributeset dalvik_config_prop_33_0 (dalvik_config_prop))
+(typeattributeset dalvik_config_prop_33_0
+  ( dalvik_config_prop
+    dalvik_dynamic_config_prop
+))
 (typeattributeset dalvik_prop_33_0 (dalvik_prop))
 (typeattributeset dalvik_runtime_prop_33_0 (dalvik_runtime_prop))
 (typeattributeset dalvikcache_data_file_33_0 (dalvikcache_data_file))
@@ -2489,7 +2500,10 @@
 (typeattributeset untrusted_app_27_33_0 (untrusted_app_27))
 (typeattributeset untrusted_app_29_33_0 (untrusted_app_29))
 (typeattributeset untrusted_app_30_33_0 (untrusted_app_30))
-(typeattributeset untrusted_app_33_0 (untrusted_app))
+(typeattributeset untrusted_app_33_0
+  ( untrusted_app
+    untrusted_app_32
+))
 (typeattributeset update_engine_33_0 (update_engine))
 (typeattributeset update_engine_data_file_33_0 (update_engine_data_file))
 (typeattributeset update_engine_exec_33_0 (update_engine_exec))

@@ -2,13 +2,19 @@ type crosvm, domain, coredomain;
 type crosvm_exec, system_file_type, exec_type, file_type;
 type crosvm_tmpfs, file_type;
 
-# Let crosvm open /dev/kvm.
-allow crosvm kvm_device:chr_file rw_file_perms;
+# Let crosvm open VM manager devices such as /dev/kvm.
+allow crosvm vm_manager_device_type:chr_file rw_file_perms;
 
 # Most other domains shouldn't access /dev/kvm.
 neverallow { domain -crosvm -ueventd -shell } kvm_device:chr_file getattr;
 neverallow { domain -crosvm -ueventd } kvm_device:chr_file ~getattr;
 neverallowxperm { domain -crosvm } kvm_device:chr_file ioctl ~{ KVM_CHECK_EXTENSION };
+
+# Most other domains shouldn't access other vm managers either.
+# These restrictions need to be slightly looser than for kvm_device to allow
+# for different implementations.
+neverallow { coredomain appdomain -crosvm -ueventd -shell } vm_manager_device_type:chr_file getattr;
+neverallow { coredomain appdomain -crosvm -ueventd } vm_manager_device_type:chr_file ~getattr;
 
 # Let crosvm create temporary files.
 tmpfs_domain(crosvm)
@@ -78,6 +84,12 @@ allow crosvm shell_data_file:file write;
 # forward console/log to the host logcat).
 # crosvm only needs write permission, so dontaudit read
 dontaudit crosvm virtualizationmanager:fifo_file read;
+
+# Required for crosvm to start gdb-server to enable debugging of guest kernel.
+allow crosvm self:tcp_socket { bind create read setopt write accept listen };
+allow crosvm port:tcp_socket name_bind;
+allow crosvm adbd:unix_stream_socket ioctl;
+allow crosvm node:tcp_socket node_bind;
 
 # Don't allow crosvm to open files that it doesn't own.
 # This is important because a malicious application could try to start a VM with a composite disk

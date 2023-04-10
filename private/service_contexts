@@ -1,4 +1,5 @@
 android.frameworks.cameraservice.service.ICameraService/default      u:object_r:fwk_camera_service:s0
+android.frameworks.location.altitude.IAltitudeService/default        u:object_r:fwk_altitude_service:s0
 android.frameworks.stats.IStats/default                              u:object_r:fwk_stats_service:s0
 android.frameworks.sensorservice.ISensorManager/default              u:object_r:fwk_sensor_service:s0
 android.hardware.audio.core.IConfig/default                          u:object_r:hal_audio_service:s0
@@ -83,7 +84,6 @@ android.hardware.radio.voice.IRadioVoice/slot1                       u:object_r:
 android.hardware.radio.voice.IRadioVoice/slot2                       u:object_r:hal_radio_service:s0
 android.hardware.radio.voice.IRadioVoice/slot3                       u:object_r:hal_radio_service:s0
 android.hardware.rebootescrow.IRebootEscrow/default                  u:object_r:hal_rebootescrow_service:s0
-android.hardware.security.dice.IDiceDevice/default                   u:object_r:hal_dice_service:s0
 android.hardware.security.keymint.IKeyMintDevice/default             u:object_r:hal_keymint_service:s0
 android.hardware.security.keymint.IRemotelyProvisionedComponent/default u:object_r:hal_remotelyprovisionedcomponent_service:s0
 android.hardware.gatekeeper.IGatekeeper/default                      u:object_r:hal_gatekeeper_service:s0
@@ -135,15 +135,11 @@ android.frameworks.automotive.display.ICarDisplayProxy/default u:object_r:fwk_au
 android.security.apc                      u:object_r:apc_service:s0
 android.security.authorization            u:object_r:authorization_service:s0
 android.security.compat                   u:object_r:keystore_compat_hal_service:s0
-android.security.dice.IDiceMaintenance    u:object_r:dice_maintenance_service:s0
-android.security.dice.IDiceNode           u:object_r:dice_node_service:s0
 android.security.identity                 u:object_r:credstore_service:s0
 android.security.keystore                 u:object_r:keystore_service:s0
 android.security.legacykeystore           u:object_r:legacykeystore_service:s0
 android.security.maintenance              u:object_r:keystore_maintenance_service:s0
 android.security.metrics                  u:object_r:keystore_metrics_service:s0
-android.security.remoteprovisioning       u:object_r:remoteprovisioning_service:s0
-android.security.remoteprovisioning.IRemotelyProvisionedKeyPool u:object_r:remotelyprovisionedkeypool_service:s0
 android.service.gatekeeper.IGateKeeperService    u:object_r:gatekeeper_service:s0
 android.system.composd                    u:object_r:compos_service:s0
 android.system.virtualizationservice      u:object_r:virtualization_service:s0
@@ -198,10 +194,12 @@ contexthub                                u:object_r:contexthub_service:s0
 country_detector                          u:object_r:country_detector_service:s0
 coverage                                  u:object_r:coverage_service:s0
 cpuinfo                                   u:object_r:cpuinfo_service:s0
+cpu_monitor                               u:object_r:cpu_monitor_service:s0
 crossprofileapps                          u:object_r:crossprofileapps_service:s0
 dataloader_manager                        u:object_r:dataloader_manager_service:s0
 dbinfo                                    u:object_r:dbinfo_service:s0
 device_config                             u:object_r:device_config_service:s0
+device_config_updatable                   u:object_r:device_config_updatable_service:s0
 device_policy                             u:object_r:device_policy_service:s0
 device_identifiers                        u:object_r:device_identifiers_service:s0
 deviceidle                                u:object_r:deviceidle_service:s0
@@ -312,6 +310,7 @@ network_time_update_service               u:object_r:network_time_update_service
 nfc                                       u:object_r:nfc_service:s0
 notification                              u:object_r:notification_service:s0
 oem_lock                                  u:object_r:oem_lock_service:s0
+ondevicepersonalization_system_service    u:object_r:ondevicepersonalization_system_service:s0
 otadexopt                                 u:object_r:otadexopt_service:s0
 overlay                                   u:object_r:overlay_service:s0
 pac_proxy                                 u:object_r:pac_proxy_service:s0

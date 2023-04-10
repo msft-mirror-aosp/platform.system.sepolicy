@@ -92,13 +92,6 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.cronet-file_contexts",
-  srcs: [
-    "com.android.cronet-file_contexts",
-  ],
-}
-
-filegroup {
   name: "com.android.federatedcompute-file_contexts",
   srcs: [
     "com.android.federatedcompute-file_contexts",
@@ -246,6 +239,13 @@ filegroup {
 }
 
 filegroup {
+  name: "com.android.tethering.inprocess-file_contexts",
+  srcs: [
+    "com.android.tethering.inprocess-file_contexts",
+  ],
+}
+
+filegroup {
   name: "com.android.extservices-file_contexts",
   srcs: [
     "com.android.extservices-file_contexts",
@@ -274,9 +274,9 @@ filegroup {
 }
 
 filegroup {
-  name: "com.android.healthconnect-file_contexts",
+  name: "com.android.healthfitness-file_contexts",
   srcs: [
-    "com.android.healthconnect-file_contexts",
+    "com.android.healthfitness-file_contexts",
   ],
 }
 
