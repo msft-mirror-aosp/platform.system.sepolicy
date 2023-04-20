@@ -54,6 +54,7 @@ system_internal_prop(ctl_apex_load_prop)
 # Properties which can't be written outside system
 system_restricted_prop(device_config_virtualization_framework_native_prop)
 system_restricted_prop(log_file_logger_prop)
+system_restricted_prop(persist_sysui_builder_extras_prop)
 
 ###
 ### Neverallow rules
@@ -275,7 +276,7 @@ compatible_property_only(`
     -vendor_init
   } {
     core_property_type
-    dalvik_config_prop
+    dalvik_config_prop_type
     extended_core_property_type
     exported3_system_prop
     systemsound_config_prop
@@ -628,11 +629,10 @@ neverallow {
 neverallow domain system_and_vendor_property_type:{file property_service} *;
 
 neverallow {
-  # Only init and the remote provisioner can set the remote_provisioning props
   domain
   -init
-  -remote_prov_app
   -shell
+  -rkpdapp
 } remote_prov_prop:property_service set;
 
 neverallow {

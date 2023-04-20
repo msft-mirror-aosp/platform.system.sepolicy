@@ -65,6 +65,7 @@ system_restricted_prop(boottime_public_prop)
 system_restricted_prop(bq_config_prop)
 system_restricted_prop(build_bootimage_prop)
 system_restricted_prop(build_prop)
+system_restricted_prop(composd_vm_art_prop)
 system_restricted_prop(device_config_camera_native_prop)
 system_restricted_prop(device_config_edgetpu_native_prop)
 system_restricted_prop(device_config_nnapi_native_prop)
@@ -100,6 +101,8 @@ system_restricted_prop(usb_prop)
 system_restricted_prop(userspace_reboot_exported_prop)
 system_restricted_prop(vold_status_prop)
 system_restricted_prop(vts_status_prop)
+system_restricted_prop(graphics_config_writable_prop)
+
 
 compatible_property_only(`
     # DO NOT ADD ANY PROPERTIES HERE
@@ -142,6 +145,7 @@ system_vendor_config_prop(camera2_extensions_prop)
 system_vendor_config_prop(camerax_extensions_prop)
 system_vendor_config_prop(charger_config_prop)
 system_vendor_config_prop(codec2_config_prop)
+system_vendor_config_prop(composd_vm_vendor_prop)
 system_vendor_config_prop(cpu_variant_prop)
 system_vendor_config_prop(dalvik_config_prop)
 system_vendor_config_prop(debugfs_restriction_prop)
@@ -205,6 +209,7 @@ system_public_prop(ctl_default_prop)
 system_public_prop(ctl_interface_start_prop)
 system_public_prop(ctl_start_prop)
 system_public_prop(ctl_stop_prop)
+system_public_prop(dalvik_dynamic_config_prop)
 system_public_prop(dalvik_runtime_prop)
 system_public_prop(debug_prop)
 system_public_prop(device_config_memory_safety_native_boot_prop)
@@ -365,3 +370,5 @@ typeattribute system_prop        core_property_type;
 typeattribute usb_prop           core_property_type;
 typeattribute vold_prop          core_property_type;
 
+typeattribute dalvik_config_prop         dalvik_config_prop_type;
+typeattribute dalvik_dynamic_config_prop dalvik_config_prop_type;
