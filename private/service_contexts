@@ -20,6 +20,7 @@ android.hardware.boot.IBootControl/default                           u:object_r:
 android.hardware.automotive.can.ICanController/default               u:object_r:hal_can_controller_service:s0
 android.hardware.automotive.evs.IEvsEnumerator/hw/1                  u:object_r:hal_evs_service:s0
 android.hardware.automotive.audiocontrol.IAudioControl/default       u:object_r:hal_audiocontrol_service:s0
+android.hardware.automotive.ivn.IIvnAndroidDevice/default            u:object_r:hal_ivn_service:s0
 android.hardware.automotive.remoteaccess.IRemoteAccess/default       u:object_r:hal_remoteaccess_service:s0
 android.hardware.automotive.vehicle.IVehicle/default                 u:object_r:hal_vehicle_service:s0
 android.hardware.biometrics.face.IFace/default                       u:object_r:hal_face_service:s0
@@ -194,6 +195,7 @@ contexthub                                u:object_r:contexthub_service:s0
 country_detector                          u:object_r:country_detector_service:s0
 coverage                                  u:object_r:coverage_service:s0
 cpuinfo                                   u:object_r:cpuinfo_service:s0
+cpu_monitor                               u:object_r:cpu_monitor_service:s0
 crossprofileapps                          u:object_r:crossprofileapps_service:s0
 dataloader_manager                        u:object_r:dataloader_manager_service:s0
 dbinfo                                    u:object_r:dbinfo_service:s0

@@ -321,6 +321,7 @@ hal_client_domain(system_server, hal_health)
 hal_client_domain(system_server, hal_input_classifier)
 hal_client_domain(system_server, hal_input_processor)
 hal_client_domain(system_server, hal_ir)
+hal_client_domain(system_server, hal_keymint)
 hal_client_domain(system_server, hal_light)
 hal_client_domain(system_server, hal_memtrack)
 hal_client_domain(system_server, hal_neuralnetworks)
@@ -793,6 +794,9 @@ set_prop(system_server, firstboot_prop)
 # such as camera shutter enforcement
 get_prop(system_server, audio_config_prop)
 
+# StorageManager service reads media config while checking if transcoding is supported.
+get_prop(system_server, media_config_prop)
+
 # system server reads this property to keep track of whether server configurable flags have been
 # reset during current boot.
 get_prop(system_server, device_config_reset_performed_prop)
@@ -835,6 +839,9 @@ get_prop(system_server, hypervisor_prop)
 
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
+
+# Read persist.sysui.notification.builder_extras_override property
+get_prop(system_server, persist_sysui_builder_extras_prop)
 
 # Read ro.tuner.lazyhal
 get_prop(system_server, tuner_config_prop)
@@ -1101,6 +1108,8 @@ allowxperm system_server { apk_data_file system_data_file apex_system_server_dat
 
 # Allow system process to measure fs-verity for apps, apps being installed and system files
 allowxperm system_server { apk_data_file apk_tmp_file system_file }:file ioctl FS_IOC_MEASURE_VERITY;
+allowxperm system_server apk_tmp_file:file ioctl FS_IOC_SETFLAGS;
+allow system_server system_file:file ioctl;
 
 # Postinstall
 #
@@ -1175,14 +1184,14 @@ with_asan(`
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
 allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:dir search;
-allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { read write };
+allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { getattr read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
 
 # Allow system_server to start clatd in its own domain and kill it.
 domain_auto_trans(system_server, clatd_exec, clatd)
-allow system_server clatd:process signal;
+allow system_server clatd:process { sigkill signal };
 
 # ART Profiles.
 # Allow system_server to open profile snapshots for read.
@@ -1527,3 +1536,6 @@ neverallowxperm { domain -system_server } binder_device:chr_file ioctl { BINDER_
 # Only system server can write the font files.
 neverallow { domain -init -system_server } font_data_file:file no_w_file_perms;
 neverallow { domain -init -system_server } font_data_file:dir no_w_dir_perms;
+
+# Allow system server to set dynamic ART properties.
+set_prop(system_server, dalvik_dynamic_config_prop)

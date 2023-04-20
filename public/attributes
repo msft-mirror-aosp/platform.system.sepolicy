@@ -209,6 +209,12 @@ attribute untrusted_app_all;
 # All apps with UID between AID_ISOLATED_START (99000) and AID_ISOLATED_END (99999).
 attribute isolated_app_all;
 
+# All service types that would be allowed for isolated_compute_app.
+attribute isolated_compute_allowed_service;
+
+# All device types that would be allowed for isolated_compute_app.
+attribute isolated_compute_allowed_device;
+
 # All domains used for apps with network access.
 attribute netdomain;
 
@@ -352,6 +358,7 @@ hal_attribute(identity);
 hal_attribute(input_classifier);
 hal_attribute(input_processor);
 hal_attribute(ir);
+hal_attribute(ivn);
 hal_attribute(keymaster);
 hal_attribute(keymint);
 hal_attribute(light);
@@ -417,6 +424,9 @@ attribute super_block_device_type;
 attribute dmabuf_heap_device_type;
 expandattribute dmabuf_heap_device_type false;
 
+# Types for VM managers
+attribute vm_manager_device_type;
+
 # All types used for DSU metadata files.
 attribute gsi_metadata_file_type;
 
@@ -430,3 +440,6 @@ attribute apex_data_file_type;
 # permissions to maintain the health loop, writing to kernel log, handling
 # inputs and drawing screens, etc.
 attribute charger_type;
+
+# All types of ART properties.
+attribute dalvik_config_prop_type;
