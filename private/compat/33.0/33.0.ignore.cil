@@ -10,6 +10,9 @@
     artd
     bt_device
     build_attestation_prop
+    composd_vm_art_prop
+    composd_vm_vendor_prop
+    cpu_monitor_service
     credential_service
     device_as_webcam
     device_config_camera_native_prop
@@ -23,9 +26,11 @@
     fwk_camera_service
     fwk_sensor_service
     grammatical_inflection_service
+    graphics_config_writable_prop
     hal_bluetooth_service
     hal_bootctl_service
     hal_cas_service
+    hal_ivn_service
     hal_remoteaccess_service
     hal_secure_element_service
     hal_tetheroffload_service
@@ -48,6 +53,7 @@
     fuseblkd
     fuseblkd_exec
     permissive_mte_prop
+    persist_sysui_builder_extras_prop
     prng_seeder
     recovery_usb_config_prop
     remote_provisioning_service
@@ -55,6 +61,7 @@
     servicemanager_prop
     shutdown_checkpoints_system_data_file
     stats_config_data_file
+    sysfs_fs_fuse_features
     system_net_netd_service
     timezone_metadata_prop
     traced_oome_heap_session_count_prop

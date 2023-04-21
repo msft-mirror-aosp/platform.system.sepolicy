@@ -8,19 +8,14 @@
 ###
 ### TODO(b/266923392): Clean rules for isolated_compute_app characteristics
 ###
-type isolated_compute_app, domain;
 
 typeattribute isolated_compute_app coredomain;
 
 app_domain(isolated_compute_app)
 isolated_app_domain(isolated_compute_app)
 
-allow isolated_compute_app audioserver_service:service_manager find;
-allow isolated_compute_app cameraserver_service:service_manager find;
-allow isolated_compute_app content_capture_service:service_manager find;
-allow isolated_compute_app device_state_service:service_manager find;
-allow isolated_compute_app speech_recognition_service:service_manager find;
-allow isolated_compute_app mediaserver_service:service_manager find;
+allow isolated_compute_app isolated_compute_allowed_service:service_manager find;
+allow isolated_compute_app isolated_compute_allowed_device:chr_file { read write ioctl map };
 
 # Enable access to hardware services for camera functionalilites
 hal_client_domain(isolated_compute_app, hal_allocator)
@@ -31,6 +26,9 @@ allow isolated_compute_app dmabuf_system_heap_device:chr_file r_file_perms;
 # Allow access to network sockets received over IPC. New socket creation is not
 # permitted.
 allow isolated_compute_app { ephemeral_app priv_app untrusted_app_all }:{ tcp_socket udp_socket } { rw_socket_perms_no_ioctl };
+
+# Allow access to the toybox: b/275024392
+allow isolated_compute_app toolbox_exec:file rx_file_perms;
 
 #####
 ##### Neverallow

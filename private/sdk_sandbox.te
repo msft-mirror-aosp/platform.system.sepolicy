@@ -42,7 +42,7 @@ auditallow sdk_sandbox {
     -codec2_config_prop
     -config_prop
     -cppreopt_prop
-    -dalvik_config_prop
+    -dalvik_config_prop_type
     -dalvik_prop
     -dalvik_runtime_prop
     -dck_prop
@@ -92,6 +92,7 @@ auditallow sdk_sandbox {
     -pan_result_prop
     -permissive_mte_prop
     -persist_debug_prop
+    -persist_sysui_builder_extras_prop
     -pm_prop
     -powerctl_prop
     -property_service_version_prop

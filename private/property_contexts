@@ -319,6 +319,7 @@ perf.drop_caches        u:object_r:perf_drop_caches_prop:s0 exact enum 0 3
 ro.charger.                 u:object_r:charger_prop:s0
 sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
+ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
 
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
@@ -372,16 +373,26 @@ audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact int
+audio.spatializer.pose_predictor_type    u:object_r:audio_config_prop:s0 exact enum 0 1 2 3
+audio.spatializer.prediction_duration_ms u:object_r:audio_config_prop:s0 exact int
 
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool
 ro.audio.offload_wakelock u:object_r:audio_config_prop:s0 exact bool
+
+# Configure whether new device has spatialization default enabled.
+ro.audio.spatializer_binaural_enabled_default u:object_r:audio_config_prop:s0 exact bool
+ro.audio.spatializer_transaural_enabled_default u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioService to configure whether
 # spatializer functionality should be initialized
 ro.audio.spatializer_enabled u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioService to configure whether
 # to enable head tracking for spatial audio
 ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
+
+# Boolean property used in UsbAlsaManager to decide if only one or multiple
+# USB devices can be connected to audio system at a certain time
+ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
 
 persist.config.calibration_fac u:object_r:camera_calibration_prop:s0 exact string
 
@@ -400,31 +411,27 @@ ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 ro.vendor.camera.extensions.package u:object_r:camera2_extensions_prop:s0 exact string
 ro.vendor.camera.extensions.service u:object_r:camera2_extensions_prop:s0 exact string
 
-# ART properties
+# ART properties.
 dalvik.vm.                 u:object_r:dalvik_config_prop:s0
 ro.dalvik.vm.              u:object_r:dalvik_config_prop:s0
 ro.zygote                  u:object_r:dalvik_config_prop:s0 exact string
 
 # A set of ART properties listed explicitly for compatibility purposes.
-ro.dalvik.vm.native.bridge u:object_r:dalvik_config_prop:s0 exact string
+ro.dalvik.vm.native.bridge                    u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.always_debuggable                   u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.appimageformat                      u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.backgroundgctype                    u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.boot-dex2oat-cpu-set                u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.boot-dex2oat-threads                u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.boot-image                          u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.bgdexopt.new-classes-percent        u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.bgdexopt.new-methods-percent        u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.checkjni                            u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.dex2oat-Xms                         u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.dex2oat-Xmx                         u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.dex2oat-cpu-set                     u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.dex2oat-filter                      u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.dex2oat-flags                       u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.dex2oat-max-image-block-size        u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.dex2oat-minidebuginfo               u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.dex2oat-resolve-startup-strings     u:object_r:dalvik_config_prop:s0 exact bool
-dalvik.vm.dex2oat-threads                     u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.dex2oat-very-large                  u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.dex2oat-swap                        u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.dex2oat64.enabled                   u:object_r:dalvik_config_prop:s0 exact bool
@@ -443,10 +450,8 @@ dalvik.vm.heaptargetutilization               u:object_r:dalvik_config_prop:s0 e
 dalvik.vm.hot-startup-method-samples          u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.image-dex2oat-Xms                   u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.image-dex2oat-Xmx                   u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.image-dex2oat-cpu-set               u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.image-dex2oat-filter                u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.image-dex2oat-flags                 u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.image-dex2oat-threads               u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.isa.arm.features                    u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.isa.arm.variant                     u:object_r:dalvik_config_prop:s0 exact string
 dalvik.vm.isa.arm64.features                  u:object_r:dalvik_config_prop:s0 exact string
@@ -476,10 +481,20 @@ dalvik.vm.profilesystemserver                 u:object_r:dalvik_config_prop:s0 e
 dalvik.vm.profilebootclasspath                u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.ps-min-save-period-ms               u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.ps-resolved-classes-delay-ms        u:object_r:dalvik_config_prop:s0 exact int
-dalvik.vm.restore-dex2oat-cpu-set             u:object_r:dalvik_config_prop:s0 exact string
-dalvik.vm.restore-dex2oat-threads             u:object_r:dalvik_config_prop:s0 exact int
 dalvik.vm.usejit                              u:object_r:dalvik_config_prop:s0 exact bool
 dalvik.vm.zygote.max-boot-retry               u:object_r:dalvik_config_prop:s0 exact int
+
+# A list of ART properties that can be set dynamically.
+dalvik.vm.background-dex2oat-cpu-set          u:object_r:dalvik_dynamic_config_prop:s0 exact string
+dalvik.vm.background-dex2oat-threads          u:object_r:dalvik_dynamic_config_prop:s0 exact int
+dalvik.vm.boot-dex2oat-cpu-set                u:object_r:dalvik_dynamic_config_prop:s0 exact string
+dalvik.vm.boot-dex2oat-threads                u:object_r:dalvik_dynamic_config_prop:s0 exact int
+dalvik.vm.dex2oat-cpu-set                     u:object_r:dalvik_dynamic_config_prop:s0 exact string
+dalvik.vm.dex2oat-threads                     u:object_r:dalvik_dynamic_config_prop:s0 exact int
+dalvik.vm.image-dex2oat-cpu-set               u:object_r:dalvik_dynamic_config_prop:s0 exact string
+dalvik.vm.image-dex2oat-threads               u:object_r:dalvik_dynamic_config_prop:s0 exact int
+dalvik.vm.restore-dex2oat-cpu-set             u:object_r:dalvik_dynamic_config_prop:s0 exact string
+dalvik.vm.restore-dex2oat-threads             u:object_r:dalvik_dynamic_config_prop:s0 exact int
 
 persist.sys.dalvik.vm.lib.2 u:object_r:dalvik_runtime_prop:s0 exact string
 
@@ -872,6 +887,7 @@ ro.boot.mode               u:object_r:bootloader_prop:s0 exact string
 # Populated on Android Studio Emulator (for emulator specific workarounds)
 ro.boot.qemu               u:object_r:bootloader_prop:s0 exact bool
 ro.boot.revision           u:object_r:bootloader_prop:s0 exact string
+ro.boot.serialconsole      u:object_r:bootloader_prop:s0 exact bool
 ro.boot.vbmeta.avb_version u:object_r:bootloader_prop:s0 exact string
 ro.boot.verifiedbootstate  u:object_r:bootloader_prop:s0 exact string
 ro.boot.veritymode         u:object_r:bootloader_prop:s0 exact string
@@ -1377,6 +1393,7 @@ ro.gfx.driver_build_time u:object_r:graphics_config_prop:s0 exact int
 
 graphics.gpu.profiler.support          u:object_r:graphics_config_prop:s0 exact bool
 graphics.gpu.profiler.vulkan_layer_apk u:object_r:graphics_config_prop:s0 exact string
+persist.graphics.egl             u:object_r:graphics_config_writable_prop:s0 exact string
 
 ro.cpuvulkan.version u:object_r:graphics_config_prop:s0 exact int
 
@@ -1477,6 +1494,10 @@ ro.gms.dck.se_capability u:object_r:dck_prop:s0 exact int
 # virtualization service properties
 virtualizationservice.state.last_cid u:object_r:virtualizationservice_prop:s0 exact uint
 
+# composd properties
+composd.vm.art.memory_mib.config u:object_r:composd_vm_art_prop:s0 exact uint
+composd.vm.vendor.memory_mib.config u:object_r:composd_vm_vendor_prop:s0 exact int
+
 # properties for the virtual Face HAL
 persist.vendor.face.virtual.type u:object_r:virtual_face_hal_prop:s0 exact string
 persist.vendor.face.virtual.strength u:object_r:virtual_face_hal_prop:s0 exact string
@@ -1532,3 +1553,6 @@ vibrator.adaptive_haptics.enabled u:object_r:adaptive_haptics_prop:s0 exact stri
 
 # UVC Gadget property
 ro.usb.uvc.enabled      u:object_r:usb_uvc_enabled_prop:s0 exact bool
+
+# System UI notification properties
+persist.sysui.notification.builder_extras_override u:object_r:persist_sysui_builder_extras_prop:s0 exact bool
