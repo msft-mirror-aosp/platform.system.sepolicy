@@ -57,6 +57,7 @@
     locale_service
     mdns_service
     nearby_service
+    ota_build_prop
     persist_wm_debug_prop
     proc_watermark_boost_factor
     proc_watermark_scale_factor
