@@ -92,6 +92,7 @@
     odsign
     odsign_data_file
     odsign_exec
+    ota_build_prop
     pac_proxy_service
     permission_checker_service
     people_service
