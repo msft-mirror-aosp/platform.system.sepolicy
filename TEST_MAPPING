@@ -16,12 +16,14 @@
                     "include-filter": "android.security.cts.SeamendcHostTest"
                 }
             ]
+        }
+    ],
+    "avf-presubmit": [
+        {
+            "name": "ComposHostTestCases"
         },
         {
             "name": "MicrodroidHostTestCases"
-        },
-        {
-            "name": "ComposHostTestCases"
         }
     ]
 }
