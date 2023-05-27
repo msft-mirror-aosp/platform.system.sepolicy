@@ -263,6 +263,8 @@
 /system/bin/bufferhubd	u:object_r:bufferhubd_exec:s0
 /system/bin/performanced	u:object_r:performanced_exec:s0
 /system/bin/drmserver	u:object_r:drmserver_exec:s0
+/system/bin/drmserver32	u:object_r:drmserver_exec:s0
+/system/bin/drmserver64	u:object_r:drmserver_exec:s0
 /system/bin/dumpstate   u:object_r:dumpstate_exec:s0
 /system/bin/incident   u:object_r:incident_exec:s0
 /system/bin/incidentd   u:object_r:incidentd_exec:s0
@@ -664,6 +666,7 @@
 /data/misc/vold(/.*)?           u:object_r:vold_data_file:s0
 /data/misc/update_engine(/.*)?  u:object_r:update_engine_data_file:s0
 /data/misc/update_engine_log(/.*)?  u:object_r:update_engine_log_data_file:s0
+/data/misc/snapuserd_log(/.*)?  u:object_r:snapuserd_log_data_file:s0
 /data/system/dropbox(/.*)?      u:object_r:dropbox_data_file:s0
 /data/system/heapdump(/.*)?     u:object_r:heapdump_data_file:s0
 /data/misc/trace(/.*)?          u:object_r:method_trace_data_file:s0

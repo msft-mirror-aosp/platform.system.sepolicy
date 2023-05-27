@@ -292,6 +292,7 @@ apexd.config.           u:object_r:apexd_config_prop:s0
 apexd.config.dm_delete.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.dm_create.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact uint
+apexd.config.boot_activation.threads     u:object_r:apexd_config_prop:s0 exact uint
 persist.apexd.          u:object_r:apexd_prop:s0
 persist.vendor.apex.    u:object_r:apexd_select_prop:s0
 ro.boot.vendor.apex.    u:object_r:apexd_select_prop:s0
@@ -336,6 +337,7 @@ snapuserd.test.dm.snapshots u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.test.io_uring.force_disable u:object_r:snapuserd_prop:s0 exact bool
 
 ro.product.ab_ota_partitions u:object_r:ota_prop:s0 exact string
+ro.vendor.build.ab_ota_partitions u:object_r:ota_build_prop:s0 exact string
 # Property to set/clear the warm reset flag after an OTA update.
 ota.warm_reset  u:object_r:ota_prop:s0
 # The vbmeta digest for the inactive slot. It can be set after installing
@@ -405,6 +407,8 @@ camera.enable_landscape_to_portrait u:object_r:camera_config_prop:s0 exact bool
 ro.camera.notify_nfc          u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableLazyHal       u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
+ro.camera.disableJpegR        u:object_r:camera_config_prop:s0 exact bool
+ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 
@@ -532,6 +536,8 @@ bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.tx_cur_ma                   u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.rx_cur_ma                   u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
@@ -946,6 +952,8 @@ ro.product.cpu.abilist   u:object_r:build_prop:s0 exact string
 ro.product.cpu.abilist32 u:object_r:build_prop:s0 exact string
 ro.product.cpu.abilist64 u:object_r:build_prop:s0 exact string
 
+ro.product.cpu.pagesize.max    u:object_r:build_prop:s0 exact enum 4096 16384 65536
+
 ro.product.system.brand        u:object_r:build_prop:s0 exact string
 ro.product.system.device       u:object_r:build_prop:s0 exact string
 ro.product.system.manufacturer u:object_r:build_prop:s0 exact string
@@ -1196,7 +1204,6 @@ ro.hardware.camera               u:object_r:exported_default_prop:s0 exact strin
 ro.hardware.consumerir           u:object_r:exported_default_prop:s0 exact string
 ro.hardware.context_hub          u:object_r:exported_default_prop:s0 exact string
 ro.hardware.egl                  u:object_r:exported_default_prop:s0 exact string
-ro.hardware.egl_legacy           u:object_r:graphics_config_prop:s0 exact string
 ro.hardware.fingerprint          u:object_r:exported_default_prop:s0 exact string
 ro.hardware.flp                  u:object_r:exported_default_prop:s0 exact string
 ro.hardware.gatekeeper           u:object_r:exported_default_prop:s0 exact string
