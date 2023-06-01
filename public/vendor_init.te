@@ -251,6 +251,7 @@ set_prop(vendor_init, lmkd_prop)
 set_prop(vendor_init, logd_prop)
 set_prop(vendor_init, log_tag_prop)
 set_prop(vendor_init, log_prop)
+set_prop(vendor_init, graphics_config_writable_prop)
 set_prop(vendor_init, qemu_hw_prop)
 set_prop(vendor_init, radio_control_prop)
 set_prop(vendor_init, rebootescrow_hal_prop)
@@ -300,7 +301,7 @@ neverallow { domain -init } vendor_init:process transition;
 neverallow vendor_init { file_type fs_type -init_exec }:file entrypoint;
 
 # Never read/follow symlinks created by shell or untrusted apps.
-neverallow vendor_init { app_data_file privapp_data_file }:lnk_file read;
+neverallow vendor_init app_data_file_type:lnk_file read;
 neverallow vendor_init shell_data_file:lnk_file read;
 # Init should not be creating subdirectories in /data/local/tmp
 neverallow vendor_init shell_data_file:dir { write add_name remove_name };
