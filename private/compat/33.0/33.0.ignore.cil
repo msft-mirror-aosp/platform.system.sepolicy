@@ -7,6 +7,8 @@
   ( new_objects
     adaptive_haptics_prop
     apex_ready_prop
+    art_boot
+    art_boot_exec
     artd
     bt_device
     build_attestation_prop
@@ -55,6 +57,7 @@
     ota_build_prop
     permissive_mte_prop
     persist_sysui_builder_extras_prop
+    persist_sysui_ranking_update_prop
     prng_seeder
     recovery_usb_config_prop
     remote_provisioning_service
