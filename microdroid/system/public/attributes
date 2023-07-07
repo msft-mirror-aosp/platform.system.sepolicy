@@ -139,9 +139,6 @@ attribute halserverdomain;
 attribute halclientdomain;
 expandattribute halclientdomain true;
 
-# HALs
-hal_attribute(dice);
-
 # All types used for DMA-BUF heaps
 attribute dmabuf_heap_device_type;
 expandattribute dmabuf_heap_device_type false;
@@ -153,3 +150,6 @@ attribute microdroid_payload;
 
 # Domains that are blocked from producing a crash dump
 attribute no_crash_dump_domain;
+
+# All types of ART properties.
+attribute dalvik_config_prop_type;

@@ -1,12 +1,13 @@
-system_internal_prop(ctl_tombstoned_prop)
-system_restricted_prop(tombstone_transmit_status_prop)
-
 system_restricted_prop(boot_status_prop)
 
 # Declare ART properties for CompOS
 system_public_prop(dalvik_config_prop)
+system_public_prop(dalvik_dynamic_config_prop)
 system_restricted_prop(device_config_runtime_native_prop)
 system_restricted_prop(device_config_runtime_native_boot_prop)
+
+typeattribute dalvik_config_prop         dalvik_config_prop_type;
+typeattribute dalvik_dynamic_config_prop dalvik_config_prop_type;
 
 # Don't audit legacy ctl. property handling.  We only want the newer permission check to appear
 # in the audit log
@@ -52,4 +53,11 @@ neverallow {
     domain
     -init
     -microdroid_manager
-} {microdroid_config_prop microdroid_lifecycle_prop}:file no_rw_file_perms;
+} {microdroid_lifecycle_prop}:file no_rw_file_perms;
+
+neverallow {
+    domain
+    -init
+    -microdroid_manager
+    -crash_dump
+} {microdroid_config_prop}:file no_rw_file_perms;
