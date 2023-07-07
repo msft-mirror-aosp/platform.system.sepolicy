@@ -274,6 +274,7 @@ persist.device_config.virtualization_framework_native. u:object_r:device_config_
 persist.device_config.window_manager_native_boot.   u:object_r:device_config_window_manager_native_boot_prop:s0
 persist.device_config.memory_safety_native_boot.    u:object_r:device_config_memory_safety_native_boot_prop:s0
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
+persist.device_config.tethering_u_or_later_native.  u:object_r:device_config_tethering_u_or_later_native_prop:s0
 
 # F2FS smart idle maint prop
 persist.device_config.storage_native_boot.smart_idle_maint_enabled u:object_r:smart_idle_maint_enabled_prop:s0 exact bool
@@ -406,6 +407,8 @@ camera.enable_landscape_to_portrait u:object_r:camera_config_prop:s0 exact bool
 ro.camera.notify_nfc          u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableLazyHal       u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
+ro.camera.disableJpegR        u:object_r:camera_config_prop:s0 exact bool
+ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 
@@ -664,6 +667,7 @@ ro.bt.bdaddr_path u:object_r:exported_bluetooth_prop:s0 exact string
 ro.config.alarm_alert         u:object_r:systemsound_config_prop:s0 exact string
 ro.config.alarm_vol_default   u:object_r:systemsound_config_prop:s0 exact int
 ro.config.alarm_vol_steps     u:object_r:systemsound_config_prop:s0 exact int
+ro.config.assistant_vol_min   u:object_r:systemsound_config_prop:s0 exact int
 ro.config.media_vol_default   u:object_r:systemsound_config_prop:s0 exact int
 ro.config.media_vol_steps     u:object_r:systemsound_config_prop:s0 exact int
 ro.config.notification_sound  u:object_r:systemsound_config_prop:s0 exact string
@@ -1201,7 +1205,6 @@ ro.hardware.camera               u:object_r:exported_default_prop:s0 exact strin
 ro.hardware.consumerir           u:object_r:exported_default_prop:s0 exact string
 ro.hardware.context_hub          u:object_r:exported_default_prop:s0 exact string
 ro.hardware.egl                  u:object_r:exported_default_prop:s0 exact string
-ro.hardware.egl_legacy           u:object_r:graphics_config_prop:s0 exact string
 ro.hardware.fingerprint          u:object_r:exported_default_prop:s0 exact string
 ro.hardware.flp                  u:object_r:exported_default_prop:s0 exact string
 ro.hardware.gatekeeper           u:object_r:exported_default_prop:s0 exact string
@@ -1321,6 +1324,7 @@ ro.surface_flinger.enable_layer_caching                   u:object_r:surfaceflin
 ro.surface_flinger.display_update_imminent_timeout_ms     u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.uclamp.min                             u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.ignore_hdr_camera_layers               u:object_r:surfaceflinger_prop:s0 exact bool
+ro.surface_flinger.clear_slots_with_set_layer_buffer      u:object_r:surfaceflinger_prop:s0 exact bool
 
 ro.sf.disable_triple_buffer u:object_r:surfaceflinger_prop:s0 exact bool
 ro.sf.lcd_density           u:object_r:surfaceflinger_prop:s0 exact int
@@ -1450,8 +1454,8 @@ partition.product.verified.root_digest    u:object_r:verity_status_prop:s0 exact
 partition.vendor.verified.root_digest     u:object_r:verity_status_prop:s0 exact string
 partition.odm.verified.root_digest        u:object_r:verity_status_prop:s0 exact string
 
-ro.setupwizard.esim_cid_ignore u:object_r:setupwizard_esim_prop:s0 exact string
 ro.setupwizard.enterprise_mode u:object_r:setupwizard_prop:s0 exact bool
+ro.setupwizard.esim_cid_ignore u:object_r:setupwizard_prop:s0 exact string
 ro.setupwizard.rotation_locked u:object_r:setupwizard_prop:s0 exact bool
 ro.setupwizard.wifi_on_exit    u:object_r:setupwizard_prop:s0 exact bool
 
