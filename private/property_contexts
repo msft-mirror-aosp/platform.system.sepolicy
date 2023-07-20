@@ -1323,6 +1323,7 @@ ro.surface_flinger.enable_layer_caching                   u:object_r:surfaceflin
 ro.surface_flinger.display_update_imminent_timeout_ms     u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.uclamp.min                             u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.ignore_hdr_camera_layers               u:object_r:surfaceflinger_prop:s0 exact bool
+ro.surface_flinger.clear_slots_with_set_layer_buffer      u:object_r:surfaceflinger_prop:s0 exact bool
 
 ro.sf.disable_triple_buffer u:object_r:surfaceflinger_prop:s0 exact bool
 ro.sf.lcd_density           u:object_r:surfaceflinger_prop:s0 exact int
@@ -1421,9 +1422,6 @@ remote_provisioning.tee.rkp_only u:object_r:remote_prov_prop:s0 exact bool
 
 # Hostname for the remote provisioning server a device should communicate with
 remote_provisioning.hostname u:object_r:remote_prov_prop:s0 exact string
-
-# Indicates the system should use rkpd instead of RemoteProvisioner
-remote_provisioning.enable_rkpd u:object_r:remote_prov_prop:s0 exact bool
 
 # Broadcast boot stages, which keystore listens to
 keystore.boot_level u:object_r:keystore_listen_prop:s0 exact int
@@ -1564,3 +1562,7 @@ ro.usb.uvc.enabled      u:object_r:usb_uvc_enabled_prop:s0 exact bool
 # System UI notification properties
 persist.sysui.notification.ranking_update_ashmem u:object_r:persist_sysui_ranking_update_prop:s0 exact bool
 persist.sysui.notification.builder_extras_override u:object_r:persist_sysui_builder_extras_prop:s0 exact bool
+
+# Properties for Quick Start setup.
+ro.quick_start.oem_id u:object_r:quick_start_prop:s0 exact string
+ro.quick_start.device_id u:object_r:quick_start_prop:s0 exact string

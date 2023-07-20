@@ -94,6 +94,7 @@ android.hardware.sensors.ISensors/default                            u:object_r:
 android.hardware.soundtrigger3.ISoundTriggerHw/default               u:object_r:hal_audio_service:s0
 android.hardware.tetheroffload.IOffload/default                      u:object_r:hal_tetheroffload_service:s0
 android.hardware.thermal.IThermal/default                            u:object_r:hal_thermal_service:s0
+android.hardware.threadnetwork.IThreadChip/chip0                     u:object_r:hal_threadnetwork_service:s0
 android.hardware.tv.hdmi.cec.IHdmiCec/default                        u:object_r:hal_tv_hdmi_cec_service:s0
 android.hardware.tv.hdmi.connection.IHdmiConnection/default          u:object_r:hal_tv_hdmi_connection_service:s0
 android.hardware.tv.hdmi.earc.IEArc/default                          u:object_r:hal_tv_hdmi_earc_service:s0
@@ -227,6 +228,7 @@ euicc_card_controller                     u:object_r:radio_service:s0
 external_vibrator_service                 u:object_r:external_vibrator_service:s0
 ethernet                                  u:object_r:ethernet_service:s0
 face                                      u:object_r:face_service:s0
+feature_flags                             u:object_r:feature_flags_service:s0
 file_integrity                            u:object_r:file_integrity_service:s0
 fingerprint                               u:object_r:fingerprint_service:s0
 font                                      u:object_r:font_service:s0
