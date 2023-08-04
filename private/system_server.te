@@ -296,6 +296,7 @@ binder_call(system_server, idmap)
 binder_call(system_server, installd)
 binder_call(system_server, incidentd)
 binder_call(system_server, netd)
+binder_call(system_server, ot_daemon)
 userdebug_or_eng(`binder_call(system_server, profcollectd)')
 binder_call(system_server, statsd)
 binder_call(system_server, storaged)
@@ -743,6 +744,7 @@ set_prop(system_server, ctl_gsid_prop)
 set_prop(system_server, cppreopt_prop)
 
 # server configurable flags properties
+set_prop(system_server, device_config_core_experiments_team_internal_prop)
 set_prop(system_server, device_config_edgetpu_native_prop)
 set_prop(system_server, device_config_input_native_boot_prop)
 set_prop(system_server, device_config_netd_native_prop)
@@ -854,6 +856,10 @@ set_prop(system_server, tuner_server_ctl_prop)
 # Allow the heap dump ART plugin to the count of sessions waiting for OOME
 get_prop(system_server, traced_oome_heap_session_count_prop)
 
+# Allow the sensor service (running in the system service) to read sensor
+# configuration properties
+get_prop(system_server, sensors_config_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
@@ -949,11 +955,13 @@ allow system_server mediadrmserver_service:service_manager find;
 allow system_server mediatuner_service:service_manager find;
 allow system_server netd_service:service_manager find;
 allow system_server nfc_service:service_manager find;
+allow system_server ot_daemon_service:service_manager find;
 allow system_server radio_service:service_manager find;
 allow system_server stats_service:service_manager find;
 allow system_server storaged_service:service_manager find;
 allow system_server surfaceflinger_service:service_manager find;
 allow system_server update_engine_service:service_manager find;
+allow system_server virtual_camera_service:service_manager find;
 allow system_server vold_service:service_manager find;
 allow system_server wifinl80211_service:service_manager find;
 allow system_server logd_service:service_manager find;
@@ -1308,6 +1316,7 @@ neverallow {
   -system_server
   -flags_health_check
 } {
+  device_config_core_experiments_team_internal_prop
   device_config_activity_manager_native_boot_prop
   device_config_connectivity_prop
   device_config_input_native_boot_prop
