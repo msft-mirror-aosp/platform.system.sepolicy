@@ -419,6 +419,14 @@ func (m *selinuxContextsModule) buildPropertyContexts(ctx android.ModuleContext,
 	return builtCtxFile
 }
 
+func (m *selinuxContextsModule) shouldCheckCoredomain(ctx android.ModuleContext) bool {
+	if !ctx.SocSpecific() && !ctx.DeviceSpecific() {
+		return false
+	}
+
+	return ctx.DeviceConfig().CheckVendorSeappViolations()
+}
+
 func (m *selinuxContextsModule) buildSeappContexts(ctx android.ModuleContext, inputs android.Paths) android.Path {
 	neverallowFile := pathForModuleOut(ctx, "neverallow")
 	ret := pathForModuleOut(ctx, m.stem())
@@ -434,11 +442,15 @@ func (m *selinuxContextsModule) buildSeappContexts(ctx android.ModuleContext, in
 		Text("|| true)") // to make ninja happy even when result is empty
 
 	rule.Temporary(neverallowFile)
-	rule.Command().BuiltTool("checkseapp").
+	checkCmd := rule.Command().BuiltTool("checkseapp").
 		FlagWithInput("-p ", android.PathForModuleSrc(ctx, proptools.String(m.seappProperties.Sepolicy))).
 		FlagWithOutput("-o ", ret).
 		Inputs(inputs).
 		Input(neverallowFile)
+
+	if m.shouldCheckCoredomain(ctx) {
+		checkCmd.Flag("-c") // check coredomain for vendor contexts
+	}
 
 	rule.Build("seapp_contexts", "Building seapp_contexts: "+m.Name())
 	return ret

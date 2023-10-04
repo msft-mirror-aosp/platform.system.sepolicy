@@ -32,6 +32,7 @@
 /second_stage_resources u:object_r:tmpfs:s0
 /sys                u:object_r:sysfs:s0
 /apex               u:object_r:apex_mnt_dir:s0
+/bootstrap-apex     u:object_r:apex_mnt_dir:s0
 
 # Postinstall directories
 /postinstall         u:object_r:postinstall_mnt_dir:s0
@@ -190,6 +191,7 @@
 /dev/urandom		u:object_r:random_device:s0
 /dev/usb_accessory	u:object_r:usbaccessory_device:s0
 /dev/v4l-touch[0-9]*	u:object_r:input_device:s0
+/dev/vfio(/.*)?		u:object_r:vfio_device:s0
 /dev/vhost-vsock	u:object_r:kvm_device:s0
 /dev/video[0-9]*	u:object_r:video_device:s0
 /dev/vndbinder		u:object_r:vndbinder_device:s0
@@ -202,14 +204,6 @@
 # Linker configuration
 #
 /linkerconfig(/.*)?          u:object_r:linkerconfig_file:s0
-
-# Apex sepoolicy files.
-/dev/selinux/apex_file_contexts                 u:object_r:file_contexts_file:s0
-/dev/selinux/apex_seapp_contexts                u:object_r:seapp_contexts_file:s0
-/dev/selinux/apex_service_contexts              u:object_r:service_contexts_file:s0
-/dev/selinux/apex_property_contexts             u:object_r:property_contexts_file:s0
-/dev/selinux/apex_hwservice_contexts            u:object_r:hwservice_contexts_file:s0
-/dev/selinux/apex_mac_permissions\.xml          u:object_r:mac_perms_file:s0
 
 #############################
 # System files
@@ -232,9 +226,6 @@
 /system/bin/extra_free_kbytes\.sh u:object_r:extra_free_kbytes_exec:s0
 /system/bin/fsck\.exfat	--	u:object_r:fsck_exec:s0
 /system/bin/fsck\.f2fs	--	u:object_r:fsck_exec:s0
-/system/bin/ntfsfix	--	u:object_r:fsck_exec:s0
-/system/bin/ntfs-3g	--	u:object_r:fuseblkd_untrusted_exec:s0
-/system/bin/ntfs-3g-compart	--	u:object_r:fuseblkd_exec:s0
 /system/bin/init		u:object_r:init_exec:s0
 # TODO(/123600489): merge mini-keyctl into toybox
 /system/bin/mini-keyctl	--	u:object_r:toolbox_exec:s0
@@ -257,7 +248,6 @@
 /system/bin/app_process32	u:object_r:zygote_exec:s0
 /system/bin/app_process64	u:object_r:zygote_exec:s0
 /system/bin/servicemanager	u:object_r:servicemanager_exec:s0
-/system/bin/hwservicemanager	u:object_r:hwservicemanager_exec:s0
 /system/bin/surfaceflinger	u:object_r:surfaceflinger_exec:s0
 /system/bin/gpuservice	u:object_r:gpuservice_exec:s0
 /system/bin/bufferhubd	u:object_r:bufferhubd_exec:s0
@@ -343,11 +333,11 @@
 /system/bin/storaged             u:object_r:storaged_exec:s0
 /system/bin/virtual_touchpad     u:object_r:virtual_touchpad_exec:s0
 /system/bin/hw/android\.frameworks\.bufferhub@1\.0-service    u:object_r:fwk_bufferhub_exec:s0
-/system/bin/hw/android\.hidl\.allocator@1\.0-service          u:object_r:hal_allocator_default_exec:s0
 /system/bin/hw/android\.system\.suspend-service               u:object_r:system_suspend_exec:s0
 /system/etc/cgroups\.json               u:object_r:cgroup_desc_file:s0
 /system/etc/task_profiles/cgroups_[0-9]+\.json               u:object_r:cgroup_desc_api_file:s0
 /system/etc/event-log-tags              u:object_r:system_event_log_tags_file:s0
+/system/etc/font_fallback.xml           u:object_r:system_font_fallback_file:s0
 /system/etc/group                       u:object_r:system_group_file:s0
 /system/etc/ld\.config.*                u:object_r:system_linker_config_file:s0
 /system/etc/passwd                      u:object_r:system_passwd_file:s0
@@ -385,6 +375,7 @@
 /system/bin/cardisplayproxyd     u:object_r:automotive_display_service_exec:s0
 /system/bin/evsmanagerd          u:object_r:evsmanagerd_exec:s0
 /system/bin/android\.automotive\.evs\.manager@1\.[0-9]+ u:object_r:evsmanagerd_exec:s0
+/system/bin/uprobestats           u:object_r:uprobestats_exec:s0
 
 #############################
 # Vendor files
@@ -497,6 +488,9 @@
 /(system_ext|system/system_ext)/bin/aidl_lazy_cb_test_server u:object_r:aidl_lazy_test_server_exec:s0
 /(system_ext|system/system_ext)/bin/hidl_lazy_test_server    u:object_r:hidl_lazy_test_server_exec:s0
 /(system_ext|system/system_ext)/bin/hidl_lazy_cb_test_server u:object_r:hidl_lazy_test_server_exec:s0
+/(system_ext|system/system_ext)/bin/hwservicemanager         u:object_r:hwservicemanager_exec:s0
+/(system_ext|system/system_ext)/bin/hw/android\.hidl\.allocator@1\.0-service u:object_r:hal_allocator_default_exec:s0
+
 
 /(system_ext|system/system_ext)/bin/canhalconfigurator(-aidl)? u:object_r:canhalconfigurator_exec:s0
 
@@ -601,6 +595,7 @@
 /data/misc/apexdata(/.*)?       u:object_r:apex_module_data_file:s0
 /data/misc/apexdata/com\.android\.art(/.*)?           u:object_r:apex_art_data_file:s0
 /data/misc/apexdata/com\.android\.compos(/.*)?        u:object_r:apex_compos_data_file:s0
+/data/misc/apexdata/com\.android\.virt(/.*)?          u:object_r:apex_virt_data_file:s0
 /data/misc/apexdata/com\.android\.permission(/.*)?    u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.scheduling(/.*)?    u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.tethering(/.*)?     u:object_r:apex_system_server_data_file:s0
@@ -737,7 +732,7 @@
 /data/incremental/MT_[^/]+/mount/.blocks_written        u:object_r:incremental_control_file:s0
 
 # Boot animation data
-/data/bootanim(/.*)? u:object_r:bootanim_data_file:s0
+/data/misc/bootanim(/.*)? u:object_r:bootanim_data_file:s0
 #############################
 # Expanded data files
 #
@@ -841,7 +836,6 @@
 /metadata/password_slots(/.*)?    u:object_r:password_slot_metadata_file:s0
 /metadata/ota(/.*)?       u:object_r:ota_metadata_file:s0
 /metadata/bootstat(/.*)?  u:object_r:metadata_bootstat_file:s0
-/metadata/sepolicy(/.*)?    u:object_r:sepolicy_metadata_file:s0
 /metadata/staged-install(/.*)?    u:object_r:staged_install_file:s0
 /metadata/userspacereboot(/.*)?    u:object_r:userspace_reboot_metadata_file:s0
 /metadata/watchdog(/.*)?    u:object_r:watchdog_metadata_file:s0

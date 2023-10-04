@@ -37,6 +37,7 @@ type mediatranscoding_service,  app_api_service, service_manager_type;
 type netd_service,              service_manager_type;
 type nfc_service,               service_manager_type;
 type ondevicepersonalization_system_service, system_api_service, system_server_service, service_manager_type;
+type ot_daemon_service,         service_manager_type;
 type radio_service,             service_manager_type;
 type secure_element_service,    service_manager_type;
 type service_manager_service,   service_manager_type;
@@ -49,6 +50,7 @@ type system_suspend_control_service, service_manager_type;
 type update_engine_service,     service_manager_type;
 type update_engine_stable_service, service_manager_type;
 type virtualization_service,    service_manager_type;
+type virtual_camera_service,    service_manager_type;
 type virtual_touchpad_service,  service_manager_type;
 type vold_service,              service_manager_type;
 type vr_hwc_service,            service_manager_type;
@@ -69,6 +71,7 @@ type app_prediction_service, app_api_service, system_server_service, service_man
 type app_search_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type appops_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type appwidget_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+type archive_service, app_api_service, system_server_service, service_manager_type;
 type assetatlas_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type attestation_verification_service, app_api_service, system_server_service, service_manager_type;
 type audio_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -196,6 +199,7 @@ type procstats_service, app_api_service, ephemeral_app_api_service, system_serve
 type reboot_readiness_service, app_api_service, system_server_service, service_manager_type;
 type recovery_service, system_server_service, service_manager_type;
 type registry_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+type remote_auth_service, app_api_service, system_server_service, service_manager_type;
 type remote_provisioning_service, system_server_service, service_manager_type;
 type resources_manager_service, system_api_service, system_server_service, service_manager_type;
 type restrictions_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -233,6 +237,7 @@ type textservices_service, app_api_service, ephemeral_app_api_service, system_se
 type texttospeech_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type telecom_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type thermal_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+type threadnetwork_service, app_api_service, system_server_service, service_manager_type;
 type timedetector_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type timezonedetector_service, app_api_service, system_server_service, service_manager_type;
 type translation_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -280,6 +285,7 @@ type hal_broadcastradio_service, protected_service, hal_service_type, service_ma
 type hal_camera_service, protected_service, hal_service_type, service_manager_type;
 type hal_can_controller_service, protected_service, hal_service_type, service_manager_type;
 type hal_cas_service, hal_service_type, service_manager_type;
+type hal_codec2_service, hal_service_type, service_manager_type, isolated_compute_allowed_service;
 type hal_confirmationui_service, protected_service, hal_service_type, service_manager_type;
 type hal_contexthub_service, protected_service, hal_service_type, service_manager_type;
 type hal_drm_service, hal_service_type, service_manager_type;

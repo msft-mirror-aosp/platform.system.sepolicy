@@ -47,9 +47,11 @@
 # be mapped to isolated_compute_app by default. It is expected to be used together
 # with user=_isolated. This selector should not be used unless it is intended
 # to provide isolated processes with relaxed security restrictions.
+# An unspecified isIsolatedComputeApp defaults to false.
 #
 # isSdkSandboxNext=true means sdk sandbox processes will get
 # sdk_sandbox_next sepolicy applied to them.
+# An unspecified isSdkSandboxNext defaults to false.
 #
 # Precedence: entries are compared using the following rules, in the order shown
 # (see external/selinux/libselinux/src/android/android_platform.c,
@@ -67,8 +69,8 @@
 #              minTargetSdkVersion= integer. Note that minTargetSdkVersion=
 #              defaults to 0 if unspecified.
 #       (8) fromRunAs=true before fromRunAs=false.
-#       (9) isIsolatedComputeApp=true before isIsolatedComputeApp=false
-#       (10) isSdkSandboxNext=true before isSdkSandboxNext=false
+#       (9) Platform seapp_contexts files (system, system_ext, product) before
+#              vendor seapp_contexts files (vendor, odm).
 # (A fixed selector is more specific than a prefix, i.e. ending in *, and a
 # longer prefix is more specific than a shorter prefix.)
 # Apps are checked against entries in precedence order until the first match,
@@ -159,6 +161,7 @@ neverallow user=_sdksandbox domain=((?!sdk_sandbox).)*
 user=_app seinfo=platform name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
 user=system seinfo=platform domain=system_app type=system_app_data_file
 user=system seinfo=platform isPrivApp=true name=com.android.DeviceAsWebcam domain=device_as_webcam type=system_app_data_file levelFrom=all
+user=system seinfo=platform isPrivApp=true name=com.android.virtualcamera domain=virtual_camera type=app_data_file levelFrom=all
 user=bluetooth seinfo=bluetooth domain=bluetooth type=bluetooth_data_file
 user=network_stack seinfo=network_stack domain=network_stack type=radio_data_file
 user=nfc seinfo=platform domain=nfc type=nfc_data_file
