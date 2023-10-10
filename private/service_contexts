@@ -435,6 +435,7 @@ vcn_management                            u:object_r:vcn_management_service:s0
 vibrator                                  u:object_r:vibrator_service:s0
 vibrator_manager                          u:object_r:vibrator_manager_service:s0
 virtualdevice                             u:object_r:virtual_device_service:s0
+virtualdevice_native                      u:object_r:virtual_device_native_service:s0
 virtual_touchpad                          u:object_r:virtual_touchpad_service:s0
 voiceinteraction                          u:object_r:voiceinteraction_service:s0
 vold                                      u:object_r:vold_service:s0
@@ -442,6 +443,7 @@ vpn_management                            u:object_r:vpn_management_service:s0
 vrmanager                                 u:object_r:vr_manager_service:s0
 wallpaper                                 u:object_r:wallpaper_service:s0
 wallpaper_effects_generation              u:object_r:wallpaper_effects_generation_service:s0
+wearable_sensing                          u:object_r:wearable_sensing_service:s0
 webviewupdate                             u:object_r:webviewupdate_service:s0
 wifip2p                                   u:object_r:wifip2p_service:s0
 wifiscanner                               u:object_r:wifiscanner_service:s0
