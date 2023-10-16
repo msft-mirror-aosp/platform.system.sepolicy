@@ -83,7 +83,7 @@ type battery_service, system_server_service, service_manager_type;
 type binder_calls_stats_service, system_server_service, service_manager_type;
 type blob_store_service, app_api_service, system_server_service, service_manager_type;
 type bluetooth_manager_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
-type broadcastradio_service, system_server_service, service_manager_type;
+type broadcastradio_service, app_api_service, system_server_service, service_manager_type;
 type cacheinfo_service, system_api_service, system_server_service, service_manager_type;
 type cameraproxy_service, system_server_service, service_manager_type;
 type clipboard_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -237,6 +237,7 @@ type textservices_service, app_api_service, ephemeral_app_api_service, system_se
 type texttospeech_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type telecom_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type thermal_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+type threadnetwork_service, app_api_service, system_server_service, service_manager_type;
 type timedetector_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type timezonedetector_service, app_api_service, system_server_service, service_manager_type;
 type translation_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -255,6 +256,7 @@ type vcn_management_service, app_api_service, ephemeral_app_api_service, system_
 type vibrator_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type vibrator_manager_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type virtual_device_service, app_api_service, system_server_service, service_manager_type;
+type virtual_device_native_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type voiceinteraction_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type vpn_management_service, app_api_service, system_server_service, service_manager_type;
 type vr_manager_service, system_server_service, service_manager_type;
@@ -284,6 +286,7 @@ type hal_broadcastradio_service, protected_service, hal_service_type, service_ma
 type hal_camera_service, protected_service, hal_service_type, service_manager_type;
 type hal_can_controller_service, protected_service, hal_service_type, service_manager_type;
 type hal_cas_service, hal_service_type, service_manager_type;
+type hal_codec2_service, hal_service_type, service_manager_type, isolated_compute_allowed_service;
 type hal_confirmationui_service, protected_service, hal_service_type, service_manager_type;
 type hal_contexthub_service, protected_service, hal_service_type, service_manager_type;
 type hal_drm_service, hal_service_type, service_manager_type;
