@@ -279,6 +279,9 @@ persist.device_config.memory_safety_native_boot.    u:object_r:device_config_mem
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 persist.device_config.tethering_u_or_later_native.  u:object_r:device_config_tethering_u_or_later_native_prop:s0
 
+# Properties that is for staging
+next_boot.  u:object_r:next_boot_prop:s0
+
 # F2FS smart idle maint prop
 persist.device_config.storage_native_boot.smart_idle_maint_enabled u:object_r:smart_idle_maint_enabled_prop:s0 exact bool
 
@@ -1341,6 +1344,7 @@ ro.surface_flinger.display_update_imminent_timeout_ms     u:object_r:surfaceflin
 ro.surface_flinger.uclamp.min                             u:object_r:surfaceflinger_prop:s0 exact int
 ro.surface_flinger.ignore_hdr_camera_layers               u:object_r:surfaceflinger_prop:s0 exact bool
 ro.surface_flinger.clear_slots_with_set_layer_buffer      u:object_r:surfaceflinger_prop:s0 exact bool
+ro.surface_flinger.prime_shader_cache.ultrahdr            u:object_r:surfaceflinger_prop:s0 exact bool
 
 ro.sf.disable_triple_buffer u:object_r:surfaceflinger_prop:s0 exact bool
 ro.sf.lcd_density           u:object_r:surfaceflinger_prop:s0 exact int
