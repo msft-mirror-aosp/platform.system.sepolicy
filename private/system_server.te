@@ -1435,6 +1435,9 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
+allow system_server repair_mode_metadata_file:dir rw_dir_perms;
+allow system_server repair_mode_metadata_file:file create_file_perms;
+
 allow system_server gsi_persistent_data_file:dir rw_dir_perms;
 allow system_server gsi_persistent_data_file:file create_file_perms;
 
@@ -1539,3 +1542,11 @@ allow system_server system_font_fallback_file:file r_file_perms;
 
 # Allow system server to set dynamic ART properties.
 set_prop(system_server, dalvik_dynamic_config_prop)
+
+# Allow system server to read binderfs
+allow system_server binderfs_logs:dir r_dir_perms;
+allow system_server binderfs_logs_stats:file r_file_perms;
+
+# Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
+set_prop(system_server, game_manager_config_prop)
+
