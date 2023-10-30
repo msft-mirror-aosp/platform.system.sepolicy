@@ -337,10 +337,6 @@ with_asan(`allow domain system_asan_options_file:file r_file_perms;')
 allow domain apex_mnt_dir:dir { getattr search };
 allow domain apex_mnt_dir:lnk_file r_file_perms;
 
-# Allow everyone to read media server-configurable flags, so that libstagefright can be
-# configured using server-configurable flags
-get_prop(domain, device_config_media_native_prop)
-
 ###
 ### neverallow rules
 ###
@@ -439,6 +435,10 @@ neverallow { domain -init -vendor_init } proc_security:file { append open read w
 # triggered, it's probably due to a service with no SELinux domain.
 neverallow * init:binder *;
 neverallow * vendor_init:binder *;
+
+# Binderfs logs contain sensitive information about other processes.
+neverallow { domain -dumpstate -init -vendor_init userdebug_or_eng(`-domain') } { binderfs_logs binderfs_logs_proc }:file no_rw_file_perms;
+neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs_stats:file no_rw_file_perms;
 
 # Don't allow raw read/write/open access to block_device
 # Rather force a relabel to a more specific type
