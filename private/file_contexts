@@ -1,4 +1,25 @@
 ###########################################
+# Entries in this file describe the security context associated with a file
+# path. They are used when building the device image, to include the security
+# context within the extended file attributes of the file system. They are also
+# used at runtime when calling restorecon.
+#
+# Entries are merged with other file_contexts from other partitions (e.g.,
+# vendor or odm, see the full list at libselinux/src/android/android.c).
+#
+# The entries are evaluated by the following rules:
+# - Static entries (that is, not using regular expressions) are always
+#   evaluated first.
+# - The first matching entry is used.
+# - Entries are evaluated from the bottom to the top.
+#
+# Based on these rules, it is recommended that the less specific entries appear
+# first. For instance:
+#    /dev(/.*)?        u:object_r:device:s0
+#    /dev/block(/.*)?  u:object_r:block_device:s0
+#    /dev/block/my_dev u:object_r:my_dev:s0
+#
+
 # Root
 /                   u:object_r:rootfs:s0
 
@@ -106,6 +127,7 @@
 /dev/fuse		u:object_r:fuse_device:s0
 /dev/gnss[0-9]+		u:object_r:gnss_device:s0
 /dev/graphics(/.*)?	u:object_r:graphics_device:s0
+/dev/hidraw[0-9]+	u:object_r:hidraw_device:s0
 /dev/hw_random		u:object_r:hw_random_device:s0
 /dev/hwbinder		u:object_r:hwbinder_device:s0
 /dev/input(/.*)?	u:object_r:input_device:s0
@@ -200,7 +222,9 @@
 /dev/xt_qtaguid	u:object_r:qtaguid_device:s0
 /dev/zero		u:object_r:zero_device:s0
 /dev/__properties__ u:object_r:properties_device:s0
+/dev/__properties__/appcompat_override u:object_r:properties_device:s0
 /dev/__properties__/property_info   u:object_r:property_info:s0
+/dev/__properties__/appcompat_override/property_info   u:object_r:property_info:s0
 #############################
 # Linker configuration
 #
@@ -561,7 +585,6 @@
 /data/gsi_persistent_data    u:object_r:gsi_persistent_data_file:s0
 /data/gsi/ota(/.*)?    u:object_r:ota_image_data_file:s0
 /data/tombstones(/.*)?	u:object_r:tombstone_data_file:s0
-/data/vendor/tombstones/wifi(/.*)? u:object_r:tombstone_wifi_data_file:s0
 /data/local/tests(/.*)?	u:object_r:shell_test_data_file:s0
 /data/local/tmp(/.*)?	u:object_r:shell_data_file:s0
 /data/local/tmp/ltp(/.*)?   u:object_r:nativetest_data_file:s0
@@ -636,8 +659,8 @@
 /data/misc/odrefresh(/.*)?      u:object_r:odrefresh_data_file:s0
 /data/misc/odsign(/.*)?         u:object_r:odsign_data_file:s0
 /data/misc/odsign/metrics(/.*)? u:object_r:odsign_metrics_file:s0
-/data/misc/perfetto-traces/bugreport(.*)? u:object_r:perfetto_traces_bugreport_data_file:s0
 /data/misc/perfetto-traces(/.*)?          u:object_r:perfetto_traces_data_file:s0
+/data/misc/perfetto-traces/bugreport(.*)? u:object_r:perfetto_traces_bugreport_data_file:s0
 /data/misc/perfetto-configs(/.*)?         u:object_r:perfetto_configs_data_file:s0
 /data/misc/prereboot(/.*)?      u:object_r:prereboot_data_file:s0
 /data/misc/profcollectd(/.*)?   u:object_r:profcollectd_data_file:s0
@@ -680,6 +703,7 @@
 /data/vendor_ce/.*              u:object_r:vendor_data_file:s0
 /data/vendor_de                 u:object_r:vendor_userdir_file:s0
 /data/vendor_de/.*              u:object_r:vendor_data_file:s0
+/data/vendor/tombstones/wifi(/.*)? u:object_r:tombstone_wifi_data_file:s0
 
 # storaged proto files
 /data/misc_de/[0-9]+/storaged(/.*)?       u:object_r:storaged_data_file:s0
@@ -739,16 +763,7 @@
 # Expanded data files
 #
 /mnt/expand                                         u:object_r:mnt_expand_file:s0
-# CAREFUL: the two system_data_file patterns below can't be replaced with one
-# pattern "/mnt/expand/[^/]+(/.*)?", since SELinux would prioritize that over
-# "/mnt/expand/[^/]+/user".  This is because when a path is matched by two
-# patterns that contain regex meta-characters, SELinux just chooses the longer
-# pattern (or the later pattern if the patterns are the same length), rather
-# than the pattern containing fewer regex meta-characters.  Splitting the
-# pattern into "/mnt/expand/[^/]+" and "/mnt/expand/[^/]+/.*" works around this
-# problem, except for 1-character filenames which we aren't using.
-/mnt/expand/[^/]+                                   u:object_r:system_data_file:s0
-/mnt/expand/[^/]+/.*                                u:object_r:system_data_file:s0
+/mnt/expand/[^/]+(/.*)?                             u:object_r:system_data_file:s0
 /mnt/expand/[^/]+/app(/.*)?                         u:object_r:apk_data_file:s0
 /mnt/expand/[^/]+/app/[^/]+/oat(/.*)?               u:object_r:dalvikcache_data_file:s0
 # /mnt/expand/..../app/[randomStringA]/[packageName]-[randomStringB]/base.apk layout

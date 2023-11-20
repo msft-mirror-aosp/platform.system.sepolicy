@@ -9,15 +9,23 @@
     dtbo_block_device
     ota_build_prop
     snapuserd_log_data_file
+    hal_authgraph_service
+    vibrator_control_service
     hal_codec2_service
+    hal_macsec_service
     hal_threadnetwork_service
+    hidraw_device
     virtual_camera_service
     ot_daemon_service
     remote_auth_service
+    security_state_service
     sysfs_sync_on_suspend
     threadnetwork_service
     device_config_aconfig_flags_prop
     proc_memhealth
     virtual_device_native_service
     next_boot_prop
+    binderfs_logs_stats
+    drm_forcel3_prop
+    proc_percpu_pagelist_high_fraction
   ))

@@ -151,6 +151,7 @@ binder_call(dumpstate, { appdomain artd netd wificond })
 # Allow dumpstate to call dump() on specific hals.
 dump_hal(hal_audio)
 dump_hal(hal_audiocontrol)
+dump_hal(hal_authgraph)
 dump_hal(hal_authsecret)
 dump_hal(hal_bluetooth)
 dump_hal(hal_broadcastradio)
@@ -379,6 +380,7 @@ allow dumpstate snapshotctl_log_data_file:file r_file_perms;
 allow dumpstate binderfs_logs:dir r_dir_perms;
 allow dumpstate binderfs_logs:file r_file_perms;
 allow dumpstate binderfs_logs_proc:file r_file_perms;
+allow dumpstate binderfs_logs_stats:file r_file_perms;
 
 use_apex_info(dumpstate)
 

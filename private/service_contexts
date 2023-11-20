@@ -51,6 +51,7 @@ android.hardware.identity.IIdentityCredentialStore/default           u:object_r:
 android.hardware.input.processor.IInputProcessor/default           u:object_r:hal_input_processor_service:s0
 android.hardware.ir.IConsumerIr/default                              u:object_r:hal_ir_service:s0
 android.hardware.light.ILights/default                               u:object_r:hal_light_service:s0
+android.hardware.macsec.IMacsecPskPlugin/default                     u:object_r:hal_macsec_service:s0
 android.hardware.media.c2.IComponentStore/default                    u:object_r:hal_codec2_service:s0
 android.hardware.media.c2.IComponentStore/software                   u:object_r:hal_codec2_service:s0
 android.hardware.memtrack.IMemtrack/default                          u:object_r:hal_memtrack_service:s0
@@ -89,6 +90,7 @@ android.hardware.radio.voice.IRadioVoice/slot1                       u:object_r:
 android.hardware.radio.voice.IRadioVoice/slot2                       u:object_r:hal_radio_service:s0
 android.hardware.radio.voice.IRadioVoice/slot3                       u:object_r:hal_radio_service:s0
 android.hardware.rebootescrow.IRebootEscrow/default                  u:object_r:hal_rebootescrow_service:s0
+android.hardware.security.authgraph.IAuthGraphKeyExchange/nonsecure  u:object_r:hal_authgraph_service:s0
 android.hardware.security.keymint.IKeyMintDevice/default             u:object_r:hal_keymint_service:s0
 android.hardware.security.keymint.IRemotelyProvisionedComponent/default u:object_r:hal_remotelyprovisionedcomponent_service:s0
 android.hardware.gatekeeper.IGatekeeper/default                      u:object_r:hal_gatekeeper_service:s0
@@ -368,6 +370,7 @@ search                                    u:object_r:search_service:s0
 search_ui                                 u:object_r:search_ui_service:s0
 secure_element                            u:object_r:secure_element_service:s0
 sec_key_att_app_id_provider               u:object_r:sec_key_att_app_id_provider_service:s0
+security_state                            u:object_r:security_state_service:s0
 selection_toolbar                         u:object_r:selection_toolbar_service:s0
 sensorservice                             u:object_r:sensorservice_service:s0
 sensor_privacy                            u:object_r:sensor_privacy_service:s0
@@ -433,6 +436,7 @@ user                                      u:object_r:user_service:s0
 uwb                                       u:object_r:uwb_service:s0
 vcn_management                            u:object_r:vcn_management_service:s0
 vibrator                                  u:object_r:vibrator_service:s0
+vibrator_control               	  	  u:object_r:vibrator_control_service:s0
 vibrator_manager                          u:object_r:vibrator_manager_service:s0
 virtualdevice                             u:object_r:virtual_device_service:s0
 virtualdevice_native                      u:object_r:virtual_device_native_service:s0
