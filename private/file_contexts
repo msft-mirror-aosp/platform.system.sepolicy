@@ -1,4 +1,25 @@
 ###########################################
+# Entries in this file describe the security context associated with a file
+# path. They are used when building the device image, to include the security
+# context within the extended file attributes of the file system. They are also
+# used at runtime when calling restorecon.
+#
+# Entries are merged with other file_contexts from other partitions (e.g.,
+# vendor or odm, see the full list at libselinux/src/android/android.c).
+#
+# The entries are evaluated by the following rules:
+# - Static entries (that is, not using regular expressions) are always
+#   evaluated first.
+# - The first matching entry is used.
+# - Entries are evaluated from the bottom to the top.
+#
+# Based on these rules, it is recommended that the less specific entries appear
+# first. For instance:
+#    /dev(/.*)?        u:object_r:device:s0
+#    /dev/block(/.*)?  u:object_r:block_device:s0
+#    /dev/block/my_dev u:object_r:my_dev:s0
+#
+
 # Root
 /                   u:object_r:rootfs:s0
 
@@ -200,7 +221,9 @@
 /dev/xt_qtaguid	u:object_r:qtaguid_device:s0
 /dev/zero		u:object_r:zero_device:s0
 /dev/__properties__ u:object_r:properties_device:s0
+/dev/__properties__/appcompat_override u:object_r:properties_device:s0
 /dev/__properties__/property_info   u:object_r:property_info:s0
+/dev/__properties__/appcompat_override/property_info   u:object_r:property_info:s0
 #############################
 # Linker configuration
 #
@@ -389,6 +412,7 @@
 /(vendor|system/vendor)/etc(/.*)?              u:object_r:vendor_configs_file:s0
 /(vendor|system/vendor)/etc/cgroups\.json      u:object_r:vendor_cgroup_desc_file:s0
 /(vendor|system/vendor)/etc/task_profiles\.json    u:object_r:vendor_task_profiles_file:s0
+/(vendor|system/vendor)/etc/avf/microdroid(/.*)?   u:object_r:vendor_microdroid_file:s0
 
 /(vendor|system/vendor)/lib(64)?/egl(/.*)?     u:object_r:same_process_hal_file:s0
 
@@ -739,16 +763,7 @@
 # Expanded data files
 #
 /mnt/expand                                         u:object_r:mnt_expand_file:s0
-# CAREFUL: the two system_data_file patterns below can't be replaced with one
-# pattern "/mnt/expand/[^/]+(/.*)?", since SELinux would prioritize that over
-# "/mnt/expand/[^/]+/user".  This is because when a path is matched by two
-# patterns that contain regex meta-characters, SELinux just chooses the longer
-# pattern (or the later pattern if the patterns are the same length), rather
-# than the pattern containing fewer regex meta-characters.  Splitting the
-# pattern into "/mnt/expand/[^/]+" and "/mnt/expand/[^/]+/.*" works around this
-# problem, except for 1-character filenames which we aren't using.
-/mnt/expand/[^/]+                                   u:object_r:system_data_file:s0
-/mnt/expand/[^/]+/.*                                u:object_r:system_data_file:s0
+/mnt/expand/[^/]+(/.*)?                             u:object_r:system_data_file:s0
 /mnt/expand/[^/]+/app(/.*)?                         u:object_r:apk_data_file:s0
 /mnt/expand/[^/]+/app/[^/]+/oat(/.*)?               u:object_r:dalvikcache_data_file:s0
 # /mnt/expand/..../app/[randomStringA]/[packageName]-[randomStringB]/base.apk layout

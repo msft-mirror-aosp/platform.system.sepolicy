@@ -75,6 +75,7 @@ system_restricted_prop(device_config_runtime_native_prop)
 system_restricted_prop(device_config_surface_flinger_native_boot_prop)
 system_restricted_prop(device_config_vendor_system_native_prop)
 system_restricted_prop(device_config_vendor_system_native_boot_prop)
+system_restricted_prop(drm_forcel3_prop)
 system_restricted_prop(fingerprint_prop)
 system_restricted_prop(gwp_asan_prop)
 system_restricted_prop(hal_instrumentation_prop)
@@ -102,7 +103,6 @@ system_restricted_prop(usb_prop)
 system_restricted_prop(userspace_reboot_exported_prop)
 system_restricted_prop(vold_status_prop)
 system_restricted_prop(vts_status_prop)
-
 
 compatible_property_only(`
     # DO NOT ADD ANY PROPERTIES HERE
@@ -197,6 +197,7 @@ system_vendor_config_prop(zygote_config_prop)
 system_vendor_config_prop(dck_prop)
 system_vendor_config_prop(tuner_config_prop)
 system_vendor_config_prop(usb_uvc_enabled_prop)
+system_vendor_config_prop(setupwizard_mode_prop)
 
 # Properties with no restrictions
 system_public_prop(adbd_config_prop)

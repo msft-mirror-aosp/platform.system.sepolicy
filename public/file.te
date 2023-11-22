@@ -16,6 +16,7 @@ type proc_overcommit_memory, fs_type, proc_type;
 type proc_min_free_order_shift, fs_type, proc_type;
 type proc_kpageflags, fs_type, proc_type;
 type proc_watermark_boost_factor, fs_type, proc_type;
+type proc_percpu_pagelist_high_fraction, fs_type, proc_type;
 # proc, sysfs, or other nodes that permit configuration of kernel usermodehelpers.
 type usermodehelper, fs_type, proc_type;
 type sysfs_usermodehelper, fs_type, sysfs_type;
@@ -254,6 +255,8 @@ type vendor_public_lib_file, vendor_file_type, file_type;
 # Type for all vendor public libraries for system. These libs should only be exposed to
 # system. ABI stability of these libs is vendor's responsibility.
 type vendor_public_framework_file, vendor_file_type, file_type;
+# Type for all microdroid related files in the vendor partition.
+type vendor_microdroid_file, vendor_file_type, file_type;
 
 # Input configuration
 type vendor_keylayout_file, vendor_file_type, file_type;

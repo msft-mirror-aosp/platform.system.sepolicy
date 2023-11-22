@@ -280,6 +280,8 @@
 /dev/zero                                                         zero_device
 /dev/__properties__                                               properties_device
 /dev/__properties__/property_info                                 property_info
+/dev/__properties__/appcompat_override                            properties_device
+/dev/__properties__/appcompat_override/property_info              property_info
 
 /linkerconfig                                                     linkerconfig_file
 /linkerconfig/test                                                linkerconfig_file
@@ -536,6 +538,8 @@
 /vendor/framework/test                                            vendor_framework_file
 /system/vendor/framework                                          vendor_framework_file
 /system/vendor/framework/test                                     vendor_framework_file
+/vendor/etc/avf/microdroid                                        vendor_microdroid_file
+/vendor/etc/avf/microdroid/test                                   vendor_microdroid_file
 
 /vendor/apex                                                      vendor_apex_file
 /vendor/apex/test                                                 vendor_apex_file
