@@ -62,6 +62,7 @@ persist.debug.user_mode_emulation u:object_r:system_user_mode_emulation_prop:s0
 logd.                   u:object_r:logd_prop:s0
 persist.logd.           u:object_r:logd_prop:s0
 ro.logd.                u:object_r:logd_prop:s0
+persist.logd.audit.rate u:object_r:logd_auditrate_prop:s0
 persist.logd.security   u:object_r:device_logging_prop:s0
 persist.logd.logpersistd        u:object_r:logpersistd_logging_prop:s0
 logd.logpersistd        u:object_r:logpersistd_logging_prop:s0
@@ -338,6 +339,10 @@ ro.virtual_ab.userspace.snapshots.enabled u:object_r:virtual_ab_prop:s0 exact bo
 ro.virtual_ab.io_uring.enabled u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.compression.threads u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.batch_writes u:object_r:virtual_ab_prop:s0 exact bool
+# OEMs can set this prop at build time to configure how many seconds to delay
+# merge after installing a Virtual AB OTA. The default behavior is to start
+# merge immediately.
+ro.virtual_ab.merge_delay_seconds u:object_r:virtual_ab_prop:s0 exact int
 snapuserd.ready         u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.proxy_ready   u:object_r:snapuserd_prop:s0 exact bool
 snapuserd.test.dm.snapshots u:object_r:snapuserd_prop:s0 exact bool
@@ -618,6 +623,7 @@ bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.le.dsa_transport_preference           u:object_r:bluetooth_config_prop:s0 exact string
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
 persist.nfc.vendor_debug_enabled               u:object_r:nfc_prop:s0 exact bool
@@ -1136,6 +1142,7 @@ ro.product.manufacturer_for_attestation  u:object_r:build_attestation_prop:s0 ex
 ro.board.first_api_level u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_level       u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_frozen      u:object_r:build_vendor_prop:s0 exact bool
+ro.llndk.api_level       u:object_r:build_vendor_prop:s0 exact int
 ro.vendor.api_level      u:object_r:build_vendor_prop:s0 exact int
 
 # Boot image build props set by /{second_stage_resources/,}boot/etc/build.prop
@@ -1430,6 +1437,8 @@ persist.graphics.egl             u:object_r:graphics_config_writable_prop:s0 exa
 
 ro.cpuvulkan.version u:object_r:graphics_config_prop:s0 exact int
 
+ro.vulkan.apex          u:object_r:graphics_config_prop:s0 exact string
+
 # surfaceflinger-settable
 graphics.display.kernel_idle_timer.enabled u:object_r:surfaceflinger_display_prop:s0 exact bool
 
@@ -1479,6 +1488,8 @@ ro.setupwizard.enterprise_mode u:object_r:setupwizard_prop:s0 exact bool
 ro.setupwizard.esim_cid_ignore u:object_r:setupwizard_prop:s0 exact string
 ro.setupwizard.rotation_locked u:object_r:setupwizard_prop:s0 exact bool
 ro.setupwizard.wifi_on_exit    u:object_r:setupwizard_prop:s0 exact bool
+
+ro.setupwizard.mode            u:object_r:setupwizard_mode_prop:s0 exact string
 
 setupwizard.enable_assist_gesture_training                         u:object_r:setupwizard_prop:s0 exact bool
 setupwizard.feature.avoid_duplicate_tos                            u:object_r:setupwizard_prop:s0 exact bool

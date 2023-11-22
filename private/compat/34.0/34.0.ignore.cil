@@ -9,8 +9,9 @@
     dtbo_block_device
     ota_build_prop
     snapuserd_log_data_file
+    fwk_vibrator_control_service
     hal_authgraph_service
-    vibrator_control_service
+    hal_secretkeeper_service
     hal_codec2_service
     hal_macsec_service
     hal_threadnetwork_service
@@ -18,7 +19,9 @@
     ot_daemon_service
     remote_auth_service
     security_state_service
+    setupwizard_mode_prop
     sysfs_sync_on_suspend
+    tv_ad_service
     threadnetwork_service
     device_config_aconfig_flags_prop
     proc_memhealth
@@ -27,4 +30,5 @@
     binderfs_logs_stats
     drm_forcel3_prop
     proc_percpu_pagelist_high_fraction
+    vendor_microdroid_file
   ))
