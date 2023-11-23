@@ -178,6 +178,7 @@ var (
 		"android.service.gatekeeper.IGateKeeperService":                   []string{"gatekeeperd_service_fuzzer"},
 		"android.system.composd":                                          EXCEPTION_NO_FUZZER,
 		// TODO(b/294158658): add fuzzer
+		"android.hardware.security.keymint.IRemotelyProvisionedComponent/avf": EXCEPTION_NO_FUZZER,
 		"android.system.virtualizationservice":                            EXCEPTION_NO_FUZZER,
 		"android.system.virtualizationservice_internal.IVfioHandler":      EXCEPTION_NO_FUZZER,
 		"ambient_context":                                                 EXCEPTION_NO_FUZZER,
@@ -466,7 +467,7 @@ var (
 		"vibrator_manager":             EXCEPTION_NO_FUZZER,
 		"virtualdevice":                EXCEPTION_NO_FUZZER,
 		"virtualdevice_native":         EXCEPTION_NO_FUZZER,
-		"virtual_camera_service":       EXCEPTION_NO_FUZZER,
+		"virtual_camera":               EXCEPTION_NO_FUZZER,
 		"virtual_touchpad":             EXCEPTION_NO_FUZZER,
 		"voiceinteraction":             EXCEPTION_NO_FUZZER,
 		"vold":                         []string{"vold_native_service_fuzzer"},
