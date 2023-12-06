@@ -16,8 +16,10 @@
     hal_macsec_service
     hal_remotelyprovisionedcomponent_avf_service
     hal_threadnetwork_service
+    hidraw_device
     virtual_camera_service
     ot_daemon_service
+    pm_archiving_enabled_prop
     remote_auth_service
     security_state_service
     setupwizard_mode_prop
