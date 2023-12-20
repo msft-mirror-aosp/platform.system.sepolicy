@@ -54,6 +54,7 @@
 /sys                u:object_r:sysfs:s0
 /apex               u:object_r:apex_mnt_dir:s0
 /bootstrap-apex     u:object_r:apex_mnt_dir:s0
+/tmp                u:object_r:shell_data_file:s0
 
 # Postinstall directories
 /postinstall         u:object_r:postinstall_mnt_dir:s0
@@ -663,6 +664,7 @@
 /data/misc/perfetto-traces(/.*)?          u:object_r:perfetto_traces_data_file:s0
 /data/misc/perfetto-traces/bugreport(.*)? u:object_r:perfetto_traces_bugreport_data_file:s0
 /data/misc/perfetto-configs(/.*)?         u:object_r:perfetto_configs_data_file:s0
+/data/misc/uprobestats-configs(/.*)?      u:object_r:uprobestats_configs_data_file:s0
 /data/misc/prereboot(/.*)?      u:object_r:prereboot_data_file:s0
 /data/misc/profcollectd(/.*)?   u:object_r:profcollectd_data_file:s0
 /data/misc/radio(/.*)?          u:object_r:radio_core_data_file:s0
