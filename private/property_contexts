@@ -87,6 +87,7 @@ persist.traced.enable   u:object_r:traced_enabled_prop:s0
 traced.lazy.            u:object_r:traced_lazy_prop:s0
 persist.heapprofd.enable u:object_r:heapprofd_enabled_prop:s0
 persist.traced_perf.enable u:object_r:traced_perf_enabled_prop:s0
+uprobestats.start_with_config u:object_r:uprobestats_start_with_config_prop:s0
 persist.vendor.debug.wifi. u:object_r:persist_vendor_debug_wifi_prop:s0
 persist.vendor.overlay.  u:object_r:overlay_prop:s0
 ril.cdma.inecmmode      u:object_r:radio_cdma_ecm_prop:s0 exact bool
@@ -231,6 +232,9 @@ servicemanager.ready    u:object_r:servicemanager_prop:s0 exact bool
 
 # hwservicemanager properties
 hwservicemanager.       u:object_r:hwservicemanager_prop:s0
+
+# hidl_memory properties to intentionally force a shutdown
+hidl_memory.            u:object_r:hidl_memory_prop:s0
 
 # Common default properties for vendor, odm, vendor_dlkm, and odm_dlkm.
 init.svc.odm.           u:object_r:vendor_default_prop:s0
@@ -734,6 +738,7 @@ ro.lmk.kill_timeout_ms          u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.log_stats                u:object_r:lmkd_config_prop:s0 exact bool
 ro.lmk.low                      u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.medium                   u:object_r:lmkd_config_prop:s0 exact int
+ro.lmk.pressure_after_kill_min_score u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.psi_partial_stall_ms     u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.psi_complete_stall_ms    u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.stall_limit_critical     u:object_r:lmkd_config_prop:s0 exact int
@@ -1545,6 +1550,12 @@ persist.vendor.face.virtual.type u:object_r:virtual_face_hal_prop:s0 exact strin
 persist.vendor.face.virtual.strength u:object_r:virtual_face_hal_prop:s0 exact string
 persist.vendor.face.virtual.enrollments u:object_r:virtual_face_hal_prop:s0 exact string
 persist.vendor.face.virtual.features u:object_r:virtual_face_hal_prop:s0 exact string
+persist.vendor.face.virtual.lockout_enable u:object_r:virtual_face_hal_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_enable u:object_r:virtual_face_hal_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_threshold u:object_r:virtual_face_hal_prop:s0 exact int
+persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_hal_prop:s0 exact int
+persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.operation_start_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string

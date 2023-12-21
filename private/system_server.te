@@ -302,6 +302,7 @@ binder_call(system_server, virtual_camera)
 binder_call(system_server, vold)
 binder_call(system_server, logd)
 binder_call(system_server, wificond)
+binder_call(system_server, uprobestats)
 binder_service(system_server)
 
 # Use HALs
@@ -373,6 +374,7 @@ allow system_server {
   # This is derived from the list that system server defines as interesting native processes
   # to dump during ANRs or watchdog aborts, defined in NATIVE_STACKS_OF_INTEREST in
   # frameworks/base/services/core/java/com/android/server/Watchdog.java.
+  artd
   audioserver
   cameraserver
   drmserver
