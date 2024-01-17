@@ -119,6 +119,9 @@ suspend.failed_suspend_backoff_enabled u:object_r:suspend_prop:s0 exact bool
 suspend.short_suspend_backoff_enabled u:object_r:suspend_prop:s0 exact bool
 suspend.disable_sync_on_suspend u:object_r:suspend_prop:s0 exact bool
 
+# Suspend service debug properties
+suspend.debug.wakestats_log.enabled u:object_r:suspend_debug_prop:s0 exact bool
+
 # Fastbootd protocol control property
 fastbootd.protocol    u:object_r:fastbootd_protocol_prop:s0 exact enum usb tcp
 
@@ -1557,7 +1560,6 @@ persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_hal_p
 persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.operation_start_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string
 vendor.face.virtual.authenticator_id u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.challenge u:object_r:virtual_face_hal_prop:s0 exact int
@@ -1565,8 +1567,9 @@ vendor.face.virtual.lockout u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact string
 vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
 
 # properties for the virtual Fingerprint HAL
