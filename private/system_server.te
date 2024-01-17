@@ -298,9 +298,11 @@ userdebug_or_eng(`binder_call(system_server, profcollectd)')
 binder_call(system_server, statsd)
 binder_call(system_server, storaged)
 binder_call(system_server, update_engine)
+binder_call(system_server, virtual_camera)
 binder_call(system_server, vold)
 binder_call(system_server, logd)
 binder_call(system_server, wificond)
+binder_call(system_server, uprobestats)
 binder_service(system_server)
 
 # Use HALs
@@ -329,6 +331,7 @@ hal_client_domain(system_server, hal_omx)
 hal_client_domain(system_server, hal_power)
 hal_client_domain(system_server, hal_power_stats)
 hal_client_domain(system_server, hal_rebootescrow)
+hal_client_domain(system_server, hal_remotelyprovisionedcomponent_avf)
 hal_client_domain(system_server, hal_sensors)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
@@ -371,6 +374,7 @@ allow system_server {
   # This is derived from the list that system server defines as interesting native processes
   # to dump during ANRs or watchdog aborts, defined in NATIVE_STACKS_OF_INTEREST in
   # frameworks/base/services/core/java/com/android/server/Watchdog.java.
+  artd
   audioserver
   cameraserver
   drmserver
@@ -386,6 +390,7 @@ allow system_server {
   mediatuner
   netd
   sdcardd
+  servicemanager
   statsd
   surfaceflinger
   vold
@@ -1413,19 +1418,19 @@ allow system_server apex_module_data_file:dir { getattr search };
 # These are modules where the code runs in system_server, so we need full access.
 allow system_server apex_system_server_data_file:dir create_dir_perms;
 allow system_server apex_system_server_data_file:file create_file_perms;
+allow system_server apex_tethering_data_file:dir create_dir_perms;
+allow system_server apex_tethering_data_file:file create_file_perms;
 # Legacy labels that we still need to support (b/217581286)
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:dir create_dir_perms;
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:file create_file_perms;
 

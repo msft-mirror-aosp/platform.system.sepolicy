@@ -54,6 +54,7 @@
 /sys                u:object_r:sysfs:s0
 /apex               u:object_r:apex_mnt_dir:s0
 /bootstrap-apex     u:object_r:apex_mnt_dir:s0
+/tmp                u:object_r:shell_data_file:s0
 
 # Postinstall directories
 /postinstall         u:object_r:postinstall_mnt_dir:s0
@@ -624,7 +625,7 @@
 /data/misc/apexdata/com\.android\.virt(/.*)?          u:object_r:apex_virt_data_file:s0
 /data/misc/apexdata/com\.android\.permission(/.*)?    u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.scheduling(/.*)?    u:object_r:apex_system_server_data_file:s0
-/data/misc/apexdata/com\.android\.tethering(/.*)?     u:object_r:apex_system_server_data_file:s0
+/data/misc/apexdata/com\.android\.tethering(/.*)?     u:object_r:apex_tethering_data_file:s0
 /data/misc/apexdata/com\.android\.uwb(/.*)?           u:object_r:apex_system_server_data_file:s0
 /data/misc/apexdata/com\.android\.wifi(/.*)?          u:object_r:apex_system_server_data_file:s0
 /data/misc/apexrollback(/.*)?   u:object_r:apex_rollback_data_file:s0
@@ -663,6 +664,7 @@
 /data/misc/perfetto-traces(/.*)?          u:object_r:perfetto_traces_data_file:s0
 /data/misc/perfetto-traces/bugreport(.*)? u:object_r:perfetto_traces_bugreport_data_file:s0
 /data/misc/perfetto-configs(/.*)?         u:object_r:perfetto_configs_data_file:s0
+/data/misc/uprobestats-configs(/.*)?      u:object_r:uprobestats_configs_data_file:s0
 /data/misc/prereboot(/.*)?      u:object_r:prereboot_data_file:s0
 /data/misc/profcollectd(/.*)?   u:object_r:profcollectd_data_file:s0
 /data/misc/radio(/.*)?          u:object_r:radio_core_data_file:s0
@@ -676,7 +678,6 @@
 /data/misc/stats-metadata(/.*)? u:object_r:stats_data_file:s0
 /data/misc/systemkeys(/.*)?     u:object_r:systemkeys_data_file:s0
 /data/misc/textclassifier(/.*)?       u:object_r:textclassifier_data_file:s0
-/data/misc/threadnetwork(/.*)?        u:object_r:threadnetwork_data_file:s0
 /data/misc/train-info(/.*)?     u:object_r:stats_data_file:s0
 /data/misc/user(/.*)?           u:object_r:misc_user_data_file:s0
 /data/misc/virtualizationservice(/.*)? u:object_r:virtualizationservice_data_file:s0
