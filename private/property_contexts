@@ -541,6 +541,7 @@ persist.sys.media.avsync                     u:object_r:media_config_prop:s0 exa
 
 persist.bluetooth.a2dp_offload.cap                          u:object_r:bluetooth_a2dp_offload_prop:s0 exact string
 persist.bluetooth.a2dp_offload.disabled                     u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
+persist.bluetooth.leaudio_offload.disabled                  u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
 persist.bluetooth.bluetooth_audio_hal.disabled              u:object_r:bluetooth_audio_hal_prop:s0 exact bool
 persist.bluetooth.btsnoopenable                             u:object_r:exported_bluetooth_prop:s0 exact bool
 persist.bluetooth.btsnoopdefaultmode                        u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
@@ -1560,7 +1561,6 @@ persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_hal_p
 persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.operation_start_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string
 vendor.face.virtual.authenticator_id u:object_r:virtual_face_hal_prop:s0 exact int
 vendor.face.virtual.challenge u:object_r:virtual_face_hal_prop:s0 exact int
@@ -1568,8 +1568,9 @@ vendor.face.virtual.lockout u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_hal_prop:s0 exact bool
 vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact int
+vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact string
+vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact string
 vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
 
 # properties for the virtual Fingerprint HAL
