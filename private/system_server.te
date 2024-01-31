@@ -262,7 +262,6 @@ allow system_server self:tun_socket create_socket_perms_no_ioctl;
 unix_socket_connect(system_server, lmkd, lmkd)
 unix_socket_connect(system_server, mtpd, mtp)
 unix_socket_connect(system_server, zygote, zygote)
-unix_socket_connect(system_server, racoon, racoon)
 unix_socket_connect(system_server, uncrypt, uncrypt)
 
 # Allow system_server to write to statsd.
@@ -310,6 +309,7 @@ hal_client_domain(system_server, hal_allocator)
 hal_client_domain(system_server, hal_audio)
 hal_client_domain(system_server, hal_authgraph)
 hal_client_domain(system_server, hal_authsecret)
+hal_client_domain(system_server, hal_bluetooth)
 hal_client_domain(system_server, hal_broadcastradio)
 hal_client_domain(system_server, hal_codec2)
 hal_client_domain(system_server, hal_configstore)
@@ -1565,3 +1565,18 @@ allow system_server binderfs_logs_stats:file r_file_perms;
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
 
+# ThreadNetworkService reads Thread Network properties
+get_prop(system_server, threadnetwork_config_prop)
+
+# Do not allow any domain other than init and system server to set the property
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -dumpstate
+  -system_server
+} threadnetwork_config_prop:file no_rw_file_perms;
+
+# Allow system server to read pm.archiving.enabled prop
+# TODO(azilio): Remove system property after archiving testing is completed.
+get_prop(system_server, pm_archiving_enabled_prop)
