@@ -260,9 +260,7 @@ allow system_server self:tun_socket create_socket_perms_no_ioctl;
 
 # Talk to init and various daemons via sockets.
 unix_socket_connect(system_server, lmkd, lmkd)
-unix_socket_connect(system_server, mtpd, mtp)
 unix_socket_connect(system_server, zygote, zygote)
-unix_socket_connect(system_server, racoon, racoon)
 unix_socket_connect(system_server, uncrypt, uncrypt)
 
 # Allow system_server to write to statsd.
@@ -302,6 +300,7 @@ binder_call(system_server, virtual_camera)
 binder_call(system_server, vold)
 binder_call(system_server, logd)
 binder_call(system_server, wificond)
+binder_call(system_server, uprobestats)
 binder_service(system_server)
 
 # Use HALs
@@ -309,6 +308,7 @@ hal_client_domain(system_server, hal_allocator)
 hal_client_domain(system_server, hal_audio)
 hal_client_domain(system_server, hal_authgraph)
 hal_client_domain(system_server, hal_authsecret)
+hal_client_domain(system_server, hal_bluetooth)
 hal_client_domain(system_server, hal_broadcastradio)
 hal_client_domain(system_server, hal_codec2)
 hal_client_domain(system_server, hal_configstore)
@@ -373,6 +373,7 @@ allow system_server {
   # This is derived from the list that system server defines as interesting native processes
   # to dump during ANRs or watchdog aborts, defined in NATIVE_STACKS_OF_INTEREST in
   # frameworks/base/services/core/java/com/android/server/Watchdog.java.
+  artd
   audioserver
   cameraserver
   drmserver
@@ -388,6 +389,7 @@ allow system_server {
   mediatuner
   netd
   sdcardd
+  servicemanager
   statsd
   surfaceflinger
   vold
@@ -480,6 +482,8 @@ allow system_server adbd_socket:sock_file rw_file_perms;
 allow system_server rtc_device:chr_file rw_file_perms;
 allow system_server audio_device:dir r_dir_perms;
 allow system_server uhid_device:chr_file rw_file_perms;
+allow system_server hidraw_device:dir r_dir_perms;
+allow system_server hidraw_device:chr_file rw_file_perms;
 
 # write access to ALSA interfaces (/dev/snd/*) needed for MIDI
 allow system_server audio_device:chr_file rw_file_perms;
@@ -732,6 +736,7 @@ set_prop(system_server, dmesgd_start_prop)
 set_prop(system_server, locale_prop)
 set_prop(system_server, timezone_metadata_prop)
 set_prop(system_server, timezone_prop)
+set_prop(system_server, crashrecovery_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
 userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
@@ -1134,7 +1139,6 @@ allow system_server dmabuf_system_heap_device:chr_file r_file_perms;
 allow system_server dmabuf_system_secure_heap_device:chr_file r_file_perms;
 
 r_dir_file(system_server, proc_asound)
-r_dir_file(system_server, proc_memhealth)
 r_dir_file(system_server, proc_net_type)
 r_dir_file(system_server, proc_qtaguid_stat)
 allow system_server {
@@ -1413,19 +1417,19 @@ allow system_server apex_module_data_file:dir { getattr search };
 # These are modules where the code runs in system_server, so we need full access.
 allow system_server apex_system_server_data_file:dir create_dir_perms;
 allow system_server apex_system_server_data_file:file create_file_perms;
+allow system_server apex_tethering_data_file:dir create_dir_perms;
+allow system_server apex_tethering_data_file:file create_file_perms;
 # Legacy labels that we still need to support (b/217581286)
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:dir create_dir_perms;
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:file create_file_perms;
 
@@ -1560,3 +1564,22 @@ allow system_server binderfs_logs_stats:file r_file_perms;
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
 
+# ThreadNetworkService reads Thread Network properties
+get_prop(system_server, threadnetwork_config_prop)
+
+# Do not allow any domain other than init and system server to set the property
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -dumpstate
+  -system_server
+} threadnetwork_config_prop:file no_rw_file_perms;
+
+# Allow system server to read pm.archiving.enabled prop
+# TODO(azilio): Remove system property after archiving testing is completed.
+get_prop(system_server, pm_archiving_enabled_prop)
+
+# Do not allow any domain other than init or system server to get or set the property
+neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
+neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;

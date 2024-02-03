@@ -48,7 +48,6 @@ type proc_locks, fs_type, proc_type;
 type proc_lowmemorykiller, fs_type, proc_type;
 type proc_max_map_count, fs_type, proc_type;
 type proc_meminfo, fs_type, proc_type;
-type proc_memhealth, fs_type, proc_type;
 type proc_misc, fs_type, proc_type;
 type proc_modules, fs_type, proc_type;
 type proc_mounts, fs_type, proc_type;
@@ -256,6 +255,7 @@ type vendor_public_lib_file, vendor_file_type, file_type;
 # system. ABI stability of these libs is vendor's responsibility.
 type vendor_public_framework_file, vendor_file_type, file_type;
 # Type for all microdroid related files in the vendor partition.
+# Files having this type should be read-only.
 type vendor_microdroid_file, vendor_file_type, file_type;
 
 # Input configuration
@@ -538,6 +538,7 @@ type mdns_socket, file_type, coredomain_socket;
 type mdnsd_socket, file_type, coredomain_socket, mlstrustedobject;
 type misc_logd_file, coredomain_socket, file_type, data_file_type, core_data_file_type;
 type mtpd_socket, file_type, coredomain_socket;
+type ot_daemon_socket, file_type, coredomain_socket;
 type property_socket, file_type, coredomain_socket, mlstrustedobject;
 type racoon_socket, file_type, coredomain_socket;
 type recovery_socket, file_type, coredomain_socket;

@@ -10,14 +10,19 @@
     ota_build_prop
     snapuserd_log_data_file
     fwk_vibrator_control_service
+    ecm_enhanced_confirmation_service
     hal_authgraph_service
     hal_secretkeeper_service
     hal_codec2_service
     hal_macsec_service
     hal_remotelyprovisionedcomponent_avf_service
     hal_threadnetwork_service
+    hidl_memory_prop
+    hidraw_device
     virtual_camera_service
     ot_daemon_service
+    ot_daemon_socket
+    pm_archiving_enabled_prop
     remote_auth_service
     security_state_service
     setupwizard_mode_prop
@@ -25,11 +30,11 @@
     tv_ad_service
     threadnetwork_service
     device_config_aconfig_flags_prop
-    proc_memhealth
     virtual_device_native_service
     next_boot_prop
     binderfs_logs_stats
     drm_forcel3_prop
     proc_percpu_pagelist_high_fraction
     vendor_microdroid_file
+    threadnetwork_config_prop
   ))

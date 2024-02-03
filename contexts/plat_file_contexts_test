@@ -150,6 +150,8 @@
 /dev/gnss10                                                       gnss_device
 /dev/graphics                                                     graphics_device
 /dev/graphics/test                                                graphics_device
+/dev/hidraw0                                                      hidraw_device
+/dev/hidraw1                                                      hidraw_device
 /dev/hw_random                                                    hw_random_device
 /dev/hwbinder                                                     hwbinder_device
 /dev/input                                                        input_device
@@ -198,6 +200,9 @@
 /dev/socket/mdns                                                  mdns_socket
 /dev/socket/mdnsd                                                 mdnsd_socket
 /dev/socket/mtpd                                                  mtpd_socket
+/dev/socket/ot-daemon/                                            ot_daemon_socket
+/dev/socket/ot-daemon/thread-wpan                                 ot_daemon_socket
+/dev/socket/ot-daemon/100                                         ot_daemon_socket
 /dev/socket/pdx/system/buffer_hub                                 pdx_bufferhub_dir
 /dev/socket/pdx/system/buffer_hub/client                          pdx_bufferhub_client_endpoint_socket
 /dev/socket/pdx/system/performance                                pdx_performance_dir
@@ -913,8 +918,10 @@
 /data/misc/apexdata/com.android.permission/test                   apex_system_server_data_file
 /data/misc/apexdata/com.android.scheduling                        apex_system_server_data_file
 /data/misc/apexdata/com.android.scheduling/test                   apex_system_server_data_file
-/data/misc/apexdata/com.android.tethering                         apex_system_server_data_file
-/data/misc/apexdata/com.android.tethering/test                    apex_system_server_data_file
+/data/misc/apexdata/com.android.tethering                         apex_tethering_data_file
+/data/misc/apexdata/com.android.tethering/test                    apex_tethering_data_file
+/data/misc/apexdata/com.android.tethering/threadnetwork           apex_tethering_data_file
+/data/misc/apexdata/com.android.tethering/threadnetwork/test      apex_tethering_data_file
 /data/misc/apexdata/com.android.uwb                               apex_system_server_data_file
 /data/misc/apexdata/com.android.uwb/test                          apex_system_server_data_file
 /data/misc/apexdata/com.android.wifi                              apex_system_server_data_file
@@ -975,6 +982,8 @@
 /data/misc/net/test                                               net_data_file
 /data/misc/network_watchlist                                      network_watchlist_data_file
 /data/misc/network_watchlist/test                                 network_watchlist_data_file
+/data/misc/telephonyconfig                                        radio_data_file
+/data/misc/telephonyconfig/test                                   radio_data_file
 /data/misc/nfc/logs                                               nfc_logs_data_file
 /data/misc/nfc/logs/test                                          nfc_logs_data_file
 /data/misc/odrefresh                                              odrefresh_data_file
@@ -1015,8 +1024,6 @@
 /data/misc/systemkeys/test                                        systemkeys_data_file
 /data/misc/textclassifier                                         textclassifier_data_file
 /data/misc/textclassifier/test                                    textclassifier_data_file
-/data/misc/threadnetwork                                          threadnetwork_data_file
-/data/misc/threadnetwork/test                                     threadnetwork_data_file
 /data/misc/train-info                                             stats_data_file
 /data/misc/train-info/test                                        stats_data_file
 /data/misc/user                                                   misc_user_data_file
@@ -1267,3 +1274,7 @@
 /product/bin/otapreopt_script                                     postinstall_exec
 /system/bin/otapreopt                                             postinstall_dexopt_exec
 /product/bin/otapreopt                                            postinstall_dexopt_exec
+/data/misc/uprobestats-configs                                    uprobestats_configs_data_file
+/data/misc/uprobestats-configs/test                               uprobestats_configs_data_file
+
+/tmp                                                              shell_data_file

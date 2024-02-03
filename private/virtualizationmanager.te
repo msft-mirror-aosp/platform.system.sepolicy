@@ -83,9 +83,13 @@ unix_socket_connect(virtualizationmanager, tombstoned_crash, tombstoned)
 allow virtualizationmanager tombstone_data_file:file { append getattr };
 allow virtualizationmanager tombstoned:fd use;
 
-# Allow virtualizationmanager to read AVF debug policy
-allow virtualizationmanager sysfs_dt_avf:dir search;
-allow virtualizationmanager sysfs_dt_avf:file { open read };
+# Allow virtualizationmanager to read file system DT for VM reference DT and AVF debug policy
+r_dir_file(virtualizationmanager, proc_dt_avf)
+r_dir_file(virtualizationmanager, sysfs_dt_avf)
+
+# virtualizationmanager to be client of secretkeeper HAL. It ferries SecretManagement messages
+# from pVM to HAL.
+hal_client_domain(virtualizationmanager, hal_secretkeeper);
 
 # Let virtualizationmanager open test artifacts under /data/local/tmp with file path.
 # (e.g. custom debug policy)
@@ -97,9 +101,18 @@ userdebug_or_eng(`
 # Allow virtualizationmanager to read microdroid related files in vendor partition
 r_dir_file(virtualizationmanager, vendor_microdroid_file)
 
+# Do not allow writing vendor_microdroid_file from any process.
+neverallow { domain recovery_only(`userdebug_or_eng(`-fastbootd')') } vendor_microdroid_file:dir no_w_dir_perms;
+neverallow { domain recovery_only(`userdebug_or_eng(`-fastbootd')') } vendor_microdroid_file:file no_w_file_perms;
+
 # Allow reading files under /proc/[crosvm pid]/, for collecting CPU & memory usage inside VM.
 r_dir_file(virtualizationmanager, crosvm);
 
 # For debug purposes we try to get the canonical path from /proc/self/fd/N. That triggers
 # a harmless denial for CompOS log files, so ignore that.
 dontaudit virtualizationmanager apex_module_data_file:dir search;
+
+is_flag_enabled(RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT, `
+    # virtualizationmanager holds references to bound devices, returned from vfio_handler
+    binder_call(virtualizationmanager, vfio_handler)
+')
