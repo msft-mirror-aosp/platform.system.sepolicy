@@ -410,6 +410,9 @@ ro.audio.spatializer_enabled u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioService to configure whether
 # to enable head tracking for spatial audio
 ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
+# Boolean property used in AudioPolicyManager to configure whether
+# to enable spatialization for stereo channel mask
+ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
 
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
@@ -1152,7 +1155,7 @@ ro.product.manufacturer_for_attestation  u:object_r:build_attestation_prop:s0 ex
 ro.board.first_api_level u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_level       u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_frozen      u:object_r:build_vendor_prop:s0 exact bool
-ro.llndk.api_level       u:object_r:build_vendor_prop:s0 exact int
+ro.llndk.api_level       u:object_r:build_prop:s0 exact int
 ro.vendor.api_level      u:object_r:build_vendor_prop:s0 exact int
 
 # Boot image build props set by /{second_stage_resources/,}boot/etc/build.prop

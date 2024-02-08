@@ -89,6 +89,7 @@ type cameraproxy_service, system_server_service, service_manager_type;
 type clipboard_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type cloudsearch_service, app_api_service, system_server_service, service_manager_type;
 type contexthub_service, app_api_service,  system_server_service, service_manager_type;
+type contextual_search_service, app_api_service, system_server_service, service_manager_type;
 type crossprofileapps_service, app_api_service, system_server_service, service_manager_type;
 type IProxyService_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type companion_device_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
@@ -303,6 +304,7 @@ type hal_fingerprint_service, protected_service, hal_service_type, service_manag
 type hal_gnss_service, protected_service, hal_service_type, service_manager_type;
 type hal_graphics_allocator_service, hal_service_type, service_manager_type;
 type hal_graphics_composer_service, protected_service, hal_service_type, service_manager_type;
+type hal_graphics_mapper_service, hal_service_type, service_manager_type;
 type hal_health_service, protected_service, hal_service_type, service_manager_type;
 type hal_health_storage_service, protected_service, hal_service_type, service_manager_type;
 type hal_identity_service, protected_service, hal_service_type, service_manager_type;
