@@ -56,16 +56,43 @@ class Regex:
     pattern: str
 
 
-Matcher = Is | Glob | Regex
+@dataclass
+class BinaryFile:
+    pass
+
+
+Matcher = Is | Glob | Regex | BinaryFile
+
+
+# predicate functions for Func matcher
+
 
 @dataclass
-class AllowRead:
-    """Rule checking if scontext can read the entity"""
+class AllowPerm:
+    """Rule checking if scontext has 'perm' to the entity"""
     tclass: str
     scontext: set[str]
+    perm: str
 
 
-Rule = AllowRead
+@dataclass
+class ResolveType:
+    """Rule checking if type can be resolved"""
+    pass
+
+
+@dataclass
+class NotAnyOf:
+    """Rule checking if entity is not labelled as any of the given labels"""
+    labels: set[str]
+
+
+Rule = AllowPerm | ResolveType | NotAnyOf
+
+
+# Helper for 'read'
+def AllowRead(tclass, scontext):
+    return AllowPerm(tclass, scontext, 'read')
 
 
 def match_path(path: str, matcher: Matcher) -> bool:
@@ -77,23 +104,42 @@ def match_path(path: str, matcher: Matcher) -> bool:
             return pathlib.PurePath(path).match(pattern)
         case Regex(pattern):
             return re.match(pattern, path)
+        case BinaryFile:
+            return path.startswith('./bin/') and not path.endswith('/')
 
 
 def check_rule(pol, path: str, tcontext: str, rule: Rule) -> List[str]:
     """Returns error message if scontext can't read the target"""
+    errors = []
     match rule:
-        case AllowRead(tclass, scontext):
-            te_rules = list(pol.QueryTERule(scontext=scontext,
-                                            tcontext={tcontext},
-                                            tclass={tclass},
-                                            perms={'read'}))
-            if len(te_rules) > 0:
-                return []  # no errors
+        case AllowPerm(tclass, scontext, perm):
+            # Test every source in scontext(set)
+            for s in scontext:
+                te_rules = list(pol.QueryTERule(scontext={s},
+                                                tcontext={tcontext},
+                                                tclass={tclass},
+                                                perms={perm}))
+                if len(te_rules) > 0:
+                    continue  # no errors
 
-            return [f"Error: {path}: {scontext} can't read. (tcontext={tcontext})"]
+                errors.append(f"Error: {path}: {s} can't {perm}. (tcontext={tcontext})")
+        case ResolveType():
+            if tcontext not in pol.GetAllTypes(False):
+                errors.append(f"Error: {path}: tcontext({tcontext}) is unknown")
+        case NotAnyOf(labels):
+            if tcontext in labels:
+                errors.append(f"Error: {path}: can't be labelled as '{tcontext}'")
+    return errors
 
 
-rules = [
+target_specific_rules = [
+    (Glob('*'), ResolveType()),
+]
+
+
+generic_rules = [
+    # binaries should be executable
+    (BinaryFile, NotAnyOf({'vendor_file'})),
     # permissions
     (Is('./etc/permissions/'), AllowRead('dir', {'system_server'})),
     (Glob('./etc/permissions/*.xml'), AllowRead('file', {'system_server'})),
@@ -104,11 +150,16 @@ rules = [
     (Glob('./etc/vintf/*.xml'), AllowRead('file', {'servicemanager', 'apexd'})),
     # ./ and apex_manifest.pb
     (Is('./apex_manifest.pb'), AllowRead('file', {'linkerconfig', 'apexd'})),
-    (Is('./'), AllowRead('dir', {'linkerconfig', 'apexd'})),
+    (Is('./'), AllowPerm('dir', {'linkerconfig', 'apexd'}, 'search')),
+    # linker.config.pb
+    (Is('./etc/linker.config.pb'), AllowRead('file', {'linkerconfig'})),
 ]
 
 
-def check_line(pol: policy.Policy, line: str) -> List[str]:
+all_rules = target_specific_rules + generic_rules
+
+
+def check_line(pol: policy.Policy, line: str, rules) -> List[str]:
     """Parses a file_contexts line and runs checks"""
     # skip empty/comment line
     line = line.strip()
@@ -145,6 +196,7 @@ def extract_data(name, temp_dir):
 def do_main(work_dir):
     """Do testing"""
     parser = argparse.ArgumentParser()
+    parser.add_argument('--all', action='store_true', help='tests ALL aspects')
     parser.add_argument('-f', '--file_contexts', help='output of "deapexer list -Z"')
     args = parser.parse_args()
 
@@ -152,10 +204,15 @@ def do_main(work_dir):
     policy_path = extract_data('precompiled_sepolicy', work_dir)
     pol = policy.Policy(policy_path, None, lib_path)
 
+    if args.all:
+        rules = all_rules
+    else:
+        rules = generic_rules
+
     errors = []
     with open(args.file_contexts, 'rt', encoding='utf-8') as file_contexts:
         for line in file_contexts:
-            errors.extend(check_line(pol, line))
+            errors.extend(check_line(pol, line, rules))
     if len(errors) > 0:
         sys.exit('\n'.join(errors))
 
