@@ -200,6 +200,9 @@
 /dev/socket/mdns                                                  mdns_socket
 /dev/socket/mdnsd                                                 mdnsd_socket
 /dev/socket/mtpd                                                  mtpd_socket
+/dev/socket/ot-daemon/                                            ot_daemon_socket
+/dev/socket/ot-daemon/thread-wpan                                 ot_daemon_socket
+/dev/socket/ot-daemon/100                                         ot_daemon_socket
 /dev/socket/pdx/system/buffer_hub                                 pdx_bufferhub_dir
 /dev/socket/pdx/system/buffer_hub/client                          pdx_bufferhub_client_endpoint_socket
 /dev/socket/pdx/system/performance                                pdx_performance_dir
@@ -979,6 +982,8 @@
 /data/misc/net/test                                               net_data_file
 /data/misc/network_watchlist                                      network_watchlist_data_file
 /data/misc/network_watchlist/test                                 network_watchlist_data_file
+/data/misc/telephonyconfig                                        radio_data_file
+/data/misc/telephonyconfig/test                                   radio_data_file
 /data/misc/nfc/logs                                               nfc_logs_data_file
 /data/misc/nfc/logs/test                                          nfc_logs_data_file
 /data/misc/odrefresh                                              odrefresh_data_file
@@ -1210,6 +1215,12 @@
 
 /metadata                                                         metadata_file
 /metadata/test                                                    metadata_file
+/metadata/aconfig                                                 aconfig_storage_metadata_file
+/metadata/aconfig/test                                            aconfig_storage_metadata_file
+/metadata/aconfig/flags                                           aconfig_storage_flags_metadata_file
+/metadata/aconfig/flags/test                                      aconfig_storage_flags_metadata_file
+/metadata/aconfig/boot                                            aconfig_storage_metadata_file
+/metadata/aconfig/boot/test                                       aconfig_storage_metadata_file
 /metadata/apex                                                    apex_metadata_file
 /metadata/apex/test                                               apex_metadata_file
 /metadata/vold                                                    vold_metadata_file

@@ -410,10 +410,18 @@ ro.audio.spatializer_enabled u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioService to configure whether
 # to enable head tracking for spatial audio
 ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
+# Boolean property used in AudioPolicyManager to configure whether
+# to enable spatialization for stereo channel mask
+ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
 
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
 ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
+
+# Boolean property used in libaudiohal@aidl to check if the SoC vendor
+# provides an implementation of IHalAdapterVendorExtension interface.
+# See b/323989070 for the discussion why this approach was chosen.
+ro.audio.ihaladaptervendorextension_enabled u:object_r:system_audio_config_prop:s0 exact bool
 
 persist.config.calibration_fac u:object_r:camera_calibration_prop:s0 exact string
 
@@ -631,6 +639,7 @@ bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.sco.managed_by_audio                       u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le.dsa_transport_preference           u:object_r:bluetooth_config_prop:s0 exact string
 
 persist.nfc.debug_enabled                      u:object_r:nfc_prop:s0 exact bool
@@ -1151,7 +1160,7 @@ ro.product.manufacturer_for_attestation  u:object_r:build_attestation_prop:s0 ex
 ro.board.first_api_level u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_level       u:object_r:build_vendor_prop:s0 exact int
 ro.board.api_frozen      u:object_r:build_vendor_prop:s0 exact bool
-ro.llndk.api_level       u:object_r:build_vendor_prop:s0 exact int
+ro.llndk.api_level       u:object_r:build_prop:s0 exact int
 ro.vendor.api_level      u:object_r:build_vendor_prop:s0 exact int
 
 # Boot image build props set by /{second_stage_resources/,}boot/etc/build.prop
@@ -1628,3 +1637,16 @@ persist.graphics.game_default_frame_rate.enabled  u:object_r:game_manager_config
 # Properties for app archiving
 pm.archiving.enabled      u:object_r:pm_archiving_enabled_prop:s0 exact bool
 
+# Properties for ThreadNetworkService
+threadnetwork.country_code u:object_r:threadnetwork_config_prop:s0 exact string
+
+# Properties for crashrecovery
+crashrecovery.attempting_factory_reset u:object_r:crashrecovery_prop:s0 exact bool
+crashrecovery.attempting_reboot u:object_r:crashrecovery_prop:s0 exact bool
+crashrecovery.boot_mitigation_count u:object_r:crashrecovery_prop:s0 exact int
+crashrecovery.boot_mitigation_start u:object_r:crashrecovery_prop:s0 exact int
+crashrecovery.max_rescue_level_attempted u:object_r:crashrecovery_prop:s0 exact int
+crashrecovery.rescue_boot_count u:object_r:crashrecovery_prop:s0 exact int
+crashrecovery.rescue_boot_start u:object_r:crashrecovery_prop:s0 exact int
+persist.crashrecovery.enable_rescue u:object_r:crashrecovery_prop:s0 exact bool
+persist.crashrecovery.last_factory_reset u:object_r:crashrecovery_prop:s0 exact int
