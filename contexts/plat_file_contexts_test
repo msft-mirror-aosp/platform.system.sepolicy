@@ -653,6 +653,9 @@
 
 /oem                                                              oemfs
 /oem/does_not_exist                                               oemfs
+/oem/media/bootanimation.zip                                      bootanim_oem_file
+/oem/media/shutdownanimation.zip                                  bootanim_oem_file
+/oem/media/userspace-reboot.zip                                   bootanim_oem_file
 /oem/overlay                                                      vendor_overlay_file
 /oem/overlay/does_not_exist                                       vendor_overlay_file
 
@@ -1215,6 +1218,12 @@
 
 /metadata                                                         metadata_file
 /metadata/test                                                    metadata_file
+/metadata/aconfig                                                 aconfig_storage_metadata_file
+/metadata/aconfig/test                                            aconfig_storage_metadata_file
+/metadata/aconfig/flags                                           aconfig_storage_flags_metadata_file
+/metadata/aconfig/flags/test                                      aconfig_storage_flags_metadata_file
+/metadata/aconfig/boot                                            aconfig_storage_metadata_file
+/metadata/aconfig/boot/test                                       aconfig_storage_metadata_file
 /metadata/apex                                                    apex_metadata_file
 /metadata/apex/test                                               apex_metadata_file
 /metadata/vold                                                    vold_metadata_file
