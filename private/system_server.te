@@ -260,9 +260,7 @@ allow system_server self:tun_socket create_socket_perms_no_ioctl;
 
 # Talk to init and various daemons via sockets.
 unix_socket_connect(system_server, lmkd, lmkd)
-unix_socket_connect(system_server, mtpd, mtp)
 unix_socket_connect(system_server, zygote, zygote)
-unix_socket_connect(system_server, racoon, racoon)
 unix_socket_connect(system_server, uncrypt, uncrypt)
 
 # Allow system_server to write to statsd.
@@ -285,6 +283,7 @@ binder_call(system_server, appdomain)
 binder_call(system_server, artd)
 binder_call(system_server, binderservicedomain)
 binder_call(system_server, composd)
+binder_call(system_server, dexopt_chroot_setup)
 binder_call(system_server, dumpstate)
 binder_call(system_server, fingerprintd)
 binder_call(system_server, gatekeeperd)
@@ -310,6 +309,7 @@ hal_client_domain(system_server, hal_allocator)
 hal_client_domain(system_server, hal_audio)
 hal_client_domain(system_server, hal_authgraph)
 hal_client_domain(system_server, hal_authsecret)
+hal_client_domain(system_server, hal_bluetooth)
 hal_client_domain(system_server, hal_broadcastradio)
 hal_client_domain(system_server, hal_codec2)
 hal_client_domain(system_server, hal_configstore)
@@ -578,6 +578,15 @@ allow system_server prereboot_data_file:file create_file_perms;
 allow system_server perfetto_traces_data_file:file { read getattr };
 allow system_server perfetto:fd use;
 
+# Allow system_server to exec the perfetto cmdline client and pass it a trace config
+domain_auto_trans(system_server, perfetto_exec, perfetto);
+allow system_server perfetto:fifo_file { read write };
+
+# Allow system server to manage perfetto traces for ProfilingService.
+allow system_server perfetto_traces_profiling_data_file:dir rw_dir_perms;
+allow system_server perfetto_traces_profiling_data_file:file { rw_file_perms unlink };
+allow system_server perfetto_traces_data_file:dir search;
+
 # Manage /data/backup.
 allow system_server backup_data_file:dir create_dir_perms;
 allow system_server backup_data_file:file create_file_perms;
@@ -737,6 +746,7 @@ set_prop(system_server, dmesgd_start_prop)
 set_prop(system_server, locale_prop)
 set_prop(system_server, timezone_metadata_prop)
 set_prop(system_server, timezone_prop)
+set_prop(system_server, crashrecovery_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
 userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
@@ -940,12 +950,14 @@ allow system_server kernel:security read_policy;
 
 add_service(system_server, system_server_service);
 allow system_server artd_service:service_manager find;
+allow system_server artd_pre_reboot_service:service_manager find;
 allow system_server audioserver_service:service_manager find;
 allow system_server authorization_service:service_manager find;
 allow system_server batteryproperties_service:service_manager find;
 allow system_server cameraserver_service:service_manager find;
 allow system_server compos_service:service_manager find;
 allow system_server dataloader_manager_service:service_manager find;
+allow system_server dexopt_chroot_setup_service:service_manager find;
 allow system_server dnsresolver_service:service_manager find;
 allow system_server drmserver_service:service_manager find;
 allow system_server dumpstate_service:service_manager find;
@@ -975,6 +987,9 @@ allow system_server storaged_service:service_manager find;
 allow system_server surfaceflinger_service:service_manager find;
 allow system_server update_engine_service:service_manager find;
 allow system_server virtual_camera_service:service_manager find;
+is_flag_enabled(RELEASE_AVF_ENABLE_LLPVM_CHANGES, `
+    allow system_server virtualization_maintenance_service:service_manager find;
+')
 allow system_server vold_service:service_manager find;
 allow system_server wifinl80211_service:service_manager find;
 allow system_server logd_service:service_manager find;
@@ -1139,7 +1154,6 @@ allow system_server dmabuf_system_heap_device:chr_file r_file_perms;
 allow system_server dmabuf_system_secure_heap_device:chr_file r_file_perms;
 
 r_dir_file(system_server, proc_asound)
-r_dir_file(system_server, proc_memhealth)
 r_dir_file(system_server, proc_net_type)
 r_dir_file(system_server, proc_qtaguid_stat)
 allow system_server {
@@ -1290,8 +1304,11 @@ neverallow system_server {
 
 # Ensure that system_server doesn't perform any domain transitions other than
 # transitioning to the crash_dump domain when a crash occurs or fork clatd.
-neverallow system_server { domain -clatd -crash_dump }:process transition;
+neverallow system_server { domain -clatd -crash_dump -perfetto }:process transition;
 neverallow system_server *:process dyntransition;
+
+# Ensure that system_server doesn't access anything but search in perfetto_traces_data_file:dir.
+neverallow system_server perfetto_traces_data_file:dir ~search;
 
 # Only allow crash_dump to connect to system_ndebug_socket.
 neverallow { domain -init -system_server -crash_dump } system_ndebug_socket:sock_file { open write };
@@ -1450,6 +1467,9 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
+allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
+allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
+
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
 
@@ -1505,6 +1525,11 @@ neverallow { domain -init -system_server } password_slot_metadata_file:notdevfil
 # Only system_server/init should access /metadata/userspacereboot.
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:dir *;
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:file no_rw_file_perms;
+
+# Only system server should access /metadata/aconfig
+# TODO: add storage daemon to neverallow exception when it is introduced
+neverallow { domain -init -system_server } aconfig_storage_flags_metadata_file:dir *;
+neverallow { domain -init -system_server } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
 
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)
@@ -1565,3 +1590,22 @@ allow system_server binderfs_logs_stats:file r_file_perms;
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
 
+# ThreadNetworkService reads Thread Network properties
+get_prop(system_server, threadnetwork_config_prop)
+
+# Do not allow any domain other than init and system server to set the property
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -dumpstate
+  -system_server
+} threadnetwork_config_prop:file no_rw_file_perms;
+
+# Allow system server to read pm.archiving.enabled prop
+# TODO(azilio): Remove system property after archiving testing is completed.
+get_prop(system_server, pm_archiving_enabled_prop)
+
+# Do not allow any domain other than init or system server to get or set the property
+neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
+neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;
