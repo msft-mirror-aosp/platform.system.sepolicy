@@ -155,6 +155,7 @@
 /dev/snd(/.*)?		u:object_r:audio_device:s0
 /dev/socket(/.*)?	u:object_r:socket_device:s0
 /dev/socket/adbd	u:object_r:adbd_socket:s0
+/dev/socket/aconfigd	u:object_r:aconfigd_socket:s0
 /dev/socket/dnsproxyd	u:object_r:dnsproxyd_socket:s0
 /dev/socket/dumpstate	u:object_r:dumpstate_socket:s0
 /dev/socket/fwmarkd	u:object_r:fwmarkd_socket:s0
@@ -332,6 +333,7 @@
 /system/bin/rss_hwm_reset	u:object_r:rss_hwm_reset_exec:s0
 /system/bin/perfetto        u:object_r:perfetto_exec:s0
 /system/bin/mtectrl         u:object_r:mtectrl_exec:s0
+/system/bin/misctrl         u:object_r:misctrl_exec:s0
 /system/bin/traced        u:object_r:traced_exec:s0
 /system/bin/traced_perf        u:object_r:traced_perf_exec:s0
 /system/bin/traced_probes        u:object_r:traced_probes_exec:s0
@@ -385,6 +387,7 @@
 /system/bin/bpfloader            u:object_r:bpfloader_exec:s0
 /system/bin/netbpfload           u:object_r:bpfloader_exec:s0
 /system/bin/watchdogd            u:object_r:watchdogd_exec:s0
+/system/bin/aconfigd             u:object_r:aconfigd_exec:s0
 /system/bin/apexd                u:object_r:apexd_exec:s0
 /system/bin/gsid                 u:object_r:gsid_exec:s0
 /system/bin/simpleperf           u:object_r:simpleperf_exec:s0
@@ -457,6 +460,9 @@
 
 /oem(/.*)?              u:object_r:oemfs:s0
 /oem/overlay(/.*)?      u:object_r:vendor_overlay_file:s0
+/oem/media/bootanimation.zip            u:object_r:bootanim_oem_file:s0
+/oem/media/shutdownanimation.zip        u:object_r:bootanim_oem_file:s0
+/oem/media/userspace-reboot.zip         u:object_r:bootanim_oem_file:s0
 
 # The precompiled monolithic sepolicy will be under /odm only when
 # BOARD_USES_ODMIMAGE is true: a separate odm.img is built.
@@ -657,9 +663,10 @@
 /data/misc/odrefresh(/.*)?      u:object_r:odrefresh_data_file:s0
 /data/misc/odsign(/.*)?         u:object_r:odsign_data_file:s0
 /data/misc/odsign/metrics(/.*)? u:object_r:odsign_metrics_file:s0
-/data/misc/perfetto-traces(/.*)?          u:object_r:perfetto_traces_data_file:s0
-/data/misc/perfetto-traces/bugreport(.*)? u:object_r:perfetto_traces_bugreport_data_file:s0
-/data/misc/perfetto-configs(/.*)?         u:object_r:perfetto_configs_data_file:s0
+/data/misc/perfetto-traces(/.*)?           u:object_r:perfetto_traces_data_file:s0
+/data/misc/perfetto-traces/bugreport(.*)?  u:object_r:perfetto_traces_bugreport_data_file:s0
+/data/misc/perfetto-traces/profiling(/.*)? u:object_r:perfetto_traces_profiling_data_file:s0
+/data/misc/perfetto-configs(/.*)?          u:object_r:perfetto_configs_data_file:s0
 /data/misc/uprobestats-configs(/.*)?      u:object_r:uprobestats_configs_data_file:s0
 /data/misc/prereboot(/.*)?      u:object_r:prereboot_data_file:s0
 /data/misc/profcollectd(/.*)?   u:object_r:profcollectd_data_file:s0
@@ -855,6 +862,8 @@
 /metadata/userspacereboot(/.*)?    u:object_r:userspace_reboot_metadata_file:s0
 /metadata/watchdog(/.*)?    u:object_r:watchdog_metadata_file:s0
 /metadata/repair-mode(/.*)?    u:object_r:repair_mode_metadata_file:s0
+/metadata/aconfig(/.*)?    u:object_r:aconfig_storage_metadata_file:s0
+/metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 
 #############################
 # asec containers

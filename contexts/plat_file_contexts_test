@@ -189,6 +189,7 @@
 /dev/socket                                                       socket_device
 /dev/socket/does_not_exist                                        socket_device
 /dev/socket/adbd                                                  adbd_socket
+/dev/socket/aconfigd                                              aconfigd_socket
 /dev/socket/dnsproxyd                                             dnsproxyd_socket
 /dev/socket/dumpstate                                             dumpstate_socket
 /dev/socket/fwmarkd                                               fwmarkd_socket
@@ -405,6 +406,7 @@
 /system/bin/lpdumpd                                               lpdumpd_exec
 /system/bin/rss_hwm_reset                                         rss_hwm_reset_exec
 /system/bin/perfetto                                              perfetto_exec
+/system/bin/misctrl                                               misctrl_exec
 /system/bin/mtectrl                                               mtectrl_exec
 /system/bin/traced                                                traced_exec
 /system/bin/traced_perf                                           traced_perf_exec
@@ -461,6 +463,7 @@
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
+/system/bin/aconfigd                                              aconfigd_exec
 /system/bin/vold_prepare_subdirs                                  vold_prepare_subdirs_exec
 /system/bin/stats                                                 stats_exec
 /system/bin/statsd                                                statsd_exec
@@ -653,6 +656,9 @@
 
 /oem                                                              oemfs
 /oem/does_not_exist                                               oemfs
+/oem/media/bootanimation.zip                                      bootanim_oem_file
+/oem/media/shutdownanimation.zip                                  bootanim_oem_file
+/oem/media/userspace-reboot.zip                                   bootanim_oem_file
 /oem/overlay                                                      vendor_overlay_file
 /oem/overlay/does_not_exist                                       vendor_overlay_file
 
@@ -992,10 +998,12 @@
 /data/misc/odsign/test                                            odsign_data_file
 /data/misc/odsign/metrics                                         odsign_metrics_file
 /data/misc/odsign/metrics/test                                    odsign_metrics_file
-/data/misc/perfetto-traces/bugreport                             perfetto_traces_bugreport_data_file
-/data/misc/perfetto-traces/bugreport/test                        perfetto_traces_bugreport_data_file
+/data/misc/perfetto-traces/bugreport                              perfetto_traces_bugreport_data_file
+/data/misc/perfetto-traces/bugreport/test                         perfetto_traces_bugreport_data_file
 /data/misc/perfetto-traces                                        perfetto_traces_data_file
 /data/misc/perfetto-traces/test                                   perfetto_traces_data_file
+/data/misc/perfetto-traces/profiling                              perfetto_traces_profiling_data_file
+/data/misc/perfetto-traces/profiling/test                         perfetto_traces_profiling_data_file
 /data/misc/perfetto-configs                                       perfetto_configs_data_file
 /data/misc/perfetto-configs/test                                  perfetto_configs_data_file
 /data/misc/prereboot                                              prereboot_data_file
@@ -1215,6 +1223,12 @@
 
 /metadata                                                         metadata_file
 /metadata/test                                                    metadata_file
+/metadata/aconfig                                                 aconfig_storage_metadata_file
+/metadata/aconfig/test                                            aconfig_storage_metadata_file
+/metadata/aconfig/flags                                           aconfig_storage_flags_metadata_file
+/metadata/aconfig/flags/test                                      aconfig_storage_flags_metadata_file
+/metadata/aconfig/boot                                            aconfig_storage_metadata_file
+/metadata/aconfig/boot/test                                       aconfig_storage_metadata_file
 /metadata/apex                                                    apex_metadata_file
 /metadata/apex/test                                               apex_metadata_file
 /metadata/vold                                                    vold_metadata_file
