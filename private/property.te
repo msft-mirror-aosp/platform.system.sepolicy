@@ -24,6 +24,7 @@ system_internal_prop(init_perf_lsm_hooks_prop)
 system_internal_prop(init_service_status_private_prop)
 system_internal_prop(init_storage_prop)
 system_internal_prop(init_svc_debug_prop)
+system_internal_prop(kcmdline_prop)
 system_internal_prop(keystore_crash_prop)
 system_internal_prop(keystore_listen_prop)
 system_internal_prop(last_boot_reason_prop)
@@ -43,6 +44,7 @@ system_internal_prop(radio_cdma_ecm_prop)
 system_internal_prop(remote_prov_prop)
 system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
+system_internal_prop(snapshotctl_prop)
 system_internal_prop(snapuserd_prop)
 system_internal_prop(system_adbd_prop)
 system_internal_prop(system_audio_config_prop)
@@ -487,6 +489,15 @@ neverallow {
 } {
   arm64_memtag_prop
   gwp_asan_prop
+}:property_service set;
+
+neverallow {
+  domain
+  -init
+  -shell
+  -kcmdlinectrl
+} {
+  kcmdline_prop
 }:property_service set;
 
 neverallow {
