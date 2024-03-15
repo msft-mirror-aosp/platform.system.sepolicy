@@ -520,6 +520,7 @@ allow system_server apk_tmp_file:file create_file_perms;
 r_dir_file(system_server, vendor_keylayout_file)
 r_dir_file(system_server, vendor_keychars_file)
 r_dir_file(system_server, vendor_idc_file)
+get_prop(system_server, input_device_config_prop)
 
 # Access /vendor/{app,framework,overlay}
 r_dir_file(system_server, vendor_app_file)
@@ -1469,6 +1470,7 @@ allow system_server watchdog_metadata_file:file create_file_perms;
 
 allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
 allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
+allow system_server aconfig_storage_metadata_file:dir search;
 
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
@@ -1527,9 +1529,8 @@ neverallow { domain -init -system_server } userspace_reboot_metadata_file:dir *;
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:file no_rw_file_perms;
 
 # Only system server should access /metadata/aconfig
-# TODO: add storage daemon to neverallow exception when it is introduced
-neverallow { domain -init -system_server } aconfig_storage_flags_metadata_file:dir *;
-neverallow { domain -init -system_server } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
+neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
+neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
 
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)

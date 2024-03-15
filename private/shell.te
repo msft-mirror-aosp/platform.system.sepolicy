@@ -17,6 +17,10 @@ userdebug_or_eng(`
 # read config.gz for CTS purposes
 allow shell config_gz:file r_file_perms;
 
+# allow reading tombstones. users can already use bugreports to get those.
+allow shell tombstone_data_file:dir r_dir_perms;
+allow shell tombstone_data_file:file r_file_perms;
+
 # Run app_process.
 # XXX Transition into its own domain?
 app_domain(shell)
@@ -223,6 +227,9 @@ set_prop(shell, sqlite_log_prop)
 
 # Allow shell to write MTE properties even on user builds.
 set_prop(shell, arm64_memtag_prop)
+
+# Allow shell to write kcmdline properties even on user builds.
+set_prop(shell, kcmdline_prop)
 
 # Allow shell to read the dm-verity props on user builds.
 get_prop(shell, verity_status_prop)

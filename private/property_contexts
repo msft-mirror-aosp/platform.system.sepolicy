@@ -288,6 +288,9 @@ persist.device_config.memory_safety_native_boot.    u:object_r:device_config_mem
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 persist.device_config.tethering_u_or_later_native.  u:object_r:device_config_tethering_u_or_later_native_prop:s0
 
+# Prop indicates the apex that bundles input configuration files (*.idc,*.kl,*.kcm)
+input_device.config_file.apex    u:object_r:input_device_config_prop:s0 exact string
+
 # Properties that is for staging
 next_boot.  u:object_r:next_boot_prop:s0
 
@@ -763,6 +766,7 @@ ro.lmk.thrashing_limit_critical u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.thrashing_limit_decay    u:object_r:lmkd_config_prop:s0 exact int
 ro.lmk.use_minfree_levels       u:object_r:lmkd_config_prop:s0 exact bool
 ro.lmk.use_new_strategy         u:object_r:lmkd_config_prop:s0 exact bool
+ro.lmk.use_psi                  u:object_r:lmkd_config_prop:s0 exact bool
 ro.lmk.upgrade_pressure         u:object_r:lmkd_config_prop:s0 exact int
 lmkd.reinit                     u:object_r:lmkd_prop:s0 exact int
 
@@ -889,6 +893,11 @@ persist.libc.debug.gwp_asan.  u:object_r:gwp_asan_prop:s0 prefix string
 # shell-only props for ARM memory tagging (MTE).
 arm64.memtag.         u:object_r:arm64_memtag_prop:s0 prefix string
 persist.arm64.memtag. u:object_r:arm64_memtag_prop:s0 prefix string
+
+# kcmdline props for dogfood experiments
+# All kcmdline properties share the kcmdline_prop context
+kcmdline.loaded     u:object_r:kcmdline_prop:s0 exact bool
+kcmdline.binder     u:object_r:kcmdline_prop:s0 exact enum c rust
 
 net.redirect_socket_calls.hooked u:object_r:socket_hook_prop:s0 exact bool
 
@@ -1193,8 +1202,12 @@ ro.property_service.async_persist_writes u:object_r:build_config_prop:s0 exact b
 
 ro.vendor.redirect_socket_calls u:object_r:vendor_socket_hook_prop:s0 exact bool
 
-service.bootanim.exit u:object_r:bootanim_system_prop:s0 exact int
-service.bootanim.progress u:object_r:bootanim_system_prop:s0 exact int
+service.bootanim.exit       u:object_r:bootanim_system_prop:s0 exact int
+service.bootanim.progress   u:object_r:bootanim_system_prop:s0 exact int
+persist.bootanim.color1     u:object_r:bootanim_system_prop:s0 exact int
+persist.bootanim.color2     u:object_r:bootanim_system_prop:s0 exact int
+persist.bootanim.color3     u:object_r:bootanim_system_prop:s0 exact int
+persist.bootanim.color4     u:object_r:bootanim_system_prop:s0 exact int
 
 sys.init.userspace_reboot.in_progress u:object_r:userspace_reboot_exported_prop:s0 exact bool
 sys.use_memfd                         u:object_r:use_memfd_prop:s0 exact bool
@@ -1651,3 +1664,7 @@ crashrecovery.rescue_boot_count u:object_r:crashrecovery_prop:s0 exact int
 crashrecovery.rescue_boot_start u:object_r:crashrecovery_prop:s0 exact int
 persist.crashrecovery.enable_rescue u:object_r:crashrecovery_prop:s0 exact bool
 persist.crashrecovery.last_factory_reset u:object_r:crashrecovery_prop:s0 exact int
+
+# Properties for controlling snapshotctl.
+sys.snapshotctl.map u:object_r:snapshotctl_prop:s0 exact string
+sys.snapshotctl.unmap u:object_r:snapshotctl_prop:s0 exact string

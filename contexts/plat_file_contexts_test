@@ -169,7 +169,6 @@
 /dev/pmsg0                                                        pmsg_device
 /dev/pn544                                                        nfc_device
 /dev/port                                                         port_device
-/dev/ppp                                                          ppp_device
 /dev/ptmx                                                         ptmx_device
 /dev/pvrsrvkm                                                     gpu_device
 /dev/kmsg                                                         kmsg_device
@@ -189,6 +188,7 @@
 /dev/socket                                                       socket_device
 /dev/socket/does_not_exist                                        socket_device
 /dev/socket/adbd                                                  adbd_socket
+/dev/socket/aconfigd                                              aconfigd_socket
 /dev/socket/dnsproxyd                                             dnsproxyd_socket
 /dev/socket/dumpstate                                             dumpstate_socket
 /dev/socket/fwmarkd                                               fwmarkd_socket
@@ -199,7 +199,6 @@
 /dev/socket/statsdw                                               statsdw_socket
 /dev/socket/mdns                                                  mdns_socket
 /dev/socket/mdnsd                                                 mdnsd_socket
-/dev/socket/mtpd                                                  mtpd_socket
 /dev/socket/ot-daemon/                                            ot_daemon_socket
 /dev/socket/ot-daemon/thread-wpan                                 ot_daemon_socket
 /dev/socket/ot-daemon/100                                         ot_daemon_socket
@@ -215,7 +214,6 @@
 /dev/socket/prng_seeder                                           prng_seeder_socket
 /dev/socket/property_service                                      property_socket
 /dev/socket/property_service_for_system                           property_socket
-/dev/socket/racoon                                                racoon_socket
 /dev/socket/recovery                                              recovery_socket
 /dev/socket/rild                                                  rild_socket
 /dev/socket/rild-debug                                            rild_debug_socket
@@ -367,6 +365,7 @@
 /system/bin/mediatranscoding                                      mediatranscoding_exec
 /system/bin/mediatuner                                            mediatuner_exec
 /system/bin/mdnsd                                                 mdnsd_exec
+/system/bin/ot-ctl                                                ot_ctl_exec
 /system/bin/installd                                              installd_exec
 /system/bin/otapreopt_chroot                                      otapreopt_chroot_exec
 /system/bin/otapreopt_slot                                        otapreopt_slot_exec
@@ -384,9 +383,6 @@
 /system/bin/dhcpcd                                                dhcp_exec
 /system/bin/dhcpcd-6.8.2                                          dhcp_exec
 /system/bin/dmesgd                                                dmesgd_exec
-/system/bin/mtpd                                                  mtp_exec
-/system/bin/pppd                                                  ppp_exec
-/system/bin/racoon                                                racoon_exec
 /system/xbin/su                                                   su_exec
 /system/bin/dnsmasq                                               dnsmasq_exec
 /system/bin/linker                                                system_linker_exec
@@ -407,6 +403,7 @@
 /system/bin/perfetto                                              perfetto_exec
 /system/bin/misctrl                                               misctrl_exec
 /system/bin/mtectrl                                               mtectrl_exec
+/system/bin/kcmdlinectrl                                          kcmdlinectrl_exec
 /system/bin/traced                                                traced_exec
 /system/bin/traced_perf                                           traced_perf_exec
 /system/bin/traced_probes                                         traced_probes_exec
@@ -432,6 +429,7 @@
 /system/bin/virtual_touchpad                                      virtual_touchpad_exec
 /system/bin/hw/android.frameworks.bufferhub@1.0-service           fwk_bufferhub_exec
 /system/bin/hw/android.system.suspend-service                     system_suspend_exec
+/system/etc/aconfig                                               system_aconfig_storage_file
 /system/etc/cgroups.json                                          cgroup_desc_file
 /system/etc/task_profiles/cgroups_0.json                          cgroup_desc_api_file
 /system/etc/task_profiles/cgroups_999.json                        cgroup_desc_api_file
@@ -441,6 +439,7 @@
 /system/etc/ld.config.                                            system_linker_config_file
 /system/etc/ld.config.test                                        system_linker_config_file
 /system/etc/passwd                                                system_passwd_file
+/system/etc/perfetto/persistent_cfg.pbtxt                         system_perfetto_config_file
 /system/etc/seccomp_policy                                        system_seccomp_policy_file
 /system/etc/seccomp_policy/crash_dump.x86.policy                  system_seccomp_policy_file
 /system/etc/security/cacerts                                      system_security_cacerts_file
@@ -462,6 +461,7 @@
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
+/system/bin/aconfigd                                              aconfigd_exec
 /system/bin/vold_prepare_subdirs                                  vold_prepare_subdirs_exec
 /system/bin/stats                                                 stats_exec
 /system/bin/statsd                                                statsd_exec
@@ -495,6 +495,7 @@
 /system/vendor/bin/toolbox                                        vendor_toolbox_exec
 /vendor/etc                                                       vendor_configs_file
 /vendor/etc/does_not_exist                                        vendor_configs_file
+/vendor/etc/aconfig                                               vendor_aconfig_storage_file
 /system/vendor/etc                                                vendor_configs_file
 /system/vendor/etc/does_not_exist                                 vendor_configs_file
 /vendor/etc/cgroups.json                                          vendor_cgroup_desc_file
@@ -729,6 +730,8 @@
 /system_ext/overlay/does_not_exist                                vendor_overlay_file
 /system/system_ext/overlay                                        vendor_overlay_file
 /system/system_ext/overlay/does_not_exist                         vendor_overlay_file
+/system_ext/etc/aconfig                                           system_aconfig_storage_file
+/product/etc/aconfig                                              system_aconfig_storage_file
 
 /system_ext/etc/selinux/system_ext_file_contexts                  file_contexts_file
 /system/system_ext/etc/selinux/system_ext_file_contexts           file_contexts_file

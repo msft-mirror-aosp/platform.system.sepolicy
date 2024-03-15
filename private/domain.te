@@ -227,6 +227,7 @@ neverallow {
   -ueventd
   -mtectrl
   -misctrl
+  -kcmdlinectrl
 } misc_block_device:blk_file { append link relabelfrom rename write open read ioctl lock };
 
 # Limit ability to ptrace or read sensitive /proc/pid files of processes
@@ -652,6 +653,7 @@ full_treble_only(`
     -vendor_task_profiles_file
     -vendor_uuid_mapping_config_file
     -vndk_sp_file
+    -vendor_aconfig_storage_file
   }:file *;
 ')
 
@@ -805,6 +807,11 @@ neverallow {
 } system_app_data_file:dir_file_class_set { create unlink open };
 
 neverallow { domain -init } mtectrl:process { dyntransition transition };
+neverallow { domain -init } kcmdlinectrl:process { dyntransition transition };
 
 # For now, don't allow processes other than gmscore to access /data/misc_ce/<userid>/checkin
 neverallow { domain -gmscore_app -init -vold_prepare_subdirs } checkin_data_file:{dir file} *;
+
+# Do not allow write access to aconfig flag value files except init and aconfigd
+neverallow { domain -init -aconfigd -system_server } aconfig_storage_metadata_file:dir *;
+neverallow { domain -init -aconfigd -system_server } aconfig_storage_metadata_file:file no_w_file_perms;
