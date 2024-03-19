@@ -227,6 +227,7 @@ set_prop(shell, sqlite_log_prop)
 
 # Allow shell to write MTE properties even on user builds.
 set_prop(shell, arm64_memtag_prop)
+set_prop(shell, permissive_mte_prop)
 
 # Allow shell to write kcmdline properties even on user builds.
 set_prop(shell, kcmdline_prop)
@@ -267,3 +268,9 @@ get_prop(shell, build_attestation_prop)
 
 # Allow shell to execute oatdump.
 allow shell oatdump_exec:file rx_file_perms;
+
+# Allow shell access to socket for test
+userdebug_or_eng(`
+    allow shell aconfigd_socket:sock_file write;
+    allow shell aconfigd:unix_stream_socket connectto;
+')
