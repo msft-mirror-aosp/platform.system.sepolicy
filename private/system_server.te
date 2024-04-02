@@ -1282,6 +1282,10 @@ get_prop(system_server, qemu_hw_prop)
 # Allow system server to read profcollectd reports for upload.
 userdebug_or_eng(`r_dir_file(system_server, profcollectd_data_file)')
 
+# Power controls for debugging/diagnostics
+get_prop(system_server, power_debug_prop)
+set_prop(system_server, power_debug_prop)
+
 ###
 ### Neverallow rules
 ###
@@ -1597,6 +1601,8 @@ set_prop(system_server, dalvik_dynamic_config_prop)
 # Allow system server to read binderfs
 allow system_server binderfs_logs:dir r_dir_perms;
 allow system_server binderfs_logs_stats:file r_file_perms;
+# For ANRs
+allow system_server binderfs_logs_transactions:file r_file_perms;
 
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
@@ -1617,10 +1623,18 @@ neverallow {
 # TODO(azilio): Remove system property after archiving testing is completed.
 get_prop(system_server, pm_archiving_enabled_prop)
 
+# Allow accessing /mnt/pre_reboot_dexopt/chroot, to load the new service-art.jar
+# in Pre-reboot Dexopt.
+allow system_server pre_reboot_dexopt_file:dir { getattr search };
+
 # Do not allow any domain other than init or system server to get or set the property
 neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
 neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;
 
-# Allow accessing /mnt/pre_reboot_dexopt/chroot, to load the new service-art.jar
-# in Pre-reboot Dexopt.
-allow system_server pre_reboot_dexopt_file:dir { getattr search };
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  -shell
+} power_debug_prop:property_service set;
