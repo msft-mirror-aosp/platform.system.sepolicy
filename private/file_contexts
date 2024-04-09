@@ -339,6 +339,7 @@
 /system/bin/traced        u:object_r:traced_exec:s0
 /system/bin/traced_perf        u:object_r:traced_perf_exec:s0
 /system/bin/traced_probes        u:object_r:traced_probes_exec:s0
+/system/bin/trace_redactor        u:object_r:trace_redactor_exec:s0
 /system/bin/heapprofd        u:object_r:heapprofd_exec:s0
 /system/bin/uncrypt     u:object_r:uncrypt_exec:s0
 /system/bin/update_verifier u:object_r:update_verifier_exec:s0
@@ -347,7 +348,6 @@
 /system/bin/cppreopts\.sh   u:object_r:cppreopts_exec:s0
 /system/bin/preloads_copy\.sh u:object_r:preloads_copy_exec:s0
 /system/bin/preopt2cachename u:object_r:preopt2cachename_exec:s0
-/system/bin/viewcompiler     u:object_r:viewcompiler_exec:s0
 /system/bin/sgdisk      u:object_r:sgdisk_exec:s0
 /system/bin/blkid       u:object_r:blkid_exec:s0
 /system/bin/flags_health_check -- u:object_r:flags_health_check_exec:s0
