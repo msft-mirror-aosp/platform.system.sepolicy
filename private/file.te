@@ -168,6 +168,9 @@ type pre_reboot_dexopt_file, file_type;
 # This type is set on the directory through the `rootcontext=` mount option.
 type pre_reboot_dexopt_artd_file, file_type;
 
+# Type for /sys/kernel/mm/pgsize_migration/enabled
+type sysfs_pgsize_migration, fs_type, sysfs_type;
+
 # Allow files to be created in their appropriate filesystems.
 allow fs_type self:filesystem associate;
 allow cgroup tmpfs:filesystem associate;
