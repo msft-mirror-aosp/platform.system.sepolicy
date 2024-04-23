@@ -500,6 +500,9 @@ get_prop(domain, binder_cache_bluetooth_server_prop)
 get_prop(domain, binder_cache_system_server_prop)
 get_prop(domain, binder_cache_telephony_server_prop)
 
+# Binderfs logs contain sensitive information about other processes.
+neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs_transactions:file no_rw_file_perms;
+
 # Allow access to fsverity keyring.
 allow domain kernel:key search;
 # Allow access to keys in the fsverity keyring that were installed at boot.
@@ -559,6 +562,7 @@ allow {
 # that records where flag storage files are, so also needs to be readable by everbody.
 r_dir_file({ coredomain appdomain }, aconfig_storage_metadata_file);
 r_dir_file({ coredomain appdomain }, system_aconfig_storage_file);
+r_dir_file({ coredomain appdomain }, aconfig_test_mission_files);
 
 # processes needs to access storage file stored at /metadata/aconfig/boot, require search
 # permission on /metadata dir
@@ -1606,7 +1610,6 @@ neverallow {
   -rs # spawned by appdomain, so carryover the exception above
   -runas
   -system_server
-  -viewcompiler
   -zygote
 } { privapp_data_file app_data_file }:dir *;
 
