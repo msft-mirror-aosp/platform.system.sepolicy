@@ -212,7 +212,7 @@ LOCAL_REQUIRED_MODULES += \
 
 # HACK to support vendor blobs using 1000000.0
 # TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
+ifneq (true,$(RELEASE_BOARD_API_LEVEL_FROZEN))
 LOCAL_REQUIRED_MODULES += plat_mapping_file_1000000.0
 endif
 
@@ -254,7 +254,7 @@ LOCAL_REQUIRED_MODULES += \
 endif  # SELINUX_IGNORE_NEVERALLOWS
 endif  # with_asan
 
-ifeq ($(BOARD_API_LEVEL_FROZEN),true)
+ifeq ($(RELEASE_BOARD_API_LEVEL_FROZEN),true)
 LOCAL_REQUIRED_MODULES += \
     se_freeze_test
 endif
@@ -286,7 +286,7 @@ LOCAL_REQUIRED_MODULES += \
 
 # HACK to support vendor blobs using 1000000.0
 # TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
+ifneq (true,$(RELEASE_BOARD_API_LEVEL_FROZEN))
 LOCAL_REQUIRED_MODULES += system_ext_mapping_file_1000000.0
 endif
 
@@ -340,7 +340,7 @@ LOCAL_REQUIRED_MODULES += \
 
 # HACK to support vendor blobs using 1000000.0
 # TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
+ifneq (true,$(RELEASE_BOARD_API_LEVEL_FROZEN))
 LOCAL_REQUIRED_MODULES += product_mapping_file_1000000.0
 endif
 
@@ -443,7 +443,6 @@ include $(BUILD_PHONY_PACKAGE)
 # See Android.bp for details of policy files.
 #
 built_sepolicy := $(call intermediates-dir-for,ETC,precompiled_sepolicy)/precompiled_sepolicy
-built_sepolicy_neverallows := $(call intermediates-dir-for,ETC,sepolicy_neverallows)/sepolicy_neverallows
 
 ##################################
 # TODO - remove this.   Keep around until we get the filesystem creation stuff taken care of.
@@ -572,6 +571,5 @@ base_product_pub_policy.cil :=
 
 build_policy :=
 built_sepolicy :=
-built_sepolicy_neverallows :=
 sepolicy_build_files :=
 with_asan :=
