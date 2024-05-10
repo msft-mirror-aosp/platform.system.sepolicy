@@ -8,7 +8,6 @@ system_internal_prop(bootloader_boot_reason_prop)
 system_internal_prop(device_config_activity_manager_native_boot_prop)
 system_internal_prop(device_config_boot_count_prop)
 system_internal_prop(device_config_input_native_boot_prop)
-system_internal_prop(device_config_media_native_prop)
 system_internal_prop(device_config_netd_native_prop)
 system_internal_prop(device_config_reset_performed_prop)
 system_internal_prop(firstboot_prop)
@@ -65,14 +64,18 @@ system_restricted_prop(boottime_public_prop)
 system_restricted_prop(bq_config_prop)
 system_restricted_prop(build_bootimage_prop)
 system_restricted_prop(build_prop)
+system_restricted_prop(composd_vm_art_prop)
+system_restricted_prop(device_config_aconfig_flags_prop)
 system_restricted_prop(device_config_camera_native_prop)
 system_restricted_prop(device_config_edgetpu_native_prop)
+system_restricted_prop(device_config_media_native_prop)
 system_restricted_prop(device_config_nnapi_native_prop)
 system_restricted_prop(device_config_runtime_native_boot_prop)
 system_restricted_prop(device_config_runtime_native_prop)
 system_restricted_prop(device_config_surface_flinger_native_boot_prop)
 system_restricted_prop(device_config_vendor_system_native_prop)
 system_restricted_prop(device_config_vendor_system_native_boot_prop)
+system_restricted_prop(drm_forcel3_prop)
 system_restricted_prop(fingerprint_prop)
 system_restricted_prop(gwp_asan_prop)
 system_restricted_prop(hal_instrumentation_prop)
@@ -100,6 +103,11 @@ system_restricted_prop(usb_prop)
 system_restricted_prop(userspace_reboot_exported_prop)
 system_restricted_prop(vold_status_prop)
 system_restricted_prop(vts_status_prop)
+
+starting_at_board_api(202504, `
+    system_restricted_prop(enable_16k_pages_prop)
+    system_restricted_prop(profcollectd_etr_prop)
+')
 
 compatible_property_only(`
     # DO NOT ADD ANY PROPERTIES HERE
@@ -142,8 +150,8 @@ system_vendor_config_prop(camera2_extensions_prop)
 system_vendor_config_prop(camerax_extensions_prop)
 system_vendor_config_prop(charger_config_prop)
 system_vendor_config_prop(codec2_config_prop)
+system_vendor_config_prop(composd_vm_vendor_prop)
 system_vendor_config_prop(cpu_variant_prop)
-system_vendor_config_prop(dalvik_config_prop)
 system_vendor_config_prop(debugfs_restriction_prop)
 system_vendor_config_prop(drm_service_config_prop)
 system_vendor_config_prop(exported_camera_prop)
@@ -157,6 +165,7 @@ system_vendor_config_prop(hw_timeout_multiplier_prop)
 system_vendor_config_prop(hypervisor_prop)
 system_vendor_config_prop(hypervisor_restricted_prop)
 system_vendor_config_prop(incremental_prop)
+system_vendor_config_prop(input_device_config_prop)
 system_vendor_config_prop(keyguard_config_prop)
 system_vendor_config_prop(keystore_config_prop)
 system_vendor_config_prop(lmkd_config_prop)
@@ -165,7 +174,9 @@ system_vendor_config_prop(media_variant_prop)
 system_vendor_config_prop(mediadrm_config_prop)
 system_vendor_config_prop(mm_events_config_prop)
 system_vendor_config_prop(oem_unlock_prop)
+system_vendor_config_prop(ota_build_prop)
 system_vendor_config_prop(packagemanager_config_prop)
+system_vendor_config_prop(quick_start_prop)
 system_vendor_config_prop(recovery_config_prop)
 system_vendor_config_prop(recovery_usb_config_prop)
 system_vendor_config_prop(sendbug_config_prop)
@@ -176,6 +187,7 @@ system_vendor_config_prop(surfaceflinger_prop)
 system_vendor_config_prop(suspend_prop)
 system_vendor_config_prop(systemsound_config_prop)
 system_vendor_config_prop(telephony_config_prop)
+system_vendor_config_prop(threadnetwork_config_prop)
 system_vendor_config_prop(tombstone_config_prop)
 system_vendor_config_prop(usb_config_prop)
 system_vendor_config_prop(userspace_reboot_config_prop)
@@ -192,6 +204,8 @@ system_vendor_config_prop(zygote_config_prop)
 system_vendor_config_prop(dck_prop)
 system_vendor_config_prop(tuner_config_prop)
 system_vendor_config_prop(usb_uvc_enabled_prop)
+system_vendor_config_prop(setupwizard_mode_prop)
+system_vendor_config_prop(pm_archiving_enabled_prop)
 
 # Properties with no restrictions
 system_public_prop(adbd_config_prop)
@@ -205,6 +219,8 @@ system_public_prop(ctl_default_prop)
 system_public_prop(ctl_interface_start_prop)
 system_public_prop(ctl_start_prop)
 system_public_prop(ctl_stop_prop)
+system_public_prop(dalvik_config_prop)
+system_public_prop(dalvik_dynamic_config_prop)
 system_public_prop(dalvik_runtime_prop)
 system_public_prop(debug_prop)
 system_public_prop(device_config_memory_safety_native_boot_prop)
@@ -218,6 +234,7 @@ system_public_prop(future_pm_prop)
 system_public_prop(ffs_control_prop)
 system_public_prop(framework_status_prop)
 system_public_prop(gesture_prop)
+system_public_prop(graphics_config_writable_prop)
 system_public_prop(hal_dumpstate_config_prop)
 system_public_prop(sota_prop)
 system_public_prop(hwservicemanager_prop)
@@ -330,38 +347,6 @@ compatible_property_only(`
     vendor_internal_prop(vendor_default_prop)
 ')
 
-typeattribute log_prop log_property_type;
-typeattribute log_tag_prop log_property_type;
-typeattribute wifi_log_prop log_property_type;
-
-allow property_type tmpfs:filesystem associate;
-
-# core_property_type should not be used for new properties or
-# device specific properties. Properties with this attribute
-# are readable to everyone, which is overly broad and should
-# be avoided.
-# New properties should have appropriate read / write access
-# control rules written.
-
-typeattribute audio_prop         core_property_type;
-typeattribute config_prop        core_property_type;
-typeattribute cppreopt_prop      core_property_type;
-typeattribute dalvik_prop        core_property_type;
-typeattribute debuggerd_prop     core_property_type;
-typeattribute debug_prop         core_property_type;
-typeattribute dhcp_prop          core_property_type;
-typeattribute dumpstate_prop     core_property_type;
-typeattribute logd_prop          core_property_type;
-typeattribute net_radio_prop     core_property_type;
-typeattribute nfc_prop           core_property_type;
-typeattribute ota_prop           core_property_type;
-typeattribute pan_result_prop    core_property_type;
-typeattribute persist_debug_prop core_property_type;
-typeattribute powerctl_prop      core_property_type;
-typeattribute radio_prop         core_property_type;
-typeattribute restorecon_prop    core_property_type;
-typeattribute shell_prop         core_property_type;
-typeattribute system_prop        core_property_type;
-typeattribute usb_prop           core_property_type;
-typeattribute vold_prop          core_property_type;
-
+# system/sepolicy/public is for vendor-facing type and attribute definitions.
+# DO NOT ADD allow, neverallow, or dontaudit statements here.
+# Instead, add such policy rules to system/sepolicy/private/*.te.

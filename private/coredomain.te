@@ -1,11 +1,12 @@
 get_prop(coredomain, apex_ready_prop)
 get_prop(coredomain, boot_status_prop)
 get_prop(coredomain, camera_config_prop)
-get_prop(coredomain, dalvik_config_prop)
+get_prop(coredomain, dalvik_config_prop_type)
 get_prop(coredomain, dalvik_runtime_prop)
 get_prop(coredomain, exported_pm_prop)
 get_prop(coredomain, ffs_config_prop)
 get_prop(coredomain, graphics_config_prop)
+get_prop(coredomain, graphics_config_writable_prop)
 get_prop(coredomain, hdmi_config_prop)
 get_prop(coredomain, init_service_status_private_prop)
 get_prop(coredomain, lmkd_config_prop)
@@ -14,6 +15,7 @@ get_prop(coredomain, pm_prop)
 get_prop(coredomain, radio_control_prop)
 get_prop(coredomain, rollback_test_prop)
 get_prop(coredomain, setupwizard_prop)
+get_prop(coredomain, setupwizard_mode_prop)
 get_prop(coredomain, sqlite_log_prop)
 get_prop(coredomain, storagemanager_config_prop)
 get_prop(coredomain, surfaceflinger_color_prop)
@@ -149,6 +151,7 @@ full_treble_only(`
     -apexd
     -init
     -ueventd
+    is_flag_enabled(RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT, `-vfio_handler')
     -vold
   } sysfs:file no_rw_file_perms;
 
@@ -178,6 +181,7 @@ full_treble_only(`
     -dumpstate
     -gpuservice
     -init
+    -lmkd
     -traced_perf
     -traced_probes
     -shell

@@ -35,6 +35,7 @@ bootstrap_go_package {
         "build_files.go",
         "cil_compat_map.go",
         "compat_cil.go",
+        "flags.go",
         "mac_permissions.go",
         "policy.go",
         "selinux.go",
@@ -46,5 +47,6 @@ bootstrap_go_package {
         "service_fuzzer_bindings.go",
         "validate_bindings.go",
     ],
+    testSrcs: ["selinux_test.go"],
     pluginFor: ["soong_build"],
 }

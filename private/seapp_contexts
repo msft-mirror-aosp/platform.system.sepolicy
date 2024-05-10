@@ -12,6 +12,8 @@
 #       minTargetSdkVersion (unsigned integer)
 #       fromRunAs (boolean)
 #       isIsolatedComputeApp (boolean)
+#       isSdkSandboxNext (boolean)
+#       isSdkSandboxAudit (boolean)
 #
 # All specified input selectors in an entry must match (i.e. logical AND).
 # An unspecified string or boolean selector with no default will match any
@@ -46,9 +48,34 @@
 # be mapped to isolated_compute_app by default. It is expected to be used together
 # with user=_isolated. This selector should not be used unless it is intended
 # to provide isolated processes with relaxed security restrictions.
+# An unspecified isIsolatedComputeApp defaults to false.
+#
+# The sdk_sandbox_next and sdk_sandbox_audit domains are special domains for the
+# SDK sandbox process. sdk_sandbox_next defines the set of restrictions proposed
+# for the upcoming dessert release. sdk_sandbox_audit uses the same restrictions
+# as the current dessert release, with additional auditing rules for the accesses
+# we are considering forbidding in the upcoming release.
+#
+# The sdk_sandbox_next and sdk_sandbox_audit domains are special domains for the
+# SDK sandbox process. sdk_sandbox_next defines the set of restrictions proposed
+# for the upcoming dessert release. sdk_sandbox_audit uses the same restrictions
+# as the current dessert release, with additional auditing rules for the accesses
+# we are considering forbidding in the upcoming release.
+#
+# isSdkSandboxNext=true means sdk sandbox processes will get
+# sdk_sandbox_next sepolicy applied to them.
+# An unspecified isSdkSandboxNext defaults to false.
+#
+# isSdkSandboxAudit=true means sdk sandbox processes will get
+# sdk_sandbox_audit sepolicy applied to them.
+# An unspecified isSdkSandboxAudit defaults to false.
+#
+# isSdkSandboxAudit=true means sdk sandbox processes will get
+# sdk_sandbox_audit sepolicy applied to them.
+# An unspecified isSdkSandboxAudit defaults to false.
 #
 # Precedence: entries are compared using the following rules, in the order shown
-# (see external/selinux/libselinux/src/android/android_platform.c,
+# (see external/selinux/libselinux/src/android/android_seapp.c,
 # seapp_context_cmp()).
 #       (1) isSystemServer=true before isSystemServer=false.
 #       (2) Specified isEphemeralApp= before unspecified isEphemeralApp=
@@ -63,7 +90,8 @@
 #              minTargetSdkVersion= integer. Note that minTargetSdkVersion=
 #              defaults to 0 if unspecified.
 #       (8) fromRunAs=true before fromRunAs=false.
-#       (9) isIsolatedComputeApp=true before isIsolatedComputeApp=false
+#       (9) Platform seapp_contexts files (system, system_ext, product) before
+#              vendor seapp_contexts files (vendor, odm).
 # (A fixed selector is more specific than a prefix, i.e. ending in *, and a
 # longer prefix is more specific than a shorter prefix.)
 # Apps are checked against entries in precedence order until the first match,
@@ -148,16 +176,17 @@ neverallow isEphemeralApp=true domain=((?!ephemeral_app).)*
 
 isSystemServer=true domain=system_server_startup
 
-# sdksandbox must run in the sdksandbox domain
-neverallow name=com.android.sdksandbox domain=((?!sdk_sandbox).)*
+# sdksandbox must run in an sdksandbox domain
+neverallow user=_sdksandbox domain=((?!sdk_sandbox).)*
 
 user=_app seinfo=platform name=com.android.traceur domain=traceur_app type=app_data_file levelFrom=all
-user=_app isPrivApp=true name=com.android.remoteprovisioner domain=remote_prov_app type=app_data_file levelFrom=all
 user=system seinfo=platform domain=system_app type=system_app_data_file
 user=system seinfo=platform isPrivApp=true name=com.android.DeviceAsWebcam domain=device_as_webcam type=system_app_data_file levelFrom=all
 user=bluetooth seinfo=bluetooth domain=bluetooth type=bluetooth_data_file
 user=network_stack seinfo=network_stack domain=network_stack type=radio_data_file
+# NFC stack signed with platform cert needed for maintaining backwards comptibility for -next release config.
 user=nfc seinfo=platform domain=nfc type=nfc_data_file
+user=nfc seinfo=nfc domain=nfc type=nfc_data_file
 user=secure_element seinfo=platform domain=secure_element levelFrom=all
 user=radio seinfo=platform domain=radio type=radio_data_file
 user=shared_relro domain=shared_relro levelFrom=all
@@ -165,7 +194,9 @@ user=shell seinfo=platform domain=shell name=com.android.shell type=shell_data_f
 user=webview_zygote seinfo=webview_zygote domain=webview_zygote
 user=_isolated domain=isolated_app levelFrom=user
 user=_isolated isIsolatedComputeApp=true domain=isolated_compute_app levelFrom=user
-user=_sdksandbox domain=sdk_sandbox type=sdk_sandbox_data_file levelFrom=all
+user=_sdksandbox domain=sdk_sandbox_34 type=sdk_sandbox_data_file levelFrom=all
+user=_sdksandbox isSdkSandboxNext=true domain=sdk_sandbox_next type=sdk_sandbox_data_file levelFrom=all
+user=_sdksandbox isSdkSandboxAudit=true domain=sdk_sandbox_audit type=sdk_sandbox_data_file levelFrom=all
 user=_app seinfo=app_zygote domain=app_zygote levelFrom=user
 user=_app seinfo=media domain=mediaprovider type=app_data_file levelFrom=user
 user=_app seinfo=platform domain=platform_app type=app_data_file levelFrom=user
@@ -178,8 +209,8 @@ user=_app isPrivApp=true name=com.google.android.providers.media.module domain=m
 user=_app isPrivApp=true name=com.google.android.providers.media.module:* domain=mediaprovider_app type=privapp_data_file levelFrom=all
 user=_app seinfo=platform isPrivApp=true name=com.android.permissioncontroller domain=permissioncontroller_app type=privapp_data_file levelFrom=all
 user=_app isPrivApp=true name=com.android.vzwomatrigger domain=vzwomatrigger_app type=privapp_data_file levelFrom=all
-user=_app isPrivApp=true name=com.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=user
-user=_app isPrivApp=true name=com.google.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=user
+user=_app isPrivApp=true name=com.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=all
+user=_app isPrivApp=true name=com.google.android.rkpdapp domain=rkpdapp type=privapp_data_file levelFrom=all
 user=_app isPrivApp=true name=com.google.android.gms domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms.* domain=gmscore_app type=privapp_data_file levelFrom=user
 user=_app isPrivApp=true name=com.google.android.gms:* domain=gmscore_app type=privapp_data_file levelFrom=user
@@ -193,3 +224,5 @@ user=_app minTargetSdkVersion=26 domain=untrusted_app_27 type=app_data_file leve
 user=_app domain=untrusted_app_25 type=app_data_file levelFrom=user
 user=_app minTargetSdkVersion=28 fromRunAs=true domain=runas_app levelFrom=all
 user=_app fromRunAs=true domain=runas_app levelFrom=user
+user=_app isPrivApp=true name=com.android.virtualization.vmlauncher domain=vmlauncher_app type=privapp_data_file levelFrom=all
+user=_app isPrivApp=true name=com.google.android.virtualization.vmlauncher domain=vmlauncher_app type=privapp_data_file levelFrom=all

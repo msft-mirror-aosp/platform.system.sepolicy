@@ -32,12 +32,15 @@ allow isolated_app_all app_zygote:unix_dgram_socket write;
 # suppress denials to /data/local/tmp
 dontaudit isolated_app_all shell_data_file:dir search;
 
+# Allow to read (but not open) staged apks.
+allow isolated_app_all { apk_tmp_file apk_private_tmp_file }:file { read getattr };
+
 #####
 ##### Neverallow
 #####
 
 # Isolated apps should not directly open app data files themselves.
-neverallow isolated_app_all { app_data_file privapp_data_file sdk_sandbox_data_file}:file open;
+neverallow isolated_app_all app_data_file_type:file open;
 
 # Only allow appending to /data/anr/traces.txt (b/27853304, b/18340553)
 # TODO: are there situations where isolated_apps write to this file?
@@ -95,7 +98,9 @@ neverallow { isolated_app_all -isolated_compute_app } {
   -sysfs_devices_system_cpu
   -sysfs_transparent_hugepage
   -sysfs_usb # TODO: check with audio team if needed for isolated_apps (b/28417852)
+  -sysfs_fs_fuse_features
   -sysfs_fs_incfs_features
+  -sysfs_pgsize_migration
 }:file no_rw_file_perms;
 
 # No creation of sockets families other than AF_UNIX sockets.
@@ -103,7 +108,7 @@ neverallow { isolated_app_all -isolated_compute_app } {
 # excluding unix_stream_socket and unix_dgram_socket.
 # Many of these are socket families which have never and will never
 # be compiled into the Android kernel.
-neverallow isolated_app_all { self ephemeral_app priv_app sdk_sandbox untrusted_app_all }:{
+neverallow isolated_app_all { self ephemeral_app priv_app sdk_sandbox_all untrusted_app_all }:{
   socket tcp_socket udp_socket rawip_socket netlink_socket packet_socket
   key_socket appletalk_socket netlink_route_socket
   netlink_tcpdiag_socket netlink_nflog_socket netlink_xfrm_socket

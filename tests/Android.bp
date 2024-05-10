@@ -9,7 +9,10 @@ package {
 cc_library_host_shared {
     name: "libsepolwrap",
     srcs: ["sepol_wrap.cpp"],
-    cflags: ["-Wall", "-Werror",],
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
     export_include_dirs: ["include"],
     stl: "c++_static",
 
@@ -50,9 +53,7 @@ python_binary_host {
     },
     libs: [
         "mini_cil_parser",
-        "pysepolwrap",
     ],
-    data: [":libsepolwrap"],
 }
 
 python_binary_host {
@@ -67,6 +68,44 @@ python_binary_host {
     },
     libs: ["pysepolwrap"],
     data: [":libsepolwrap"],
+}
+
+python_binary_host {
+    name: "apex_sepolicy_tests",
+    srcs: [
+        "apex_sepolicy_tests.py",
+    ],
+    version: {
+        py3: {
+            embedded_launcher: true,
+        },
+    },
+    libs: ["pysepolwrap"],
+    data: [
+        ":libsepolwrap",
+        ":precompiled_sepolicy",
+    ],
+}
+
+python_test_host {
+    name: "apex_sepolicy_tests_test",
+    srcs: [
+        "apex_sepolicy_tests.py",
+        "apex_sepolicy_tests_test.py",
+    ],
+    libs: ["pysepolwrap"],
+    data: [
+        ":libsepolwrap",
+        ":precompiled_sepolicy",
+    ],
+    test_options: {
+        unit_test: true,
+    },
+    version: {
+        py3: {
+            embedded_launcher: true,
+        },
+    },
 }
 
 python_binary_host {
@@ -101,10 +140,49 @@ python_test_host {
     ],
     test_options: {
         unit_test: true,
-    }
+    },
 }
 
 python_binary_host {
     name: "check_prop_prefix",
     srcs: ["check_prop_prefix.py"],
+}
+
+python_binary_host {
+    name: "sepolicy_freeze_test",
+    srcs: [
+        "sepolicy_freeze_test.py",
+    ],
+    version: {
+        py3: {
+            embedded_launcher: true,
+        },
+    },
+    libs: [
+        "mini_cil_parser",
+    ],
+}
+
+python_test_host {
+    name: "policy_test",
+    srcs: [
+        "fc_sort.py",
+        "policy.py",
+        "policy_test.py",
+    ],
+    test_options: {
+        unit_test: true,
+    },
+    version: {
+        py3: {
+            embedded_launcher: true,
+        },
+    },
+}
+
+// prebuilt files to be included to CTS
+filegroup {
+    name: "prebuilt_sepolicy_cts_data",
+    srcs: [":202404_sepolicy_cts_data"],
+    visibility: ["//cts/hostsidetests/security"],
 }

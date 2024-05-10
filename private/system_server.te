@@ -102,10 +102,12 @@ allow system_server self:process ptrace;
 allow system_server zygote:fd use;
 allow system_server zygote:process sigchld;
 
-# May kill zygote on crashes.
+# May kill zygote (or its child processes) on crashes.
 allow system_server {
   app_zygote
   crash_dump
+  crosvm
+  virtualizationmanager
   webview_zygote
   zygote
 }:process { getpgid sigkill signull };
@@ -144,9 +146,6 @@ allow system_server self:global_capability_class_set {
     sys_time
     sys_tty_config
 };
-
-# Trigger module auto-load.
-allow system_server kernel:system module_request;
 
 # Allow alarmtimers to be set
 allow system_server self:global_capability2_class_set wake_alarm;
@@ -261,9 +260,7 @@ allow system_server self:tun_socket create_socket_perms_no_ioctl;
 
 # Talk to init and various daemons via sockets.
 unix_socket_connect(system_server, lmkd, lmkd)
-unix_socket_connect(system_server, mtpd, mtp)
 unix_socket_connect(system_server, zygote, zygote)
-unix_socket_connect(system_server, racoon, racoon)
 unix_socket_connect(system_server, uncrypt, uncrypt)
 
 # Allow system_server to write to statsd.
@@ -286,6 +283,7 @@ binder_call(system_server, appdomain)
 binder_call(system_server, artd)
 binder_call(system_server, binderservicedomain)
 binder_call(system_server, composd)
+binder_call(system_server, dexopt_chroot_setup)
 binder_call(system_server, dumpstate)
 binder_call(system_server, fingerprintd)
 binder_call(system_server, gatekeeperd)
@@ -294,19 +292,24 @@ binder_call(system_server, idmap)
 binder_call(system_server, installd)
 binder_call(system_server, incidentd)
 binder_call(system_server, netd)
+binder_call(system_server, ot_daemon)
 userdebug_or_eng(`binder_call(system_server, profcollectd)')
 binder_call(system_server, statsd)
 binder_call(system_server, storaged)
 binder_call(system_server, update_engine)
+binder_call(system_server, virtual_camera)
 binder_call(system_server, vold)
 binder_call(system_server, logd)
 binder_call(system_server, wificond)
+binder_call(system_server, uprobestats)
 binder_service(system_server)
 
 # Use HALs
 hal_client_domain(system_server, hal_allocator)
 hal_client_domain(system_server, hal_audio)
+hal_client_domain(system_server, hal_authgraph)
 hal_client_domain(system_server, hal_authsecret)
+hal_client_domain(system_server, hal_bluetooth)
 hal_client_domain(system_server, hal_broadcastradio)
 hal_client_domain(system_server, hal_codec2)
 hal_client_domain(system_server, hal_configstore)
@@ -319,6 +322,7 @@ hal_client_domain(system_server, hal_health)
 hal_client_domain(system_server, hal_input_classifier)
 hal_client_domain(system_server, hal_input_processor)
 hal_client_domain(system_server, hal_ir)
+hal_client_domain(system_server, hal_keymint)
 hal_client_domain(system_server, hal_light)
 hal_client_domain(system_server, hal_memtrack)
 hal_client_domain(system_server, hal_neuralnetworks)
@@ -327,9 +331,12 @@ hal_client_domain(system_server, hal_omx)
 hal_client_domain(system_server, hal_power)
 hal_client_domain(system_server, hal_power_stats)
 hal_client_domain(system_server, hal_rebootescrow)
+hal_client_domain(system_server, hal_remotelyprovisionedcomponent_avf)
 hal_client_domain(system_server, hal_sensors)
+hal_client_domain(system_server, hal_secretkeeper)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
+hal_client_domain(system_server, hal_threadnetwork)
 hal_client_domain(system_server, hal_tv_cec)
 hal_client_domain(system_server, hal_tv_hdmi_cec)
 hal_client_domain(system_server, hal_tv_hdmi_connection)
@@ -368,6 +375,7 @@ allow system_server {
   # This is derived from the list that system server defines as interesting native processes
   # to dump during ANRs or watchdog aborts, defined in NATIVE_STACKS_OF_INTEREST in
   # frameworks/base/services/core/java/com/android/server/Watchdog.java.
+  artd
   audioserver
   cameraserver
   drmserver
@@ -383,6 +391,7 @@ allow system_server {
   mediatuner
   netd
   sdcardd
+  servicemanager
   statsd
   surfaceflinger
   vold
@@ -393,6 +402,7 @@ allow system_server {
   hal_bluetooth_server
   hal_camera_server
   hal_codec2_server
+  hal_drm_server
   hal_face_server
   hal_fingerprint_server
   hal_gnss_server
@@ -475,6 +485,8 @@ allow system_server adbd_socket:sock_file rw_file_perms;
 allow system_server rtc_device:chr_file rw_file_perms;
 allow system_server audio_device:dir r_dir_perms;
 allow system_server uhid_device:chr_file rw_file_perms;
+allow system_server hidraw_device:dir r_dir_perms;
+allow system_server hidraw_device:chr_file rw_file_perms;
 
 # write access to ALSA interfaces (/dev/snd/*) needed for MIDI
 allow system_server audio_device:chr_file rw_file_perms;
@@ -506,10 +518,15 @@ allow system_server apk_data_file:{ file lnk_file } { create_file_perms link };
 allow system_server apk_tmp_file:dir create_dir_perms;
 allow system_server apk_tmp_file:file create_file_perms;
 
+# Manage /data/app-metadata
+allow system_server apk_metadata_file:dir create_dir_perms;
+allow system_server apk_metadata_file:file create_file_perms;
+
 # Access input configuration files in the /vendor directory
 r_dir_file(system_server, vendor_keylayout_file)
 r_dir_file(system_server, vendor_keychars_file)
 r_dir_file(system_server, vendor_idc_file)
+get_prop(system_server, input_device_config_prop)
 
 # Access /vendor/{app,framework,overlay}
 r_dir_file(system_server, vendor_app_file)
@@ -568,6 +585,23 @@ allow system_server prereboot_data_file:file create_file_perms;
 allow system_server perfetto_traces_data_file:file { read getattr };
 allow system_server perfetto:fd use;
 
+# Allow system_server to exec the perfetto cmdline client and pass it a trace config
+domain_auto_trans(system_server, perfetto_exec, perfetto);
+allow system_server perfetto:fifo_file { read write };
+
+# Allow system server to manage perfetto traces for ProfilingService.
+allow system_server perfetto_traces_profiling_data_file:dir rw_dir_perms;
+allow system_server perfetto_traces_profiling_data_file:file create_file_perms;
+allow system_server perfetto_traces_data_file:dir search;
+
+# Allow system server to exec the trace redactor cmdline client and kill the process for
+# ProfilingService.
+domain_auto_trans(system_server, trace_redactor_exec, trace_redactor);
+allow system_server trace_redactor:process signal;
+
+# Allow system server to kill perfetto processes for ProfilingService.
+allow system_server perfetto:process signal;
+
 # Manage /data/backup.
 allow system_server backup_data_file:dir create_dir_perms;
 allow system_server backup_data_file:file create_file_perms;
@@ -587,6 +621,11 @@ allow system_server adb_keys_file:file create_file_perms;
 # Manage /data/misc/appcompat.
 allow system_server appcompat_data_file:dir rw_dir_perms;
 allow system_server appcompat_data_file:file create_file_perms;
+
+# Manage /data/misc/connectivityblobdb.
+# Specifically, for vpn and wifi to create, read and write to an sqlite database.
+allow system_server connectivityblob_data_file:dir create_dir_perms;
+allow system_server connectivityblob_data_file:file create_file_perms;
 
 # Manage /data/misc/emergencynumberdb
 allow system_server emergency_data_file:dir create_dir_perms;
@@ -727,6 +766,7 @@ set_prop(system_server, dmesgd_start_prop)
 set_prop(system_server, locale_prop)
 set_prop(system_server, timezone_metadata_prop)
 set_prop(system_server, timezone_prop)
+set_prop(system_server, crashrecovery_prop)
 userdebug_or_eng(`set_prop(system_server, wifi_log_prop)')
 userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 
@@ -739,6 +779,7 @@ set_prop(system_server, ctl_gsid_prop)
 set_prop(system_server, cppreopt_prop)
 
 # server configurable flags properties
+set_prop(system_server, device_config_core_experiments_team_internal_prop)
 set_prop(system_server, device_config_edgetpu_native_prop)
 set_prop(system_server, device_config_input_native_boot_prop)
 set_prop(system_server, device_config_netd_native_prop)
@@ -760,14 +801,19 @@ set_prop(system_server, device_config_window_manager_native_boot_prop)
 set_prop(system_server, device_config_configuration_prop)
 set_prop(system_server, device_config_connectivity_prop)
 set_prop(system_server, device_config_surface_flinger_native_boot_prop)
+set_prop(system_server, device_config_aconfig_flags_prop)
 set_prop(system_server, device_config_vendor_system_native_prop)
 set_prop(system_server, device_config_vendor_system_native_boot_prop)
 set_prop(system_server, device_config_virtualization_framework_native_prop)
 set_prop(system_server, device_config_memory_safety_native_boot_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, device_config_remote_key_provisioning_native_prop)
+set_prop(system_server, device_config_tethering_u_or_later_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
 set_prop(system_server, arm64_memtag_prop)
+
+# staged flag properties
+set_prop(system_server, next_boot_prop)
 
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
@@ -790,6 +836,9 @@ set_prop(system_server, firstboot_prop)
 # Audio service in system server can read audio config properties,
 # such as camera shutter enforcement
 get_prop(system_server, audio_config_prop)
+
+# StorageManager service reads media config while checking if transcoding is supported.
+get_prop(system_server, media_config_prop)
 
 # system server reads this property to keep track of whether server configurable flags have been
 # reset during current boot.
@@ -834,13 +883,22 @@ get_prop(system_server, hypervisor_prop)
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
 
+# Read persist.sysui.notification.builder_extras_override property
+get_prop(system_server, persist_sysui_builder_extras_prop)
+# Read persist.sysui.notification.ranking_update_ashmem property
+get_prop(system_server, persist_sysui_ranking_update_prop)
+
 # Read ro.tuner.lazyhal
 get_prop(system_server, tuner_config_prop)
 # Write tuner.server.enable
 set_prop(system_server, tuner_server_ctl_prop)
 
 # Allow the heap dump ART plugin to the count of sessions waiting for OOME
-get_prop(appdomain, traced_oome_heap_session_count_prop)
+get_prop(system_server, traced_oome_heap_session_count_prop)
+
+# Allow the sensor service (running in the system service) to read sensor
+# configuration properties
+get_prop(system_server, sensors_config_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -907,14 +965,19 @@ allow system_server pstorefs:file r_file_perms;
 allow system_server sysfs_zram:dir search;
 allow system_server sysfs_zram:file rw_file_perms;
 
+# Read /sys/fs/selinux/policy
+allow system_server kernel:security read_policy;
+
 add_service(system_server, system_server_service);
 allow system_server artd_service:service_manager find;
+allow system_server artd_pre_reboot_service:service_manager find;
 allow system_server audioserver_service:service_manager find;
 allow system_server authorization_service:service_manager find;
 allow system_server batteryproperties_service:service_manager find;
 allow system_server cameraserver_service:service_manager find;
 allow system_server compos_service:service_manager find;
 allow system_server dataloader_manager_service:service_manager find;
+allow system_server dexopt_chroot_setup_service:service_manager find;
 allow system_server dnsresolver_service:service_manager find;
 allow system_server drmserver_service:service_manager find;
 allow system_server dumpstate_service:service_manager find;
@@ -937,11 +1000,16 @@ allow system_server mediadrmserver_service:service_manager find;
 allow system_server mediatuner_service:service_manager find;
 allow system_server netd_service:service_manager find;
 allow system_server nfc_service:service_manager find;
+allow system_server ot_daemon_service:service_manager find;
 allow system_server radio_service:service_manager find;
 allow system_server stats_service:service_manager find;
 allow system_server storaged_service:service_manager find;
 allow system_server surfaceflinger_service:service_manager find;
 allow system_server update_engine_service:service_manager find;
+allow system_server virtual_camera_service:service_manager find;
+is_flag_enabled(RELEASE_AVF_ENABLE_LLPVM_CHANGES, `
+    allow system_server virtualization_maintenance_service:service_manager find;
+')
 allow system_server vold_service:service_manager find;
 allow system_server wifinl80211_service:service_manager find;
 allow system_server logd_service:service_manager find;
@@ -951,34 +1019,14 @@ userdebug_or_eng(`
 
 add_service(system_server, batteryproperties_service)
 
-allow system_server keystore:keystore_key {
-	get_state
-	get
-	insert
-	delete
-	exist
-	list
-	reset
-	password
-	lock
-	unlock
-	is_empty
-	sign
-	verify
-	grant
-	duplicate
-	clear_uid
-	add_auth
-	user_changed
-};
-
 allow system_server keystore:keystore2 {
 	add_auth
 	change_password
 	change_user
 	clear_ns
 	clear_uid
-	get_state
+	delete_all_keys
+	get_last_auth_time
 	lock
 	pull_metrics
 	reset
@@ -1030,7 +1078,8 @@ allow system_server frp_block_device:blk_file rw_file_perms;
 allowxperm system_server frp_block_device:blk_file ioctl { BLKSECDISCARD BLKDISCARD };
 
 # Create new process groups and clean up old cgroups
-allow system_server cgroup:dir { remove_name rmdir };
+allow system_server cgroup:dir create_dir_perms;
+allow system_server cgroup:file setattr;
 allow system_server cgroup_v2:dir create_dir_perms;
 allow system_server cgroup_v2:file { r_file_perms setattr };
 
@@ -1095,10 +1144,11 @@ set_prop(system_server, system_adbd_prop)
 allow system_server toolbox_exec:file rx_file_perms;
 
 # Allow system process to setup fs-verity
-allowxperm system_server { apk_data_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
+allowxperm system_server { apk_data_file apk_tmp_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
 
-# Allow system process to measure fs-verity for apps, apps being installed and system files
-allowxperm system_server { apk_data_file apk_tmp_file system_file }:file ioctl FS_IOC_MEASURE_VERITY;
+# Allow system process to measure fs-verity for apps, including those being installed
+allowxperm system_server { apk_data_file apk_tmp_file }:file ioctl FS_IOC_MEASURE_VERITY;
+allowxperm system_server apk_tmp_file:file ioctl FS_IOC_SETFLAGS;
 
 # Postinstall
 #
@@ -1173,14 +1223,17 @@ with_asan(`
 # the map after snapshot is recorded, and to read, update and run the maps and programs used for
 # time in state accounting
 allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:dir search;
-allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { read write };
+allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { getattr read write };
 allow system_server bpfloader:bpf { map_read map_write prog_run };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
+# Java's Os.close() in libcore/luni/src/main/java/libcore/io/BlockGuardOs.java;l=100
+# calls if (fd.isSocket$()) if (isLingerSocket(fd)) ...
+dontaudit system_server self:key_socket getopt;
 
 # Allow system_server to start clatd in its own domain and kill it.
 domain_auto_trans(system_server, clatd_exec, clatd)
-allow system_server clatd:process signal;
+allow system_server clatd:process { sigkill signal };
 
 # ART Profiles.
 # Allow system_server to open profile snapshots for read.
@@ -1197,6 +1250,7 @@ allow system_server profman_dump_data_file:dir rw_dir_perms;
 
 # On userdebug build we may profile system server. Allow it to write and create its own profile.
 userdebug_or_eng(`
+  allow system_server user_profile_data_file:dir w_dir_perms;
   allow system_server user_profile_data_file:file create_file_perms;
 ')
 # Allow system server to load JVMTI agents under control of a property.
@@ -1238,6 +1292,10 @@ get_prop(system_server, qemu_hw_prop)
 # Allow system server to read profcollectd reports for upload.
 userdebug_or_eng(`r_dir_file(system_server, profcollectd_data_file)')
 
+# Power controls for debugging/diagnostics
+get_prop(system_server, power_debug_prop)
+set_prop(system_server, power_debug_prop)
+
 ###
 ### Neverallow rules
 ###
@@ -1271,8 +1329,12 @@ neverallow system_server {
 
 # Ensure that system_server doesn't perform any domain transitions other than
 # transitioning to the crash_dump domain when a crash occurs or fork clatd.
-neverallow system_server { domain -clatd -crash_dump }:process transition;
+# add perfetto and trace_redactor which are exec'd from system server for ProfilingService.
+neverallow system_server { domain -clatd -crash_dump -perfetto -trace_redactor }:process transition;
 neverallow system_server *:process dyntransition;
+
+# Ensure that system_server doesn't access anything but search in perfetto_traces_data_file:dir.
+neverallow system_server perfetto_traces_data_file:dir ~search;
 
 # Only allow crash_dump to connect to system_ndebug_socket.
 neverallow { domain -init -system_server -crash_dump } system_ndebug_socket:sock_file { open write };
@@ -1294,6 +1356,7 @@ neverallow {
   -system_server
   -flags_health_check
 } {
+  device_config_core_experiments_team_internal_prop
   device_config_activity_manager_native_boot_prop
   device_config_connectivity_prop
   device_config_input_native_boot_prop
@@ -1310,7 +1373,10 @@ neverallow {
   device_config_surface_flinger_native_boot_prop
   device_config_sys_traced_prop
   device_config_swcodec_native_prop
+  device_config_aconfig_flags_prop
   device_config_window_manager_native_boot_prop
+  device_config_tethering_u_or_later_native_prop
+  next_boot_prop
 }:property_service set;
 
 # Only allow system_server and init to set tuner_server_ctl_prop
@@ -1395,19 +1461,19 @@ allow system_server apex_module_data_file:dir { getattr search };
 # These are modules where the code runs in system_server, so we need full access.
 allow system_server apex_system_server_data_file:dir create_dir_perms;
 allow system_server apex_system_server_data_file:file create_file_perms;
+allow system_server apex_tethering_data_file:dir create_dir_perms;
+allow system_server apex_tethering_data_file:file create_file_perms;
 # Legacy labels that we still need to support (b/217581286)
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:dir create_dir_perms;
 allow system_server {
   apex_appsearch_data_file
   apex_permission_data_file
   apex_scheduling_data_file
-  apex_tethering_data_file
   apex_wifi_data_file
 }:file create_file_perms;
 
@@ -1426,6 +1492,19 @@ allow system_server staged_install_file:file create_file_perms;
 
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
+
+allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
+allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
+allow system_server aconfig_storage_metadata_file:dir search;
+
+allow system_server aconfigd_socket:sock_file {read write};
+allow system_server aconfigd:unix_stream_socket connectto;
+
+allow system_server aconfig_test_mission_files:dir create_dir_perms;
+allow system_server aconfig_test_mission_files:file create_file_perms;
+
+allow system_server repair_mode_metadata_file:dir rw_dir_perms;
+allow system_server repair_mode_metadata_file:file create_file_perms;
 
 allow system_server gsi_persistent_data_file:dir rw_dir_perms;
 allow system_server gsi_persistent_data_file:file create_file_perms;
@@ -1480,6 +1559,10 @@ neverallow { domain -init -system_server } password_slot_metadata_file:notdevfil
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:dir *;
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:file no_rw_file_perms;
 
+# Only system server should access /metadata/aconfig
+neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
+neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
+
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)
 neverallow { domain -system_server -init }
@@ -1525,3 +1608,46 @@ neverallowxperm { domain -system_server } binder_device:chr_file ioctl { BINDER_
 # Only system server can write the font files.
 neverallow { domain -init -system_server } font_data_file:file no_w_file_perms;
 neverallow { domain -init -system_server } font_data_file:dir no_w_dir_perms;
+
+# Allow reading /system/etc/font_fallback.xml
+allow system_server system_font_fallback_file:file r_file_perms;
+
+# Allow system server to set dynamic ART properties.
+set_prop(system_server, dalvik_dynamic_config_prop)
+
+# Allow system server to read binderfs
+allow system_server binderfs_logs:dir r_dir_perms;
+allow system_server binderfs_logs_stats:file r_file_perms;
+# For ANRs
+allow system_server binderfs_logs_transactions:file r_file_perms;
+
+# Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
+set_prop(system_server, game_manager_config_prop)
+
+# ThreadNetworkService reads Thread Network properties
+get_prop(system_server, threadnetwork_config_prop)
+
+# Do not allow any domain other than init and system server to set the property
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -dumpstate
+  -system_server
+} threadnetwork_config_prop:file no_rw_file_perms;
+
+# Allow accessing /mnt/pre_reboot_dexopt/chroot, to load the new service-art.jar
+# in Pre-reboot Dexopt.
+allow system_server pre_reboot_dexopt_file:dir { getattr search };
+
+# Do not allow any domain other than init or system server to get or set the property
+neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
+neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;
+
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  -shell
+} power_debug_prop:property_service set;

@@ -27,7 +27,6 @@ import (
 )
 
 const (
-	// TODO: sync with Android.mk
 	MlsSens    = 1
 	MlsCats    = 1024
 	PolicyVers = 30
@@ -59,6 +58,7 @@ var policyConfOrder = []string{
 
 func init() {
 	android.RegisterModuleType("se_policy_conf", policyConfFactory)
+	android.RegisterModuleType("se_policy_conf_defaults", policyConfDefaultFactory)
 	android.RegisterModuleType("se_policy_cil", policyCilFactory)
 	android.RegisterModuleType("se_policy_binary", policyBinaryFactory)
 }
@@ -90,10 +90,15 @@ type policyConfProperties struct {
 
 	// Desired number of MLS categories. Defaults to 1024
 	Mls_cats *int64
+
+	// Whether to turn on board_api_level guard or not. Defaults to false
+	Board_api_level_guard *bool
 }
 
 type policyConf struct {
 	android.ModuleBase
+	android.DefaultableModuleBase
+	flaggableModuleBase
 
 	properties policyConfProperties
 
@@ -101,12 +106,35 @@ type policyConf struct {
 	installPath   android.InstallPath
 }
 
+var _ flaggableModule = (*policyConf)(nil)
+
 // se_policy_conf merges collection of policy files into a policy.conf file to be processed by
 // checkpolicy.
 func policyConfFactory() android.Module {
 	c := &policyConf{}
 	c.AddProperties(&c.properties)
+	initFlaggableModule(c)
 	android.InitAndroidArchModule(c, android.DeviceSupported, android.MultilibCommon)
+	android.InitDefaultableModule(c)
+	return c
+}
+
+type policyConfDefaults struct {
+	android.ModuleBase
+	android.DefaultsModuleBase
+}
+
+// se_policy_conf_defaults provides a set of properties that can be inherited by other
+// se_policy_conf_defaults modules. A module can use the properties from a se_policy_conf_defaults
+// using `defaults: ["<:default_module_name>"]`. Properties of both modules are merged (when
+// possible) by prepending the default module's values to the depending module's values.
+func policyConfDefaultFactory() android.Module {
+	c := &policyConfDefaults{}
+	c.AddProperties(
+		&policyConfProperties{},
+		&flaggableModuleProperties{},
+	)
+	android.InitDefaultsModule(c)
 	return c
 }
 
@@ -151,7 +179,7 @@ func (c *policyConf) sepolicySplit(ctx android.ModuleContext) string {
 	if c.isTargetRecovery() {
 		return "false"
 	}
-	return strconv.FormatBool(ctx.DeviceConfig().SepolicySplit())
+	return strconv.FormatBool(true)
 }
 
 func (c *policyConf) compatibleProperty(ctx android.ModuleContext) string {
@@ -195,6 +223,14 @@ func (c *policyConf) mlsCats() int {
 	return proptools.IntDefault(c.properties.Mls_cats, MlsCats)
 }
 
+func (c *policyConf) boardApiLevel(ctx android.ModuleContext) string {
+	if proptools.Bool(c.properties.Board_api_level_guard) {
+		return ctx.Config().VendorApiLevel()
+	}
+	// aribtrary value greater than any other vendor API levels
+	return "1000000"
+}
+
 func findPolicyConfOrder(name string) int {
 	for idx, pattern := range policyConfOrder {
 		// We could use regexp but it seems like an overkill
@@ -209,7 +245,7 @@ func findPolicyConfOrder(name string) int {
 }
 
 func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.OutputPath {
-	conf := android.PathForModuleOut(ctx, c.stem()).OutputPath
+	conf := pathForModuleOut(ctx, c.stem())
 	rule := android.NewRuleBuilder(pctx, ctx)
 
 	srcs := android.PathsForModuleSrc(ctx, c.properties.Srcs)
@@ -217,6 +253,7 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 		return findPolicyConfOrder(srcs[x].Base()) < findPolicyConfOrder(srcs[y].Base())
 	})
 
+	flags := c.getBuildFlags(ctx)
 	rule.Command().Tool(ctx.Config().PrebuiltBuildTool(ctx, "m4")).
 		Flag("--fatal-warnings").
 		FlagForEachArg("-D ", ctx.DeviceConfig().SepolicyM4Defs()).
@@ -235,6 +272,8 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 		FlagWithArg("-D target_requires_insecure_execmem_for_swiftshader=", strconv.FormatBool(ctx.DeviceConfig().RequiresInsecureExecmemForSwiftshader())).
 		FlagWithArg("-D target_enforce_debugfs_restriction=", c.enforceDebugfsRestrictions(ctx)).
 		FlagWithArg("-D target_recovery=", strconv.FormatBool(c.isTargetRecovery())).
+		FlagWithArg("-D target_board_api_level=", c.boardApiLevel(ctx)).
+		Flags(flagsToM4Macros(flags)).
 		Flag("-s").
 		Inputs(srcs).
 		Text("> ").Output(conf)
@@ -244,7 +283,7 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 }
 
 func (c *policyConf) DepsMutator(ctx android.BottomUpMutatorContext) {
-	// do nothing
+	c.flagDeps(ctx)
 }
 
 func (c *policyConf) GenerateAndroidBuildActions(ctx android.ModuleContext) {
@@ -340,7 +379,7 @@ func (c *policyCil) stem() string {
 }
 
 func (c *policyCil) compileConfToCil(ctx android.ModuleContext, conf android.Path) android.OutputPath {
-	cil := android.PathForModuleOut(ctx, c.stem()).OutputPath
+	cil := pathForModuleOut(ctx, c.stem())
 	rule := android.NewRuleBuilder(pctx, ctx)
 	checkpolicyCmd := rule.Command().BuiltTool("checkpolicy").
 		Flag("-C"). // Write CIL
@@ -496,7 +535,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 		ctx.PropertyErrorf("srcs", "must be specified")
 		return
 	}
-	bin := android.PathForModuleOut(ctx, c.stem()+"_policy")
+	bin := pathForModuleOut(ctx, c.stem()+"_policy")
 	rule := android.NewRuleBuilder(pctx, ctx)
 	secilcCmd := rule.Command().BuiltTool("secilc").
 		Flag("-m").                 // Multiple decls
@@ -514,7 +553,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 
 	// permissive check is performed only in user build (not debuggable).
 	if !ctx.Config().Debuggable() {
-		permissiveDomains := android.PathForModuleOut(ctx, c.stem()+"_permissive")
+		permissiveDomains := pathForModuleOut(ctx, c.stem()+"_permissive")
 		cmd := rule.Command().BuiltTool("sepolicy-analyze").
 			Input(bin).
 			Text("permissive")
@@ -544,7 +583,7 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 			Text("; exit 1; fi")
 	}
 
-	out := android.PathForModuleOut(ctx, c.stem())
+	out := pathForModuleOut(ctx, c.stem())
 	rule.Command().Text("cp").
 		Flag("-f").
 		Input(bin).

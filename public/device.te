@@ -4,7 +4,7 @@ type ashmem_device, dev_type, mlstrustedobject;
 type ashmem_libcutils_device, dev_type, mlstrustedobject;
 type audio_device, dev_type;
 type binder_device, dev_type, mlstrustedobject;
-type hwbinder_device, dev_type, mlstrustedobject;
+type hwbinder_device, dev_type, mlstrustedobject, isolated_compute_allowed_device;
 type vndbinder_device, dev_type;
 type block_device, dev_type;
 type bt_device, dev_type;
@@ -48,9 +48,9 @@ type video_device, dev_type;
 type zero_device, dev_type, mlstrustedobject;
 type fuse_device, dev_type, mlstrustedobject;
 type iio_device, dev_type;
-type ion_device, dev_type, mlstrustedobject;
+type ion_device, dev_type, mlstrustedobject, isolated_compute_allowed_device;
 type dmabuf_heap_device, dmabuf_heap_device_type, dev_type, mlstrustedobject;
-type dmabuf_system_heap_device, dmabuf_heap_device_type, dev_type, mlstrustedobject;
+type dmabuf_system_heap_device, dmabuf_heap_device_type, dev_type, mlstrustedobject, isolated_compute_allowed_device;
 type dmabuf_system_secure_heap_device, dmabuf_heap_device_type, dev_type, mlstrustedobject;
 type qtaguid_device, dev_type;
 type watchdog_device, dev_type;
@@ -64,6 +64,7 @@ type gnss_device, dev_type;
 type properties_device, dev_type;
 type properties_serial, dev_type;
 type property_info, dev_type;
+type hidraw_device, dev_type;
 
 # All devices have a uart for the hci
 # attach service. The uart dev node
@@ -92,6 +93,10 @@ type recovery_block_device, dev_type;
 # boot block device.
 # Documented at https://source.android.com/devices/bootloader/partitions
 type boot_block_device, dev_type;
+
+# dtbo block device, type used for getting DTBO information for AVF.
+# Documented at https://source.android.com/docs/core/architecture/dto/partitions
+type dtbo_block_device, dev_type;
 
 # Userdata block device mounted on /data.
 # Documented at https://source.android.com/devices/bootloader/partitions
@@ -129,3 +134,10 @@ type userdata_sysdev, dev_type;
 
 # Root disk file for disk tunables
 type rootdisk_sysdev, dev_type;
+
+# vfio device
+type vfio_device, dev_type;
+
+# system/sepolicy/public is for vendor-facing type and attribute definitions.
+# DO NOT ADD allow, neverallow, or dontaudit statements here.
+# Instead, add such policy rules to system/sepolicy/private/*.te.

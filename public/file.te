@@ -7,6 +7,12 @@ type proc, fs_type, proc_type;
 type binderfs, fs_type;
 type binderfs_logs, fs_type;
 type binderfs_logs_proc, fs_type;
+type binderfs_logs_stats, fs_type;
+
+starting_at_board_api(202504, `
+    type binderfs_logs_transactions, fs_type;
+')
+
 type binderfs_features, fs_type;
 # Security-sensitive proc nodes that should not be writable to most.
 type proc_security, fs_type, proc_type;
@@ -15,6 +21,12 @@ type proc_overcommit_memory, fs_type, proc_type;
 type proc_min_free_order_shift, fs_type, proc_type;
 type proc_kpageflags, fs_type, proc_type;
 type proc_watermark_boost_factor, fs_type, proc_type;
+type proc_percpu_pagelist_high_fraction, fs_type, proc_type;
+
+starting_at_board_api(202504, `
+    type proc_compaction_proactiveness, fs_type, proc_type;
+')
+
 # proc, sysfs, or other nodes that permit configuration of kernel usermodehelpers.
 type usermodehelper, fs_type, proc_type;
 type sysfs_usermodehelper, fs_type, sysfs_type;
@@ -26,6 +38,9 @@ type proc_asound, fs_type, proc_type;
 type proc_bootconfig, fs_type, proc_type;
 type proc_bpf, fs_type, proc_type;
 type proc_buddyinfo, fs_type, proc_type;
+starting_at_board_api(202504, `
+    type proc_cgroups, fs_type, proc_type;
+')
 type proc_cmdline, fs_type, proc_type;
 type proc_cpu_alignment, fs_type, proc_type;
 type proc_cpuinfo, fs_type, proc_type;
@@ -115,6 +130,7 @@ type sysfs_power, fs_type, sysfs_type;
 type sysfs_rtc, fs_type, sysfs_type;
 type sysfs_suspend_stats, fs_type, sysfs_type;
 type sysfs_switch, fs_type, sysfs_type;
+type sysfs_sync_on_suspend, fs_type, sysfs_type;
 type sysfs_transparent_hugepage, fs_type, sysfs_type;
 type sysfs_lru_gen_enabled, fs_type, sysfs_type;
 type sysfs_usb, fs_type, sysfs_type;
@@ -123,6 +139,7 @@ type sysfs_wakeup_reasons, fs_type, sysfs_type;
 type sysfs_fs_ext4_features, sysfs_type, fs_type;
 type sysfs_fs_f2fs, sysfs_type, fs_type;
 type sysfs_fs_fuse_bpf, sysfs_type, fs_type;
+type sysfs_fs_fuse_features, sysfs_type, fs_type;
 type sysfs_fs_incfs_features, sysfs_type, fs_type;
 type sysfs_fs_incfs_metrics, sysfs_type, fs_type;
 type sysfs_vendor_sched, sysfs_type, fs_type;
@@ -133,6 +150,13 @@ type fs_bpf, fs_type, bpffs_type;
 # TODO: S+ fs_bpf_tethering (used by mainline) should be private
 type fs_bpf_tethering, fs_type, bpffs_type;
 type fs_bpf_vendor, fs_type, bpffs_type;
+
+starting_at_board_api(202504, `
+    type fs_bpf_lmkd_memevents_rb, fs_type, bpffs_type;
+    type fs_bpf_lmkd_memevents_prog, fs_type, bpffs_type;
+')
+
+
 type configfs, fs_type;
 # /sys/devices/cs_etm
 type sysfs_devices_cs_etm, fs_type, sysfs_type;
@@ -225,6 +249,8 @@ type art_apex_dir, system_file_type, file_type;
 type linkerconfig_file, file_type;
 # Control files under /data/incremental
 type incremental_control_file, file_type, data_file_type, core_data_file_type;
+# /oem/media/bootanimation.zip|shutdownanimation.zip|userspace-reboot.zip
+type bootanim_oem_file, file_type, system_file_type;
 
 # Default type for directories search for
 # HAL implementations
@@ -250,6 +276,14 @@ type vendor_public_lib_file, vendor_file_type, file_type;
 # Type for all vendor public libraries for system. These libs should only be exposed to
 # system. ABI stability of these libs is vendor's responsibility.
 type vendor_public_framework_file, vendor_file_type, file_type;
+# Type for all microdroid related files in the vendor partition.
+# Files having this type should be read-only.
+type vendor_microdroid_file, vendor_file_type, file_type;
+
+starting_at_board_api(202504, `
+    # boot otas for 16KB developer option
+    type vendor_boot_ota_file, vendor_file_type, file_type;
+')
 
 # Input configuration
 type vendor_keylayout_file, vendor_file_type, file_type;
@@ -286,6 +320,12 @@ type userspace_reboot_metadata_file, file_type;
 type staged_install_file, file_type;
 # Metadata information within /metadata/watchdog
 type watchdog_metadata_file, file_type;
+# Repair mode files within /metadata/repair-mode
+type repair_mode_metadata_file, file_type;
+# Aconfig storage file
+type aconfig_storage_metadata_file, file_type;
+# Aconfig storage flag value persistent copy
+type aconfig_storage_flags_metadata_file, file_type;
 
 # Type for /dev/cpu_variant:.*.
 type dev_cpu_variant, file_type;
@@ -380,6 +420,8 @@ type server_configurable_flags_data_file, file_type, data_file_type, core_data_f
 type staging_data_file, file_type, data_file_type, core_data_file_type;
 # /vendor/apex
 type vendor_apex_file, vendor_file_type, file_type;
+# apex_manifest.pb in vendor apex
+type vendor_apex_metadata_file, vendor_file_type, file_type;
 # /data/system/shutdown-checkpoints
 type shutdown_checkpoints_system_data_file, file_type, data_file_type, core_data_file_type;
 
@@ -459,6 +501,7 @@ type vold_data_file, file_type, data_file_type, core_data_file_type;
 type tee_data_file, file_type, data_file_type;
 type update_engine_data_file, file_type, data_file_type, core_data_file_type;
 type update_engine_log_data_file, file_type, data_file_type, core_data_file_type;
+type snapuserd_log_data_file, file_type, data_file_type, core_data_file_type;
 # /data/misc/trace for method traces on userdebug / eng builds
 type method_trace_data_file, file_type, data_file_type, core_data_file_type, mlstrustedobject;
 type gsi_data_file, file_type, data_file_type, core_data_file_type;
@@ -526,6 +569,7 @@ type mdns_socket, file_type, coredomain_socket;
 type mdnsd_socket, file_type, coredomain_socket, mlstrustedobject;
 type misc_logd_file, coredomain_socket, file_type, data_file_type, core_data_file_type;
 type mtpd_socket, file_type, coredomain_socket;
+type ot_daemon_socket, file_type, coredomain_socket;
 type property_socket, file_type, coredomain_socket, mlstrustedobject;
 type racoon_socket, file_type, coredomain_socket;
 type recovery_socket, file_type, coredomain_socket;
@@ -601,32 +645,12 @@ type vendor_kernel_modules, vendor_file_type, file_type;
 # system_dlkm
 type system_dlkm_file, system_dlkm_file_type, file_type;
 
-# Allow files to be created in their appropriate filesystems.
-allow fs_type self:filesystem associate;
-allow cgroup tmpfs:filesystem associate;
-allow cgroup_v2 tmpfs:filesystem associate;
-allow cgroup_rc_file tmpfs:filesystem associate;
-allow sysfs_type sysfs:filesystem associate;
-allow debugfs_type { debugfs debugfs_tracing debugfs_tracing_debug }:filesystem associate;
-allow file_type labeledfs:filesystem associate;
-allow file_type tmpfs:filesystem associate;
-allow file_type rootfs:filesystem associate;
-allow dev_type tmpfs:filesystem associate;
-allow app_fuse_file app_fusefs:filesystem associate;
-allow postinstall_file self:filesystem associate;
-allow proc_net proc:filesystem associate;
-
 # asanwrapper (run a sanitized app_process, to be used with wrap properties)
 with_asan(`type asanwrapper_exec, exec_type, file_type;')
 
 # Deprecated in SDK version 28
 type audiohal_data_file, file_type, data_file_type, core_data_file_type;
 
-# It's a bug to assign the file_type attribute and fs_type attribute
-# to any type. Do not allow it.
-#
-# For example, the following is a bug:
-#   type apk_data_file, file_type, data_file_type, fs_type;
-# Should be:
-#   type apk_data_file, file_type, data_file_type;
-neverallow fs_type file_type:filesystem associate;
+# system/sepolicy/public is for vendor-facing type and attribute definitions.
+# DO NOT ADD allow, neverallow, or dontaudit statements here.
+# Instead, add such policy rules to system/sepolicy/private/*.te.

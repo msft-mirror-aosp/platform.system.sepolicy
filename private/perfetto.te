@@ -22,6 +22,14 @@ perfetto_producer(perfetto)
 allow perfetto perfetto_traces_data_file:dir rw_dir_perms;
 allow perfetto perfetto_traces_data_file:file create_file_perms;
 
+# Allow to write and unlink trace into /data/misc/perfetto-traces/bugreport*
+allow perfetto perfetto_traces_bugreport_data_file:file create_file_perms;
+allow perfetto perfetto_traces_bugreport_data_file:dir rw_dir_perms;
+
+# Allow to write and unlink traces into /data/misc/perfetto-traces/profiling.
+allow perfetto perfetto_traces_profiling_data_file:dir rw_dir_perms;
+allow perfetto perfetto_traces_profiling_data_file:file create_file_perms;
+
 # Allow perfetto to access the proxy service for reporting traces.
 allow perfetto tracingproxy_service:service_manager find;
 binder_use(perfetto)
@@ -32,11 +40,15 @@ binder_call(perfetto, system_server)
 allow perfetto perfetto_configs_data_file:dir r_dir_perms;
 allow perfetto perfetto_configs_data_file:file r_file_perms;
 
+# Allow perfetto to read the trace config from /system/etc/perfetto.
+allow perfetto system_perfetto_config_file:dir r_dir_perms;
+allow perfetto system_perfetto_config_file:file r_file_perms;
+
 # Allow perfetto to read the trace config from statsd, mm_events and shell
 # (both root and non-root) on stdin and also to write the resulting trace to
 # stdout.
 allow perfetto { statsd mm_events shell su }:fd use;
-allow perfetto { statsd mm_events shell su }:fifo_file { getattr read write };
+allow perfetto { statsd mm_events shell su system_server }:fifo_file { getattr read write ioctl };
 
 # Allow to communicate use, read and write over the adb connection.
 allow perfetto adbd:fd use;
@@ -82,6 +94,8 @@ neverallow {
   -dumpstate # For attaching traces to bugreports.
   -incidentd # For receiving reported traces. TODO(lalitm): remove this.
   -priv_app  # For stating traces for bug-report UI.
+  -system_server # For accessing traces started by profiling apis.
+  -trace_redactor # For accessing traces to be redacted.
 } perfetto_traces_data_file:dir *;
 neverallow {
   domain
@@ -91,6 +105,7 @@ neverallow {
   -shell     # For devepment purposes.
   -traced    # For write_into_file traces.
   -incidentd      # For receiving reported traces. TODO(lalitm): remove this.
+  -trace_redactor # For redacting trace files.
 } perfetto_traces_data_file:file ~{ getattr read };
 
 ### perfetto should NEVER do any of the following
@@ -117,13 +132,21 @@ neverallow perfetto {
   # neverallow. Currently only getattr and search are allowed.
   -vendor_data_file
   -perfetto_traces_data_file
+  -perfetto_traces_bugreport_data_file
+  -perfetto_traces_profiling_data_file
   -perfetto_configs_data_file
   with_native_coverage(`-method_trace_data_file')
 }:dir *;
-neverallow perfetto { system_data_file -perfetto_traces_data_file }:dir ~{ getattr search };
+neverallow perfetto {
+  system_data_file
+  -perfetto_traces_data_file
+  -perfetto_traces_profiling_data_file
+}:dir ~{ getattr search };
 neverallow perfetto {
   data_file_type
   -perfetto_traces_data_file
+  -perfetto_traces_bugreport_data_file
+  -perfetto_traces_profiling_data_file
   -perfetto_configs_data_file
   with_native_coverage(`-method_trace_data_file')
 }:file ~write;

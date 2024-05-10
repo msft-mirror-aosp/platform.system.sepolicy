@@ -27,22 +27,18 @@ allow init vd_device:blk_file relabelto;
 allow init {
   dev_type
   -hw_random_device
-  -kvm_device
 }:chr_file setattr;
 
 # /dev/__null__ node created by init.
 allow init tmpfs:chr_file { create setattr unlink rw_file_perms };
 
-# /dev/__properties__
+# /dev/__properties__ and /dev/__properties__/appcompat_override
 allow init properties_device:dir relabelto;
 allow init properties_serial:file { write relabelto };
 allow init property_type:file { append create getattr map open read relabelto rename setattr unlink write };
-# /dev/__properties__/property_info
+# /dev/__properties__/property_info and /dev/__properties__/appcompat_override/property_info
 allow init properties_device:file create_file_perms;
 allow init property_info:file relabelto;
-# /dev/event-log-tags
-allow init device:file relabelfrom;
-allow init runtime_event_log_tags_file:file { open write setattr relabelto create };
 # /dev/socket
 allow init { device socket_device dm_user_device }:dir relabelto;
 # Relabel /dev nodes created in first stage init: /dev/console, /dev/null, /dev/ptmx, /dev/random
@@ -60,6 +56,9 @@ allow init tmpfs:lnk_file { getattr read relabelfrom };
 
 # setrlimit
 allow init self:global_capability_class_set sys_resource;
+
+# Set usermodehelpers.
+allow init { usermodehelper sysfs_usermodehelper }:file rw_file_perms;
 
 # Remove /dev/.booting and load /debug_ramdisk/* files
 allow init tmpfs:file { getattr unlink };
@@ -114,7 +113,6 @@ allow init tmpfs:dir create_dir_perms;
 allow init tmpfs:dir mounton;
 allow init cgroup:dir create_dir_perms;
 allow init cgroup:file rw_file_perms;
-allow init cgroup_rc_file:file rw_file_perms;
 allow init cgroup_desc_file:file r_file_perms;
 allow init cgroup_desc_api_file:file r_file_perms;
 allow init cgroup_v2:dir { mounton create_dir_perms};
@@ -181,7 +179,6 @@ allow init {
   file_type
   -apex_info_file
   -exec_type
-  -runtime_event_log_tags_file
   -shell_data_file
   -system_file_type
   -vendor_file_type
@@ -438,3 +435,12 @@ allow init self:netlink_audit_socket { create_socket_perms_no_ioctl nlmsg_relay 
 
 # PRNG seeder daemon socket is created and listened on by init before forking.
 allow init prng_seeder:unix_stream_socket { create bind listen };
+
+# Allow init to load vendor modules
+r_dir_file(init, vendor_kernel_modules)
+allow init self:capability sys_module;
+allow init vendor_kernel_modules:system module_load;
+
+allow init tmpfs:chr_file relabelfrom;
+allow init kmsg_device:chr_file { getattr write relabelto };
+allow init kmsg_debug_device:chr_file { open write relabelto };

@@ -210,7 +210,10 @@ sepolicy_vers {
 // sepolicy sha256 for vendor
 genrule {
     name: "microdroid_plat_sepolicy_and_mapping.sha256_gen",
-    srcs: [":microdroid_plat_sepolicy.cil", ":microdroid_plat_mapping_file"],
+    srcs: [
+        ":microdroid_plat_sepolicy.cil",
+        ":microdroid_plat_mapping_file",
+    ],
     out: ["microdroid_plat_sepolicy_and_mapping.sha256"],
     cmd: "cat $(in) | sha256sum | cut -d' ' -f1 > $(out)",
 }
@@ -233,14 +236,14 @@ prebuilt_etc {
 
 se_policy_binary {
     name: "microdroid_precompiled_sepolicy",
-    stem: "precompiled_sepolicy",
+    stem: "microdroid_precompiled_sepolicy",
     srcs: [
         ":microdroid_plat_sepolicy.cil",
         ":microdroid_plat_mapping_file",
         ":microdroid_plat_pub_versioned.cil",
         ":microdroid_vendor_sepolicy.cil",
     ],
-    installable: false,
+    no_full_install: true,
 
     // b/259729287. In Microdroid, su is allowed to be in permissive mode.
     // This is to support fully debuggable VMs on user builds. This is safe
@@ -254,7 +257,7 @@ genrule {
     tools: ["fc_sort"],
     out: ["file_contexts"],
     cmd: "sed -e 's/#.*$$//' -e '/^$$/d' $(in) > $(out).tmp && " +
-         "$(location fc_sort) -i $(out).tmp -o $(out)",
+        "$(location fc_sort) -i $(out).tmp -o $(out)",
 }
 
 prebuilt_etc {
@@ -262,7 +265,7 @@ prebuilt_etc {
     filename: "plat_file_contexts",
     src: ":microdroid_file_contexts.gen",
     relative_install_path: "selinux",
-    installable: false,
+    no_full_install: true,
 }
 
 genrule {
@@ -271,7 +274,7 @@ genrule {
     tools: ["fc_sort"],
     out: ["file_contexts"],
     cmd: "sed -e 's/#.*$$//' -e '/^$$/d' $(in) > $(out).tmp && " +
-         "$(location fc_sort) -i $(out).tmp -o $(out)",
+        "$(location fc_sort) -i $(out).tmp -o $(out)",
 }
 
 prebuilt_etc {
@@ -279,7 +282,7 @@ prebuilt_etc {
     filename: "plat_property_contexts",
     src: "system/private/property_contexts",
     relative_install_path: "selinux",
-    installable: false,
+    no_full_install: true,
 }
 
 // For CTS
