@@ -59,6 +59,8 @@ android.hardware.ir.IConsumerIr/default                              u:object_r:
 android.hardware.light.ILights/default                               u:object_r:hal_light_service:s0
 android.hardware.macsec.IMacsecPskPlugin/default                     u:object_r:hal_macsec_service:s0
 android.hardware.media.c2.IComponentStore/default                    u:object_r:hal_codec2_service:s0
+android.hardware.media.c2.IComponentStore/default1                   u:object_r:hal_codec2_service:s0
+android.hardware.media.c2.IComponentStore/default2                   u:object_r:hal_codec2_service:s0
 android.hardware.media.c2.IComponentStore/software                   u:object_r:hal_codec2_service:s0
 android.hardware.memtrack.IMemtrack/default                          u:object_r:hal_memtrack_service:s0
 android.hardware.net.nlinterceptor.IInterceptor/default              u:object_r:hal_nlinterceptor_service:s0
@@ -167,6 +169,9 @@ is_flag_enabled(RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT, `
 ')
 is_flag_enabled(RELEASE_AVF_ENABLE_LLPVM_CHANGES, `
     android.system.virtualizationmaintenance u:object_r:virtualization_maintenance_service:s0
+')
+is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
+    android.system.virtualizationservice_internal.IVmnic u:object_r:vmnic_service:s0
 ')
 ambient_context                           u:object_r:ambient_context_service:s0
 app_binding                               u:object_r:app_binding_service:s0

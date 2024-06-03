@@ -49,4 +49,6 @@
     aconfigd
     aconfigd_exec
     aconfigd_socket
+    enable_16k_pages_prop
+    proc_cgroups
   ))
