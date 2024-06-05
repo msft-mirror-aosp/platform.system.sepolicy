@@ -15,6 +15,7 @@
 # Empty directories
 /lost\+found        u:object_r:rootfs:s0
 /debug_ramdisk      u:object_r:tmpfs:s0
+/microdroid_resources(/.*)? u:object_r:microdroid_resources_file:s0
 /mnt                u:object_r:tmpfs:s0
 /proc               u:object_r:rootfs:s0
 /second_stage_resources u:object_r:tmpfs:s0
@@ -72,7 +73,9 @@
 /dev/vsock		u:object_r:vsock_device:s0
 /dev/zero		u:object_r:zero_device:s0
 /dev/__properties__ u:object_r:properties_device:s0
+/dev/__properties__/appcompat_override u:object_r:properties_device:s0
 /dev/__properties__/property_info   u:object_r:property_info:s0
+/dev/__properties__/appcompat_override/property_info   u:object_r:property_info:s0
 #############################
 # Linker configuration
 #

@@ -52,6 +52,7 @@ set_prop(system_app, timezone_prop)
 set_prop(system_app, usb_control_prop)
 set_prop(system_app, usb_prop)
 set_prop(system_app, log_tag_prop)
+set_prop(system_app, drm_forcel3_prop)
 userdebug_or_eng(`set_prop(system_app, logpersistd_logging_prop)')
 auditallow system_app net_radio_prop:property_service set;
 auditallow system_app usb_control_prop:property_service set;
@@ -66,6 +67,9 @@ set_prop(system_app, ctl_bugreport_prop)
 # Allow developer settings to query gsid status
 get_prop(system_app, gsid_prop)
 
+# Allow developer settings to check 16k pages boot option status
+get_prop(system_app, enable_16k_pages_prop)
+
 # Create /data/anr/traces.txt.
 allow system_app anr_data_file:dir ra_dir_perms;
 allow system_app anr_data_file:file create_file_perms;
@@ -78,6 +82,12 @@ binder_call(system_app, statsd)
 
 # Allow system apps to interact with incidentd
 binder_call(system_app, incidentd)
+
+# Allow system apps (Settings) to call into update_engine
+# in order to apply update to switch from 4k kernel to 16K and vice-versa
+binder_use(system_app)
+allow system_app update_engine_stable_service:service_manager find;
+binder_call(system_app, update_engine)
 
 # Allow system app to interact with Dumpstate HAL
 hal_client_domain(system_app, hal_dumpstate)
@@ -114,28 +124,9 @@ dontaudit system_app {
 # suppress denials caused by debugfs_tracing
 dontaudit system_app debugfs_tracing:file rw_file_perms;
 
-# Ignore access to zram when Debug.getMemInfo is called.
+# Ignore access to memory properties for Settings.
+dontaudit system_app proc_pagetypeinfo:file r_file_perms;
 dontaudit system_app sysfs_zram:dir search;
-
-allow system_app keystore:keystore_key {
-    get_state
-    get
-    insert
-    delete
-    exist
-    list
-    reset
-    password
-    lock
-    unlock
-    is_empty
-    sign
-    verify
-    grant
-    duplicate
-    clear_uid
-    user_changed
-};
 
 allow system_app keystore:keystore2_key {
     delete
@@ -174,11 +165,18 @@ get_prop(system_app, device_logging_prop)
 allow system_app system_server:udp_socket {
         connect getattr read recvfrom sendto write getopt setopt };
 
+# allow system apps to read game manager related sysrops
+get_prop(system_app, game_manager_config_prop)
+
 # Settings app reads ro.oem_unlock_supported
 get_prop(system_app, oem_unlock_prop)
 
 # Settings app reads ro.usb.uvc.enabled
 get_prop(system_app, usb_uvc_enabled_prop)
+
+# Settings app reads and writes the wifi blob database
+allow system_app connectivityblob_data_file:dir rw_dir_perms;
+allow system_app connectivityblob_data_file:file create_file_perms;
 
 ###
 ### Neverallow rules
@@ -196,3 +194,8 @@ neverallow system_app shell_data_file:file { open read ioctl lock };
 
 # system_app should be the only domain writing the adaptive haptics prop
 neverallow { domain -init -system_app } adaptive_haptics_prop:property_service set;
+# system_app should be the only domain writing the force l3 prop
+neverallow { domain -init -system_app } drm_forcel3_prop:property_service set;
+
+allow system_app vendor_boot_ota_file:dir { r_dir_perms };
+allow system_app vendor_boot_ota_file:file { r_file_perms };

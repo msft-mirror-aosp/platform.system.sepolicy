@@ -5,6 +5,7 @@ system_public_prop(dalvik_config_prop)
 system_public_prop(dalvik_dynamic_config_prop)
 system_restricted_prop(device_config_runtime_native_prop)
 system_restricted_prop(device_config_runtime_native_boot_prop)
+system_restricted_prop(non_existing_prop)
 
 typeattribute dalvik_config_prop         dalvik_config_prop_type;
 typeattribute dalvik_dynamic_config_prop dalvik_config_prop_type;
@@ -16,6 +17,11 @@ dontaudit domain {
   ctl_default_prop
   ctl_fuse_prop
 }:property_service set;
+
+allow property_type tmpfs:filesystem associate;
+
+dontaudit { domain -init } default_prop:file no_rw_file_perms;
+dontaudit { domain -init } default_prop:property_service set;
 
 ###
 ### Neverallow rules
@@ -61,3 +67,12 @@ neverallow {
     -microdroid_manager
     -crash_dump
 } {microdroid_config_prop}:file no_rw_file_perms;
+
+neverallow {
+    domain
+    -init
+} non_existing_prop:property_service set;
+
+# Properties should be explicitly labeled in property_contexts
+neverallow { domain -init } default_prop:file no_rw_file_perms;
+neverallow { domain -init } default_prop:property_service set;

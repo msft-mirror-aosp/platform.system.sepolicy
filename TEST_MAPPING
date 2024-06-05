@@ -13,7 +13,7 @@
                     "include-filter": "android.security.cts.SELinuxHostTest#testGMSCoreDomain"
                 },
                 {
-                    "include-filter": "android.security.cts.SeamendcHostTest"
+                    "include-filter": "android.security.cts.SELinuxHostTest#testNoBugreportDenials"
                 }
             ]
         }

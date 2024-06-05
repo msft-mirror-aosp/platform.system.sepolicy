@@ -2,6 +2,8 @@
 system_internal_prop(adbd_prop)
 system_internal_prop(apexd_payload_metadata_prop)
 system_internal_prop(ctl_snapuserd_prop)
+system_internal_prop(crashrecovery_prop)
+system_internal_prop(device_config_core_experiments_team_internal_prop)
 system_internal_prop(device_config_lmkd_native_prop)
 system_internal_prop(device_config_mglru_native_prop)
 system_internal_prop(device_config_profcollect_native_boot_prop)
@@ -22,15 +24,19 @@ system_internal_prop(init_perf_lsm_hooks_prop)
 system_internal_prop(init_service_status_private_prop)
 system_internal_prop(init_storage_prop)
 system_internal_prop(init_svc_debug_prop)
+system_internal_prop(kcmdline_prop)
 system_internal_prop(keystore_crash_prop)
 system_internal_prop(keystore_listen_prop)
 system_internal_prop(last_boot_reason_prop)
 system_internal_prop(localization_prop)
+system_internal_prop(logd_auditrate_prop)
 system_internal_prop(lower_kptr_restrict_prop)
 system_internal_prop(net_464xlat_fromvendor_prop)
 system_internal_prop(net_connectivity_prop)
 system_internal_prop(netd_stable_secret_prop)
+system_internal_prop(next_boot_prop)
 system_internal_prop(odsign_prop)
+system_internal_prop(misctrl_prop)
 system_internal_prop(perf_drop_caches_prop)
 system_internal_prop(pm_prop)
 system_internal_prop(profcollectd_node_id_prop)
@@ -38,10 +44,13 @@ system_internal_prop(radio_cdma_ecm_prop)
 system_internal_prop(remote_prov_prop)
 system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
+system_internal_prop(snapshotctl_prop)
 system_internal_prop(snapuserd_prop)
 system_internal_prop(system_adbd_prop)
+system_internal_prop(system_audio_config_prop)
 system_internal_prop(timezone_metadata_prop)
 system_internal_prop(traced_perf_enabled_prop)
+system_internal_prop(uprobestats_start_with_config_prop)
 system_internal_prop(tuner_server_ctl_prop)
 system_internal_prop(userspace_reboot_log_prop)
 system_internal_prop(userspace_reboot_test_prop)
@@ -51,11 +60,57 @@ system_internal_prop(ctl_mediatranscoding_prop)
 system_internal_prop(ctl_odsign_prop)
 system_internal_prop(virtualizationservice_prop)
 system_internal_prop(ctl_apex_load_prop)
+system_internal_prop(sensors_config_prop)
+system_internal_prop(hypervisor_pvmfw_prop)
+system_internal_prop(hypervisor_virtualizationmanager_prop)
+system_internal_prop(game_manager_config_prop)
+system_internal_prop(hidl_memory_prop)
+system_internal_prop(suspend_debug_prop)
 
 # Properties which can't be written outside system
 system_restricted_prop(device_config_virtualization_framework_native_prop)
+system_restricted_prop(fstype_prop)
 system_restricted_prop(log_file_logger_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
+system_restricted_prop(persist_sysui_ranking_update_prop)
+
+typeattribute log_prop log_property_type;
+typeattribute log_tag_prop log_property_type;
+typeattribute wifi_log_prop log_property_type;
+
+allow property_type tmpfs:filesystem associate;
+
+# core_property_type should not be used for new properties or
+# device specific properties. Properties with this attribute
+# are readable to everyone, which is overly broad and should
+# be avoided.
+# New properties should have appropriate read / write access
+# control rules written.
+
+typeattribute audio_prop         core_property_type;
+typeattribute config_prop        core_property_type;
+typeattribute cppreopt_prop      core_property_type;
+typeattribute dalvik_prop        core_property_type;
+typeattribute debuggerd_prop     core_property_type;
+typeattribute debug_prop         core_property_type;
+typeattribute dhcp_prop          core_property_type;
+typeattribute dumpstate_prop     core_property_type;
+typeattribute logd_prop          core_property_type;
+typeattribute net_radio_prop     core_property_type;
+typeattribute nfc_prop           core_property_type;
+typeattribute ota_prop           core_property_type;
+typeattribute pan_result_prop    core_property_type;
+typeattribute persist_debug_prop core_property_type;
+typeattribute powerctl_prop      core_property_type;
+typeattribute radio_prop         core_property_type;
+typeattribute restorecon_prop    core_property_type;
+typeattribute shell_prop         core_property_type;
+typeattribute system_prop        core_property_type;
+typeattribute usb_prop           core_property_type;
+typeattribute vold_prop          core_property_type;
+
+typeattribute dalvik_config_prop         dalvik_config_prop_type;
+typeattribute dalvik_dynamic_config_prop dalvik_config_prop_type;
 
 ###
 ### Neverallow rules
@@ -170,6 +225,23 @@ neverallow {
   -dumpstate
   userdebug_or_eng(`-su')
 } init_svc_debug_prop:file no_rw_file_perms;
+
+# DO NOT ADD: compat risk
+neverallow {
+  domain
+  -init
+  -crash_dump
+  -dumpstate
+  -misctrl
+  -statsd
+  userdebug_or_eng(`-su')
+} misctrl_prop:file no_rw_file_perms;
+neverallow {
+  domain
+  -init
+  -misctrl
+  userdebug_or_eng(`-su')
+} misctrl_prop:property_service set;
 
 compatible_property_only(`
 # Prevent properties from being set
@@ -286,7 +358,16 @@ compatible_property_only(`
     -nfc_prop
     -powerctl_prop
     -radio_prop
+    -dalvik_dynamic_config_prop
   }:file no_rw_file_perms;
+
+  neverallow {
+    domain
+    -coredomain
+    -appdomain
+    -vendor_init
+    -hal_power_server
+  } dalvik_dynamic_config_prop:file no_rw_file_perms;
 
   neverallow {
     domain
@@ -331,7 +412,25 @@ compatible_property_only(`
   } {
     suspend_prop
   }:property_service set;
+
+  neverallow {
+    domain
+    -init
+  } {
+    suspend_debug_prop
+  }:property_service set;
+
+  neverallow {
+    domain
+    -init
+    -dumpstate
+    userdebug_or_eng(`-system_suspend')
+    } {
+      suspend_debug_prop
+    }:file no_rw_file_perms;
 ')
+
+dontaudit system_suspend suspend_debug_prop:file r_file_perms;
 
 compatible_property_only(`
   # Neverallow coredomain to set vendor properties
@@ -439,6 +538,15 @@ neverallow {
 } {
   arm64_memtag_prop
   gwp_asan_prop
+}:property_service set;
+
+neverallow {
+  domain
+  -init
+  -shell
+  -kcmdlinectrl
+} {
+  kcmdline_prop
 }:property_service set;
 
 neverallow {
@@ -597,6 +705,12 @@ neverallow {
 neverallow {
   domain
   -init
+  -vendor_init
+} setupwizard_mode_prop:property_service set;
+
+neverallow {
+  domain
+  -init
 } setupwizard_prop:property_service set;
 
 # ro.product.property_source_order is useless after initialization of ro.product.* props.
@@ -696,3 +810,9 @@ neverallow {
   -system_app
   -device_as_webcam
 } usb_uvc_enabled_prop:file no_rw_file_perms;
+
+neverallow {
+  domain
+  -init
+  -vendor_init
+} pm_archiving_enabled_prop:property_service set;
