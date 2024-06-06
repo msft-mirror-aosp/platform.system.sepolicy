@@ -454,6 +454,7 @@ allow init debugfs_tracing:file w_file_perms;
 allow init debugfs_tracing_instances:dir create_dir_perms;
 allow init debugfs_tracing_instances:file w_file_perms;
 allow init debugfs_wifi_tracing:file w_file_perms;
+allow init debugfs_wifi_tracing:dir create_dir_perms;
 
 # chown/chmod on pseudo files.
 allow init {
