@@ -97,6 +97,10 @@ is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
   allow crosvm servicemanager:binder { call transfer };
   allow crosvm virtualization_service:service_manager find;
   allow crosvm virtualizationservice:binder { call transfer };
+
+  # Allow crosvm to play sound.
+  binder_call(crosvm, audioserver)
+  allow crosvm audioserver_service:service_manager find;
 ')
 
 # crosvm tries to use netlink sockets as part its APCI implementation, but we don't need it for AVF (b/228077254)
@@ -127,6 +131,15 @@ allow crosvm vfio_device:dir r_dir_perms;
 # Allow crosvm to access VM DTBO via a file created by virtualizationmanager.
 allow crosvm virtualizationmanager:fd use;
 allow crosvm virtualizationservice_data_file:file read;
+
+is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
+    # Allow crosvm to deal with file descriptors of TAP interfaces.
+    allow crosvm tun_device:chr_file rw_file_perms;
+    allowxperm crosvm tun_device:chr_file ioctl { TUNGETIFF TUNSETVNETHDRSZ };
+    allow crosvm self:udp_socket create_socket_perms;
+    allowxperm crosvm self:udp_socket ioctl SIOCGIFMTU;
+    allow crosvm vmnic:fd use;
+')
 
 # Don't allow crosvm to open files that it doesn't own.
 # This is important because a malicious application could try to start a VM with a composite disk
