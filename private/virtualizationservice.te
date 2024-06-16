@@ -34,6 +34,10 @@ is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
 # pVM remote attestation.
 hal_server_domain(virtualizationservice, hal_remotelyprovisionedcomponent_avf)
 
+# Allow the virtualizationservice to inspect whether remote attestation is supported
+# through the system property.
+get_prop(virtualizationservice, avf_virtualizationservice_prop)
+
 # Allow calling into the system server to find "permission_service".
 binder_call(virtualizationservice, system_server)
 allow virtualizationservice permission_service:service_manager find;
@@ -83,6 +87,7 @@ allow virtualizationservice apex_virt_data_file:file create_file_perms;
 # Let virtualizationservice to accept vsock connection from the guest VMs to singleton services
 # such as the guest tombstone server.
 allow virtualizationservice self:vsock_socket { create_socket_perms_no_ioctl listen accept };
+neverallow { domain -virtualizationservice } virtualizationservice:vsock_socket { accept bind create connect listen };
 
 # Allow virtualizationservice to read/write its own sysprop. Only the process can do so.
 set_prop(virtualizationservice, virtualizationservice_prop)
