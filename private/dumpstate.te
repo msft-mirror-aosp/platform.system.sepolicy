@@ -258,6 +258,12 @@ allow dumpstate {
   system_suspend_server
 }:process signal;
 
+# On userdebug, dumpstate may fork and execute a command as su. Make sure the
+# timeout logic is allowed to terminate the child process if necessary.
+userdebug_or_eng(`
+  allow dumpstate su:process { signal sigkill };
+')
+
 # Connect to tombstoned to intercept dumps.
 unix_socket_connect(dumpstate, tombstoned_intercept, tombstoned)
 
