@@ -1465,6 +1465,8 @@ allow system_server apex_system_server_data_file:dir create_dir_perms;
 allow system_server apex_system_server_data_file:file create_file_perms;
 allow system_server apex_tethering_data_file:dir create_dir_perms;
 allow system_server apex_tethering_data_file:file create_file_perms;
+allow system_server apex_uwb_data_file:dir create_dir_perms;
+allow system_server apex_uwb_data_file:file create_file_perms;
 # Legacy labels that we still need to support (b/217581286)
 allow system_server {
   apex_appsearch_data_file
@@ -1649,6 +1651,20 @@ allow system_server pre_reboot_dexopt_file:dir { getattr search };
 # system_server needs to copy the new service-art.jar to a memfd and reopen it with the path
 # /proc/self/fd/<fd> with a classloader.
 allow system_server system_server_tmpfs:file open;
+
+# Allow system_server to read from postinstall scripts through STDIN, to check if the
+# otapreopt_script is still alive.
+allow system_server postinstall:fifo_file read;
+
+# Allow system_server to kill artd and its subprocesses, to make sure that no process is accessing
+# files in chroot when we teardown chroot.
+allow system_server {
+  artd
+  derive_classpath
+  dex2oat
+  odrefresh
+  profman
+}:process sigkill;
 
 # Do not allow any domain other than init or system server to get or set the property
 neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
