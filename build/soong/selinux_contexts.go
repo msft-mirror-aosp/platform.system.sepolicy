@@ -231,6 +231,14 @@ func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.BaseModuleContext)
 	}
 }
 
+func (m *selinuxContextsModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *selinuxContextsModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
 func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
 	return !m.ModuleBase.InstallInRecovery()
 }
@@ -704,6 +712,14 @@ func (m *contextsTestModule) AndroidMkEntries() []android.AndroidMkEntries {
 // contextsTestModule implements ImageInterface to be able to include recovery_available contexts
 // modules as its sources.
 func (m *contextsTestModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
+}
+
+func (m *contextsTestModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *contextsTestModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
 }
 
 func (m *contextsTestModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
