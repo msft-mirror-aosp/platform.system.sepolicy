@@ -153,6 +153,8 @@ func (m *selinuxContextsModule) GenerateAndroidBuildActions(ctx android.ModuleCo
 
 	m.outputPath = m.build(ctx, android.PathsForModuleSrc(ctx, m.properties.Srcs))
 	ctx.InstallFile(m.installPath, m.stem(), m.outputPath)
+
+	ctx.SetOutputFiles([]android.Path{m.outputPath}, "")
 }
 
 func newModule() *selinuxContextsModule {
@@ -229,6 +231,14 @@ func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.BaseModuleContext)
 	}
 }
 
+func (m *selinuxContextsModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *selinuxContextsModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
 func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
 	return !m.ModuleBase.InstallInRecovery()
 }
@@ -253,7 +263,7 @@ func (m *selinuxContextsModule) ExtraImageVariations(ctx android.BaseModuleConte
 	return nil
 }
 
-func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
+func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
 }
 
 var _ android.ImageInterface = (*selinuxContextsModule)(nil)
@@ -541,16 +551,6 @@ func vndServiceFactory() android.Module {
 	return m
 }
 
-var _ android.OutputFileProducer = (*selinuxContextsModule)(nil)
-
-// Implements android.OutputFileProducer
-func (m *selinuxContextsModule) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return []android.Path{m.outputPath}, nil
-	}
-	return nil, fmt.Errorf("unsupported module reference tag %q", tag)
-}
-
 type contextsTestProperties struct {
 	// Contexts files to be tested.
 	Srcs []string `android:"path"`
@@ -714,6 +714,14 @@ func (m *contextsTestModule) AndroidMkEntries() []android.AndroidMkEntries {
 func (m *contextsTestModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
 }
 
+func (m *contextsTestModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *contextsTestModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
 func (m *contextsTestModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
 	return true
 }
@@ -738,7 +746,7 @@ func (m *contextsTestModule) ExtraImageVariations(ctx android.BaseModuleContext)
 	return nil
 }
 
-func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
+func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
 }
 
 var _ android.ImageInterface = (*contextsTestModule)(nil)
