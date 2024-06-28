@@ -2235,3 +2235,6 @@ neverallow { domain -dexopt_chroot_setup -init -zygote } proc_type:{ file dir } 
 # Only init/vendor are allowed to write sysfs_pgsize_migration;
 # ueventd needs write access to all sysfs files.
 neverallow { domain -init -vendor_init -ueventd } sysfs_pgsize_migration:file no_w_file_perms;
+
+# We need to be able to rely on vsock labels, so disallow changing them.
+neverallow domain *:vsock_socket { relabelfrom relabelto };

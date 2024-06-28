@@ -468,6 +468,10 @@ allow shell sepolicy_file:file r_file_perms;
 # Allow shell to start up vendor shell
 allow shell vendor_shell_exec:file rx_file_perms;
 
+is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
+  allow shell custom_vm_setup_exec:file { entrypoint r_file_perms };
+')
+
 # Everything is labeled as rootfs in recovery mode. Allow shell to
 # execute them.
 recovery_only(`
