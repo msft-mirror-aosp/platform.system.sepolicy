@@ -52,6 +52,7 @@ allow dexopt_chroot_setup {
   apex_mnt_dir
   apk_data_file
   binderfs
+  binfmt_miscfs
   cgroup
   cgroup_v2
   userdebug_or_eng(debugfs)
@@ -81,6 +82,7 @@ allow dexopt_chroot_setup { tmpfs labeledfs }:filesystem mount;
 
 allow dexopt_chroot_setup {
   binderfs
+  binfmt_miscfs
   cgroup
   cgroup_v2
   userdebug_or_eng(debugfs)
