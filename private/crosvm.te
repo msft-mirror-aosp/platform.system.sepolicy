@@ -135,7 +135,7 @@ allow crosvm virtualizationservice_data_file:file read;
 is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
     # Allow crosvm to deal with file descriptors of TAP interfaces.
     allow crosvm tun_device:chr_file rw_file_perms;
-    allowxperm crosvm tun_device:chr_file ioctl { TUNGETIFF TUNSETVNETHDRSZ };
+    allowxperm crosvm tun_device:chr_file ioctl { TUNGETIFF TUNSETOFFLOAD TUNSETVNETHDRSZ };
     allow crosvm self:udp_socket create_socket_perms;
     allowxperm crosvm self:udp_socket ioctl SIOCGIFMTU;
     allow crosvm vmnic:fd use;
