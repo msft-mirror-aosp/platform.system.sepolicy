@@ -121,9 +121,6 @@
 # levelFrom=app or levelFrom=all is only supported for _app UIDs.
 # level may be used to specify a fixed level for any UID.
 #
-# For backwards compatibility levelFromUid=true is equivalent to levelFrom=app
-# and levelFromUid=false is equivalent to levelFrom=none.
-#
 #
 # Neverallow Assertions
 # Additional compile time assertion checks for the rules in this file can be
