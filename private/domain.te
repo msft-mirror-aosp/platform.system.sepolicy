@@ -570,13 +570,15 @@ allow {
   -hal_omx_server
 } {shell_exec toolbox_exec}:file rx_file_perms;
 
-# Allow all to read from flag value boot snapshot storage files and general pb files
-# The boot snapshot of storage files serves flag read traffic for all processes, thus
-# needs to be readable by everybody.
-r_dir_file(domain, aconfig_storage_metadata_file);
+# Allow all processes to read aconfig flag storage files. The format is hidden behind
+# code-generated APIs, but since the libraries are executed in the context of the caller,
+# all processes need access to the underlying files.
+is_flag_enabled(RELEASE_READ_FROM_NEW_STORAGE, `
+  r_dir_file(domain, aconfig_storage_metadata_file);
+  r_dir_file(domain, aconfig_test_mission_files);
+')
 
 r_dir_file({ coredomain appdomain }, system_aconfig_storage_file);
-r_dir_file({ coredomain appdomain }, aconfig_test_mission_files);
 
 # processes needs to access storage file stored at /metadata/aconfig/boot, require search
 # permission on /metadata dir
@@ -2235,3 +2237,6 @@ neverallow { domain -dexopt_chroot_setup -init -zygote } proc_type:{ file dir } 
 # Only init/vendor are allowed to write sysfs_pgsize_migration;
 # ueventd needs write access to all sysfs files.
 neverallow { domain -init -vendor_init -ueventd } sysfs_pgsize_migration:file no_w_file_perms;
+
+# We need to be able to rely on vsock labels, so disallow changing them.
+neverallow domain *:vsock_socket { relabelfrom relabelto };
