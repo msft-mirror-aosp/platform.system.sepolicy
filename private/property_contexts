@@ -1025,6 +1025,9 @@ ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 # Property for enabling 16k pages developer option.
 ro.product.build.16k_page.enabled u:object_r:enable_16k_pages_prop:s0 exact bool
 
+# Property that indicates which page size the device boots by default.
+ro.product.page_size u:object_r:page_size_prop:s0 exact int
+
 ro.debuggable       u:object_r:userdebug_or_eng_prop:s0 exact bool
 ro.force.debuggable u:object_r:build_prop:s0 exact bool
 
