@@ -1,4 +1,5 @@
 typeattribute profman coredomain;
+typeattribute profman artd_subprocess_type;
 
 # Allow profman to read APKs and profile files next to them by FDs passed from
 # other programs. In addition, allow profman to acquire flocks on those files.
