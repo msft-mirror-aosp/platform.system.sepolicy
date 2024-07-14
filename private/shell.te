@@ -262,6 +262,7 @@ userdebug_or_eng(`set_prop(shell, persist_sysui_ranking_update_prop)')
 get_prop(shell, build_attestation_prop)
 
 # Allow shell to execute oatdump.
+# TODO (b/350628688): Remove this once it's safe to do so.
 allow shell oatdump_exec:file rx_file_perms;
 
 # Allow shell access to socket for test
