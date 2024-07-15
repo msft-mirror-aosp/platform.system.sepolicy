@@ -1545,10 +1545,6 @@ allow system_server proc_pressure_mem:file rw_file_perms;
 # Read /proc/pressure/cpu and /proc/pressure/io
 allow system_server { proc_pressure_cpu proc_pressure_io }:file r_file_perms;
 
-# dexoptanalyzer is currently used only for secondary dex files which
-# system_server should never access.
-neverallow system_server dexoptanalyzer_exec:file no_x_file_perms;
-
 # No ptracing others
 neverallow system_server { domain -system_server }:process ptrace;
 
