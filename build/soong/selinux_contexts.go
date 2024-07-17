@@ -231,6 +231,14 @@ func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.BaseModuleContext)
 	}
 }
 
+func (m *selinuxContextsModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *selinuxContextsModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
 func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
 	return !m.ModuleBase.InstallInRecovery()
 }
@@ -255,7 +263,7 @@ func (m *selinuxContextsModule) ExtraImageVariations(ctx android.BaseModuleConte
 	return nil
 }
 
-func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
+func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
 }
 
 var _ android.ImageInterface = (*selinuxContextsModule)(nil)
@@ -706,6 +714,14 @@ func (m *contextsTestModule) AndroidMkEntries() []android.AndroidMkEntries {
 func (m *contextsTestModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
 }
 
+func (m *contextsTestModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
+func (m *contextsTestModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+	return false
+}
+
 func (m *contextsTestModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
 	return true
 }
@@ -730,7 +746,7 @@ func (m *contextsTestModule) ExtraImageVariations(ctx android.BaseModuleContext)
 	return nil
 }
 
-func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string, module android.Module) {
+func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
 }
 
 var _ android.ImageInterface = (*contextsTestModule)(nil)
