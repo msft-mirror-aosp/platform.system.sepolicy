@@ -55,5 +55,5 @@ contexts_defaults {
 
 filegroup {
     name: "sepolicy_flagging_macros",
-    srcs: ["te_macros"],
+    srcs: ["flagging_macros"],
 }
