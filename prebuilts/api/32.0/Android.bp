@@ -50,6 +50,14 @@ se_policy_cil {
     installable: false,
 }
 
+se_versioned_policy {
+    name: "32.0_plat_pub_versioned.cil",
+    base: ":32.0_product_pub_policy.cil",
+    target_policy: ":32.0_product_pub_policy.cil",
+    version: "32.0",
+    installable: false,
+}
+
 se_policy_conf {
     name: "32.0_plat_policy.conf",
     srcs: [

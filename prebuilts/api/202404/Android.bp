@@ -39,6 +39,14 @@ se_policy_cil {
     installable: false,
 }
 
+se_versioned_policy {
+    name: "202404_plat_pub_versioned.cil",
+    base: ":202404_product_pub_policy.cil",
+    target_policy: ":202404_product_pub_policy.cil",
+    version: "202404",
+    installable: false,
+}
+
 se_policy_conf {
     name: "202404_plat_policy.conf",
     defaults: ["se_policy_conf_flags_defaults"],
