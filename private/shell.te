@@ -198,6 +198,11 @@ get_prop(shell, system_boot_reason_prop)
 
 # Allow shell to execute the remote key provisioning factory tool
 binder_call(shell, hal_keymint)
+# Allow shell to run the AVF RKP HAL during the execution of the remote key
+# provisioning factory tool.
+# TODO(b/351113293): Remove this once the AVF RKP HAL registration is moved to
+# a separate process.
+binder_call(shell, virtualizationservice)
 
 # Allow reading the outcome of perf_event_open LSM support test for CTS.
 get_prop(shell, init_perf_lsm_hooks_prop)
@@ -360,6 +365,7 @@ allow shell {
   -virtual_touchpad_service
   -vold_service
   -default_android_service
+  -virtualization_service
 }:service_manager find;
 allow shell dumpstate:binder call;
 
@@ -489,6 +495,7 @@ neverallow shell {
   hal_keymint_service
   hal_secureclock_service
   hal_sharedsecret_service
+  virtualization_service
 }:service_manager find;
 
 # Do not allow shell to hard link to any files.
