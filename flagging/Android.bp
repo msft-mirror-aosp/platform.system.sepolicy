@@ -43,7 +43,7 @@ se_policy_conf_defaults {
     name: "se_policy_conf_public_flags_defaults",
     srcs: [":sepolicy_flagging_macros"],
     build_flags: ["all_selinux_flags"],
-    board_api_level_guard: true,
+    board_api_level: "vendor",
 }
 
 contexts_defaults {
@@ -55,5 +55,5 @@ contexts_defaults {
 
 filegroup {
     name: "sepolicy_flagging_macros",
-    srcs: ["te_macros"],
+    srcs: ["flagging_macros"],
 }
