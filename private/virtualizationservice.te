@@ -18,22 +18,33 @@ is_flag_enabled(RELEASE_AVF_ENABLE_LLPVM_CHANGES, `
     add_service(virtualizationservice, virtualization_maintenance_service)
 ')
 
-is_flag_enabled(RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT, `
+is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
     # Let virtualizationservice find and communicate with vfio_handler.
     allow virtualizationservice vfio_handler_service:service_manager find;
     binder_call(virtualizationservice, vfio_handler)
+')
+
+is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
+    # Let virtualizationservice find and communicate with vmnic.
+    allow virtualizationservice vmnic_service:service_manager find;
+    binder_call(virtualizationservice, vmnic)
+    allow virtualizationservice vm_tethering_service:service_manager find;
 ')
 
 # Allow the virtualizationservice domain to serve a remotely provisioned component for
 # pVM remote attestation.
 hal_server_domain(virtualizationservice, hal_remotelyprovisionedcomponent_avf)
 
+# Allow the virtualizationservice to inspect whether remote attestation is supported
+# through the system property.
+get_prop(virtualizationservice, avf_virtualizationservice_prop)
+
 # Allow calling into the system server to find "permission_service".
 binder_call(virtualizationservice, system_server)
 allow virtualizationservice permission_service:service_manager find;
 
 # Allow virtualizationservice to retrieve the remotely provisioned keys from rkpd.
-binder_call(virtualizationservice, remote_provisioning_service)
+binder_call(virtualizationservice, remote_provisioning_service_server)
 allow virtualizationservice remote_provisioning_service:service_manager find;
 
 # Allow virtualizationservice to manage VM secrets via Secretkeeper.
@@ -43,6 +54,12 @@ hal_client_domain(virtualizationservice, hal_secretkeeper)
 # to mlock VM memory and page tables.
 allow virtualizationservice self:capability sys_resource;
 allow virtualizationservice virtualizationmanager:process setrlimit;
+
+is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
+  # To provide display service to an app to get surface.
+  # TODO(b/332677707): remove them when display service uses binder RPC.
+  allow virtualizationservice vmlauncher_app:binder transfer;
+')
 
 # Let virtualizationservice set the owner of a VM's temporary directory.
 allow virtualizationservice self:capability chown;
@@ -68,9 +85,10 @@ allow virtualizationservice apex_module_data_file:dir { search getattr };
 allow virtualizationservice apex_virt_data_file:dir create_dir_perms;
 allow virtualizationservice apex_virt_data_file:file create_file_perms;
 
-# Let virtualizationservice to accept vsock connection from the guest VMs to singleton services
+# Accept vsock connection from the guest VMs to singleton services
 # such as the guest tombstone server.
-allow virtualizationservice self:vsock_socket { create_socket_perms_no_ioctl listen accept };
+allow virtualizationservice self:vsock_socket { create read getattr write setattr lock append bind getopt setopt shutdown map listen accept };
+neverallow { domain -virtualizationservice -dumpstate } virtualizationservice:vsock_socket *;
 
 # Allow virtualizationservice to read/write its own sysprop. Only the process can do so.
 set_prop(virtualizationservice, virtualizationservice_prop)
@@ -112,7 +130,15 @@ neverallow virtualizationservice {
   domain
   -virtualizationmanager
   -virtualizationservice
+  # TODO(b/332677707): remove them when display service uses binder RPC.
+  is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `-crosvm')
 }:process setrlimit;
+
+is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
+    # Allow virtualizationservice to deal with file descriptors of TAP interfaces.
+    allow virtualizationservice tun_device:chr_file rw_file_perms;
+    allow virtualizationservice vmnic:fd use;
+')
 
 is_flag_enabled(RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT, `
     # Only virtualizationservice and virtualizationmanager can communicate to vfio_handler

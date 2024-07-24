@@ -13,7 +13,7 @@ binder_service(system_app)
 # android.ui and system.ui
 allow system_app rootfs:dir getattr;
 
-# Read and write /data/data subdirectory.
+# read/write certain subdirectories of /data/data for system UID apps.
 allow system_app system_app_data_file:dir create_dir_perms;
 allow system_app system_app_data_file:{ file lnk_file } create_file_perms;
 
@@ -174,8 +174,9 @@ get_prop(system_app, oem_unlock_prop)
 # Settings app reads ro.usb.uvc.enabled
 get_prop(system_app, usb_uvc_enabled_prop)
 
-# Settings and Launcher apps read pm.archiving.enabled
-get_prop(system_app, pm_archiving_enabled_prop)
+# Settings app reads and writes the wifi blob database
+allow system_app connectivityblob_data_file:dir rw_dir_perms;
+allow system_app connectivityblob_data_file:file create_file_perms;
 
 ###
 ### Neverallow rules
@@ -195,3 +196,6 @@ neverallow system_app shell_data_file:file { open read ioctl lock };
 neverallow { domain -init -system_app } adaptive_haptics_prop:property_service set;
 # system_app should be the only domain writing the force l3 prop
 neverallow { domain -init -system_app } drm_forcel3_prop:property_service set;
+
+allow system_app vendor_boot_ota_file:dir { r_dir_perms };
+allow system_app vendor_boot_ota_file:file { r_file_perms };

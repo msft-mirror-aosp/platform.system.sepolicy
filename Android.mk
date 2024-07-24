@@ -210,12 +210,6 @@ LOCAL_REQUIRED_MODULES += \
     plat_sepolicy.cil \
     secilc \
 
-# HACK to support vendor blobs using 1000000.0
-# TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
-LOCAL_REQUIRED_MODULES += plat_mapping_file_1000000.0
-endif
-
 ifneq ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
 LOCAL_REQUIRED_MODULES += plat_sepolicy_and_mapping.sha256
 endif
@@ -254,7 +248,7 @@ LOCAL_REQUIRED_MODULES += \
 endif  # SELINUX_IGNORE_NEVERALLOWS
 endif  # with_asan
 
-ifeq ($(BOARD_API_LEVEL_FROZEN),true)
+ifeq ($(RELEASE_BOARD_API_LEVEL_FROZEN),true)
 LOCAL_REQUIRED_MODULES += \
     se_freeze_test
 endif
@@ -284,12 +278,6 @@ ifdef HAS_SYSTEM_EXT_PUBLIC_SEPOLICY
 LOCAL_REQUIRED_MODULES += \
     system_ext_mapping_file
 
-# HACK to support vendor blobs using 1000000.0
-# TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
-LOCAL_REQUIRED_MODULES += system_ext_mapping_file_1000000.0
-endif
-
 system_ext_compat_files := $(call build_policy, $(sepolicy_compat_files), $(SYSTEM_EXT_PRIVATE_POLICY))
 
 LOCAL_REQUIRED_MODULES += $(addprefix system_ext_, $(notdir $(system_ext_compat_files)))
@@ -300,6 +288,7 @@ ifdef HAS_SYSTEM_EXT_SEPOLICY_DIR
 LOCAL_REQUIRED_MODULES += \
     system_ext_file_contexts \
     system_ext_file_contexts_test \
+    system_ext_keystore2_key_contexts \
     system_ext_hwservice_contexts \
     system_ext_hwservice_contexts_test \
     system_ext_property_contexts \
@@ -338,12 +327,6 @@ ifdef HAS_PRODUCT_PUBLIC_SEPOLICY
 LOCAL_REQUIRED_MODULES += \
     product_mapping_file
 
-# HACK to support vendor blobs using 1000000.0
-# TODO(b/314010177): remove after new ToT (202404) fully propagates
-ifneq (true,$(BOARD_API_LEVEL_FROZEN))
-LOCAL_REQUIRED_MODULES += product_mapping_file_1000000.0
-endif
-
 product_compat_files := $(call build_policy, $(sepolicy_compat_files), $(PRODUCT_PRIVATE_POLICY))
 
 LOCAL_REQUIRED_MODULES += $(addprefix product_, $(notdir $(product_compat_files)))
@@ -354,6 +337,7 @@ ifdef HAS_PRODUCT_SEPOLICY_DIR
 LOCAL_REQUIRED_MODULES += \
     product_file_contexts \
     product_file_contexts_test \
+    product_keystore2_key_contexts \
     product_hwservice_contexts \
     product_hwservice_contexts_test \
     product_property_contexts \
@@ -402,6 +386,7 @@ LOCAL_REQUIRED_MODULES += \
 LOCAL_REQUIRED_MODULES += \
     vendor_file_contexts \
     vendor_file_contexts_test \
+    vendor_keystore2_key_contexts \
     vendor_mac_permissions.xml \
     vendor_property_contexts \
     vendor_property_contexts_test \
@@ -443,7 +428,6 @@ include $(BUILD_PHONY_PACKAGE)
 # See Android.bp for details of policy files.
 #
 built_sepolicy := $(call intermediates-dir-for,ETC,precompiled_sepolicy)/precompiled_sepolicy
-built_sepolicy_neverallows := $(call intermediates-dir-for,ETC,sepolicy_neverallows)/sepolicy_neverallows
 
 ##################################
 # TODO - remove this.   Keep around until we get the filesystem creation stuff taken care of.
@@ -572,6 +556,5 @@ base_product_pub_policy.cil :=
 
 build_policy :=
 built_sepolicy :=
-built_sepolicy_neverallows :=
 sepolicy_build_files :=
 with_asan :=

@@ -40,6 +40,10 @@ binder_call(perfetto, system_server)
 allow perfetto perfetto_configs_data_file:dir r_dir_perms;
 allow perfetto perfetto_configs_data_file:file r_file_perms;
 
+# Allow perfetto to read the trace config from /system/etc/perfetto.
+allow perfetto system_perfetto_config_file:dir r_dir_perms;
+allow perfetto system_perfetto_config_file:file r_file_perms;
+
 # Allow perfetto to read the trace config from statsd, mm_events and shell
 # (both root and non-root) on stdin and also to write the resulting trace to
 # stdout.
@@ -91,6 +95,7 @@ neverallow {
   -incidentd # For receiving reported traces. TODO(lalitm): remove this.
   -priv_app  # For stating traces for bug-report UI.
   -system_server # For accessing traces started by profiling apis.
+  -trace_redactor # For accessing traces to be redacted.
 } perfetto_traces_data_file:dir *;
 neverallow {
   domain
@@ -100,6 +105,7 @@ neverallow {
   -shell     # For devepment purposes.
   -traced    # For write_into_file traces.
   -incidentd      # For receiving reported traces. TODO(lalitm): remove this.
+  -trace_redactor # For redacting trace files.
 } perfetto_traces_data_file:file ~{ getattr read };
 
 ### perfetto should NEVER do any of the following

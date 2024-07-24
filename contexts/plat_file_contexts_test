@@ -169,7 +169,6 @@
 /dev/pmsg0                                                        pmsg_device
 /dev/pn544                                                        nfc_device
 /dev/port                                                         port_device
-/dev/ppp                                                          ppp_device
 /dev/ptmx                                                         ptmx_device
 /dev/pvrsrvkm                                                     gpu_device
 /dev/kmsg                                                         kmsg_device
@@ -200,7 +199,6 @@
 /dev/socket/statsdw                                               statsdw_socket
 /dev/socket/mdns                                                  mdns_socket
 /dev/socket/mdnsd                                                 mdnsd_socket
-/dev/socket/mtpd                                                  mtpd_socket
 /dev/socket/ot-daemon/                                            ot_daemon_socket
 /dev/socket/ot-daemon/thread-wpan                                 ot_daemon_socket
 /dev/socket/ot-daemon/100                                         ot_daemon_socket
@@ -216,7 +214,6 @@
 /dev/socket/prng_seeder                                           prng_seeder_socket
 /dev/socket/property_service                                      property_socket
 /dev/socket/property_service_for_system                           property_socket
-/dev/socket/racoon                                                racoon_socket
 /dev/socket/recovery                                              recovery_socket
 /dev/socket/rild                                                  rild_socket
 /dev/socket/rild-debug                                            rild_debug_socket
@@ -368,6 +365,7 @@
 /system/bin/mediatranscoding                                      mediatranscoding_exec
 /system/bin/mediatuner                                            mediatuner_exec
 /system/bin/mdnsd                                                 mdnsd_exec
+/system/bin/ot-ctl                                                ot_ctl_exec
 /system/bin/installd                                              installd_exec
 /system/bin/otapreopt_chroot                                      otapreopt_chroot_exec
 /system/bin/otapreopt_slot                                        otapreopt_slot_exec
@@ -385,9 +383,6 @@
 /system/bin/dhcpcd                                                dhcp_exec
 /system/bin/dhcpcd-6.8.2                                          dhcp_exec
 /system/bin/dmesgd                                                dmesgd_exec
-/system/bin/mtpd                                                  mtp_exec
-/system/bin/pppd                                                  ppp_exec
-/system/bin/racoon                                                racoon_exec
 /system/xbin/su                                                   su_exec
 /system/bin/dnsmasq                                               dnsmasq_exec
 /system/bin/linker                                                system_linker_exec
@@ -408,9 +403,11 @@
 /system/bin/perfetto                                              perfetto_exec
 /system/bin/misctrl                                               misctrl_exec
 /system/bin/mtectrl                                               mtectrl_exec
+/system/bin/kcmdlinectrl                                          kcmdlinectrl_exec
 /system/bin/traced                                                traced_exec
 /system/bin/traced_perf                                           traced_perf_exec
 /system/bin/traced_probes                                         traced_probes_exec
+/system/bin/traced_relay                                          traced_exec
 /system/bin/heapprofd                                             heapprofd_exec
 /system/bin/uncrypt                                               uncrypt_exec
 /system/bin/update_verifier                                       update_verifier_exec
@@ -426,6 +423,7 @@
 /system/bin/idmap2                                                idmap_exec
 /system/bin/idmap2d                                               idmap_exec
 /system/bin/update_engine                                         update_engine_exec
+/system/bin/update_engine_nostats                                 update_engine_exec
 /system/bin/profcollectd                                          profcollectd_exec
 /system/bin/profcollectctl                                        profcollectd_exec
 /system/bin/storaged                                              storaged_exec
@@ -443,6 +441,7 @@
 /system/etc/ld.config.                                            system_linker_config_file
 /system/etc/ld.config.test                                        system_linker_config_file
 /system/etc/passwd                                                system_passwd_file
+/system/etc/perfetto/persistent_cfg.pbtxt                         system_perfetto_config_file
 /system/etc/seccomp_policy                                        system_seccomp_policy_file
 /system/etc/seccomp_policy/crash_dump.x86.policy                  system_seccomp_policy_file
 /system/etc/security/cacerts                                      system_security_cacerts_file
@@ -485,6 +484,7 @@
 /system/bin/android.automotive.evs.manager@1.0                    evsmanagerd_exec
 /system/bin/android.automotive.evs.manager@1.99                   evsmanagerd_exec
 /system/bin/uprobestats                                           uprobestats_exec
+/system/bin/trace_redactor                                        trace_redactor_exec
 
 /vendor                                                           vendor_file
 /vendor/does_not_exist                                            vendor_file
@@ -540,6 +540,8 @@
 /vendor/priv-app/test                                             vendor_app_file
 /system/vendor/priv-app                                           vendor_app_file
 /system/vendor/priv-app/test                                      vendor_app_file
+/vendor/boot_otas/                                                vendor_boot_ota_file
+/vendor/boot_otas/test                                            vendor_boot_ota_file
 /vendor/overlay                                                   vendor_overlay_file
 /vendor/overlay/test                                              vendor_overlay_file
 /system/vendor/overlay                                            vendor_overlay_file
@@ -772,6 +774,9 @@
 /system/system_ext/bin/canhalconfigurator                         canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator-aidl                    canhalconfigurator_exec
 
+/system_ext/bin/custom_vm_setup                                   custom_vm_setup_exec
+/system/system_ext/bin/custom_vm_setup                            custom_vm_setup_exec
+
 /system_ext/lib                                                   system_lib_file
 /system_ext/lib/does_not_exist                                    system_lib_file
 /system_ext/lib64                                                 system_lib_file
@@ -857,6 +862,7 @@
 /data/app/vmdltest01.tmp/test                                     apk_tmp_file
 /data/app/vmdltest02.tmp/oat                                      dalvikcache_data_file
 /data/app/vmdltest02.tmp/oat/test                                 dalvikcache_data_file
+/data/app-metadata                                                apk_metadata_file
 /data/app-private                                                 apk_private_data_file
 /data/app-private/test                                            apk_private_data_file
 /data/app-private/vmdltest.tmp                                    apk_private_tmp_file
@@ -911,6 +917,8 @@
 /data/system_de                                                   system_userdir_file
 /data/user                                                        system_userdir_file
 /data/user_de                                                     system_userdir_file
+/data/storage_area                                                system_userdir_file
+/data/misc_ce/0/storage_area_keys                                 storage_area_key_file
 
 /data/misc/adb                                                    adb_keys_file
 /data/misc/adb/test                                               adb_keys_file
@@ -932,8 +940,10 @@
 /data/misc/apexdata/com.android.tethering/test                    apex_tethering_data_file
 /data/misc/apexdata/com.android.tethering/threadnetwork           apex_tethering_data_file
 /data/misc/apexdata/com.android.tethering/threadnetwork/test      apex_tethering_data_file
-/data/misc/apexdata/com.android.uwb                               apex_system_server_data_file
-/data/misc/apexdata/com.android.uwb/test                          apex_system_server_data_file
+/data/misc/apexdata/com.android.uwb                               apex_uwb_data_file
+/data/misc/apexdata/com.android.uwb/test                          apex_uwb_data_file
+/data/misc/apexdata/com.android.uwb/log                           apex_uwb_data_file
+/data/misc/apexdata/com.android.uwb/log/test                      apex_uwb_data_file
 /data/misc/apexdata/com.android.wifi                              apex_system_server_data_file
 /data/misc/apexdata/com.android.wifi/test                         apex_system_server_data_file
 /data/misc/apexrollback                                           apex_rollback_data_file
@@ -964,6 +974,8 @@
 /data/misc/camera/test                                            camera_data_file
 /data/misc/carrierid                                              radio_data_file
 /data/misc/carrierid/test                                         radio_data_file
+/data/misc/connectivityblobdb                                     connectivityblob_data_file
+/data/misc/connectivityblobdb/test                                connectivityblob_data_file
 /data/misc/dhcp                                                   dhcp_data_file
 /data/misc/dhcp/test                                              dhcp_data_file
 /data/misc/dhcp-6.8.2                                             dhcp_data_file
@@ -1231,8 +1243,12 @@
 /metadata/aconfig/test                                            aconfig_storage_metadata_file
 /metadata/aconfig/flags                                           aconfig_storage_flags_metadata_file
 /metadata/aconfig/flags/test                                      aconfig_storage_flags_metadata_file
+/metadata/aconfig/maps                                            aconfig_storage_metadata_file
+/metadata/aconfig/maps/test                                       aconfig_storage_metadata_file
 /metadata/aconfig/boot                                            aconfig_storage_metadata_file
 /metadata/aconfig/boot/test                                       aconfig_storage_metadata_file
+/metadata/aconfig_test_missions                                   aconfig_test_mission_files
+/metadata/aconfig_test_missions/test                              aconfig_test_mission_files
 /metadata/apex                                                    apex_metadata_file
 /metadata/apex/test                                               apex_metadata_file
 /metadata/vold                                                    vold_metadata_file
@@ -1296,3 +1312,5 @@
 /data/misc/uprobestats-configs/test                               uprobestats_configs_data_file
 
 /tmp                                                              shell_data_file
+
+/mnt/pre_reboot_dexopt                                            pre_reboot_dexopt_file

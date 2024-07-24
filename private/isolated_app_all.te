@@ -32,8 +32,8 @@ allow isolated_app_all app_zygote:unix_dgram_socket write;
 # suppress denials to /data/local/tmp
 dontaudit isolated_app_all shell_data_file:dir search;
 
-# Allow to read (but not open) staged apks.
-allow isolated_app_all { apk_tmp_file apk_private_tmp_file }:file { read getattr };
+# Allow to read, map (but not open) staged apks.
+allow isolated_app_all { apk_tmp_file apk_private_tmp_file }:file { read getattr map };
 
 #####
 ##### Neverallow
@@ -100,6 +100,7 @@ neverallow { isolated_app_all -isolated_compute_app } {
   -sysfs_usb # TODO: check with audio team if needed for isolated_apps (b/28417852)
   -sysfs_fs_fuse_features
   -sysfs_fs_incfs_features
+  -sysfs_pgsize_migration
 }:file no_rw_file_perms;
 
 # No creation of sockets families other than AF_UNIX sockets.

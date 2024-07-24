@@ -8,6 +8,12 @@ type binderfs, fs_type;
 type binderfs_logs, fs_type;
 type binderfs_logs_proc, fs_type;
 type binderfs_logs_stats, fs_type;
+
+starting_at_board_api(202504, `
+    type binderfs_logs_transactions, fs_type;
+    type binderfs_logs_transaction_history, fs_type;
+')
+
 type binderfs_features, fs_type;
 # Security-sensitive proc nodes that should not be writable to most.
 type proc_security, fs_type, proc_type;
@@ -17,6 +23,11 @@ type proc_min_free_order_shift, fs_type, proc_type;
 type proc_kpageflags, fs_type, proc_type;
 type proc_watermark_boost_factor, fs_type, proc_type;
 type proc_percpu_pagelist_high_fraction, fs_type, proc_type;
+
+starting_at_board_api(202504, `
+    type proc_compaction_proactiveness, fs_type, proc_type;
+')
+
 # proc, sysfs, or other nodes that permit configuration of kernel usermodehelpers.
 type usermodehelper, fs_type, proc_type;
 type sysfs_usermodehelper, fs_type, sysfs_type;
@@ -28,6 +39,9 @@ type proc_asound, fs_type, proc_type;
 type proc_bootconfig, fs_type, proc_type;
 type proc_bpf, fs_type, proc_type;
 type proc_buddyinfo, fs_type, proc_type;
+starting_at_board_api(202504, `
+    type proc_cgroups, fs_type, proc_type;
+')
 type proc_cmdline, fs_type, proc_type;
 type proc_cpu_alignment, fs_type, proc_type;
 type proc_cpuinfo, fs_type, proc_type;
@@ -91,6 +105,9 @@ type cgroup, fs_type, mlstrustedobject;
 type cgroup_v2, fs_type;
 type sysfs, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_android_usb, fs_type, sysfs_type;
+starting_at_board_api(202504, `
+    type sysfs_udc, fs_type, sysfs_type;
+')
 type sysfs_uio, sysfs_type, fs_type;
 type sysfs_batteryinfo, fs_type, sysfs_type;
 type sysfs_bluetooth_writable, fs_type, sysfs_type, mlstrustedobject;
@@ -137,6 +154,13 @@ type fs_bpf, fs_type, bpffs_type;
 # TODO: S+ fs_bpf_tethering (used by mainline) should be private
 type fs_bpf_tethering, fs_type, bpffs_type;
 type fs_bpf_vendor, fs_type, bpffs_type;
+
+starting_at_board_api(202504, `
+    type fs_bpf_lmkd_memevents_rb, fs_type, bpffs_type;
+    type fs_bpf_lmkd_memevents_prog, fs_type, bpffs_type;
+')
+
+
 type configfs, fs_type;
 # /sys/devices/cs_etm
 type sysfs_devices_cs_etm, fs_type, sysfs_type;
@@ -259,6 +283,11 @@ type vendor_public_framework_file, vendor_file_type, file_type;
 # Type for all microdroid related files in the vendor partition.
 # Files having this type should be read-only.
 type vendor_microdroid_file, vendor_file_type, file_type;
+
+starting_at_board_api(202504, `
+    # boot otas for 16KB developer option
+    type vendor_boot_ota_file, vendor_file_type, file_type;
+')
 
 # Input configuration
 type vendor_keylayout_file, vendor_file_type, file_type;
@@ -620,32 +649,12 @@ type vendor_kernel_modules, vendor_file_type, file_type;
 # system_dlkm
 type system_dlkm_file, system_dlkm_file_type, file_type;
 
-# Allow files to be created in their appropriate filesystems.
-allow fs_type self:filesystem associate;
-allow cgroup tmpfs:filesystem associate;
-allow cgroup_v2 tmpfs:filesystem associate;
-allow cgroup_rc_file tmpfs:filesystem associate;
-allow sysfs_type sysfs:filesystem associate;
-allow debugfs_type { debugfs debugfs_tracing debugfs_tracing_debug }:filesystem associate;
-allow file_type labeledfs:filesystem associate;
-allow file_type tmpfs:filesystem associate;
-allow file_type rootfs:filesystem associate;
-allow dev_type tmpfs:filesystem associate;
-allow app_fuse_file app_fusefs:filesystem associate;
-allow postinstall_file self:filesystem associate;
-allow proc_net proc:filesystem associate;
-
 # asanwrapper (run a sanitized app_process, to be used with wrap properties)
 with_asan(`type asanwrapper_exec, exec_type, file_type;')
 
 # Deprecated in SDK version 28
 type audiohal_data_file, file_type, data_file_type, core_data_file_type;
 
-# It's a bug to assign the file_type attribute and fs_type attribute
-# to any type. Do not allow it.
-#
-# For example, the following is a bug:
-#   type apk_data_file, file_type, data_file_type, fs_type;
-# Should be:
-#   type apk_data_file, file_type, data_file_type;
-neverallow fs_type file_type:filesystem associate;
+# system/sepolicy/public is for vendor-facing type and attribute definitions.
+# DO NOT ADD allow, neverallow, or dontaudit statements here.
+# Instead, add such policy rules to system/sepolicy/private/*.te.

@@ -333,6 +333,7 @@ hal_client_domain(system_server, hal_power_stats)
 hal_client_domain(system_server, hal_rebootescrow)
 hal_client_domain(system_server, hal_remotelyprovisionedcomponent_avf)
 hal_client_domain(system_server, hal_sensors)
+hal_client_domain(system_server, hal_secretkeeper)
 hal_client_domain(system_server, hal_tetheroffload)
 hal_client_domain(system_server, hal_thermal)
 hal_client_domain(system_server, hal_threadnetwork)
@@ -401,6 +402,7 @@ allow system_server {
   hal_bluetooth_server
   hal_camera_server
   hal_codec2_server
+  hal_drm_server
   hal_face_server
   hal_fingerprint_server
   hal_gnss_server
@@ -516,6 +518,10 @@ allow system_server apk_data_file:{ file lnk_file } { create_file_perms link };
 allow system_server apk_tmp_file:dir create_dir_perms;
 allow system_server apk_tmp_file:file create_file_perms;
 
+# Manage /data/app-metadata
+allow system_server apk_metadata_file:dir create_dir_perms;
+allow system_server apk_metadata_file:file create_file_perms;
+
 # Access input configuration files in the /vendor directory
 r_dir_file(system_server, vendor_keylayout_file)
 r_dir_file(system_server, vendor_keychars_file)
@@ -585,8 +591,16 @@ allow system_server perfetto:fifo_file { read write };
 
 # Allow system server to manage perfetto traces for ProfilingService.
 allow system_server perfetto_traces_profiling_data_file:dir rw_dir_perms;
-allow system_server perfetto_traces_profiling_data_file:file { rw_file_perms unlink };
+allow system_server perfetto_traces_profiling_data_file:file create_file_perms;
 allow system_server perfetto_traces_data_file:dir search;
+
+# Allow system server to exec the trace redactor cmdline client and kill the process for
+# ProfilingService.
+domain_auto_trans(system_server, trace_redactor_exec, trace_redactor);
+allow system_server trace_redactor:process signal;
+
+# Allow system server to kill perfetto processes for ProfilingService.
+allow system_server perfetto:process signal;
 
 # Manage /data/backup.
 allow system_server backup_data_file:dir create_dir_perms;
@@ -607,6 +621,11 @@ allow system_server adb_keys_file:file create_file_perms;
 # Manage /data/misc/appcompat.
 allow system_server appcompat_data_file:dir rw_dir_perms;
 allow system_server appcompat_data_file:file create_file_perms;
+
+# Manage /data/misc/connectivityblobdb.
+# Specifically, for vpn and wifi to create, read and write to an sqlite database.
+allow system_server connectivityblob_data_file:dir create_dir_perms;
+allow system_server connectivityblob_data_file:file create_file_perms;
 
 # Manage /data/misc/emergencynumberdb
 allow system_server emergency_data_file:dir create_dir_perms;
@@ -881,6 +900,9 @@ get_prop(system_server, traced_oome_heap_session_count_prop)
 # configuration properties
 get_prop(system_server, sensors_config_prop)
 
+# Allow system server to determine if system services are enabled
+get_prop(system_server, system_service_enable_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
@@ -1006,6 +1028,7 @@ allow system_server keystore:keystore2 {
 	change_user
 	clear_ns
 	clear_uid
+	delete_all_keys
 	get_last_auth_time
 	lock
 	pull_metrics
@@ -1204,7 +1227,9 @@ with_asan(`
 # time in state accounting
 allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:dir search;
 allow system_server { fs_bpf fs_bpf_net_shared fs_bpf_netd_readonly fs_bpf_netd_shared }:file { getattr read write };
-allow system_server bpfloader:bpf { map_read map_write prog_run };
+allow system_server bpfloader:bpf prog_run;
+allow system_server self:bpf map_create;
+allow system_server { bpfloader netd network_stack system_server }:bpf { map_read map_write };
 # in order to invoke side effect of close() on such a socket calling synchronize_rcu()
 allow system_server self:key_socket create;
 # Java's Os.close() in libcore/luni/src/main/java/libcore/io/BlockGuardOs.java;l=100
@@ -1239,6 +1264,9 @@ get_prop(system_server,system_jvmti_agent_prop)
 # UsbDeviceManager uses /dev/usb-ffs
 allow system_server functionfs:dir search;
 allow system_server functionfs:file rw_file_perms;
+# To resolve arbitrary sysfs paths from /sys/class/udc/* symlinks.
+allow system_server sysfs_type:dir search;
+r_dir_file(system_server, sysfs_udc)
 
 # system_server contains time / time zone detection logic so reads the associated properties.
 get_prop(system_server, time_prop)
@@ -1271,6 +1299,10 @@ get_prop(system_server, qemu_hw_prop)
 
 # Allow system server to read profcollectd reports for upload.
 userdebug_or_eng(`r_dir_file(system_server, profcollectd_data_file)')
+
+# Power controls for debugging/diagnostics
+get_prop(system_server, power_debug_prop)
+set_prop(system_server, power_debug_prop)
 
 ###
 ### Neverallow rules
@@ -1305,7 +1337,8 @@ neverallow system_server {
 
 # Ensure that system_server doesn't perform any domain transitions other than
 # transitioning to the crash_dump domain when a crash occurs or fork clatd.
-neverallow system_server { domain -clatd -crash_dump -perfetto }:process transition;
+# add perfetto and trace_redactor which are exec'd from system server for ProfilingService.
+neverallow system_server { domain -clatd -crash_dump -perfetto -trace_redactor }:process transition;
 neverallow system_server *:process dyntransition;
 
 # Ensure that system_server doesn't access anything but search in perfetto_traces_data_file:dir.
@@ -1438,6 +1471,8 @@ allow system_server apex_system_server_data_file:dir create_dir_perms;
 allow system_server apex_system_server_data_file:file create_file_perms;
 allow system_server apex_tethering_data_file:dir create_dir_perms;
 allow system_server apex_tethering_data_file:file create_file_perms;
+allow system_server apex_uwb_data_file:dir create_dir_perms;
+allow system_server apex_uwb_data_file:file create_file_perms;
 # Legacy labels that we still need to support (b/217581286)
 allow system_server {
   apex_appsearch_data_file
@@ -1470,6 +1505,13 @@ allow system_server watchdog_metadata_file:file create_file_perms;
 
 allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
 allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
+allow system_server aconfig_storage_metadata_file:dir search;
+
+allow system_server aconfigd_socket:sock_file {read write};
+allow system_server aconfigd:unix_stream_socket connectto;
+
+allow system_server aconfig_test_mission_files:dir create_dir_perms;
+allow system_server aconfig_test_mission_files:file create_file_perms;
 
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
@@ -1502,10 +1544,6 @@ neverallow {
 allow system_server proc_pressure_mem:file rw_file_perms;
 # Read /proc/pressure/cpu and /proc/pressure/io
 allow system_server { proc_pressure_cpu proc_pressure_io }:file r_file_perms;
-
-# dexoptanalyzer is currently used only for secondary dex files which
-# system_server should never access.
-neverallow system_server dexoptanalyzer_exec:file no_x_file_perms;
 
 # No ptracing others
 neverallow system_server { domain -system_server }:process ptrace;
@@ -1587,6 +1625,11 @@ set_prop(system_server, dalvik_dynamic_config_prop)
 allow system_server binderfs_logs:dir r_dir_perms;
 allow system_server binderfs_logs_stats:file r_file_perms;
 
+# For ANRs
+userdebug_or_eng(`
+    allow system_server binderfs_logs_transactions:file r_file_perms;
+')
+
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
 
@@ -1602,10 +1645,37 @@ neverallow {
   -system_server
 } threadnetwork_config_prop:file no_rw_file_perms;
 
-# Allow system server to read pm.archiving.enabled prop
-# TODO(azilio): Remove system property after archiving testing is completed.
-get_prop(system_server, pm_archiving_enabled_prop)
+# Allow accessing /mnt/pre_reboot_dexopt/chroot, to load the new service-art.jar
+# in Pre-reboot Dexopt.
+allow system_server pre_reboot_dexopt_file:dir { getattr search };
+
+# Allow system_server to reopen its own memfd.
+# system_server needs to copy the new service-art.jar to a memfd and reopen it with the path
+# /proc/self/fd/<fd> with a classloader.
+allow system_server system_server_tmpfs:file open;
+
+# Allow system_server to read from postinstall scripts through STDIN, to check if the
+# otapreopt_script is still alive.
+allow system_server postinstall:fifo_file read;
+
+# Allow system_server to kill artd and its subprocesses, to make sure that no process is accessing
+# files in chroot when we teardown chroot.
+allow system_server {
+  artd
+  derive_classpath
+  dex2oat
+  odrefresh
+  profman
+}:process sigkill;
 
 # Do not allow any domain other than init or system server to get or set the property
 neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
 neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;
+
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  -shell
+} power_debug_prop:property_service set;

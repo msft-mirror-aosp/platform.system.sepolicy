@@ -19,7 +19,6 @@ package selinux
 
 import (
 	"android/soong/android"
-	"fmt"
 
 	"github.com/google/blueprint"
 	"github.com/google/blueprint/proptools"
@@ -103,6 +102,10 @@ func (c *cilCompatMap) shouldSkipBuild(ctx android.ModuleContext) bool {
 	return proptools.String(c.properties.Version) == ctx.DeviceConfig().PlatformSepolicyVersion()
 }
 
+func (c *cilCompatMap) stem() string {
+	return proptools.StringDefault(c.properties.Stem, c.Name())
+}
+
 func (c *cilCompatMap) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	if c.shouldSkipBuild(ctx) {
 		return
@@ -144,6 +147,11 @@ func (c *cilCompatMap) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	} else {
 		c.installSource = android.OptionalPathForPath(bottomHalf)
 	}
+	ctx.InstallFile(c.installPath, c.stem(), c.installSource.Path())
+
+	if c.installSource.Valid() {
+		ctx.SetOutputFiles(android.Paths{c.installSource.Path()}, "")
+	}
 }
 
 func (c *cilCompatMap) DepsMutator(ctx android.BottomUpMutatorContext) {
@@ -171,19 +179,7 @@ func (c *cilCompatMap) AndroidMkEntries() []android.AndroidMkEntries {
 }
 
 var _ CilCompatMapGenerator = (*cilCompatMap)(nil)
-var _ android.OutputFileProducer = (*cilCompatMap)(nil)
 
 func (c *cilCompatMap) GeneratedMapFile() android.OptionalPath {
 	return c.installSource
-}
-
-func (c *cilCompatMap) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		if c.installSource.Valid() {
-			return android.Paths{c.installSource.Path()}, nil
-		} else {
-			return nil, nil
-		}
-	}
-	return nil, fmt.Errorf("Unknown tag %q", tag)
 }

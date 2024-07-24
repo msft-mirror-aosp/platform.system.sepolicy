@@ -15,7 +15,6 @@
 package selinux
 
 import (
-	"fmt"
 	"os"
 	"sort"
 	"strconv"
@@ -34,6 +33,7 @@ const (
 
 // This order should be kept. checkpolicy syntax requires it.
 var policyConfOrder = []string{
+	"flagging_macros",
 	"security_classes",
 	"initial_sids",
 	"access_vectors",
@@ -90,6 +90,10 @@ type policyConfProperties struct {
 
 	// Desired number of MLS categories. Defaults to 1024
 	Mls_cats *int64
+
+	// Board api level of policy files. Set "vendor" for RELEASE_BOARD_API_LEVEL, "system" for
+	// turning off the guard, or a direct version string (e.g. "202404"). Defaults to "system"
+	Board_api_level *string
 }
 
 type policyConf struct {
@@ -220,6 +224,20 @@ func (c *policyConf) mlsCats() int {
 	return proptools.IntDefault(c.properties.Mls_cats, MlsCats)
 }
 
+func (c *policyConf) boardApiLevel(ctx android.ModuleContext) string {
+	level := proptools.StringDefault(c.properties.Board_api_level, "system")
+
+	if level == "system" {
+		// aribtrary value greater than any other vendor API levels
+		return "1000000"
+	} else if level == "vendor" {
+		return ctx.Config().VendorApiLevel()
+	} else {
+		return level
+	}
+
+}
+
 func findPolicyConfOrder(name string) int {
 	for idx, pattern := range policyConfOrder {
 		// We could use regexp but it seems like an overkill
@@ -261,6 +279,7 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 		FlagWithArg("-D target_requires_insecure_execmem_for_swiftshader=", strconv.FormatBool(ctx.DeviceConfig().RequiresInsecureExecmemForSwiftshader())).
 		FlagWithArg("-D target_enforce_debugfs_restriction=", c.enforceDebugfsRestrictions(ctx)).
 		FlagWithArg("-D target_recovery=", strconv.FormatBool(c.isTargetRecovery())).
+		FlagWithArg("-D target_board_api_level=", c.boardApiLevel(ctx)).
 		Flags(flagsToM4Macros(flags)).
 		Flag("-s").
 		Inputs(srcs).
@@ -282,6 +301,8 @@ func (c *policyConf) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	c.installSource = c.transformPolicyToConf(ctx)
 	c.installPath = android.PathForModuleInstall(ctx, "etc")
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
+
+	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
@@ -297,15 +318,6 @@ func (c *policyConf) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
-
-func (c *policyConf) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return android.Paths{c.installSource}, nil
-	}
-	return nil, fmt.Errorf("Unknown tag %q", tag)
-}
-
-var _ android.OutputFileProducer = (*policyConf)(nil)
 
 type policyCilProperties struct {
 	// Name of the output. Default is {module_name}
@@ -445,6 +457,8 @@ func (c *policyCil) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	}
 	c.installSource = cil
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
+
+	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
@@ -460,15 +474,6 @@ func (c *policyCil) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
-
-func (c *policyCil) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return android.Paths{c.installSource}, nil
-	}
-	return nil, fmt.Errorf("Unknown tag %q", tag)
-}
-
-var _ android.OutputFileProducer = (*policyCil)(nil)
 
 type policyBinaryProperties struct {
 	// Name of the output. Default is {module_name}
@@ -592,6 +597,8 @@ func (c *policyBinary) GenerateAndroidBuildActions(ctx android.ModuleContext) {
 	}
 	c.installSource = out
 	ctx.InstallFile(c.installPath, c.stem(), c.installSource)
+
+	ctx.SetOutputFiles(android.Paths{c.installSource}, "")
 }
 
 func (c *policyBinary) AndroidMkEntries() []android.AndroidMkEntries {
@@ -607,12 +614,3 @@ func (c *policyBinary) AndroidMkEntries() []android.AndroidMkEntries {
 		},
 	}}
 }
-
-func (c *policyBinary) OutputFiles(tag string) (android.Paths, error) {
-	if tag == "" {
-		return android.Paths{c.installSource}, nil
-	}
-	return nil, fmt.Errorf("Unknown tag %q", tag)
-}
-
-var _ android.OutputFileProducer = (*policyBinary)(nil)

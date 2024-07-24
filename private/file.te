@@ -31,10 +31,14 @@ type perfetto_traces_profiling_data_file, file_type, data_file_type, core_data_f
 # /data/misc/perfetto-configs for perfetto configs
 type perfetto_configs_data_file, file_type, data_file_type, core_data_file_type;
 
+# /system/etc/perfetto for perfetto configs
+type system_perfetto_config_file, file_type, system_file_type;
+
 # /data/misc/uprobestats-configs for uprobestats configs
 type uprobestats_configs_data_file, file_type, data_file_type, core_data_file_type;
 
 # /apex/com.android.art/bin/oatdump
+# TODO (b/350628688): Remove this once it's safe to do so.
 type oatdump_exec, system_file_type, exec_type, file_type;
 
 # /data/misc_{ce/de}/<user>/sdksandbox root data directory for sdk sandbox processes
@@ -83,6 +87,9 @@ type apex_virt_data_file, file_type, data_file_type, core_data_file_type, apex_d
 # /data/misc/apexdata/com.android.tethering
 type apex_tethering_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
 
+# /data/misc/apexdata/com.android.uwb
+type apex_uwb_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
+
 # legacy labels for various /data/misc[_ce|_de]/*/apexdata directories - retained
 # for backward compatibility b/217581286
 type apex_appsearch_data_file, file_type, data_file_type, core_data_file_type, apex_data_file_type;
@@ -129,11 +136,6 @@ type compos_exec, exec_type, file_type, system_file_type;
 # /apex/com.android.compos/bin/compos_key_helper
 type compos_key_helper_exec, exec_type, file_type, system_file_type;
 
-# /apex/com.android.art/bin/art_exec
-# This executable does not have its own domain because it is executed in the caller's domain. For
-# example, it is executed in the `artd` domain when artd calls it.
-type art_exec_exec, system_file_type, exec_type, file_type;
-
 # Filesystem entry for for PRNG seeder socket.  Processes require
 # write permission on this to connect, and needs to be mlstrustedobject
 # in to satisfy MLS constraints for trusted domains.
@@ -157,3 +159,54 @@ type system_aconfig_storage_file, system_file_type, file_type;
 
 # Type for /vendor/etc/aconfig
 type vendor_aconfig_storage_file, vendor_file_type, file_type;
+
+type aconfig_test_mission_files, file_type;
+
+# /data/misc/connectivityblobdb
+type connectivityblob_data_file, file_type, data_file_type, core_data_file_type;
+
+# Type for /mnt/pre_reboot_dexopt
+type pre_reboot_dexopt_file, file_type;
+
+# Type for /mnt/artd_tmp in the Pre-reboot Dexopt chroot
+# This type is set on the directory through the `rootcontext=` mount option.
+type pre_reboot_dexopt_artd_file, file_type;
+
+# /data/app-metadata - extracted app metadata bundles from APKs
+type apk_metadata_file, file_type, data_file_type, core_data_file_type;
+
+# Type for /sys/kernel/mm/pgsize_migration/enabled
+type sysfs_pgsize_migration, fs_type, sysfs_type;
+
+# Allow files to be created in their appropriate filesystems.
+allow fs_type self:filesystem associate;
+allow cgroup tmpfs:filesystem associate;
+allow cgroup_v2 tmpfs:filesystem associate;
+allow cgroup_rc_file tmpfs:filesystem associate;
+allow sysfs_type sysfs:filesystem associate;
+allow debugfs_type { debugfs debugfs_tracing debugfs_tracing_debug }:filesystem associate;
+allow file_type labeledfs:filesystem associate;
+allow file_type tmpfs:filesystem associate;
+allow file_type rootfs:filesystem associate;
+allow dev_type tmpfs:filesystem associate;
+allow app_fuse_file app_fusefs:filesystem associate;
+allow postinstall_file self:filesystem associate;
+allow proc_net proc:filesystem associate;
+
+# It's a bug to assign the file_type attribute and fs_type attribute
+# to any type. Do not allow it.
+#
+# For example, the following is a bug:
+#   type apk_data_file, file_type, data_file_type, fs_type;
+# Should be:
+#   type apk_data_file, file_type, data_file_type;
+neverallow fs_type file_type:filesystem associate;
+# app directories of storage areas: /data/storage_area/userId/pkgName -- apps cannot write to it
+type storage_area_app_dir, file_type, data_file_type, core_data_file_type, app_data_file_type;
+# app storage areas: /data/storage_area/userId/pkgName/storageAreaName
+type storage_area_dir, file_type, data_file_type, core_data_file_type, app_data_file_type;
+# contents of app storage areas: /data/storage_area/userId/pkgName/storageAreaName/*
+type storage_area_content_file, file_type, data_file_type, core_data_file_type, app_data_file_type;
+
+# /data/misc_ce/userId/storage_area_keys
+type storage_area_key_file, file_type, data_file_type, core_data_file_type;

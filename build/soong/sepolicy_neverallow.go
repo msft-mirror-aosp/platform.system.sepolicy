@@ -125,15 +125,7 @@ func (n *neverallowTestModule) GenerateAndroidBuildActions(ctx android.ModuleCon
 			return
 		}
 
-		o, ok := child.(android.OutputFileProducer)
-		if !ok {
-			panic(fmt.Errorf("Module %q isn't an OutputFileProducer", ctx.OtherModuleName(child)))
-		}
-
-		outputs, err := o.OutputFiles("")
-		if err != nil {
-			panic(fmt.Errorf("Module %q error while producing output: %v", ctx.OtherModuleName(child), err))
-		}
+		outputs := android.OutputFilesForModule(ctx, child, "")
 
 		switch ctx.OtherModuleDependencyTag(child) {
 		case checkpolicyTag:
@@ -189,10 +181,11 @@ func (n *neverallowTestModule) GenerateAndroidBuildActions(ctx android.ModuleCon
 func (n *neverallowTestModule) AndroidMkEntries() []android.AndroidMkEntries {
 	return []android.AndroidMkEntries{android.AndroidMkEntries{
 		OutputFile: android.OptionalPathForPath(n.testTimestamp),
-		Class:      "ETC",
+		Class:      "FAKE",
+		Include:    "$(BUILD_PHONY_PACKAGE)",
 		ExtraEntries: []android.AndroidMkExtraEntriesFunc{
 			func(ctx android.AndroidMkExtraEntriesContext, entries *android.AndroidMkEntries) {
-				entries.SetBool("LOCAL_UNINSTALLABLE_MODULE", true)
+				entries.SetPath("LOCAL_ADDITIONAL_DEPENDENCIES", n.testTimestamp)
 			},
 		},
 	}}

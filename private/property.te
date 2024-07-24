@@ -24,6 +24,7 @@ system_internal_prop(init_perf_lsm_hooks_prop)
 system_internal_prop(init_service_status_private_prop)
 system_internal_prop(init_storage_prop)
 system_internal_prop(init_svc_debug_prop)
+system_internal_prop(kcmdline_prop)
 system_internal_prop(keystore_crash_prop)
 system_internal_prop(keystore_listen_prop)
 system_internal_prop(last_boot_reason_prop)
@@ -43,6 +44,7 @@ system_internal_prop(radio_cdma_ecm_prop)
 system_internal_prop(remote_prov_prop)
 system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
+system_internal_prop(snapshotctl_prop)
 system_internal_prop(snapuserd_prop)
 system_internal_prop(system_adbd_prop)
 system_internal_prop(system_audio_config_prop)
@@ -58,19 +60,63 @@ system_internal_prop(ctl_mediatranscoding_prop)
 system_internal_prop(ctl_odsign_prop)
 system_internal_prop(virtualizationservice_prop)
 system_internal_prop(ctl_apex_load_prop)
-system_internal_prop(enable_16k_pages_prop)
 system_internal_prop(sensors_config_prop)
 system_internal_prop(hypervisor_pvmfw_prop)
 system_internal_prop(hypervisor_virtualizationmanager_prop)
 system_internal_prop(game_manager_config_prop)
 system_internal_prop(hidl_memory_prop)
 system_internal_prop(suspend_debug_prop)
+system_internal_prop(system_service_enable_prop)
+
 
 # Properties which can't be written outside system
 system_restricted_prop(device_config_virtualization_framework_native_prop)
+system_restricted_prop(fstype_prop)
 system_restricted_prop(log_file_logger_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
+system_restricted_prop(page_size_prop)
+
+# Properties which should only be written by vendor_init
+system_vendor_config_prop(avf_virtualizationservice_prop)
+
+typeattribute log_prop log_property_type;
+typeattribute log_tag_prop log_property_type;
+typeattribute wifi_log_prop log_property_type;
+
+allow property_type tmpfs:filesystem associate;
+
+# core_property_type should not be used for new properties or
+# device specific properties. Properties with this attribute
+# are readable to everyone, which is overly broad and should
+# be avoided.
+# New properties should have appropriate read / write access
+# control rules written.
+
+typeattribute audio_prop         core_property_type;
+typeattribute config_prop        core_property_type;
+typeattribute cppreopt_prop      core_property_type;
+typeattribute dalvik_prop        core_property_type;
+typeattribute debuggerd_prop     core_property_type;
+typeattribute debug_prop         core_property_type;
+typeattribute dhcp_prop          core_property_type;
+typeattribute dumpstate_prop     core_property_type;
+typeattribute logd_prop          core_property_type;
+typeattribute net_radio_prop     core_property_type;
+typeattribute nfc_prop           core_property_type;
+typeattribute ota_prop           core_property_type;
+typeattribute pan_result_prop    core_property_type;
+typeattribute persist_debug_prop core_property_type;
+typeattribute powerctl_prop      core_property_type;
+typeattribute radio_prop         core_property_type;
+typeattribute restorecon_prop    core_property_type;
+typeattribute shell_prop         core_property_type;
+typeattribute system_prop        core_property_type;
+typeattribute usb_prop           core_property_type;
+typeattribute vold_prop          core_property_type;
+
+typeattribute dalvik_config_prop         dalvik_config_prop_type;
+typeattribute dalvik_dynamic_config_prop dalvik_config_prop_type;
 
 ###
 ### Neverallow rules
@@ -190,8 +236,10 @@ neverallow {
 neverallow {
   domain
   -init
+  -crash_dump
   -dumpstate
   -misctrl
+  -statsd
   userdebug_or_eng(`-su')
 } misctrl_prop:file no_rw_file_perms;
 neverallow {
@@ -316,7 +364,16 @@ compatible_property_only(`
     -nfc_prop
     -powerctl_prop
     -radio_prop
+    -dalvik_dynamic_config_prop
   }:file no_rw_file_perms;
+
+  neverallow {
+    domain
+    -coredomain
+    -appdomain
+    -vendor_init
+    -hal_power_server
+  } dalvik_dynamic_config_prop:file no_rw_file_perms;
 
   neverallow {
     domain
@@ -487,6 +544,15 @@ neverallow {
 } {
   arm64_memtag_prop
   gwp_asan_prop
+}:property_service set;
+
+neverallow {
+  domain
+  -init
+  -shell
+  -kcmdlinectrl
+} {
+  kcmdline_prop
 }:property_service set;
 
 neverallow {
@@ -756,4 +822,3 @@ neverallow {
   -init
   -vendor_init
 } pm_archiving_enabled_prop:property_service set;
-
