@@ -15,12 +15,12 @@ allow domain self:process {
     setsched
     getsession
     getpgid
-    setpgid
     getcap
     setcap
     getattr
     setrlimit
 };
+allow { domain -artd_subprocess_type } self:process setpgid;
 allow domain self:fd use;
 allow domain proc:dir r_dir_perms;
 allow domain proc_net_type:dir search;
@@ -1633,7 +1633,6 @@ neverallow {
   -appdomain
   -app_zygote
   -artd # compile secondary dex files
-  -dexoptanalyzer
   -installd
   -profman
   -rs # spawned by appdomain, so carryover the exception above
