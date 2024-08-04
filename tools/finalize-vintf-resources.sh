@@ -125,15 +125,6 @@ se_policy_binary {
         targets: ["base-sepolicy-files-for-mapping"],
     },
 }
-
-filegroup {
-    name: "${ver}_sepolicy_cts_data",
-    srcs: [
-        "${ver}_general_sepolicy.conf",
-        "${ver}_plat_sepolicy.cil",
-        "${ver}_mapping.cil",
-    ],
-}
 EOF
 
 # Build general_sepolicy.conf, plat_sepolicy.cil, and mapping file for CTS
