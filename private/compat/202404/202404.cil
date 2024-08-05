@@ -1,9 +1,3 @@
-;; types removed from current policy
-;; (technically qtaguid is useless since Android S, api=31)
-(type proc_qtaguid_ctrl)
-(type proc_qtaguid_stat)
-(type qtaguid_device)
-
 ;; This type may or may not already exist in vendor policy. Re-define it here (duplicate
 ;; definitions in CIL will be ignored) - so we can reference it in 202404.cil.
 (type vendor_hidraw_device)
