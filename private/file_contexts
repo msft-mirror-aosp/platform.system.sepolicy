@@ -432,7 +432,6 @@
 /(vendor|system/vendor)/overlay(/.*)?          u:object_r:vendor_overlay_file:s0
 /(vendor|system/vendor)/framework(/.*)?        u:object_r:vendor_framework_file:s0
 
-/(vendor|system/vendor)/apex(/[^/]+){0,2}                      u:object_r:vendor_apex_file:s0
 /(vendor|system/vendor)/bin/misc_writer                        u:object_r:vendor_misc_writer_exec:s0
 /(vendor|system/vendor)/bin/boringssl_self_test(32|64)         u:object_r:vendor_boringssl_self_test_exec:s0
 
@@ -462,6 +461,8 @@
 # secure-element service: vendor uuid mapping config file
 /(odm|vendor/odm|vendor|system/vendor)/etc/hal_uuid_map_(.*)?\.xml    u:object_r:vendor_uuid_mapping_config_file:s0
 
+# APEX packages
+/(odm|vendor/odm|vendor|system/vendor)/apex(/[^/]+){0,2}              u:object_r:vendor_apex_file:s0
 
 # Input configuration
 /(odm|vendor/odm|vendor|system/vendor)/usr/keylayout(/.*)?\.kl        u:object_r:vendor_keylayout_file:s0
