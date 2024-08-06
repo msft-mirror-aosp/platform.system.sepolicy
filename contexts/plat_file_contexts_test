@@ -279,6 +279,7 @@
 /dev/video99                                                      video_device
 /dev/vndbinder                                                    vndbinder_device
 /dev/watchdog                                                     watchdog_device
+/dev/xt_qtaguid                                                   qtaguid_device
 /dev/zero                                                         zero_device
 /dev/__properties__                                               properties_device
 /dev/__properties__/property_info                                 property_info
