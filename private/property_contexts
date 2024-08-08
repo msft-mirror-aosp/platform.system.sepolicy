@@ -361,7 +361,7 @@ ro.virtual_ab.num_worker_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.num_merge_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.num_verify_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.cow_op_merge_size u:object_r:virtual_ab_prop:s0 exact int
-ro.virtual_ab.verify_threshold_block_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.verify_threshold_size u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.verify_block_size u:object_r:virtual_ab_prop:s0 exact int
 
 # OEMs can set this prop at build time to configure how many seconds to delay
