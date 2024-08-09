@@ -922,3 +922,7 @@
 # dexopt_chroot_setup inside chroot, in addition to the files and directories
 # matching the pattern below.
 /mnt/pre_reboot_dexopt(/.*)?  u:object_r:pre_reboot_dexopt_file:s0
+
+#############################
+# For early boot VM
+/mnt/vm u:object_r:vm_data_file:s0
