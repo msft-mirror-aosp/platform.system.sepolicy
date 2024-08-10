@@ -116,6 +116,8 @@ type proc_pipe_conf, fs_type, proc_type;
 type proc_pressure_cpu, fs_type, proc_type;
 type proc_pressure_io, fs_type, proc_type;
 type proc_pressure_mem, fs_type, proc_type;
+type proc_qtaguid_ctrl, fs_type, proc_type;
+type proc_qtaguid_stat, fs_type, proc_type;
 type proc_random, fs_type, proc_type;
 type proc_sched, fs_type, proc_type;
 type proc_security, fs_type, proc_type;
