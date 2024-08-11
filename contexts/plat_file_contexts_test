@@ -37,6 +37,7 @@
 /sys                                                              sysfs
 /apex                                                             apex_mnt_dir
 /bootstrap-apex                                                   apex_mnt_dir
+/mnt/vm                                                           vm_data_file
 
 /postinstall                                                      postinstall_mnt_dir
 /postinstall/apex                                                 postinstall_apex_mnt_dir
