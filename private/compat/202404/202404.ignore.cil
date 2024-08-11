@@ -14,4 +14,5 @@
     proc_compaction_proactiveness
     proc_cgroups
     sysfs_udc
+    app_function_service
   ))
