@@ -115,6 +115,8 @@ allow init kmsg_device:chr_file { getattr write relabelto };
 userdebug_or_eng(`
   allow init kmsg_debug_device:chr_file { open write relabelto };
 ')
+# /mnt/vm, also permissions to mkdir / mount / chmod / chown
+allow init vm_data_file:dir { add_name create search write getattr setattr relabelto mounton };
 
 # allow init to mount and unmount debugfs in debug builds
 userdebug_or_eng(`
@@ -305,6 +307,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -bpffs_type
   -exec_type
   -misc_logd_file
@@ -324,6 +327,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -bpffs_type
   -credstore_data_file
   -exec_type
@@ -351,6 +355,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -bpffs_type
   -exec_type
   -gsi_data_file
@@ -383,6 +388,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -bpffs_type
   -exec_type
   -gsi_data_file
@@ -408,6 +414,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -bpffs_type
   -exec_type
   -gsi_data_file
@@ -439,6 +446,7 @@ allow init {
     -storage_area_app_dir
     -storage_area_content_file
   ')
+  -vm_data_file
   -privapp_data_file
 }:dir_file_class_set relabelto;
 
