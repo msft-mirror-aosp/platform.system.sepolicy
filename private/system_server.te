@@ -1561,10 +1561,6 @@ neverallow {
 } password_slot_metadata_file:notdevfile_class_set ~{ relabelto getattr };
 neverallow { domain -init -system_server } password_slot_metadata_file:notdevfile_class_set *;
 
-# Only system_server/init should access /metadata/userspacereboot.
-neverallow { domain -init -system_server } userspace_reboot_metadata_file:dir *;
-neverallow { domain -init -system_server } userspace_reboot_metadata_file:file no_rw_file_perms;
-
 # Only system server should access /metadata/aconfig
 neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
 neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
