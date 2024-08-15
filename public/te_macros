@@ -1094,3 +1094,13 @@ neverallow { domain -$1 } $1_iouring:anon_inode *;
 # grant CAP_IPC_LOCK to silence avc denials, which is undesireable.
 dontaudit $1 self:global_capability_class_set ipc_lock;
 ')
+
+####################################
+# read_all_cgroup_descriptor_files(domain)
+# Allow domain to open and read all variants of system and vendor cgroup
+# descriptor files.
+define(`read_all_cgroup_descriptor_files', `
+  allow $1 cgroup_desc_file:file r_file_perms;
+  allow $1 cgroup_desc_api_file:file r_file_perms;
+  allow $1 vendor_cgroup_desc_file:file r_file_perms;
+')
