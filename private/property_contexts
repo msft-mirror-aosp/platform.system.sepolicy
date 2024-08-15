@@ -351,6 +351,19 @@ ro.virtual_ab.userspace.snapshots.enabled u:object_r:virtual_ab_prop:s0 exact bo
 ro.virtual_ab.io_uring.enabled u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.compression.threads u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.batch_writes u:object_r:virtual_ab_prop:s0 exact bool
+
+# Virtual A/B device configurations
+ro.virtual_ab.read_ahead_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.o_direct.enabled u:object_r:virtual_ab_prop:s0 exact bool
+ro.virtual_ab.merge_thread_priority u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.worker_thread_priority u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.num_worker_threads u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.num_merge_threads u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.num_verify_threads u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.cow_op_merge_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.verify_threshold_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.verify_block_size u:object_r:virtual_ab_prop:s0 exact int
+
 # OEMs can set this prop at build time to configure how many seconds to delay
 # merge after installing a Virtual AB OTA. The default behavior is to start
 # merge immediately.
@@ -395,12 +408,19 @@ audio.deep_buffer.media         u:object_r:audio_config_prop:s0 exact bool
 audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
 
+# Timecheck configuration
+audio.timecheck.timeout_duration_ms       u:object_r:audio_config_prop:s0 exact int
+audio.timecheck.second_chance_duration_ms u:object_r:audio_config_prop:s0 exact int
+
 # spatializer tuning
 audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.pose_predictor_type    u:object_r:audio_config_prop:s0 exact enum 0 1 2 3
 audio.spatializer.prediction_duration_ms u:object_r:audio_config_prop:s0 exact int
+
+# Timestamp correction for MSD
+audio.timestamp.corrected_output_device  u:object_r:audio_config_prop:s0 exact int
 
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool
@@ -740,6 +760,9 @@ external_storage.cross_user.enabled u:object_r:storage_config_prop:s0 exact bool
 ro.fuse.bpf.enabled u:object_r:storage_config_prop:s0 exact bool
 ro.fuse.bpf.is_running u:object_r:vold_status_prop:s0 exact bool
 
+# Allow the vendor to disable the remote attestation feature at boot-time.
+avf.remote_attestation.enabled u:object_r:avf_virtualizationservice_prop:s0 exact bool
+
 hypervisor.pvmfw.path                              u:object_r:hypervisor_pvmfw_prop:s0 exact string
 hypervisor.virtualizationmanager.debug_policy.path u:object_r:hypervisor_virtualizationmanager_prop:s0 exact string
 
@@ -973,6 +996,7 @@ ro.boot.dynamic_partitions_retrofit u:object_r:exported_default_prop:s0 exact st
 
 ro.boottime.init.mount.data u:object_r:boottime_public_prop:s0 exact string
 ro.boottime.init.fsck.data  u:object_r:boottime_public_prop:s0 exact string
+ro.fstype.data  u:object_r:fstype_prop:s0 exact string
 
 ro.build.characteristics                  u:object_r:build_prop:s0 exact string
 ro.build.date                             u:object_r:build_prop:s0 exact string
@@ -1004,6 +1028,9 @@ ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
 # Property for enabling 16k pages developer option.
 ro.product.build.16k_page.enabled u:object_r:enable_16k_pages_prop:s0 exact bool
+
+# Property that indicates which page size the device boots by default.
+ro.product.page_size u:object_r:page_size_prop:s0 exact int
 
 ro.debuggable       u:object_r:userdebug_or_eng_prop:s0 exact bool
 ro.force.debuggable u:object_r:build_prop:s0 exact bool
@@ -1678,3 +1705,7 @@ persist.crashrecovery.last_factory_reset u:object_r:crashrecovery_prop:s0 exact 
 # Properties for controlling snapshotctl.
 sys.snapshotctl.map u:object_r:snapshotctl_prop:s0 exact string
 sys.snapshotctl.unmap u:object_r:snapshotctl_prop:s0 exact string
+
+# Properties for enabling/disabling system services
+ro.system_settings.service.odp_enabled   u:object_r:system_service_enable_prop:s0 exact bool
+ro.system_settings.service.backgound_install_control_enabled   u:object_r:system_service_enable_prop:s0 exact bool

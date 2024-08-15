@@ -33,6 +33,9 @@ userdebug_or_eng(`
   allow dumpstate dropbox_data_file:file r_file_perms;
 ')
 
+r_dir_file(dumpstate, aconfig_storage_metadata_file);
+r_dir_file(dumpstate, aconfig_test_mission_files);
+
 # Allow dumpstate to make binder calls to incidentd
 binder_call(dumpstate, incidentd)
 
@@ -132,6 +135,7 @@ binder_call(dumpstate, gsid)
 userdebug_or_eng(`
     allow dumpstate binderfs_logs_transactions:file r_file_perms;
 ')
+dontaudit dumpstate binderfs_logs_transactions:file r_file_perms;
 allow dumpstate binderfs_logs_transaction_history:file r_file_perms;
 
 r_dir_file(dumpstate, ota_metadata_file)
@@ -257,6 +261,12 @@ allow dumpstate {
   system_suspend_server
 }:process signal;
 
+# On userdebug, dumpstate may fork and execute a command as su. Make sure the
+# timeout logic is allowed to terminate the child process if necessary.
+userdebug_or_eng(`
+  allow dumpstate su:process { signal sigkill };
+')
+
 # Connect to tombstoned to intercept dumps.
 unix_socket_connect(dumpstate, tombstoned_intercept, tombstoned)
 
@@ -367,6 +377,12 @@ allow dumpstate bluetooth_logs_data_file:file r_file_perms;
 # For Nfc
 allow dumpstate nfc_logs_data_file:dir r_dir_perms;
 allow dumpstate nfc_logs_data_file:file r_file_perms;
+
+# For uwb
+allow dumpstate apex_module_data_file:dir search;
+allow dumpstate apex_system_server_data_file:dir search;
+allow dumpstate apex_uwb_data_file:dir r_dir_perms;
+allow dumpstate apex_uwb_data_file:file r_file_perms;
 
 # Dumpstate calls screencap, which grabs a screenshot. Needs gpu access
 allow dumpstate gpu_device:chr_file rw_file_perms;
@@ -521,6 +537,7 @@ dontaudit dumpstate {
   linkerconfig_file
   mirror_data_file
   mnt_user_file
+  vm_data_file
 }:dir getattr;
 
 # Allow dumpstate to talk to bufferhubd over binder
@@ -561,3 +578,21 @@ neverallow {
   -traceur_app
   -dumpstate
 } dumpstate_service:service_manager find;
+
+# only dumpstate, system_server and related others to access apex_uwb_data_file
+neverallow {
+  domain
+  -dumpstate
+  -system_server
+  -apexd
+  -init
+  -vold_prepare_subdirs
+} apex_uwb_data_file:dir no_rw_file_perms;
+neverallow {
+  domain
+  -dumpstate
+  -system_server
+  -apexd
+  -init
+  -vold_prepare_subdirs
+} apex_uwb_data_file:file no_rw_file_perms;

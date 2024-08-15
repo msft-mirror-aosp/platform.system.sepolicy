@@ -286,3 +286,10 @@ filegroup {
         "com.android.telephonymodules-file_contexts",
     ],
 }
+
+filegroup {
+    name: "com.android.configinfrastructure-file_contexts",
+    srcs: [
+        "com.android.configinfrastructure-file_contexts",
+    ],
+}
