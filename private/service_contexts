@@ -428,6 +428,10 @@ storaged_pri                              u:object_r:storaged_service:s0
 storagestats                              u:object_r:storagestats_service:s0
 # sdk_sandbox here refers to the service name, not the domain name.
 sdk_sandbox                               u:object_r:sdk_sandbox_service:s0
+
+is_flag_enabled(RELEASE_SUPERVISION_SERVICE, `
+    supervision                               u:object_r:supervision_service:s0
+')
 SurfaceFlinger                            u:object_r:surfaceflinger_service:s0
 SurfaceFlingerAIDL                        u:object_r:surfaceflinger_service:s0
 suspend_control                           u:object_r:system_suspend_control_service:s0
