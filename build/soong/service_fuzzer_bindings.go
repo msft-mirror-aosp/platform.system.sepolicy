@@ -448,6 +448,7 @@ var (
 		"SurfaceFlingerAIDL":                     EXCEPTION_NO_FUZZER,
 		"suspend_control":                        []string{"suspend_service_fuzzer"},
 		"suspend_control_internal":               []string{"suspend_service_internal_fuzzer"},
+		"supervision":                            EXCEPTION_NO_FUZZER,
 		"system_config":                          EXCEPTION_NO_FUZZER,
 		"system_server_dumper":                   EXCEPTION_NO_FUZZER,
 		"system_update":                          EXCEPTION_NO_FUZZER,
