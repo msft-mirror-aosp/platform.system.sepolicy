@@ -13,6 +13,7 @@ type logd_service,                  service_manager_type;
 type mediatuner_service,            app_api_service, service_manager_type;
 type on_device_intelligence_service, app_api_service, system_server_service, service_manager_type, isolated_compute_allowed_service;
 type profcollectd_service,          service_manager_type;
+type protolog_service,              system_api_service, system_server_service, service_manager_type;
 type resolver_service,              system_server_service, service_manager_type;
 type rkpd_registrar_service,        service_manager_type;
 type rkpd_refresh_service,          service_manager_type;
@@ -21,6 +22,10 @@ type stats_service,                 service_manager_type;
 type statsbootstrap_service,        system_server_service, service_manager_type;
 type statscompanion_service,        system_server_service, service_manager_type;
 type statsmanager_service,          system_api_service, system_server_service, service_manager_type;
+
+is_flag_enabled(RELEASE_SUPERVISION_SERVICE, `
+    type supervision_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+')
 type tracingproxy_service,          system_server_service, service_manager_type;
 type transparency_service,          system_server_service, service_manager_type;
 
