@@ -37,6 +37,7 @@
 /sys                                                              sysfs
 /apex                                                             apex_mnt_dir
 /bootstrap-apex                                                   apex_mnt_dir
+/mnt/vm                                                           vm_data_file
 
 /postinstall                                                      postinstall_mnt_dir
 /postinstall/apex                                                 postinstall_apex_mnt_dir
@@ -407,6 +408,7 @@
 /system/bin/traced                                                traced_exec
 /system/bin/traced_perf                                           traced_perf_exec
 /system/bin/traced_probes                                         traced_probes_exec
+/system/bin/traced_relay                                          traced_exec
 /system/bin/heapprofd                                             heapprofd_exec
 /system/bin/uncrypt                                               uncrypt_exec
 /system/bin/update_verifier                                       update_verifier_exec
@@ -772,6 +774,9 @@
 /system_ext/bin/canhalconfigurator-aidl                           canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator                         canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator-aidl                    canhalconfigurator_exec
+
+/system_ext/bin/custom_vm_setup                                   custom_vm_setup_exec
+/system/system_ext/bin/custom_vm_setup                            custom_vm_setup_exec
 
 /system_ext/lib                                                   system_lib_file
 /system_ext/lib/does_not_exist                                    system_lib_file
@@ -1265,8 +1270,6 @@
 /metadata/bootstat/test                                           metadata_bootstat_file
 /metadata/staged-install                                          staged_install_file
 /metadata/staged-install/test                                     staged_install_file
-/metadata/userspacereboot                                         userspace_reboot_metadata_file
-/metadata/userspacereboot/test                                    userspace_reboot_metadata_file
 /metadata/watchdog                                                watchdog_metadata_file
 /metadata/watchdog/test                                           watchdog_metadata_file
 /metadata/repair-mode                                             repair_mode_metadata_file
