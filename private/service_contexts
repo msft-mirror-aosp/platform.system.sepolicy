@@ -176,6 +176,7 @@ is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
 ')
 ambient_context                           u:object_r:ambient_context_service:s0
 app_binding                               u:object_r:app_binding_service:s0
+app_function                              u:object_r:app_function_service:s0
 app_hibernation                           u:object_r:app_hibernation_service:s0
 app_integrity                             u:object_r:app_integrity_service:s0
 app_prediction                            u:object_r:app_prediction_service:s0
@@ -369,6 +370,7 @@ pinner                                    u:object_r:pinner_service:s0
 powerstats                                u:object_r:powerstats_service:s0
 power                                     u:object_r:power_service:s0
 profiling_service                         u:object_r:profiling_service:s0
+protolog                                  u:object_r:protolog_service:s0
 print                                     u:object_r:print_service:s0
 processinfo                               u:object_r:processinfo_service:s0
 procstats                                 u:object_r:procstats_service:s0
@@ -426,6 +428,10 @@ storaged_pri                              u:object_r:storaged_service:s0
 storagestats                              u:object_r:storagestats_service:s0
 # sdk_sandbox here refers to the service name, not the domain name.
 sdk_sandbox                               u:object_r:sdk_sandbox_service:s0
+
+is_flag_enabled(RELEASE_SUPERVISION_SERVICE, `
+    supervision                               u:object_r:supervision_service:s0
+')
 SurfaceFlinger                            u:object_r:surfaceflinger_service:s0
 SurfaceFlingerAIDL                        u:object_r:surfaceflinger_service:s0
 suspend_control                           u:object_r:system_suspend_control_service:s0

@@ -40,10 +40,14 @@ allow crosvm {
   apex_virt_data_file
   shell_data_file
   vendor_microdroid_file
+  is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `vm_data_file')
 }:file { getattr read ioctl lock };
 
 # Allow searching the directory where the composite disk images are.
-allow crosvm virtualizationservice_data_file:dir search;
+allow crosvm {
+    virtualizationservice_data_file
+    is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `vm_data_file')
+}:dir search;
 
 # When running a VM as root we get spurious capability denials.
 # Suppress them.
@@ -74,6 +78,7 @@ allow crosvm {
   privapp_data_file
   apex_compos_data_file
   apex_virt_data_file
+  is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `vm_data_file')
 }:file write;
 
 # Allow crosvm to pipe console log to shell or app which could be the owner of a VM.
@@ -153,6 +158,7 @@ neverallow crosvm {
   app_data_file
   privapp_data_file
   is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `storage_area_content_file')
+  is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `vm_data_file')
   userdebug_or_eng(`-shell_data_file')
 }:file open;
 
