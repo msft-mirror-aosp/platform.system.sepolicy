@@ -1270,8 +1270,6 @@
 /metadata/bootstat/test                                           metadata_bootstat_file
 /metadata/staged-install                                          staged_install_file
 /metadata/staged-install/test                                     staged_install_file
-/metadata/userspacereboot                                         userspace_reboot_metadata_file
-/metadata/userspacereboot/test                                    userspace_reboot_metadata_file
 /metadata/watchdog                                                watchdog_metadata_file
 /metadata/watchdog/test                                           watchdog_metadata_file
 /metadata/repair-mode                                             repair_mode_metadata_file
