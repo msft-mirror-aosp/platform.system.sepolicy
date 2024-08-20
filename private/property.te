@@ -79,6 +79,7 @@ system_restricted_prop(page_size_prop)
 
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)
+system_vendor_config_prop(high_barometer_quality_prop)
 
 typeattribute log_prop log_property_type;
 typeattribute log_tag_prop log_property_type;
@@ -429,6 +430,14 @@ compatible_property_only(`
   neverallow {
     domain
     -init
+    -vendor_init
+  } {
+    high_barometer_quality_prop
+    }:property_service set;
+
+  neverallow {
+    domain
+    -init
     -dumpstate
     userdebug_or_eng(`-system_suspend')
     } {
@@ -752,7 +761,9 @@ neverallow domain system_and_vendor_property_type:{file property_service} *;
 neverallow {
   domain
   -init
+  -keystore
   -shell
+  -system_server
   -rkpdapp
 } remote_prov_prop:property_service set;
 
