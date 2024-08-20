@@ -361,7 +361,7 @@ ro.virtual_ab.num_worker_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.num_merge_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.num_verify_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.cow_op_merge_size u:object_r:virtual_ab_prop:s0 exact int
-ro.virtual_ab.verify_threshold_block_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.verify_threshold_size u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.verify_block_size u:object_r:virtual_ab_prop:s0 exact int
 
 # OEMs can set this prop at build time to configure how many seconds to delay
@@ -407,6 +407,11 @@ audio.camerasound.force         u:object_r:audio_config_prop:s0 exact bool
 audio.deep_buffer.media         u:object_r:audio_config_prop:s0 exact bool
 audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
+
+# Timecheck configuration
+audio.timecheck.disabled                  u:object_r:audio_config_prop:s0 exact bool
+audio.timecheck.timeout_duration_ms       u:object_r:audio_config_prop:s0 exact int
+audio.timecheck.second_chance_duration_ms u:object_r:audio_config_prop:s0 exact int
 
 # spatializer tuning
 audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
