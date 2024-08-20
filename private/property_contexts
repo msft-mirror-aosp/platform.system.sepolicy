@@ -409,6 +409,7 @@ audio.offload.video             u:object_r:audio_config_prop:s0 exact bool
 audio.offload.min.duration.secs u:object_r:audio_config_prop:s0 exact int
 
 # Timecheck configuration
+audio.timecheck.disabled                  u:object_r:audio_config_prop:s0 exact bool
 audio.timecheck.timeout_duration_ms       u:object_r:audio_config_prop:s0 exact int
 audio.timecheck.second_chance_duration_ms u:object_r:audio_config_prop:s0 exact int
 
