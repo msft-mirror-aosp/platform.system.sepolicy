@@ -184,6 +184,7 @@ var (
 		"android.security.metrics":                                       EXCEPTION_NO_FUZZER,
 		"android.service.gatekeeper.IGateKeeperService":                  []string{"gatekeeperd_service_fuzzer"},
 		"android.system.composd":                                         EXCEPTION_NO_FUZZER,
+		"android.system.microfuchsiad":                                   EXCEPTION_NO_FUZZER,
 		// TODO(b/294158658): add fuzzer
 		"android.hardware.security.keymint.IRemotelyProvisionedComponent/avf": EXCEPTION_NO_FUZZER,
 		"android.system.virtualizationservice":                                []string{"virtualizationmanager_fuzzer"},
