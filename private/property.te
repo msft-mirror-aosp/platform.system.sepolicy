@@ -3,6 +3,7 @@ system_internal_prop(adbd_prop)
 system_internal_prop(apexd_payload_metadata_prop)
 system_internal_prop(ctl_snapuserd_prop)
 system_internal_prop(crashrecovery_prop)
+system_internal_prop(debug_tracing_desktop_mode_visible_tasks_prop)
 system_internal_prop(device_config_core_experiments_team_internal_prop)
 system_internal_prop(device_config_lmkd_native_prop)
 system_internal_prop(device_config_mglru_native_prop)
@@ -79,6 +80,7 @@ system_restricted_prop(page_size_prop)
 
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)
+system_vendor_config_prop(high_barometer_quality_prop)
 
 typeattribute log_prop log_property_type;
 typeattribute log_tag_prop log_property_type;
@@ -425,6 +427,14 @@ compatible_property_only(`
   } {
     suspend_debug_prop
   }:property_service set;
+
+  neverallow {
+    domain
+    -init
+    -vendor_init
+  } {
+    high_barometer_quality_prop
+    }:property_service set;
 
   neverallow {
     domain
