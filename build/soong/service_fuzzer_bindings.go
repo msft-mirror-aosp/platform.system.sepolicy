@@ -392,7 +392,7 @@ var (
 		"procstats":                              EXCEPTION_NO_FUZZER,
 		"profcollectd":                           EXCEPTION_NO_FUZZER,
 		"profiling_service":                      EXCEPTION_NO_FUZZER,
-		"protolog":                               EXCEPTION_NO_FUZZER,
+		"protolog_configuration":                 EXCEPTION_NO_FUZZER,
 		"radio.phonesubinfo":                     EXCEPTION_NO_FUZZER,
 		"radio.phone":                            EXCEPTION_NO_FUZZER,
 		"radio.sms":                              EXCEPTION_NO_FUZZER,
