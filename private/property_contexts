@@ -1267,6 +1267,8 @@ ro.bionic.2nd_cpu_variant u:object_r:cpu_variant_prop:s0 exact string
 ro.bionic.arch            u:object_r:cpu_variant_prop:s0 exact string
 ro.bionic.cpu_variant     u:object_r:cpu_variant_prop:s0 exact string
 
+bionic.linker.16kb.app_compat.enabled u:object_r:bionic_linker_16kb_app_compat_prop:s0 exact bool
+
 ro.board.platform u:object_r:exported_default_prop:s0 exact string
 
 ro.boot.fake_battery         u:object_r:exported_default_prop:s0 exact int
