@@ -1301,6 +1301,11 @@
 /mnt/product                                                      mnt_product_file
 /mnt/product/test                                                 mnt_product_file
 
+
+/mnt/scratch_ota_metadata_super                                   ota_metadata_file
+/mnt/scratch_ota_metadata_super/ota                               ota_metadata_file
+/mnt/scratch_ota_metadata_super/ota/snapshots                     ota_metadata_file
+
 /system/bin/check_dynamic_partitions                              postinstall_exec
 /product/bin/check_dynamic_partitions                             postinstall_exec
 /system/bin/otapreopt_script                                      postinstall_exec
