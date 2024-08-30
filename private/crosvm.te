@@ -5,6 +5,10 @@ type crosvm_tmpfs, file_type;
 # Let crosvm open VM manager devices such as /dev/kvm.
 allow crosvm vm_manager_device_type:chr_file rw_file_perms;
 
+# TODO(b/357025924): This is a temporary workaround to allow the KeyMint VM to use crosvm
+# directly. It should be removed once the KeyMint VM can be started with early_virtmgr
+is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, init_daemon_domain(crosvm))
+
 # Most other domains shouldn't access /dev/kvm.
 neverallow { domain -crosvm -ueventd -shell } kvm_device:chr_file getattr;
 neverallow { domain -crosvm -ueventd } kvm_device:chr_file ~getattr;
@@ -194,4 +198,7 @@ neverallow {
   domain
   -crosvm
   -virtualizationmanager
+  # TODO(b/357025924): This is a temporary workaround to allow the KeyMint VM to use crosvm
+  # directly. It should be removed once the KeyMint VM can be started with early_virtmgr
+  is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `-init')
 } crosvm_exec:file no_x_file_perms;

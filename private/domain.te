@@ -342,6 +342,10 @@ allow domain apex_mnt_dir:lnk_file r_file_perms;
 allow domain sysfs_pgsize_migration:dir search;
 allow domain sysfs_pgsize_migration:file r_file_perms;
 
+# Linker is executed from the context of the process requesting the dynamic linking,
+# so this prop must be "world-readable".
+get_prop(domain, bionic_linker_16kb_app_compat_prop)
+
 # Allow everyone to read media server-configurable flags, so that libstagefright can be
 # configured using server-configurable flags
 get_prop(domain, device_config_media_native_prop)
