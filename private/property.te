@@ -71,6 +71,7 @@ system_internal_prop(system_service_enable_prop)
 
 
 # Properties which can't be written outside system
+system_restricted_prop(bionic_linker_16kb_app_compat_prop)
 system_restricted_prop(device_config_virtualization_framework_native_prop)
 system_restricted_prop(fstype_prop)
 system_restricted_prop(log_file_logger_prop)
@@ -834,3 +835,9 @@ neverallow {
   -init
   -vendor_init
 } pm_archiving_enabled_prop:property_service set;
+
+neverallow {
+  domain
+  -init
+  userdebug_or_eng(`-su')
+} bionic_linker_16kb_app_compat_prop:property_service set;
