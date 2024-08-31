@@ -44,6 +44,10 @@ def TestSystemTypeViolations(pol):
         "/system/product/vendor_overlay/",
         "/system/system_ext/overlay/",
         "/system_ext/overlay/",
+
+        # adb_keys_file hasn't been a system_file_type
+        "/product/etc/security/adb_keys",
+        "/system/product/etc/security/adb_keys",
     ]
 
     return pol.AssertPathTypesHaveAttr(partitions, exceptions, "system_file_type")
