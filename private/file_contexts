@@ -24,7 +24,7 @@
 /                   u:object_r:rootfs:s0
 
 # Data files
-/adb_keys           u:object_r:adb_keys_file:s0
+/adb_keys           u:object_r:system_file:s0
 /build\.prop        u:object_r:rootfs:s0
 /default\.prop      u:object_r:rootfs:s0
 /fstab\..*          u:object_r:rootfs:s0
@@ -506,6 +506,8 @@
 /(product|system/product)/etc/selinux/product_mac_permissions\.xml u:object_r:mac_perms_file:s0
 
 /(product|system/product)/lib(64)?(/.*)?                         u:object_r:system_lib_file:s0
+
+/(product|system/product)/etc/security/adb_keys                 u:object_r:adb_keys_file:s0
 
 #############################
 # SystemExt files
