@@ -3,7 +3,7 @@
 # It can be passed to checkfc to confirm that the regular expressions in
 # file_contexts are matching the intended paths.
 /                                                                 rootfs
-/adb_keys                                                         adb_keys_file
+/adb_keys                                                         system_file
 /build.prop                                                       rootfs
 /default.prop                                                     rootfs
 /fstab.persist                                                    rootfs
@@ -724,6 +724,9 @@
 /system/product/lib64                                             system_lib_file
 /system/product/lib64/does_not_exist                              system_lib_file
 
+/product/etc/security/adb_keys                                    adb_keys_file
+/system/product/etc/security/adb_keys                             adb_keys_file
+
 /system_ext                                                       system_file
 /system_ext/does_not_exist                                        system_file
 /system/system_ext                                                system_file
@@ -1300,6 +1303,11 @@
 
 /mnt/product                                                      mnt_product_file
 /mnt/product/test                                                 mnt_product_file
+
+
+/mnt/scratch_ota_metadata_super                                   ota_metadata_file
+/mnt/scratch_ota_metadata_super/ota                               ota_metadata_file
+/mnt/scratch_ota_metadata_super/ota/snapshots                     ota_metadata_file
 
 /system/bin/check_dynamic_partitions                              postinstall_exec
 /product/bin/check_dynamic_partitions                             postinstall_exec
