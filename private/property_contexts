@@ -33,6 +33,7 @@ bluetooth.              u:object_r:bluetooth_prop:s0
 
 debug.                  u:object_r:debug_prop:s0
 debug.db.               u:object_r:debuggerd_prop:s0
+debug.tracing.desktop_mode_visible_tasks u:object_r:debug_tracing_desktop_mode_visible_tasks_prop:s0 exact uint
 dumpstate.              u:object_r:dumpstate_prop:s0
 dumpstate.options       u:object_r:dumpstate_options_prop:s0
 init.svc_debug_pid.     u:object_r:init_svc_debug_prop:s0
@@ -1265,6 +1266,8 @@ ro.bionic.2nd_arch        u:object_r:cpu_variant_prop:s0 exact string
 ro.bionic.2nd_cpu_variant u:object_r:cpu_variant_prop:s0 exact string
 ro.bionic.arch            u:object_r:cpu_variant_prop:s0 exact string
 ro.bionic.cpu_variant     u:object_r:cpu_variant_prop:s0 exact string
+
+bionic.linker.16kb.app_compat.enabled u:object_r:bionic_linker_16kb_app_compat_prop:s0 exact bool
 
 ro.board.platform u:object_r:exported_default_prop:s0 exact string
 
