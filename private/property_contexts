@@ -33,6 +33,7 @@ bluetooth.              u:object_r:bluetooth_prop:s0
 
 debug.                  u:object_r:debug_prop:s0
 debug.db.               u:object_r:debuggerd_prop:s0
+debug.tracing.desktop_mode_visible_tasks u:object_r:debug_tracing_desktop_mode_visible_tasks_prop:s0 exact uint
 dumpstate.              u:object_r:dumpstate_prop:s0
 dumpstate.options       u:object_r:dumpstate_options_prop:s0
 init.svc_debug_pid.     u:object_r:init_svc_debug_prop:s0

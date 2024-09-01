@@ -883,6 +883,12 @@
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 /metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
 
+############################
+# mount point for ota metadata
+/mnt/scratch_ota_metadata_super(/.*)?                 u:object_r:ota_metadata_file:s0
+/mnt/scratch_ota_metadata_super/ota(/.*)?             u:object_r:ota_metadata_file:s0
+/mnt/scratch_ota_metadata_super/ota/snapshots(/.*)?   u:object_r:ota_metadata_file:s0
+
 #############################
 # asec containers
 /mnt/asec(/.*)?             u:object_r:asec_apk_file:s0
