@@ -44,7 +44,7 @@ cc_binary_host {
     name: "checkfc",
     defaults: ["sepolicy_tools_defaults"],
     srcs: ["checkfc.c"],
-    shared_libs: ["libselinux"],
+    static_libs: ["libselinux"],
 }
 
 cc_binary_host {

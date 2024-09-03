@@ -79,6 +79,12 @@ system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
 system_restricted_prop(page_size_prop)
 
+# These types will be public starting at board api 202504
+until_board_api(202504, `
+    system_restricted_prop(enable_16k_pages_prop)
+    system_restricted_prop(profcollectd_etr_prop)
+')
+
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)
 system_vendor_config_prop(high_barometer_quality_prop)
