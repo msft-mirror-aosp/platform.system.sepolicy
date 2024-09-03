@@ -488,6 +488,8 @@ allow appdomain app_fuse_file:file { getattr read append write map };
 allow appdomain runas_exec:file getattr;
 # Others are either allowed elsewhere or not desired.
 
+get_prop(appdomain, high_barometer_quality_prop)
+
 # Connect to adbd and use a socket transferred from it.
 # This is used for e.g. adb backup/restore.
 allow appdomain adbd:unix_stream_socket connectto;
