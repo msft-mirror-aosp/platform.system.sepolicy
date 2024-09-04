@@ -537,6 +537,7 @@ dontaudit dumpstate {
   linkerconfig_file
   mirror_data_file
   mnt_user_file
+  vm_data_file
 }:dir getattr;
 
 # Allow dumpstate to talk to bufferhubd over binder
