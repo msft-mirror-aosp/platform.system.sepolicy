@@ -91,8 +91,8 @@ type policyConfProperties struct {
 	// Desired number of MLS categories. Defaults to 1024
 	Mls_cats *int64
 
-	// Board api level of policy files. Set "vendor" for RELEASE_BOARD_API_LEVEL, "system" for
-	// turning off the guard, or a direct version string (e.g. "202404"). Defaults to "system"
+	// Board api level of policy files. Set "current" for RELEASE_BOARD_API_LEVEL, or a direct
+	// version string (e.g. "202404"). Defaults to "current"
 	Board_api_level *string
 }
 
@@ -225,17 +225,12 @@ func (c *policyConf) mlsCats() int {
 }
 
 func (c *policyConf) boardApiLevel(ctx android.ModuleContext) string {
-	level := proptools.StringDefault(c.properties.Board_api_level, "system")
-
-	if level == "system" {
-		// aribtrary value greater than any other vendor API levels
-		return "1000000"
-	} else if level == "vendor" {
+	level := proptools.StringDefault(c.properties.Board_api_level, "current")
+	if level == "current" {
 		return ctx.Config().VendorApiLevel()
 	} else {
 		return level
 	}
-
 }
 
 func findPolicyConfOrder(name string) int {
