@@ -22,6 +22,7 @@ se_flags {
         "RELEASE_AVF_ENABLE_DEVICE_ASSIGNMENT",
         "RELEASE_AVF_ENABLE_LLPVM_CHANGES",
         "RELEASE_AVF_ENABLE_NETWORK",
+        "RELEASE_AVF_ENABLE_MICROFUCHSIA",
         "RELEASE_READ_FROM_NEW_STORAGE",
         "RELEASE_SUPERVISION_SERVICE",
         "RELEASE_HARDWARE_BLUETOOTH_RANGING_SERVICE",
@@ -39,13 +40,6 @@ se_policy_conf_defaults {
     name: "se_policy_conf_flags_defaults",
     srcs: [":sepolicy_flagging_macros"],
     build_flags: ["all_selinux_flags"],
-}
-
-se_policy_conf_defaults {
-    name: "se_policy_conf_public_flags_defaults",
-    srcs: [":sepolicy_flagging_macros"],
-    build_flags: ["all_selinux_flags"],
-    board_api_level: "vendor",
 }
 
 contexts_defaults {

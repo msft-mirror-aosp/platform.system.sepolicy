@@ -213,3 +213,30 @@ type storage_area_content_file, file_type, data_file_type, core_data_file_type, 
 
 # /data/misc_ce/userId/storage_area_keys
 type storage_area_key_file, file_type, data_file_type, core_data_file_type;
+
+
+# Types added in 202504 in public/file.te
+until_board_api(202504, `
+    type binderfs_logs_transactions, fs_type;
+    type binderfs_logs_transaction_history, fs_type;
+')
+
+until_board_api(202504, `
+    type proc_cgroups, fs_type, proc_type;
+')
+
+until_board_api(202504, `
+    type sysfs_udc, fs_type, sysfs_type;
+')
+
+until_board_api(202504, `
+    type fs_bpf_lmkd_memevents_rb, fs_type, bpffs_type;
+    type fs_bpf_lmkd_memevents_prog, fs_type, bpffs_type;
+')
+
+until_board_api(202504, `
+    # boot otas for 16KB developer option
+    type vendor_boot_ota_file, vendor_file_type, file_type;
+')
+## END Types added in 202504 in public/file.te
+

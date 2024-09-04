@@ -24,7 +24,7 @@
 /                   u:object_r:rootfs:s0
 
 # Data files
-/adb_keys           u:object_r:adb_keys_file:s0
+/adb_keys           u:object_r:system_file:s0
 /build\.prop        u:object_r:rootfs:s0
 /default\.prop      u:object_r:rootfs:s0
 /fstab\..*          u:object_r:rootfs:s0
@@ -507,6 +507,8 @@
 
 /(product|system/product)/lib(64)?(/.*)?                         u:object_r:system_lib_file:s0
 
+/(product|system/product)/etc/security/adb_keys                 u:object_r:adb_keys_file:s0
+
 #############################
 # SystemExt files
 #
@@ -882,6 +884,12 @@
 /metadata/aconfig(/.*)?    u:object_r:aconfig_storage_metadata_file:s0
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 /metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
+
+############################
+# mount point for ota metadata
+/mnt/scratch_ota_metadata_super(/.*)?                 u:object_r:ota_metadata_file:s0
+/mnt/scratch_ota_metadata_super/ota(/.*)?             u:object_r:ota_metadata_file:s0
+/mnt/scratch_ota_metadata_super/ota/snapshots(/.*)?   u:object_r:ota_metadata_file:s0
 
 #############################
 # asec containers
