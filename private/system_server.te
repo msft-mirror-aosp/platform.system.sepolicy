@@ -774,6 +774,7 @@ userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 set_prop(system_server, ctl_default_prop)
 set_prop(system_server, ctl_bugreport_prop)
 set_prop(system_server, ctl_gsid_prop)
+set_prop(system_server, ctl_artd_pre_reboot_prop)
 
 # cppreopt property
 set_prop(system_server, cppreopt_prop)
