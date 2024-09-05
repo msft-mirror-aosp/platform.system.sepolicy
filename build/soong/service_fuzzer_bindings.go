@@ -184,6 +184,7 @@ var (
 		"android.security.metrics":                                       EXCEPTION_NO_FUZZER,
 		"android.service.gatekeeper.IGateKeeperService":                  []string{"gatekeeperd_service_fuzzer"},
 		"android.system.composd":                                         EXCEPTION_NO_FUZZER,
+		"android.system.microfuchsiad":                                   EXCEPTION_NO_FUZZER,
 		// TODO(b/294158658): add fuzzer
 		"android.hardware.security.keymint.IRemotelyProvisionedComponent/avf": EXCEPTION_NO_FUZZER,
 		"android.system.virtualizationservice":                                []string{"virtualizationmanager_fuzzer"},
@@ -391,7 +392,7 @@ var (
 		"procstats":                              EXCEPTION_NO_FUZZER,
 		"profcollectd":                           EXCEPTION_NO_FUZZER,
 		"profiling_service":                      EXCEPTION_NO_FUZZER,
-		"protolog":                               EXCEPTION_NO_FUZZER,
+		"protolog_configuration":                 EXCEPTION_NO_FUZZER,
 		"radio.phonesubinfo":                     EXCEPTION_NO_FUZZER,
 		"radio.phone":                            EXCEPTION_NO_FUZZER,
 		"radio.sms":                              EXCEPTION_NO_FUZZER,
