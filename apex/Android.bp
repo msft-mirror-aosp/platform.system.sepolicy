@@ -293,10 +293,3 @@ filegroup {
         "com.android.configinfrastructure-file_contexts",
     ],
 }
-
-filegroup {
-    name: "com.android.biometrics.virtual.fingerprint-file_contexts",
-    srcs: [
-        "com.android.biometrics.virtual.fingerprint-file_contexts",
-    ],
-}
