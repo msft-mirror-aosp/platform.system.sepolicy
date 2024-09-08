@@ -202,6 +202,11 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to starting/stopping artd_pre_reboot.
+ctl.start$artd_pre_reboot          u:object_r:ctl_artd_pre_reboot_prop:s0
+ctl.stop$artd_pre_reboot           u:object_r:ctl_artd_pre_reboot_prop:s0
+ctl.restart$artd_pre_reboot        u:object_r:ctl_artd_pre_reboot_prop:s0
+
 # NFC properties
 nfc.                    u:object_r:nfc_prop:s0
 
@@ -314,6 +319,7 @@ apexd.config.dm_delete.timeout           u:object_r:apexd_config_prop:s0 exact u
 apexd.config.dm_create.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.boot_activation.threads     u:object_r:apexd_config_prop:s0 exact uint
+apexd.config.loopback.readahead          u:object_r:apexd_config_prop:s0 exact uint
 persist.apexd.          u:object_r:apexd_prop:s0
 persist.vendor.apex.    u:object_r:apexd_select_prop:s0
 ro.boot.vendor.apex.    u:object_r:apexd_select_prop:s0
