@@ -49,6 +49,7 @@ type timezone_prop, property_type;
 type usb_control_prop, property_type;
 type vendor_default_prop, property_type;
 type powerctl_prop, property_type;
+type servicemanager_prop, property_type;
 
 # public is for vendor-facing type and attribute definitions.
 # DO NOT ADD allow, neverallow, or dontaudit statements here.

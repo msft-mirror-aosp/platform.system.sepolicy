@@ -121,6 +121,9 @@ microdroid_manager.export_tombstones.enabled u:object_r:microdroid_config_prop:s
 microdroid_manager.config_done u:object_r:microdroid_lifecycle_prop:s0 exact bool
 microdroid_manager.init_done u:object_r:microdroid_lifecycle_prop:s0 exact bool
 
+# servicemanager property to avoid waiting for servicemanager process
+servicemanager.installed u:object_r:servicemanager_prop:s0 exact bool
+
 init_debug_policy.adbd.enabled u:object_r:init_debug_policy_prop:s0 exact bool
 
 dev.mnt.blk.root   u:object_r:dev_mnt_prop:s0 exact string
