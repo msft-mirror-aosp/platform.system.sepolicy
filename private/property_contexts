@@ -415,6 +415,9 @@ audio.spatializer.effect.util_clamp_min  u:object_r:audio_config_prop:s0 exact i
 audio.spatializer.pose_predictor_type    u:object_r:audio_config_prop:s0 exact enum 0 1 2 3
 audio.spatializer.prediction_duration_ms u:object_r:audio_config_prop:s0 exact int
 
+# Timestamp correction for MSD
+audio.timestamp.corrected_output_device  u:object_r:audio_config_prop:s0 exact int
+
 ro.audio.ignore_effects   u:object_r:audio_config_prop:s0 exact bool
 ro.audio.monitorRotation  u:object_r:audio_config_prop:s0 exact bool
 ro.audio.offload_wakelock u:object_r:audio_config_prop:s0 exact bool
@@ -1021,6 +1024,9 @@ ro.actionable_compatible_property.enabled u:object_r:build_prop:s0 exact bool
 
 # Property for enabling 16k pages developer option.
 ro.product.build.16k_page.enabled u:object_r:enable_16k_pages_prop:s0 exact bool
+
+# Property that indicates which page size the device boots by default.
+ro.product.page_size u:object_r:page_size_prop:s0 exact int
 
 ro.debuggable       u:object_r:userdebug_or_eng_prop:s0 exact bool
 ro.force.debuggable u:object_r:build_prop:s0 exact bool
@@ -1695,3 +1701,7 @@ persist.crashrecovery.last_factory_reset u:object_r:crashrecovery_prop:s0 exact 
 # Properties for controlling snapshotctl.
 sys.snapshotctl.map u:object_r:snapshotctl_prop:s0 exact string
 sys.snapshotctl.unmap u:object_r:snapshotctl_prop:s0 exact string
+
+# Properties for enabling/disabling system services
+ro.system_settings.service.odp_enabled   u:object_r:system_service_enable_prop:s0 exact bool
+ro.system_settings.service.backgound_install_control_enabled   u:object_r:system_service_enable_prop:s0 exact bool

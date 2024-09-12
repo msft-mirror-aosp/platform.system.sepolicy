@@ -900,6 +900,9 @@ get_prop(system_server, traced_oome_heap_session_count_prop)
 # configuration properties
 get_prop(system_server, sensors_config_prop)
 
+# Allow system server to determine if system services are enabled
+get_prop(system_server, system_service_enable_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
@@ -1261,6 +1264,9 @@ get_prop(system_server,system_jvmti_agent_prop)
 # UsbDeviceManager uses /dev/usb-ffs
 allow system_server functionfs:dir search;
 allow system_server functionfs:file rw_file_perms;
+# To resolve arbitrary sysfs paths from /sys/class/udc/* symlinks.
+allow system_server sysfs_type:dir search;
+r_dir_file(system_server, sysfs_udc)
 
 # system_server contains time / time zone detection logic so reads the associated properties.
 get_prop(system_server, time_prop)

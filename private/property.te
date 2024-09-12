@@ -66,6 +66,8 @@ system_internal_prop(hypervisor_virtualizationmanager_prop)
 system_internal_prop(game_manager_config_prop)
 system_internal_prop(hidl_memory_prop)
 system_internal_prop(suspend_debug_prop)
+system_internal_prop(system_service_enable_prop)
+
 
 # Properties which can't be written outside system
 system_restricted_prop(device_config_virtualization_framework_native_prop)
@@ -73,6 +75,7 @@ system_restricted_prop(fstype_prop)
 system_restricted_prop(log_file_logger_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
+system_restricted_prop(page_size_prop)
 
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)

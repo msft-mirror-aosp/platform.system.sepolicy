@@ -262,6 +262,7 @@ userdebug_or_eng(`set_prop(shell, persist_sysui_ranking_update_prop)')
 get_prop(shell, build_attestation_prop)
 
 # Allow shell to execute oatdump.
+# TODO (b/350628688): Remove this once it's safe to do so.
 allow shell oatdump_exec:file rx_file_perms;
 
 # Allow shell access to socket for test
@@ -467,6 +468,10 @@ allow shell sepolicy_file:file r_file_perms;
 
 # Allow shell to start up vendor shell
 allow shell vendor_shell_exec:file rx_file_perms;
+
+is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
+  allow shell custom_vm_setup_exec:file { entrypoint r_file_perms };
+')
 
 # Everything is labeled as rootfs in recovery mode. Allow shell to
 # execute them.
