@@ -300,3 +300,10 @@ filegroup {
         "com.android.biometrics.virtual.fingerprint-file_contexts",
     ],
 }
+
+filegroup {
+    name: "com.android.uprobestats-file_contexts",
+    srcs: [
+        "com.android.uprobestats-file_contexts",
+    ],
+}
