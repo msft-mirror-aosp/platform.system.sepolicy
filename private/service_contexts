@@ -26,6 +26,7 @@ android.hardware.automotive.remoteaccess.IRemoteAccess/default       u:object_r:
 android.hardware.automotive.vehicle.IVehicle/default                 u:object_r:hal_vehicle_service:s0
 android.hardware.biometrics.face.IFace/default                       u:object_r:hal_face_service:s0
 android.hardware.biometrics.face.IFace/virtual                       u:object_r:hal_face_service:s0
+android.hardware.biometrics.face.virtualhal.IVirtualHal/virtual      u:object_r:hal_face_service:s0
 android.hardware.biometrics.fingerprint.IFingerprint/default         u:object_r:hal_fingerprint_service:s0
 android.hardware.biometrics.fingerprint.IFingerprint/virtual         u:object_r:hal_fingerprint_service:s0
 android.hardware.biometrics.fingerprint.virtualhal.IVirtualHal/virtual u:object_r:hal_fingerprint_service:s0
