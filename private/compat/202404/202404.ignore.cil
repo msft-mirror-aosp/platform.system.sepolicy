@@ -11,6 +11,7 @@
     binderfs_logs_transaction_history
     proc_compaction_proactiveness
     proc_cgroups
+    ranging_service
     supervision_service
     sysfs_udc
     app_function_service
