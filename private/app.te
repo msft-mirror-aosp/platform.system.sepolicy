@@ -167,6 +167,8 @@ use_keystore({ appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all })
 
 use_credstore({ appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all })
 
+allow { appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all } persistent_data_block_service:service_manager find;
+
 # For app fuse.
 pdx_client({ appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all }, display_client)
 pdx_client({ appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all }, display_manager)

@@ -40,6 +40,8 @@ userfaultfd_use(artd)
 allow artd mnt_expand_file:dir { getattr search };
 allow artd apk_data_file:dir { rw_dir_perms create setattr relabelfrom };
 allow artd apk_data_file:file r_file_perms;
+allow artd apk_tmp_file:dir { rw_dir_perms create setattr relabelfrom };
+allow artd apk_tmp_file:file r_file_perms;
 
 # Read access to vendor APKs ({/vendor,/odm}/{app,priv-app}/...).
 r_dir_file(artd, vendor_app_file)
