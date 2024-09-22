@@ -307,3 +307,10 @@ filegroup {
         "com.android.uprobestats-file_contexts",
     ],
 }
+
+filegroup {
+    name: "com.android.biometrics.virtual.face-file_contexts",
+    srcs: [
+        "com.android.biometrics.virtual.face-file_contexts",
+    ],
+}
