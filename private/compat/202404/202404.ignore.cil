@@ -15,4 +15,6 @@
     app_function_service
     virtual_fingerprint
     virtual_fingerprint_exec
+    virtual_face
+    virtual_face_exec
   ))
