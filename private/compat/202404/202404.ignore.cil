@@ -5,11 +5,13 @@
 (typeattribute new_objects)
 (typeattributeset new_objects
   ( new_objects
+    bluetooth_finder_prop
     profcollectd_etr_prop
     fstype_prop
     binderfs_logs_transactions
     binderfs_logs_transaction_history
     proc_cgroups
+    ranging_service
     supervision_service
     sysfs_udc
     app_function_service
