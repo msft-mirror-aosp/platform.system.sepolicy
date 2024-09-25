@@ -1769,10 +1769,14 @@ neverallow {
   -crosvm
 } staging_data_file:file *;
 neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
-# apexd needs the link and unlink permissions, so list every `no_w_file_perms`
-# except for `link` and `unlink`.
-neverallow { domain -init -system_server } staging_data_file:file
-  { append create relabelfrom rename setattr write no_x_file_perms };
+# apexd needs the link/unlink/rename permissions
+neverallow { domain -init -system_server -installd -apexd } staging_data_file:file {
+  no_w_file_perms no_x_file_perms
+};
+neverallow apexd staging_data_file:file {
+  append create relabelfrom setattr write # no_w_file_perms -link -unlink -rename
+  no_x_file_perms
+};
 
 neverallow {
     domain
