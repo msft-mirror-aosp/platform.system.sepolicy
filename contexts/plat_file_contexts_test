@@ -417,7 +417,6 @@
 /system/bin/cppreopts.sh                                          cppreopts_exec
 /system/bin/preloads_copy.sh                                      preloads_copy_exec
 /system/bin/preopt2cachename                                      preopt2cachename_exec
-/system/bin/viewcompiler                                          viewcompiler_exec
 /system/bin/sgdisk                                                sgdisk_exec
 /system/bin/blkid                                                 blkid_exec
 /system/bin/flags_health_check                                    flags_health_check_exec
