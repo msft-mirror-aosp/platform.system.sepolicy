@@ -1005,3 +1005,38 @@ phony {
         ],
     }),
 }
+
+phony {
+    name: "selinux_policy_product",
+    required: [
+        "product_mapping_file",
+        "product_sepolicy.cil",
+        // "ifdef HAS_PRODUCT_PUBLIC_SEPOLICY" check included in .cil
+        "product_29.0.cil",
+        "product_30.0.cil",
+        "product_31.0.cil",
+        "product_32.0.cil",
+        "product_33.0.cil",
+        "product_34.0.cil",
+        "product_file_contexts",
+        // "ifdef HAS_PRODUCT_SEPOLICY_DIR" in Android.mk can be ignored.
+        "product_file_contexts_test",
+        "product_keystore2_key_contexts",
+        "product_hwservice_contexts",
+        "product_hwservice_contexts_test",
+        "product_property_contexts",
+        "product_property_contexts_test",
+        "product_seapp_contexts",
+        "product_service_contexts",
+        "product_service_contexts_test",
+        "product_mac_permissions.xml",
+    ] + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
+        true: ["product_sepolicy_and_mapping.sha256"],
+        default: [],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        "202404": [],
+        default: [
+            "product_202404.cil",
+        ],
+    }),
+}
