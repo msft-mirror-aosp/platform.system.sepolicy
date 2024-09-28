@@ -265,53 +265,6 @@ include $(BUILD_PHONY_PACKAGE)
 
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := selinux_policy_product
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-# Include precompiled policy, unless told otherwise.
-ifneq ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
-ifdef HAS_PRODUCT_SEPOLICY
-LOCAL_REQUIRED_MODULES += product_sepolicy_and_mapping.sha256
-endif
-endif
-
-ifdef HAS_PRODUCT_SEPOLICY
-LOCAL_REQUIRED_MODULES += product_sepolicy.cil
-endif
-
-ifdef HAS_PRODUCT_PUBLIC_SEPOLICY
-LOCAL_REQUIRED_MODULES += \
-    product_mapping_file
-
-product_compat_files := $(call build_policy, $(sepolicy_compat_files), $(PRODUCT_PRIVATE_POLICY))
-
-LOCAL_REQUIRED_MODULES += $(addprefix product_, $(notdir $(product_compat_files)))
-
-endif
-
-ifdef HAS_PRODUCT_SEPOLICY_DIR
-LOCAL_REQUIRED_MODULES += \
-    product_file_contexts \
-    product_file_contexts_test \
-    product_keystore2_key_contexts \
-    product_hwservice_contexts \
-    product_hwservice_contexts_test \
-    product_property_contexts \
-    product_property_contexts_test \
-    product_seapp_contexts \
-    product_service_contexts \
-    product_service_contexts_test \
-    product_mac_permissions.xml \
-
-endif
-
-include $(BUILD_PHONY_PACKAGE)
-
-#################################
-
-include $(CLEAR_VARS)
-
 LOCAL_MODULE := selinux_policy_nonsystem
 LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
 LOCAL_LICENSE_CONDITIONS := notice unencumbered
