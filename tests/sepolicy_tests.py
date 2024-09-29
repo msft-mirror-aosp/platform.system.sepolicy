@@ -186,6 +186,7 @@ def TestIsolatedAttributeConsistency(test_policy):
         # access given from technical_debt.cil
         "codec2_config_prop" : ["file"],
         "device_config_nnapi_native_prop":["file"],
+        "gpu_device": ["dir"],
         "hal_allocator_default":["binder", "fd"],
         "hal_codec2": ["binder", "fd"],
         "hal_codec2_hwservice":["hwservice_manager"],
@@ -210,6 +211,7 @@ def TestIsolatedAttributeConsistency(test_policy):
         "media_variant_prop":["file"],
         "nnapi_ext_deny_product_prop":["file"],
         "servicemanager":["fd"],
+        "sysfs_gpu": ["file"],
         "toolbox_exec": ["file"],
         # extra types being granted to isolated_compute_app
         "isolated_compute_allowed":["service_manager", "chr_file"],
