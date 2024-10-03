@@ -1162,3 +1162,22 @@ phony {
         default: [],
     }),
 }
+
+phony {
+    name: "selinux_policy",
+    required: [
+        // Runs checkfc against merged service_contexts files
+        "merged_hwservice_contexts_test",
+        "merged_service_contexts_test",
+        "selinux_policy_nonsystem",
+        "selinux_policy_system",
+    ],
+}
+
+// selinux_policy is a main goal and triggers lots of tests.
+// Most tests are FAKE modules, so aren'triggered on normal builds. (e.g. 'm')
+// By setting as droidcore's dependency, tests will run on normal builds.
+phony_rule {
+    name: "droidcore",
+    phony_deps: ["selinux_policy"],
+}
