@@ -165,6 +165,7 @@ var (
 		"adaptive_auth":       EXCEPTION_NO_FUZZER,
 		"adb":                 EXCEPTION_NO_FUZZER,
 		"adservices_manager":  EXCEPTION_NO_FUZZER,
+		"advanced_protection": EXCEPTION_NO_FUZZER,
 		"aidl_lazy_test_1":    EXCEPTION_NO_FUZZER,
 		"aidl_lazy_test_2":    EXCEPTION_NO_FUZZER,
 		"aidl_lazy_test_quit": EXCEPTION_NO_FUZZER,
