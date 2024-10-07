@@ -33,6 +33,7 @@ const (
 
 // This order should be kept. checkpolicy syntax requires it.
 var policyConfOrder = []string{
+	"flagging_macros",
 	"security_classes",
 	"initial_sids",
 	"access_vectors",
@@ -90,8 +91,9 @@ type policyConfProperties struct {
 	// Desired number of MLS categories. Defaults to 1024
 	Mls_cats *int64
 
-	// Whether to turn on board_api_level guard or not. Defaults to false
-	Board_api_level_guard *bool
+	// Board api level of policy files. Set "vendor" for RELEASE_BOARD_API_LEVEL, "system" for
+	// turning off the guard, or a direct version string (e.g. "202404"). Defaults to "system"
+	Board_api_level *string
 }
 
 type policyConf struct {
@@ -223,11 +225,17 @@ func (c *policyConf) mlsCats() int {
 }
 
 func (c *policyConf) boardApiLevel(ctx android.ModuleContext) string {
-	if proptools.Bool(c.properties.Board_api_level_guard) {
+	level := proptools.StringDefault(c.properties.Board_api_level, "system")
+
+	if level == "system" {
+		// aribtrary value greater than any other vendor API levels
+		return "1000000"
+	} else if level == "vendor" {
 		return ctx.Config().VendorApiLevel()
+	} else {
+		return level
 	}
-	// aribtrary value greater than any other vendor API levels
-	return "1000000"
+
 }
 
 func findPolicyConfOrder(name string) int {
