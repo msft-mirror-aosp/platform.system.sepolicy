@@ -84,6 +84,10 @@ allow domain ashmem_libcutils_device:chr_file rw_file_perms;
 # /dev/binder can be accessed by ... everyone! :)
 allow { domain -hwservicemanager -vndservicemanager } binder_device:chr_file rw_file_perms;
 get_prop({domain -hwservicemanager -vndservicemanager }, servicemanager_prop)
+# Checking for the existance of the hwservicemanager binary is done in the client API
+# isHwServiceManagerInstalled
+dontaudit domain hwservicemanager_exec:file r_file_perms;
+
 
 # Restrict binder ioctls to an allowlist. Additional ioctl commands may be
 # added to individual domains, but this sets safe defaults for all processes.
@@ -342,6 +346,10 @@ allow domain apex_mnt_dir:lnk_file r_file_perms;
 allow domain sysfs_pgsize_migration:dir search;
 allow domain sysfs_pgsize_migration:file r_file_perms;
 
+# Linker is executed from the context of the process requesting the dynamic linking,
+# so this prop must be "world-readable".
+get_prop(domain, bionic_linker_16kb_app_compat_prop)
+
 # Allow everyone to read media server-configurable flags, so that libstagefright can be
 # configured using server-configurable flags
 get_prop(domain, device_config_media_native_prop)
@@ -493,7 +501,7 @@ get_prop(domain, socket_hook_prop)
 get_prop(domain, surfaceflinger_prop)
 get_prop(domain, telephony_status_prop)
 get_prop(domain, timezone_prop)
-get_prop({domain -untrusted_app_all -isolated_app_all -ephemeral_app },  userdebug_or_eng_prop)
+get_prop({domain -untrusted_app_all -isolated_app_all -ephemeral_app -app_zygote },  userdebug_or_eng_prop)
 get_prop(domain, vendor_socket_hook_prop)
 get_prop(domain, vndk_prop)
 get_prop(domain, vold_status_prop)
@@ -1768,10 +1776,14 @@ neverallow {
   -crosvm
 } staging_data_file:file *;
 neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
-# apexd needs the link and unlink permissions, so list every `no_w_file_perms`
-# except for `link` and `unlink`.
-neverallow { domain -init -system_server } staging_data_file:file
-  { append create relabelfrom rename setattr write no_x_file_perms };
+# apexd needs the link/unlink/rename permissions
+neverallow { domain -init -system_server -installd -apexd } staging_data_file:file {
+  no_w_file_perms no_x_file_perms
+};
+neverallow apexd staging_data_file:file {
+  append create relabelfrom setattr write # no_w_file_perms -link -unlink -rename
+  no_x_file_perms
+};
 
 neverallow {
     domain

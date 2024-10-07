@@ -774,6 +774,7 @@ userdebug_or_eng(`set_prop(system_server, system_user_mode_emulation_prop)')
 set_prop(system_server, ctl_default_prop)
 set_prop(system_server, ctl_bugreport_prop)
 set_prop(system_server, ctl_gsid_prop)
+set_prop(system_server, ctl_artd_pre_reboot_prop)
 
 # cppreopt property
 set_prop(system_server, cppreopt_prop)
@@ -1235,6 +1236,10 @@ allow system_server self:key_socket create;
 # Java's Os.close() in libcore/luni/src/main/java/libcore/io/BlockGuardOs.java;l=100
 # calls if (fd.isSocket$()) if (isLingerSocket(fd)) ...
 dontaudit system_server self:key_socket getopt;
+
+# Needed to interact with memevents-eBPF and receive notifications for memory events
+allow system_server fs_bpf_memevents:dir search;
+allow system_server fs_bpf_memevents:file { read write };
 
 # Allow system_server to start clatd in its own domain and kill it.
 domain_auto_trans(system_server, clatd_exec, clatd)
