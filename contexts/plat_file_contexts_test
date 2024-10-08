@@ -638,6 +638,7 @@
 /odm/usr/keylayout/test.kl                                        vendor_keylayout_file
 /vendor/odm/usr/keylayout.kl                                      vendor_keylayout_file
 /vendor/odm/usr/keylayout/test.kl                                 vendor_keylayout_file
+/vendor/usr/keylayout                                             vendor_keylayout_file
 /vendor/usr/keylayout.kl                                          vendor_keylayout_file
 /vendor/usr/keylayout/test.kl                                     vendor_keylayout_file
 /system/vendor/usr/keylayout.kl                                   vendor_keylayout_file
@@ -646,6 +647,7 @@
 /odm/usr/keychars/test.kcm                                        vendor_keychars_file
 /vendor/odm/usr/keychars.kcm                                      vendor_keychars_file
 /vendor/odm/usr/keychars/test.kcm                                 vendor_keychars_file
+/vendor/usr/keychars                                              vendor_keychars_file
 /vendor/usr/keychars.kcm                                          vendor_keychars_file
 /vendor/usr/keychars/test.kcm                                     vendor_keychars_file
 /system/vendor/usr/keychars.kcm                                   vendor_keychars_file
@@ -654,6 +656,7 @@
 /odm/usr/idc/test.idc                                             vendor_idc_file
 /vendor/odm/usr/idc.idc                                           vendor_idc_file
 /vendor/odm/usr/idc/test.idc                                      vendor_idc_file
+/vendor/usr/idc                                                   vendor_idc_file
 /vendor/usr/idc.idc                                               vendor_idc_file
 /vendor/usr/idc/test.idc                                          vendor_idc_file
 /system/vendor/usr/idc.idc                                        vendor_idc_file
