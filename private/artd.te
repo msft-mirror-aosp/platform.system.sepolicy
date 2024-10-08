@@ -182,9 +182,6 @@ allow artd pre_reboot_dexopt_artd_file:file { create_file_perms relabelfrom };
 allow artd { apex_art_data_file odrefresh_data_file }:dir relabelto;
 allow artd { apex_art_data_file odrefresh_data_file pre_reboot_dexopt_artd_file }:dir mounton;
 
-# Read cgroup descriptors so task profiles can be set
-read_all_cgroup_descriptor_files(artd)
-
 # Neverallow rules.
 
 # Never allow running other binaries without a domain transition.
