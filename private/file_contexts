@@ -362,7 +362,8 @@
 /system/bin/virtual_camera          u:object_r:virtual_camera_exec:s0
 /system/bin/hw/android\.frameworks\.bufferhub@1\.0-service    u:object_r:fwk_bufferhub_exec:s0
 /system/bin/hw/android\.system\.suspend-service               u:object_r:system_suspend_exec:s0
-/system/etc/aconfig(/.*)?                u:object_r:system_aconfig_storage_file:s0
+/system/bin/rkp_cert_processor          u:object_r:rkp_cert_processor_exec:s0
+/system/etc/aconfig(/.*)?               u:object_r:system_aconfig_storage_file:s0
 /system/etc/cgroups\.json               u:object_r:cgroup_desc_file:s0
 /system/etc/task_profiles/cgroups_[0-9]+\.json               u:object_r:cgroup_desc_api_file:s0
 /system/etc/event-log-tags              u:object_r:system_event_log_tags_file:s0
@@ -407,6 +408,7 @@
 /system/bin/evsmanagerd          u:object_r:evsmanagerd_exec:s0
 /system/bin/android\.automotive\.evs\.manager@1\.[0-9]+ u:object_r:evsmanagerd_exec:s0
 /system/bin/uprobestats           u:object_r:uprobestats_exec:s0
+/system/bin/bert_collector        u:object_r:bert_collector_exec:s0
 
 #############################
 # Vendor files
@@ -534,7 +536,7 @@
 /(system_ext|system/system_ext)/bin/hwservicemanager         u:object_r:hwservicemanager_exec:s0
 /(system_ext|system/system_ext)/bin/hw/android\.hidl\.allocator@1\.0-service u:object_r:hal_allocator_default_exec:s0
 
-/(system_ext|system/system_ext)/bin/custom_vm_setup       u:object_r:custom_vm_setup_exec:s0
+/(system_ext|system/system_ext)/bin/linux_vm_setup       u:object_r:linux_vm_setup_exec:s0
 
 /(system_ext|system/system_ext)/bin/canhalconfigurator(-aidl)? u:object_r:canhalconfigurator_exec:s0
 
