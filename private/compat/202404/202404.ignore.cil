@@ -20,4 +20,5 @@
     virtual_face
     virtual_face_exec
     advanced_protection_service
+    sysfs_firmware_acpi_tables
   ))
