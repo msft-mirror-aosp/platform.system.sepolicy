@@ -131,6 +131,7 @@ allow zygote cgroup:{ file lnk_file } { r_file_perms setattr };
 allow zygote cgroup_v2:dir create_dir_perms;
 allow zygote cgroup_v2:{ file lnk_file } { r_file_perms setattr };
 allow zygote self:global_capability_class_set sys_admin;
+read_all_cgroup_descriptor_files(zygote)
 
 # Allow zygote to stat the files that it opens. The zygote must
 # be able to inspect them so that it can reopen them on fork

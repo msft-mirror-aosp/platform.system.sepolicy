@@ -53,6 +53,7 @@ allow logd logcat_service:service_manager find;
 # Read access to pseudo filesystems.
 r_dir_file(logd, cgroup)
 r_dir_file(logd, cgroup_v2)
+read_all_cgroup_descriptor_files(logd)
 r_dir_file(logd, proc_kmsg)
 r_dir_file(logd, proc_meminfo)
 
