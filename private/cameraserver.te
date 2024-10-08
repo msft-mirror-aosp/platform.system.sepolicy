@@ -70,6 +70,9 @@ userdebug_or_eng(`
   allow cameraserver su:unix_stream_socket { read write };
 ')
 
+# Read cgroup descriptors so task profiles can be set
+read_all_cgroup_descriptor_files(cameraserver)
+
 ###
 ### neverallow rules
 ###
