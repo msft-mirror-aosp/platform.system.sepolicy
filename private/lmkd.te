@@ -53,9 +53,6 @@ allow lmkd cgroup_v2:dir { remove_name rmdir };
 allow lmkd cgroup:file r_file_perms;
 allow lmkd cgroup_v2:file r_file_perms;
 
-# Read cgroup descriptors so task profiles can be set
-read_all_cgroup_descriptor_files(lmkd)
-
 # Set self to SCHED_FIFO
 allow lmkd self:global_capability_class_set sys_nice;
 
