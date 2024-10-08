@@ -43,6 +43,7 @@ system_internal_prop(pm_prop)
 system_internal_prop(profcollectd_node_id_prop)
 system_internal_prop(radio_cdma_ecm_prop)
 system_internal_prop(remote_prov_prop)
+system_internal_prop(remote_prov_cert_prop)
 system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
 system_internal_prop(snapshotctl_prop)
@@ -781,6 +782,11 @@ neverallow {
   -system_server
   -rkpdapp
 } remote_prov_prop:property_service set;
+
+neverallow {
+  domain
+  -init
+} remote_prov_cert_prop:property_service set;
 
 neverallow {
   # Only allow init and shell to set rollback_test_prop
