@@ -580,6 +580,7 @@ allow init {
 allow init {
   sysfs_android_usb
   sysfs_dm_verity
+  sysfs_firmware_acpi_tables
   sysfs_leds
   sysfs_power
   sysfs_fs_f2fs
