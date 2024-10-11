@@ -811,6 +811,7 @@ neverallow { domain -init } userdebug_or_eng_prop:property_service set;
 neverallow {
   domain
   -adbd
+  -adbd_tradeinmode
   -dumpstate
   -fastbootd
   -hal_camera_server
