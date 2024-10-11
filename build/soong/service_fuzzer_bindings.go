@@ -473,6 +473,7 @@ var (
 		"time_zone_detector":                     EXCEPTION_NO_FUZZER,
 		"thermalservice":                         EXCEPTION_NO_FUZZER,
 		"tracing.proxy":                          EXCEPTION_NO_FUZZER,
+		"tradeinmode":                            EXCEPTION_NO_FUZZER,
 		"translation":                            EXCEPTION_NO_FUZZER,
 		"transparency":                           EXCEPTION_NO_FUZZER,
 		"trust":                                  EXCEPTION_NO_FUZZER,
