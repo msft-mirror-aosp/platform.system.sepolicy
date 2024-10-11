@@ -410,7 +410,7 @@
 /system/bin/uprobestats           u:object_r:uprobestats_exec:s0
 /system/bin/bert_collector        u:object_r:bert_collector_exec:s0
 /system/bin/linux_vm_setup        u:object_r:linux_vm_setup_exec:s0
-
+/system/bin/tradeinmode           u:object_r:tradeinmode_exec:s0
 
 #############################
 # Vendor files
