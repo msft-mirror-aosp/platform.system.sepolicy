@@ -201,66 +201,6 @@ include $(BUILD_PHONY_PACKAGE)
 # By setting as droidcore's dependency, tests will run on normal builds.
 droidcore: selinux_policy
 
-include $(CLEAR_VARS)
-LOCAL_MODULE := selinux_policy_system
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-# These build targets are not used on non-Treble devices. However, we build these to avoid
-# divergence between Treble and non-Treble devices.
-LOCAL_REQUIRED_MODULES += \
-    plat_mapping_file \
-    $(addprefix plat_,$(addsuffix .cil,$(PLATFORM_SEPOLICY_COMPAT_VERSIONS))) \
-    $(addsuffix .compat.cil,$(PLATFORM_SEPOLICY_COMPAT_VERSIONS)) \
-    plat_sepolicy.cil \
-    secilc \
-
-ifneq ($(PRODUCT_PRECOMPILED_SEPOLICY),false)
-LOCAL_REQUIRED_MODULES += plat_sepolicy_and_mapping.sha256
-endif
-
-LOCAL_REQUIRED_MODULES += \
-    build_sepolicy \
-    plat_file_contexts \
-    plat_file_contexts_test \
-    plat_file_contexts_data_test \
-    plat_keystore2_key_contexts \
-    plat_mac_permissions.xml \
-    plat_property_contexts \
-    plat_property_contexts_test \
-    plat_seapp_contexts \
-    plat_service_contexts \
-    plat_service_contexts_test \
-    plat_hwservice_contexts \
-    plat_hwservice_contexts_test \
-    fuzzer_bindings_test \
-    plat_bug_map \
-    searchpolicy \
-
-ifneq ($(with_asan),true)
-ifneq ($(SELINUX_IGNORE_NEVERALLOWS),true)
-LOCAL_REQUIRED_MODULES += \
-    sepolicy_compat_test \
-
-# HACK: sepolicy_test is implemented as genrule
-# genrule modules aren't installable, so LOCAL_REQUIRED_MODULES doesn't work.
-# Instead, use LOCAL_ADDITIONAL_DEPENDENCIES with intermediate output
-LOCAL_ADDITIONAL_DEPENDENCIES += $(call intermediates-dir-for,ETC,sepolicy_test)/sepolicy_test
-LOCAL_ADDITIONAL_DEPENDENCIES += $(call intermediates-dir-for,ETC,sepolicy_dev_type_test)/sepolicy_dev_type_test
-
-LOCAL_REQUIRED_MODULES += \
-    $(addprefix treble_sepolicy_tests_,$(PLATFORM_SEPOLICY_COMPAT_VERSIONS)) \
-
-endif  # SELINUX_IGNORE_NEVERALLOWS
-endif  # with_asan
-
-ifeq ($(RELEASE_BOARD_API_LEVEL_FROZEN),true)
-LOCAL_REQUIRED_MODULES += \
-    se_freeze_test
-endif
-
-include $(BUILD_PHONY_PACKAGE)
-
 ##################################
 # Policy files are now built with Android.bp. Grab them from intermediate.
 # See Android.bp for details of policy files.
@@ -364,30 +304,6 @@ file_contexts.concat.tmp :=
 file_contexts.device.sorted.tmp :=
 file_contexts.device.tmp :=
 file_contexts.local.tmp :=
-
-##################################
-# Tests for Treble compatibility of current platform policy and vendor policy of
-# given release version.
-
-ver := $(PLATFORM_SEPOLICY_VERSION)
-ifneq ($(wildcard $(LOCAL_PATH)/prebuilts/api/$(PLATFORM_SEPOLICY_VERSION)),)
-# If PLATFORM_SEPOLICY_VERSION is already frozen, use prebuilts for compat test
-base_plat_pub_policy.cil    := $(call intermediates-dir-for,ETC,$(ver)_plat_pub_policy.cil)/$(ver)_plat_pub_policy.cil
-base_product_pub_policy.cil := $(call intermediates-dir-for,ETC,$(ver)_product_pub_policy.cil)/$(ver)_product_pub_policy.cil
-else
-# If not, use ToT for compat test
-base_plat_pub_policy.cil    := $(call intermediates-dir-for,ETC,base_plat_pub_policy.cil)/base_plat_pub_policy.cil
-base_product_pub_policy.cil := $(call intermediates-dir-for,ETC,base_product_pub_policy.cil)/base_product_pub_policy.cil
-endif
-ver :=
-
-$(foreach v,$(PLATFORM_SEPOLICY_COMPAT_VERSIONS), \
-  $(eval version_under_treble_tests := $(v)) \
-  $(eval include $(LOCAL_PATH)/treble_sepolicy_tests_for_release.mk) \
-)
-
-base_plat_pub_policy.cil :=
-base_product_pub_policy.cil :=
 
 #################################
 
