@@ -191,6 +191,9 @@ set_prop(apexd, apex_ready_prop)
 
 # Allow apexd to write to statsd.
 unix_socket_send(apexd, statsdw, statsd)
+# Allow apexd to call
+allow apexd statsbootstrap_service:service_manager find;
+binder_call(apexd, system_server) # system_server serves statsbootstrap_service
 
 ###
 ### Neverallow rules
