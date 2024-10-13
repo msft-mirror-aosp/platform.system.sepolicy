@@ -410,6 +410,7 @@ var (
 		"restrictions":                           EXCEPTION_NO_FUZZER,
 		"rkpd.registrar":                         EXCEPTION_NO_FUZZER,
 		"rkpd.refresh":                           EXCEPTION_NO_FUZZER,
+		"rkp_cert_processor.service":             EXCEPTION_NO_FUZZER,
 		"role":                                   EXCEPTION_NO_FUZZER,
 		"rollback":                               EXCEPTION_NO_FUZZER,
 		"rttmanager":                             EXCEPTION_NO_FUZZER,
