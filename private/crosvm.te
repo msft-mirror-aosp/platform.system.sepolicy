@@ -164,6 +164,7 @@ full_treble_only(`
     -vendor_vm_data_file
     # These types are not required for crosvm, but the access is granted to globally in domain.te
     # thus should be exempted here.
+    -vendor_cgroup_desc_file
     -vendor_configs_file
     -vendor_microdroid_file
     -vndk_sp_file
