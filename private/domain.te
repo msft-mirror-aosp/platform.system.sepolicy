@@ -424,10 +424,13 @@ allow domain cgroup_v2:dir search;
 allow { domain -appdomain -rs } cgroup_v2:dir w_dir_perms;
 allow { domain -appdomain -rs } cgroup_v2:file w_file_perms;
 
+allow domain cgroup_desc_file:file r_file_perms;
+allow domain cgroup_desc_api_file:file r_file_perms;
 allow domain cgroup_rc_file:dir search;
 allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
 allow domain task_profiles_api_file:file r_file_perms;
+allow domain vendor_cgroup_desc_file:file r_file_perms;
 allow domain vendor_task_profiles_file:file r_file_perms;
 
 # Allow all domains to read sys.use_memfd to determine
@@ -1230,6 +1233,8 @@ full_treble_only(`
     -vendor_init
   } {
     system_file_type
+    -cgroup_desc_file
+    -cgroup_desc_api_file
     -crash_dump_exec
     -file_contexts_file
     -netutils_wrapper_exec
@@ -2064,6 +2069,7 @@ full_treble_only(`
     -vendor_apex_file
     -vendor_apex_metadata_file
     -vendor_boot_ota_file
+    -vendor_cgroup_desc_file
     -vendor_configs_file
     -vendor_microdroid_file
     -vendor_service_contexts_file
