@@ -273,12 +273,6 @@ get_prop(shell, build_attestation_prop)
 # TODO (b/350628688): Remove this once it's safe to do so.
 allow shell oatdump_exec:file rx_file_perms;
 
-# Allow shell access to socket for test
-userdebug_or_eng(`
-    allow shell aconfigd_socket:sock_file write;
-    allow shell aconfigd:unix_stream_socket connectto;
-')
-
 # Create and use network sockets.
 net_domain(shell)
 
