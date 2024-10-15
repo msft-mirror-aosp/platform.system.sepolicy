@@ -135,6 +135,9 @@ set_prop(dexopt_chroot_setup, snapshotctl_prop)
 # Allow accessing /data/app/..., to bind-mount dirs for incremental apps.
 allow dexopt_chroot_setup apk_data_file:dir { getattr search };
 
+# Allow checking /metadata in chroot, to make sure it's not a symlink.
+allow dexopt_chroot_setup metadata_file:dir { getattr };
+
 # Neverallow rules.
 
 # Never allow running other binaries without a domain transition.
