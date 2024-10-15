@@ -872,6 +872,8 @@ dmesgd.start u:object_r:dmesgd_start_prop:s0 exact bool
 
 acpi.bert_collector.start u:object_r:bert_collector_start_prop:s0 exact bool
 
+desktop.ec.crash_collector.start u:object_r:desktop_ec_crash_collector_start_prop:s0 exact bool
+
 odsign.key.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.success u:object_r:odsign_prop:s0 exact bool
@@ -1015,6 +1017,7 @@ ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
+ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
