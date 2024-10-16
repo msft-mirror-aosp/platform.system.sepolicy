@@ -176,31 +176,6 @@ else ifneq ($(call math_lt,30,$(PRODUCT_SHIPPING_API_LEVEL)),)
   endif
 endif
 
-#################################
-
-include $(CLEAR_VARS)
-
-LOCAL_MODULE := selinux_policy
-LOCAL_LICENSE_KINDS := SPDX-license-identifier-Apache-2.0 legacy_unencumbered
-LOCAL_LICENSE_CONDITIONS := notice unencumbered
-LOCAL_NOTICE_FILE := $(LOCAL_PATH)/NOTICE
-LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES += \
-    selinux_policy_nonsystem \
-    selinux_policy_system \
-
-# Runs checkfc against merged service_contexts files
-LOCAL_REQUIRED_MODULES += \
-    merged_service_contexts_test \
-    merged_hwservice_contexts_test
-
-include $(BUILD_PHONY_PACKAGE)
-
-# selinux_policy is a main goal and triggers lots of tests.
-# Most tests are FAKE modules, so aren'triggered on normal builds. (e.g. 'm')
-# By setting as droidcore's dependency, tests will run on normal builds.
-droidcore: selinux_policy
-
 ##################################
 # Policy files are now built with Android.bp. Grab them from intermediate.
 # See Android.bp for details of policy files.
