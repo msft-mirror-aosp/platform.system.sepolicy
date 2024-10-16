@@ -1134,9 +1134,9 @@ allow system_server configfs:file { getattr open create unlink write };
 
 # Connect to adbd and use a socket transferred from it.
 # Used for e.g. jdwp.
-allow system_server adbd:unix_stream_socket connectto;
-allow system_server adbd:fd use;
-allow system_server adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
+allow system_server adbd_common:unix_stream_socket connectto;
+allow system_server adbd_common:fd use;
+allow system_server adbd_common:unix_stream_socket { getattr getopt ioctl read write shutdown };
 
 # Read service.adb.tls.port, persist.adb.wifi. properties
 get_prop(system_server, adbd_prop)
