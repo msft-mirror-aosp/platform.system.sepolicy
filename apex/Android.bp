@@ -314,3 +314,10 @@ filegroup {
         "com.android.biometrics.virtual.face-file_contexts",
     ],
 }
+
+filegroup {
+    name: "com.android.documentsuibundle-file_contexts",
+    srcs: [
+        "com.android.documentsuibundle-file_contexts",
+    ],
+}
