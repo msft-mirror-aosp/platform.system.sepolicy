@@ -1,5 +1,6 @@
 # Properties used only in /system
 system_internal_prop(adbd_prop)
+system_internal_prop(adbd_tradeinmode_prop)
 system_internal_prop(apexd_payload_metadata_prop)
 system_internal_prop(ctl_snapuserd_prop)
 system_internal_prop(crashrecovery_prop)
@@ -510,6 +511,7 @@ neverallow {
   -init
   -vendor_init
   -adbd
+  -adbd_tradeinmode
   -system_server
 } {
   adbd_config_prop
@@ -520,6 +522,7 @@ neverallow {
   domain
   -init
   -adbd
+  -adbd_tradeinmode
 } {
   adbd_prop
 }:property_service set;
