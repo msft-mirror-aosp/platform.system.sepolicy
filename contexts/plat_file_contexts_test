@@ -434,8 +434,8 @@
 /system/bin/hw/android.system.suspend-service                     system_suspend_exec
 /system/etc/aconfig                                               system_aconfig_storage_file
 /system/etc/cgroups.json                                          cgroup_desc_file
-/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_api_file
-/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_api_file
+/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_file
+/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_file
 /system/etc/event-log-tags                                        system_event_log_tags_file
 /system/etc/font_fallback.xml                                     system_font_fallback_file
 /system/etc/group                                                 system_group_file

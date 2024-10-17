@@ -425,7 +425,6 @@ allow { domain -appdomain -rs } cgroup_v2:dir w_dir_perms;
 allow { domain -appdomain -rs } cgroup_v2:file w_file_perms;
 
 allow domain cgroup_desc_file:file r_file_perms;
-allow domain cgroup_desc_api_file:file r_file_perms;
 allow domain cgroup_rc_file:dir search;
 allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
@@ -1234,7 +1233,6 @@ full_treble_only(`
   } {
     system_file_type
     -cgroup_desc_file
-    -cgroup_desc_api_file
     -crash_dump_exec
     -file_contexts_file
     -netutils_wrapper_exec
