@@ -15,3 +15,5 @@ expandattribute system_and_vendor_property_type false;
 attribute sdk_sandbox_all;
 # The SDK sandbox domains for the current SDK level.
 attribute sdk_sandbox_current;
+# Common to adbd and adbd_tradeinmode.
+attribute adbd_common;
