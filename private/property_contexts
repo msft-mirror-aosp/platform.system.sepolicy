@@ -872,8 +872,6 @@ dmesgd.start u:object_r:dmesgd_start_prop:s0 exact bool
 
 acpi.bert_collector.start u:object_r:bert_collector_start_prop:s0 exact bool
 
-desktop.ec.crash_collector.start u:object_r:desktop_ec_crash_collector_start_prop:s0 exact bool
-
 odsign.key.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.success u:object_r:odsign_prop:s0 exact bool
