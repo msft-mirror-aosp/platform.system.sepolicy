@@ -459,8 +459,8 @@
 /system/etc/selinux/plat_sepolicy.cil                             sepolicy_file
 /system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256          sepolicy_file
 /system/etc/task_profiles.json                                    task_profiles_file
-/system/etc/task_profiles/task_profiles_0.json                    task_profiles_api_file
-/system/etc/task_profiles/task_profiles_99.json                   task_profiles_api_file
+/system/etc/task_profiles/task_profiles_0.json                    task_profiles_file
+/system/etc/task_profiles/task_profiles_99.json                   task_profiles_file
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec

@@ -233,10 +233,13 @@ until_board_api(202504, `
 ')
 # Vendor cgroups description file under /vendor/etc/cgroups.json
 type vendor_cgroup_desc_file, vendor_file_type, file_type;
-# Task profiles file under /system/etc/task_profiles.json
+# Task profiles file under /system/etc/task_profiles.json or
+# API file under /system/etc/task_profiles/task_profiles_*.json
 type task_profiles_file, system_file_type, file_type;
-# Task profiles file under /system/etc/task_profiles/task_profiles_*.json
-type task_profiles_api_file, system_file_type, file_type;
+until_board_api(202504, `
+    # Task profiles file under /system/etc/task_profiles/task_profiles_*.json
+    type task_profiles_api_file, system_file_type, file_type;
+')
 # Vendor task profiles file under /vendor/etc/task_profiles.json
 type vendor_task_profiles_file, vendor_file_type, file_type;
 # Type for /system/apex/com.android.art
