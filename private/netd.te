@@ -66,7 +66,11 @@ allow netd self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_route_socket nlmsg_write;
 allow netd self:netlink_nflog_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_socket create_socket_perms_no_ioctl;
-allow netd self:netlink_tcpdiag_socket { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
+allow netd self:netlink_tcpdiag_socket create_socket_perms_no_ioctl;
+# For kernel < 6.13
+allow netd self:netlink_tcpdiag_socket { nlmsg_read nlmsg_write };
+# For kernel >= 6.13
+allow netd self:netlink_tcpdiag_socket nlmsg;
 allow netd self:netlink_generic_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_netfilter_socket create_socket_perms_no_ioctl;
 allow netd shell_exec:file rx_file_perms;

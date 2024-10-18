@@ -55,7 +55,11 @@ dontaudit network_stack self:key_socket getopt;
 get_prop(network_stack, device_config_connectivity_prop)
 
 # Create/use netlink_tcpdiag_socket to get tcp info
-allow network_stack self:netlink_tcpdiag_socket { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
+allow network_stack self:netlink_tcpdiag_socket create_socket_perms_no_ioctl;
+# For kernel < 6.13
+allow network_stack self:netlink_tcpdiag_socket { nlmsg_read nlmsg_write };
+# For kernel >= 6.13
+allow network_stack self:netlink_tcpdiag_socket nlmsg;
 ############### Tethering Service app - Tethering.apk ##############
 hal_client_domain(network_stack, hal_tetheroffload)
 # Create and share netlink_netfilter_sockets for tetheroffload.
