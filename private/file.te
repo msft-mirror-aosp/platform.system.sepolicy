@@ -218,6 +218,8 @@ type storage_area_content_file, file_type, data_file_type, core_data_file_type, 
 # /data/misc_ce/userId/storage_area_keys
 type storage_area_key_file, file_type, data_file_type, core_data_file_type;
 
+# /metadata/tradeinmode files
+type tradeinmode_metadata_file, file_type;
 
 # Types added in 202504 in public/file.te
 until_board_api(202504, `
