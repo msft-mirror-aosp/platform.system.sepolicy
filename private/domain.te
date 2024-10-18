@@ -2252,3 +2252,36 @@ neverallow { domain -init -vendor_init -ueventd } sysfs_pgsize_migration:file no
 
 # We need to be able to rely on vsock labels, so disallow changing them.
 neverallow domain *:vsock_socket { relabelfrom relabelto };
+
+# All uses of tmpfs are either directory only operations, or memfd file
+# descriptors. All tmpfs filesystems are mounted with seclabel and are capable
+# of SELinux labeling.
+# Force the use of a more specific SELinux label instead of relying on the default
+# tmpfs security label. This can be accomplished by adding:
+#   tmpfs_domain(mydomain)
+# to policy.
+# TODO: block use of tmpfs based symbolic links (lnk_file). These are too
+# widely used in policy right now to block.
+
+neverallow domain tmpfs:{ blk_file sock_file fifo_file } create;
+
+neverallow {
+  domain
+  -init          # /dev/__null__ created by init. Likely obsoleted by
+                 # system/core commit 3d9e27335926497c82bcfab228b90b84d732780f
+                 # but more testing is needed
+} tmpfs:chr_file create;
+
+neverallow {
+  domain
+  -recovery      # /tmp for OTAs applied from recovery
+} tmpfs:file create;
+
+neverallow {
+  domain
+  -zygote        # app compat directory structure
+  -vold          # creating temp directories for filesystem mounting
+  -init          # Create cgroups mount points in tmpfs and mount cgroups on them.
+  -vendor_init   # Unknown use by vendors
+  -recovery      # /tmp for OTAs applied from recovery
+} tmpfs:dir create;
