@@ -51,6 +51,7 @@ persist.simpleperf.profile_app_expiration_time  u:object_r:shell_prop:s0
 security.lower_kptr_restrict u:object_r:lower_kptr_restrict_prop:s0
 service.adb.root        u:object_r:shell_prop:s0
 service.adb.tls.port    u:object_r:adbd_prop:s0
+persist.adb.tradeinmode u:object_r:adbd_tradeinmode_prop:s0
 persist.adb.wifi.       u:object_r:adbd_prop:s0
 persist.adb.tls_server.enable  u:object_r:system_adbd_prop:s0
 
@@ -870,6 +871,10 @@ apexd.status u:object_r:apexd_prop:s0 exact enum starting activated ready
 
 dmesgd.start u:object_r:dmesgd_start_prop:s0 exact bool
 
+acpi.bert_collector.start u:object_r:bert_collector_start_prop:s0 exact bool
+
+desktop.ec.crash_collector.start u:object_r:desktop_ec_crash_collector_start_prop:s0 exact bool
+
 odsign.key.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.success u:object_r:odsign_prop:s0 exact bool
@@ -1013,6 +1018,7 @@ ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
+ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
@@ -1538,6 +1544,9 @@ remote_provisioning.tee.rkp_only u:object_r:remote_prov_prop:s0 exact bool
 
 # Hostname for the remote provisioning server a device should communicate with
 remote_provisioning.hostname u:object_r:remote_prov_prop:s0 exact string
+
+# Support for post-processing RKP certificates
+remote_provisioning.use_cert_processor u:object_r:remote_prov_cert_prop:s0 exact bool
 
 # Connection Timeout for remote provisioning step
 remote_provisioning.connect_timeout_millis u:object_r:remote_prov_prop:s0 exact int

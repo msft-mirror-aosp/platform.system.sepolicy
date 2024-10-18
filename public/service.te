@@ -66,6 +66,9 @@ type activity_service, app_api_service, ephemeral_app_api_service, system_server
 type activity_task_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type adb_service, system_api_service, system_server_service, service_manager_type;
 type adservices_manager_service, system_api_service, system_server_service, service_manager_type;
+starting_at_board_api(202504, `
+    type advanced_protection_service, app_api_service, system_server_service, service_manager_type;
+')
 type alarm_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type app_binding_service, system_server_service, service_manager_type;
 starting_at_board_api(202504, `

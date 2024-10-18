@@ -1086,3 +1086,218 @@ phony {
         default: [],
     }),
 }
+
+phony {
+    name: "selinux_policy_system",
+    required: [
+        "29.0.compat.cil",
+        "30.0.compat.cil",
+        "31.0.compat.cil",
+        "32.0.compat.cil",
+        "33.0.compat.cil",
+        "34.0.compat.cil",
+        "build_sepolicy",
+        "fuzzer_bindings_test",
+        "plat_29.0.cil",
+        "plat_30.0.cil",
+        "plat_31.0.cil",
+        "plat_32.0.cil",
+        "plat_33.0.cil",
+        "plat_34.0.cil",
+        "plat_bug_map",
+        "plat_file_contexts",
+        "plat_file_contexts_data_test",
+        "plat_file_contexts_test",
+        "plat_hwservice_contexts",
+        "plat_hwservice_contexts_test",
+        "plat_keystore2_key_contexts",
+        "plat_mac_permissions.xml",
+        "plat_mapping_file",
+        "plat_property_contexts",
+        "plat_property_contexts_test",
+        "plat_seapp_contexts",
+        "plat_sepolicy.cil",
+        "plat_service_contexts",
+        "plat_service_contexts_test",
+        "searchpolicy",
+        "secilc",
+    ] + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        "202404": [],
+        default: [
+            "202404.compat.cil",
+            "plat_202404.cil",
+        ],
+    }) + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
+        true: ["plat_sepolicy_and_mapping.sha256"],
+        default: [],
+    }) + select((
+        soong_config_variable("ANDROID", "ASAN_ENABLED"),
+        product_variable("selinux_ignore_neverallows"),
+    ), {
+        (true, true): [
+        ],
+        (default, default): [
+            "sepolicy_compat_test",
+            "sepolicy_test",
+            "sepolicy_dev_type_test",
+            "treble_sepolicy_tests_29.0",
+            "treble_sepolicy_tests_30.0",
+            "treble_sepolicy_tests_31.0",
+            "treble_sepolicy_tests_32.0",
+            "treble_sepolicy_tests_33.0",
+            "treble_sepolicy_tests_34.0",
+        ],
+    }) + select((
+        soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"),
+        soong_config_variable("ANDROID", "ASAN_ENABLED"),
+        product_variable("selinux_ignore_neverallows"),
+    ), {
+        ("202404", true, true): [],
+        (default, true, true): [],
+        (default, default, default): [
+            "treble_sepolicy_tests_202404",
+        ],
+    }) + select(soong_config_variable("ANDROID", "RELEASE_BOARD_API_LEVEL_FROZEN"), {
+        true: ["se_freeze_test"],
+        default: [],
+    }),
+}
+
+phony {
+    name: "selinux_policy",
+    required: [
+        // Runs checkfc against merged service_contexts files
+        "merged_hwservice_contexts_test",
+        "merged_service_contexts_test",
+        "selinux_policy_nonsystem",
+        "selinux_policy_system",
+    ],
+}
+
+// selinux_policy is a main goal and triggers lots of tests.
+// Most tests are FAKE modules, so aren'triggered on normal builds. (e.g. 'm')
+// By setting as droidcore's dependency, tests will run on normal builds.
+phony_rule {
+    name: "droidcore",
+    phony_deps: ["selinux_policy"],
+}
+
+//-----------------------------------------------------------------------------
+// TODO - remove this.   Keep around until we get the filesystem creation stuff
+// taken care of.
+//
+// The file_contexts.bin is built in the following way:
+// 1. Collect all file_contexts files in THIS repository and process them with
+//    m4 into a tmp file called file_contexts.local.tmp.
+// 2. Collect all device specific file_contexts files and process them with m4
+//    into a tmp file called file_contexts.device.tmp.
+// 3. Run checkfc -e (allow no device fc entries ie empty) and fc_sort on
+//    file_contexts.device.tmp and output to file_contexts.device.sorted.tmp.
+// 4. Concatenate file_contexts.local.tmp and  file_contexts.device.sorted.tmp
+//    into file_contexts.concat.tmp.
+// 5. Run checkfc and sefcontext_compile on file_contexts.concat.tmp to produce
+//    file_contexts.bin.
+//
+//  Note: That a newline file is placed between each file_context file found to
+//        ensure a proper build when an fc file is missing an ending newline.
+//---
+// 1. Collect all file_contexts files in THIS repository and process them with
+//    m4 into a tmp file called file_contexts.local.tmp.
+genrule {
+    name: "file_contexts.local.tmp",
+    srcs: [
+        ":plat_file_contexts",
+        ":system_ext_file_contexts",
+        ":product_file_contexts",
+    ],
+    tools: [
+        "m4",
+    ],
+    out: ["file_contexts.local.tmp"],
+    cmd: "$(location m4) --fatal-warnings " +
+        "-s $(in) > $(out)",
+}
+
+// 2. Collect all device specific file_contexts files and process them with m4
+//    into a tmp file called file_contexts.device.tmp.
+PRIVATE_ADDITIONAL_M4DEFS = select(soong_config_variable("ANDROID", "ADDITIONAL_M4DEFS"), {
+    any @ m4defs: m4defs,
+    default: "",
+})
+genrule {
+    name: "file_contexts.device.tmp",
+    srcs: [
+        ":vendor_file_contexts",
+        ":odm_file_contexts",
+    ],
+    tools: [
+        "m4",
+    ],
+    out: ["file_contexts.device.tmp"],
+    cmd: "$(location m4) --fatal-warnings " +
+        "-s " + PRIVATE_ADDITIONAL_M4DEFS +
+        " $(in) > $(out)",
+}
+
+// 3. Run checkfc -e (allow no device fc entries ie empty) and fc_sort on
+//    file_contexts.device.tmp and output to file_contexts.device.sorted.tmp.
+genrule {
+    name: "file_contexts.device.sorted.tmp",
+    srcs: [
+        ":file_contexts.device.tmp",
+        ":precompiled_sepolicy",
+    ],
+    tools: [
+        "checkfc",
+        "fc_sort",
+    ],
+    out: ["file_contexts.device.sorted.tmp"],
+    cmd: "$(location checkfc) " +
+        "-e $(location :precompiled_sepolicy) " +
+        "$(location :file_contexts.device.tmp) && " +
+        "$(location fc_sort) " +
+        "-i $(location :file_contexts.device.tmp) " +
+        "-o $(out)",
+}
+
+// 4. Concatenate file_contexts.local.tmp and  file_contexts.device.sorted.tmp
+//    into file_contexts.concat.tmp.
+genrule {
+    name: "file_contexts.concat.tmp",
+    srcs: [
+        ":file_contexts.local.tmp",
+        ":file_contexts.device.sorted.tmp",
+    ],
+    tools: [
+        "m4",
+    ],
+    out: ["file_contexts.concat.tmp"],
+    cmd: "$(location m4) --fatal-warnings " +
+        "-s $(location :file_contexts.local.tmp) " +
+        "$(location :file_contexts.device.sorted.tmp) > $(out)",
+}
+
+// 5. Run checkfc and sefcontext_compile on file_contexts.concat.tmp to produce
+//    file_contexts.bin.
+genrule {
+    name: "file_contexts_bin_gen",
+    srcs: [
+        ":file_contexts.concat.tmp",
+        ":precompiled_sepolicy",
+    ],
+    tools: [
+        "checkfc",
+        "sefcontext_compile",
+    ],
+    out: ["file_contexts.bin"],
+    cmd: "$(location checkfc) " +
+        "$(location :precompiled_sepolicy) " +
+        "$(location :file_contexts.concat.tmp) && " +
+        "$(location sefcontext_compile) " +
+        "-o $(out) $(location :file_contexts.concat.tmp)",
+}
+
+prebuilt_etc {
+    name: "file_contexts.bin",
+    src: ":file_contexts_bin_gen",
+}

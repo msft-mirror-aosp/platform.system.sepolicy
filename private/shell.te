@@ -273,12 +273,6 @@ get_prop(shell, build_attestation_prop)
 # TODO (b/350628688): Remove this once it's safe to do so.
 allow shell oatdump_exec:file rx_file_perms;
 
-# Allow shell access to socket for test
-userdebug_or_eng(`
-    allow shell aconfigd_socket:sock_file write;
-    allow shell aconfigd:unix_stream_socket connectto;
-')
-
 # Create and use network sockets.
 net_domain(shell)
 
@@ -479,7 +473,7 @@ allow shell sepolicy_file:file r_file_perms;
 allow shell vendor_shell_exec:file rx_file_perms;
 
 is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
-  allow shell custom_vm_setup_exec:file { entrypoint r_file_perms };
+  allow shell linux_vm_setup_exec:file { entrypoint r_file_perms };
 ')
 
 # Everything is labeled as rootfs in recovery mode. Allow shell to

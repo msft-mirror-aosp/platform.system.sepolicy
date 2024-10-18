@@ -119,7 +119,7 @@ func (c *compatCil) AndroidMkEntries() []android.AndroidMkEntries {
 func compatTestFactory() android.SingletonModule {
 	f := &compatTestModule{}
 	f.AddProperties(&f.properties)
-	android.InitAndroidModule(f)
+	android.InitAndroidArchModule(f, android.DeviceSupported, android.MultilibCommon)
 	android.AddLoadHook(f, func(ctx android.LoadHookContext) {
 		f.loadHook(ctx)
 	})
