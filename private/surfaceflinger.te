@@ -85,9 +85,14 @@ perfetto_producer(surfaceflinger)
 # Use socket supplied by adbd, for cmd gpu vkjson etc.
 allow surfaceflinger adbd:unix_stream_socket { read write getattr };
 
-# Allow reading and writing to sockets used for BLAST buffer releases
+# Allow reading and writing to sockets used for BLAST buffer releases.
+# SurfaceFlinger never reads from these sockets but needs read permissions in order to receive
+# the file descriptors over binder. There's no mechanism to mark a socket as write-only.
+# shutdown is used to close the read-end of the sockets that are sent to SurfaceFlinger. See
+# b/353597444
 allow surfaceflinger { appdomain -isolated_app_all -ephemeral_app -sdk_sandbox_all }:unix_stream_socket { read write };
 allow surfaceflinger bootanim:unix_stream_socket { read write };
+allow surfaceflinger automotive_display_service:unix_stream_socket { read write };
 
 # Allow a dumpstate triggered screenshot
 binder_call(surfaceflinger, dumpstate)
