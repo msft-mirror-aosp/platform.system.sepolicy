@@ -350,6 +350,7 @@ var (
 		"media_communication":                    EXCEPTION_NO_FUZZER,
 		"media_metrics":                          EXCEPTION_NO_FUZZER,
 		"media_projection":                       EXCEPTION_NO_FUZZER,
+		"media_quality":                          EXCEPTION_NO_FUZZER,
 		"media_resource_monitor":                 EXCEPTION_NO_FUZZER,
 		"media_router":                           EXCEPTION_NO_FUZZER,
 		"media_session":                          EXCEPTION_NO_FUZZER,
