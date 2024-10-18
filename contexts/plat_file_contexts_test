@@ -779,8 +779,7 @@
 /system/system_ext/bin/canhalconfigurator                         canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator-aidl                    canhalconfigurator_exec
 
-/system_ext/bin/linux_vm_setup                                   linux_vm_setup_exec
-/system/system_ext/bin/linux_vm_setup                            linux_vm_setup_exec
+/system/bin/linux_vm_setup                                        linux_vm_setup_exec
 
 /system_ext/lib                                                   system_lib_file
 /system_ext/lib/does_not_exist                                    system_lib_file
