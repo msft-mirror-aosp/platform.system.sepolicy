@@ -115,6 +115,7 @@ allow vendor_init {
   -userspace_reboot_metadata_file
   -aconfig_storage_metadata_file
   -aconfig_storage_flags_metadata_file
+  -tradeinmode_metadata_file
   enforce_debugfs_restriction(`-debugfs_type')
 }:file { create getattr open read write setattr relabelfrom unlink map };
 
