@@ -862,5 +862,6 @@ neverallow {
 neverallow {
   domain
   -init
+  -shell
   userdebug_or_eng(`-su')
 } bionic_linker_16kb_app_compat_prop:property_service set;
