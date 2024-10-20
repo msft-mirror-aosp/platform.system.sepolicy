@@ -1004,6 +1004,7 @@ phony {
             "system_ext_202404.compat.cil",
         ],
     }),
+    system_ext_specific: true,
 }
 
 phony {
