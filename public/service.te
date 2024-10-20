@@ -176,6 +176,9 @@ type looper_stats_service, system_server_service, service_manager_type;
 type media_communication_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type media_metrics_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type media_projection_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+starting_at_board_api(202504, `
+    type media_quality_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
+')
 type media_router_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type media_session_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type meminfo_service, system_api_service, system_server_service, service_manager_type;
