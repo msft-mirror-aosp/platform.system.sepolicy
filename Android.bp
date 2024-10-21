@@ -1040,6 +1040,7 @@ phony {
             "product_202404.cil",
         ],
     }),
+    product_specific: true,
 }
 
 phony {
@@ -1086,6 +1087,7 @@ phony {
         ],
         default: [],
     }),
+    vendor: true,
 }
 
 phony {
