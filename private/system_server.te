@@ -180,6 +180,7 @@ allow system_server self:socket create_socket_perms_no_ioctl;
 
 # Set and get routes directly via netlink.
 allow system_server self:netlink_route_socket nlmsg_write;
+allowxperm system_server self:netlink_route_socket nlmsg priv_route_socket_nlmsgs;
 
 # Use XFRM (IPsec) netlink sockets
 allow system_server self:netlink_xfrm_socket create_socket_perms_no_ioctl;

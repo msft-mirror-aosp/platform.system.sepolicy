@@ -64,6 +64,7 @@ allow netd self:tun_socket create;
 
 allow netd self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_route_socket nlmsg_write;
+allowxperm netd self:netlink_route_socket nlmsg priv_route_socket_nlmsgs;
 allow netd self:netlink_nflog_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_socket create_socket_perms_no_ioctl;
 allow netd self:netlink_tcpdiag_socket create_socket_perms_no_ioctl;

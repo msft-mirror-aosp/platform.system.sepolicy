@@ -23,6 +23,7 @@ allow network_stack self:packet_socket create_socket_perms_no_ioctl;
 
 # Monitor neighbors via netlink.
 allow network_stack self:netlink_route_socket nlmsg_write;
+allowxperm network_stack self:netlink_route_socket nlmsg priv_route_socket_nlmsgs;
 
 # Use netlink uevent sockets.
 allow network_stack self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
