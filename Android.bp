@@ -1004,6 +1004,7 @@ phony {
             "system_ext_202404.compat.cil",
         ],
     }),
+    system_ext_specific: true,
 }
 
 phony {
@@ -1039,6 +1040,7 @@ phony {
             "product_202404.cil",
         ],
     }),
+    product_specific: true,
 }
 
 phony {
@@ -1085,6 +1087,7 @@ phony {
         ],
         default: [],
     }),
+    vendor: true,
 }
 
 phony {
