@@ -188,7 +188,7 @@ full_treble_only(`
     -vendor_microdroid_file
     -vndk_sp_file
     -vendor_task_profiles_file
-    is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `-same_process_hal_file')
+    -same_process_hal_file
   }:file *;
 ')
 
