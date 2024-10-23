@@ -509,7 +509,7 @@ se_versioned_policy {
 //   precompiled_sepolicy.product_sepolicy_and_mapping.sha256
 // See system/core/init/selinux.cpp for details.
 //////////////////////////////////
-genrule {
+java_genrule {
     name: "plat_sepolicy_and_mapping.sha256_gen",
     srcs: [
         ":plat_sepolicy.cil",
@@ -526,7 +526,7 @@ prebuilt_etc {
     relative_install_path: "selinux",
 }
 
-genrule {
+java_genrule {
     name: "system_ext_sepolicy_and_mapping.sha256_gen",
     srcs: [
         ":system_ext_sepolicy.cil",
@@ -544,7 +544,7 @@ prebuilt_etc {
     system_ext_specific: true,
 }
 
-genrule {
+java_genrule {
     name: "product_sepolicy_and_mapping.sha256_gen",
     srcs: [
         ":product_sepolicy.cil",
@@ -640,7 +640,7 @@ soong_config_module_type {
 
 filegroup {
     name: "precompiled_sepolicy_srcs",
-    srcs: [
+    device_common_srcs: [
         ":plat_sepolicy.cil",
         ":plat_pub_versioned.cil",
         ":system_ext_sepolicy.cil",
@@ -890,7 +890,7 @@ se_freeze_test {
 // sepolicy_test checks various types of violations, which can't be easily done
 // by CIL itself. Refer tests/sepolicy_tests.py for more detail.
 //////////////////////////////////
-genrule {
+java_genrule {
     name: "sepolicy_test",
     srcs: [
         ":plat_file_contexts",
@@ -918,7 +918,7 @@ genrule {
 
 soong_config_module_type {
     name: "dev_type_test_genrule",
-    module_type: "genrule",
+    module_type: "java_genrule",
     config_namespace: "ANDROID",
     bool_variables: ["CHECK_DEV_TYPE_VIOLATIONS"],
     properties: ["cmd"],
@@ -1206,7 +1206,7 @@ phony_rule {
 //---
 // 1. Collect all file_contexts files in THIS repository and process them with
 //    m4 into a tmp file called file_contexts.local.tmp.
-genrule {
+java_genrule {
     name: "file_contexts.local.tmp",
     srcs: [
         ":plat_file_contexts",
@@ -1227,7 +1227,7 @@ PRIVATE_ADDITIONAL_M4DEFS = select(soong_config_variable("ANDROID", "ADDITIONAL_
     any @ m4defs: m4defs,
     default: "",
 })
-genrule {
+java_genrule {
     name: "file_contexts.device.tmp",
     srcs: [
         ":vendor_file_contexts",
@@ -1244,7 +1244,7 @@ genrule {
 
 // 3. Run checkfc -e (allow no device fc entries ie empty) and fc_sort on
 //    file_contexts.device.tmp and output to file_contexts.device.sorted.tmp.
-genrule {
+java_genrule {
     name: "file_contexts.device.sorted.tmp",
     srcs: [
         ":file_contexts.device.tmp",
@@ -1265,7 +1265,7 @@ genrule {
 
 // 4. Concatenate file_contexts.local.tmp and  file_contexts.device.sorted.tmp
 //    into file_contexts.concat.tmp.
-genrule {
+java_genrule {
     name: "file_contexts.concat.tmp",
     srcs: [
         ":file_contexts.local.tmp",
@@ -1282,7 +1282,7 @@ genrule {
 
 // 5. Run checkfc and sefcontext_compile on file_contexts.concat.tmp to produce
 //    file_contexts.bin.
-genrule {
+java_genrule {
     name: "file_contexts_bin_gen",
     srcs: [
         ":file_contexts.concat.tmp",
