@@ -29,6 +29,7 @@ se_flags {
         "RELEASE_SUPERVISION_SERVICE",
         "RELEASE_HARDWARE_BLUETOOTH_RANGING_SERVICE",
         "RELEASE_UNLOCKED_STORAGE_API",
+        "RELEASE_BLUETOOTH_SOCKET_SERVICE",
     ],
     export_to: ["all_selinux_flags"],
 }
