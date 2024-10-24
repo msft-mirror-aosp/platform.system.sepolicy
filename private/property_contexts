@@ -51,6 +51,7 @@ persist.simpleperf.profile_app_expiration_time  u:object_r:shell_prop:s0
 security.lower_kptr_restrict u:object_r:lower_kptr_restrict_prop:s0
 service.adb.root        u:object_r:shell_prop:s0
 service.adb.tls.port    u:object_r:adbd_prop:s0
+persist.adb.tradeinmode u:object_r:adbd_tradeinmode_prop:s0
 persist.adb.wifi.       u:object_r:adbd_prop:s0
 persist.adb.tls_server.enable  u:object_r:system_adbd_prop:s0
 
@@ -202,6 +203,16 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to control uprobestats
+ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
+ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
+ctl.restart$uprobestats   u:object_r:ctl_uprobestats_prop:s0
+
+# Restrict access to starting/stopping artd_pre_reboot.
+ctl.start$artd_pre_reboot          u:object_r:ctl_artd_pre_reboot_prop:s0
+ctl.stop$artd_pre_reboot           u:object_r:ctl_artd_pre_reboot_prop:s0
+ctl.restart$artd_pre_reboot        u:object_r:ctl_artd_pre_reboot_prop:s0
+
 # NFC properties
 nfc.                    u:object_r:nfc_prop:s0
 
@@ -314,6 +325,7 @@ apexd.config.dm_delete.timeout           u:object_r:apexd_config_prop:s0 exact u
 apexd.config.dm_create.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.boot_activation.threads     u:object_r:apexd_config_prop:s0 exact uint
+apexd.config.loopback.readahead          u:object_r:apexd_config_prop:s0 exact uint
 persist.apexd.          u:object_r:apexd_prop:s0
 persist.vendor.apex.    u:object_r:apexd_select_prop:s0
 ro.boot.vendor.apex.    u:object_r:apexd_select_prop:s0
@@ -562,6 +574,7 @@ keyguard.no_require_sim u:object_r:keyguard_config_prop:s0 exact bool
 
 media.c2.dmabuf.padding                      u:object_r:codec2_config_prop:s0 exact int
 media.c2.hal.selection                       u:object_r:codec2_config_prop:s0 exact enum aidl hidl
+media.c2.remove_rendering_depth              u:object_r:codec2_config_prop:s0 exact bool
 
 media.recorder.show_manufacturer_and_model   u:object_r:media_config_prop:s0 exact bool
 media.resolution.limit.32bit                 u:object_r:media_config_prop:s0 exact int
@@ -582,6 +595,7 @@ persist.bluetooth.bluetooth_audio_hal.disabled              u:object_r:bluetooth
 persist.bluetooth.btsnoopenable                             u:object_r:exported_bluetooth_prop:s0 exact bool
 persist.bluetooth.btsnoopdefaultmode                        u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
 persist.bluetooth.btsnooplogmode                            u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
+persist.bluetooth.finder.supported                          u:object_r:bluetooth_finder_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.headers.enabled            u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.profiles.a2dp.enabled      u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.profiles.map               u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
@@ -589,6 +603,12 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+
+bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_hd_priority.config        u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.ldac_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
 
 bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int
@@ -666,6 +686,7 @@ bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.managed_by_audio                       u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le.dsa_transport_preference           u:object_r:bluetooth_config_prop:s0 exact string
@@ -862,6 +883,8 @@ apexd.status u:object_r:apexd_prop:s0 exact enum starting activated ready
 
 dmesgd.start u:object_r:dmesgd_start_prop:s0 exact bool
 
+acpi.bert_collector.start u:object_r:bert_collector_start_prop:s0 exact bool
+
 odsign.key.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.success u:object_r:odsign_prop:s0 exact bool
@@ -1005,6 +1028,7 @@ ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
+ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
@@ -1531,6 +1555,9 @@ remote_provisioning.tee.rkp_only u:object_r:remote_prov_prop:s0 exact bool
 # Hostname for the remote provisioning server a device should communicate with
 remote_provisioning.hostname u:object_r:remote_prov_prop:s0 exact string
 
+# Support for post-processing RKP certificates
+remote_provisioning.use_cert_processor u:object_r:remote_prov_cert_prop:s0 exact bool
+
 # Connection Timeout for remote provisioning step
 remote_provisioning.connect_timeout_millis u:object_r:remote_prov_prop:s0 exact int
 
@@ -1604,6 +1631,7 @@ persist.rollback.is_test u:object_r:rollback_test_prop:s0 exact bool
 
 # bootanimation properties
 ro.bootanim.quiescent.enabled u:object_r:bootanim_config_prop:s0 exact bool
+ro.product.bootanim.file u:object_r:bootanim_config_prop:s0 exact string
 
 # dck properties
 ro.gms.dck.eligible_wcc u:object_r:dck_prop:s0 exact int
@@ -1641,32 +1669,32 @@ vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_hal_prop:s0
 vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
 
 # properties for the virtual Fingerprint HAL
-persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-persist.vendor.fingerprint.virtual.enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-persist.vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.sensor_location u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-persist.vendor.fingerprint.virtual.sensor_id u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.sensor_strength u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.max_enrollments u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.navigation_guesture u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.detect_interaction u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.udfps.display_touch u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.udfps.control_illumination u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.lockout_enable u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-persist.vendor.fingerprint.virtual.lockout_timed_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.lockout_timed_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-persist.vendor.fingerprint.virtual.lockout_permanent_threshold u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.enrollment_hit u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.next_enrollment u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.challenge u:object_r:virtual_fingerprint_hal_prop:s0 exact int
-vendor.fingerprint.virtual.operation_authenticate_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-vendor.fingerprint.virtual.operation_detect_interaction_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-vendor.fingerprint.virtual.operation_enroll_fails u:object_r:virtual_fingerprint_hal_prop:s0 exact bool
-vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_hal_prop:s0 exact string
-vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_hal_prop:s0 exact int
+persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_prop:s0 exact string
+persist.vendor.fingerprint.virtual.enrollments u:object_r:virtual_fingerprint_prop:s0 exact string
+persist.vendor.fingerprint.virtual.lockout u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.authenticator_id u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_location u:object_r:virtual_fingerprint_prop:s0 exact string
+persist.vendor.fingerprint.virtual.sensor_id u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.sensor_strength u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.max_enrollments u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.navigation_guesture u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.detect_interaction u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.display_touch u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.udfps.control_illumination u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_enable u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.lockout_timed_threshold u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_timed_duration u:object_r:virtual_fingerprint_prop:s0 exact int
+persist.vendor.fingerprint.virtual.lockout_permanent_threshold u:object_r:virtual_fingerprint_prop:s0 exact int
+vendor.fingerprint.virtual.enrollment_hit u:object_r:virtual_fingerprint_prop:s0 exact int
+vendor.fingerprint.virtual.next_enrollment u:object_r:virtual_fingerprint_prop:s0 exact string
+vendor.fingerprint.virtual.challenge u:object_r:virtual_fingerprint_prop:s0 exact int
+vendor.fingerprint.virtual.operation_authenticate_fails u:object_r:virtual_fingerprint_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_detect_interaction_fails u:object_r:virtual_fingerprint_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_enroll_fails u:object_r:virtual_fingerprint_prop:s0 exact bool
+vendor.fingerprint.virtual.operation_authenticate_latency u:object_r:virtual_fingerprint_prop:s0 exact string
+vendor.fingerprint.virtual.operation_detect_interaction_latency u:object_r:virtual_fingerprint_prop:s0 exact string
+vendor.fingerprint.virtual.operation_enroll_latency u:object_r:virtual_fingerprint_prop:s0 exact string
+vendor.fingerprint.virtual.operation_authenticate_duration u:object_r:virtual_fingerprint_prop:s0 exact int
 
 # properties for tuner
 ro.tuner.lazyhal    u:object_r:tuner_config_prop:s0 exact bool

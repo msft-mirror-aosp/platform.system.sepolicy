@@ -24,9 +24,10 @@
 /(vendor|system/vendor)/bin/hw/android\.hardware\.bluetooth\.lmp_event-service\.default    u:object_r:hal_bluetooth_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.face@1\.[0-9]+-service\.example u:object_r:hal_face_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.face-service\.example u:object_r:hal_face_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.face-service\.default u:object_r:hal_face_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service u:object_r:hal_fingerprint_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.2-service\.example u:object_r:hal_fingerprint_default_exec:s0
-/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint-service\.example u:object_r:hal_fingerprint_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.biometrics\.fingerprint-service\.default u:object_r:hal_fingerprint_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.boot@1\.[0-9]+-service      u:object_r:hal_bootctl_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.boot-service.default      u:object_r:hal_bootctl_default_exec:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.broadcastradio@\d+\.\d+-service u:object_r:hal_broadcastradio_default_exec:s0
@@ -164,7 +165,7 @@
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.common-V2-ndk\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.common\.fmq-V1-ndk\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.allocator-V2-ndk\.so u:object_r:same_process_hal_file:s0
-/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common-V5-ndk\.so u:object_r:same_process_hal_file:s0
+/(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common-V[0-9]+-ndk\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common@1\.0\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common@1\.1\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/android\.hardware\.graphics\.common@1\.2\.so u:object_r:same_process_hal_file:s0

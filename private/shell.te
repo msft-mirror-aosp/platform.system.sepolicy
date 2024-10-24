@@ -108,6 +108,9 @@ set_prop(shell, rollback_test_prop)
 # Allow shell to set RKP properties for testing purposes
 set_prop(shell, remote_prov_prop)
 
+# Allow shell to enable 16 KB backcompat globally.
+set_prop(shell, bionic_linker_16kb_app_compat_prop)
+
 # Allow shell to get encryption policy of /data/local/tmp/, for CTS
 allowxperm shell shell_data_file:dir ioctl {
   FS_IOC_GET_ENCRYPTION_POLICY
@@ -272,12 +275,6 @@ get_prop(shell, build_attestation_prop)
 # Allow shell to execute oatdump.
 # TODO (b/350628688): Remove this once it's safe to do so.
 allow shell oatdump_exec:file rx_file_perms;
-
-# Allow shell access to socket for test
-userdebug_or_eng(`
-    allow shell aconfigd_socket:sock_file write;
-    allow shell aconfigd:unix_stream_socket connectto;
-')
 
 # Create and use network sockets.
 net_domain(shell)
@@ -479,7 +476,7 @@ allow shell sepolicy_file:file r_file_perms;
 allow shell vendor_shell_exec:file rx_file_perms;
 
 is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
-  allow shell custom_vm_setup_exec:file { entrypoint r_file_perms };
+  allow shell linux_vm_setup_exec:file { entrypoint r_file_perms };
 ')
 
 # Everything is labeled as rootfs in recovery mode. Allow shell to

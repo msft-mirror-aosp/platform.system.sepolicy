@@ -465,6 +465,7 @@ allow init debugfs_tracing:file w_file_perms;
 allow init debugfs_tracing_instances:dir create_dir_perms;
 allow init debugfs_tracing_instances:file w_file_perms;
 allow init debugfs_wifi_tracing:file w_file_perms;
+allow init debugfs_wifi_tracing:dir create_dir_perms;
 
 # chown/chmod on pseudo files.
 allow init {
@@ -579,6 +580,7 @@ allow init {
 allow init {
   sysfs_android_usb
   sysfs_dm_verity
+  sysfs_firmware_acpi_tables
   sysfs_leds
   sysfs_power
   sysfs_fs_f2fs

@@ -326,6 +326,7 @@
 /system/bin/tcpdump                                               tcpdump_exec
 /system/bin/tune2fs                                               fsck_exec
 /system/bin/resize2fs                                             fsck_exec
+/system/bin/rkp_cert_processor                                    rkp_cert_processor_exec
 /system/bin/toolbox                                               toolbox_exec
 /system/bin/toybox                                                toolbox_exec
 /system/bin/ld.mc                                                 rs_exec
@@ -409,6 +410,7 @@
 /system/bin/traced_perf                                           traced_perf_exec
 /system/bin/traced_probes                                         traced_probes_exec
 /system/bin/traced_relay                                          traced_exec
+/system/bin/tradeinmode                                           tradeinmode_exec
 /system/bin/heapprofd                                             heapprofd_exec
 /system/bin/uncrypt                                               uncrypt_exec
 /system/bin/update_verifier                                       update_verifier_exec
@@ -417,7 +419,6 @@
 /system/bin/cppreopts.sh                                          cppreopts_exec
 /system/bin/preloads_copy.sh                                      preloads_copy_exec
 /system/bin/preopt2cachename                                      preopt2cachename_exec
-/system/bin/viewcompiler                                          viewcompiler_exec
 /system/bin/sgdisk                                                sgdisk_exec
 /system/bin/blkid                                                 blkid_exec
 /system/bin/flags_health_check                                    flags_health_check_exec
@@ -486,6 +487,7 @@
 /system/bin/android.automotive.evs.manager@1.99                   evsmanagerd_exec
 /system/bin/uprobestats                                           uprobestats_exec
 /system/bin/trace_redactor                                        trace_redactor_exec
+/system/bin/bert_collector                                        bert_collector_exec
 
 /vendor                                                           vendor_file
 /vendor/does_not_exist                                            vendor_file
@@ -778,8 +780,7 @@
 /system/system_ext/bin/canhalconfigurator                         canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator-aidl                    canhalconfigurator_exec
 
-/system_ext/bin/custom_vm_setup                                   custom_vm_setup_exec
-/system/system_ext/bin/custom_vm_setup                            custom_vm_setup_exec
+/system/bin/linux_vm_setup                                        linux_vm_setup_exec
 
 /system_ext/lib                                                   system_lib_file
 /system_ext/lib/does_not_exist                                    system_lib_file
@@ -1277,6 +1278,8 @@
 /metadata/watchdog/test                                           watchdog_metadata_file
 /metadata/repair-mode                                             repair_mode_metadata_file
 /metadata/repair-mode/test                                        repair_mode_metadata_file
+/metadata/tradeinmode                                             tradeinmode_metadata_file
+/metadata/tradeinmode/test                                        tradeinmode_metadata_file
 
 /mnt/asec                                                         asec_apk_file
 /mnt/asec/test                                                    asec_apk_file

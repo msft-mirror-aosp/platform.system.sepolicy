@@ -95,6 +95,8 @@ allow apexd staging_data_file:dir r_dir_perms;
 allow apexd staging_data_file:file { r_file_perms link };
 # # Allow relabeling file created in /data/apex/decompressed
 allow apexd staging_data_file:file relabelto;
+# Allow renaming files in /data/apex/decompressed (from .ota.apex to .decompressed.apex)
+allow apexd staging_data_file:file rename;
 
 # allow apexd to read files from /vendor/apex
 r_dir_file(apexd, vendor_apex_file)
@@ -189,6 +191,9 @@ set_prop(apexd, apex_ready_prop)
 
 # Allow apexd to write to statsd.
 unix_socket_send(apexd, statsdw, statsd)
+# Allow apexd to call
+allow apexd statsbootstrap_service:service_manager find;
+binder_call(apexd, system_server) # system_server serves statsbootstrap_service
 
 ###
 ### Neverallow rules
