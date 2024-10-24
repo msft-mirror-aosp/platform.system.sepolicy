@@ -409,6 +409,8 @@
 /system/bin/android\.automotive\.evs\.manager@1\.[0-9]+ u:object_r:evsmanagerd_exec:s0
 /system/bin/uprobestats           u:object_r:uprobestats_exec:s0
 /system/bin/bert_collector        u:object_r:bert_collector_exec:s0
+/system/bin/linux_vm_setup        u:object_r:linux_vm_setup_exec:s0
+/system/bin/tradeinmode           u:object_r:tradeinmode_exec:s0
 
 #############################
 # Vendor files
@@ -535,8 +537,6 @@
 /(system_ext|system/system_ext)/bin/hidl_lazy_cb_test_server u:object_r:hidl_lazy_test_server_exec:s0
 /(system_ext|system/system_ext)/bin/hwservicemanager         u:object_r:hwservicemanager_exec:s0
 /(system_ext|system/system_ext)/bin/hw/android\.hidl\.allocator@1\.0-service u:object_r:hal_allocator_default_exec:s0
-
-/(system_ext|system/system_ext)/bin/linux_vm_setup       u:object_r:linux_vm_setup_exec:s0
 
 /(system_ext|system/system_ext)/bin/canhalconfigurator(-aidl)? u:object_r:canhalconfigurator_exec:s0
 
@@ -889,6 +889,7 @@
 /metadata/aconfig(/.*)?    u:object_r:aconfig_storage_metadata_file:s0
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 /metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
+/metadata/tradeinmode(/.*)?    u:object_r:tradeinmode_metadata_file:s0
 
 ############################
 # mount point for ota metadata

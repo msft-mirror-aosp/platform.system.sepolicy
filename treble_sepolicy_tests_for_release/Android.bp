@@ -23,7 +23,7 @@ package {
 // Tests for Treble compatibility of current platform policy and vendor policy of
 // given release version.
 //////////////////////////////////
-genrule {
+java_genrule {
     name: "29.0_mapping.combined.cil",
     srcs: [
         ":plat_29.0.cil",
@@ -33,7 +33,7 @@ genrule {
     cmd: "cat $(location :plat_29.0.cil) $(location :29.0.ignore.cil) > $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_29.0",
     srcs: [
         ":29.0_plat_policy.cil",
@@ -49,7 +49,7 @@ genrule {
         "touch $(out)",
 }
 
-genrule {
+java_genrule {
     name: "30.0_mapping.combined.cil",
     srcs: [
         ":plat_30.0.cil",
@@ -83,7 +83,7 @@ genrule {
         "> $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_30.0",
     srcs: [
         ":30.0_plat_policy.cil",
@@ -114,7 +114,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "31.0_mapping.combined.cil",
     srcs: [
         ":plat_31.0.cil",
@@ -148,7 +148,7 @@ genrule {
         "> $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_31.0",
     srcs: [
         ":31.0_plat_policy.cil",
@@ -179,7 +179,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "32.0_mapping.combined.cil",
     srcs: [
         ":plat_32.0.cil",
@@ -213,7 +213,7 @@ genrule {
         "> $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_32.0",
     srcs: [
         ":32.0_plat_policy.cil",
@@ -244,7 +244,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "33.0_mapping.combined.cil",
     srcs: [
         ":plat_33.0.cil",
@@ -278,7 +278,7 @@ genrule {
         "> $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_33.0",
     srcs: [
         ":33.0_plat_policy.cil",
@@ -309,7 +309,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "34.0_mapping.combined.cil",
     srcs: [
         ":plat_34.0.cil",
@@ -343,7 +343,7 @@ genrule {
         "> $(out)",
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_34.0",
     srcs: [
         ":34.0_plat_policy.cil",
@@ -374,7 +374,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "202404_mapping.combined.cil",
     srcs: select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
         "202404": [
@@ -413,7 +413,7 @@ genrule {
     }),
 }
 
-genrule {
+java_genrule {
     name: "treble_sepolicy_tests_202404",
     srcs: [
         ":202404_plat_policy.cil",
