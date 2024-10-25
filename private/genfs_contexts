@@ -94,7 +94,6 @@ genfscon proc /sys/vm/min_free_order_shift u:object_r:proc_min_free_order_shift:
 genfscon proc /sys/vm/watermark_boost_factor u:object_r:proc_watermark_boost_factor:s0
 genfscon proc /sys/vm/watermark_scale_factor u:object_r:proc_watermark_scale_factor:s0
 genfscon proc /sys/vm/percpu_pagelist_high_fraction u:object_r:proc_percpu_pagelist_high_fraction:s0
-genfscon proc /sys/vm/compaction_proactiveness u:object_r:proc_compaction_proactiveness:s0
 genfscon proc /timer_list u:object_r:proc_timer:s0
 genfscon proc /timer_stats u:object_r:proc_timer:s0
 genfscon proc /tty/drivers u:object_r:proc_tty_drivers:s0
@@ -150,6 +149,7 @@ genfscon sysfs /devices/virtual/misc/hw_random    u:object_r:sysfs_hwrandom:s0
 genfscon sysfs /devices/virtual/net             u:object_r:sysfs_net:s0
 genfscon sysfs /devices/virtual/switch          u:object_r:sysfs_switch:s0
 genfscon sysfs /devices/virtual/wakeup          u:object_r:sysfs_wakeup:s0
+genfscon sysfs /firmware/acpi/tables              u:object_r:sysfs_firmware_acpi_tables:s0
 genfscon sysfs /firmware/devicetree/base/avf u:object_r:sysfs_dt_avf:s0
 genfscon sysfs /firmware/devicetree/base/firmware/android u:object_r:sysfs_dt_firmware_android:s0
 genfscon sysfs /fs/ext4/features                  u:object_r:sysfs_fs_ext4_features:s0
@@ -331,13 +331,11 @@ genfscon binfmt_misc / u:object_r:binfmt_miscfs:s0
 
 genfscon bpf / u:object_r:fs_bpf:s0
 genfscon bpf /loader u:object_r:fs_bpf_loader:s0
-genfscon bpf /map_bpfMemEvents_lmkd_rb u:object_r:fs_bpf_lmkd_memevents_rb:s0
+genfscon bpf /memevents u:object_r:fs_bpf_memevents:s0
 genfscon bpf /net_private u:object_r:fs_bpf_net_private:s0
 genfscon bpf /net_shared u:object_r:fs_bpf_net_shared:s0
 genfscon bpf /netd_readonly u:object_r:fs_bpf_netd_readonly:s0
 genfscon bpf /netd_shared u:object_r:fs_bpf_netd_shared:s0
-genfscon bpf /prog_bpfMemEvents_tracepoint_vmscan_mm_vmscan_direct_reclaim_begin_lmkd u:object_r:fs_bpf_lmkd_memevents_prog:s0
-genfscon bpf /prog_bpfMemEvents_tracepoint_vmscan_mm_vmscan_direct_reclaim_end_lmkd u:object_r:fs_bpf_lmkd_memevents_prog:s0
 genfscon bpf /tethering u:object_r:fs_bpf_tethering:s0
 genfscon bpf /vendor u:object_r:fs_bpf_vendor:s0
 genfscon bpf /uprobestats u:object_r:fs_bpf_uprobestats:s0
