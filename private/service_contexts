@@ -115,6 +115,7 @@ android.hardware.threadnetwork.IThreadChip/chip0                     u:object_r:
 android.hardware.tv.hdmi.cec.IHdmiCec/default                        u:object_r:hal_tv_hdmi_cec_service:s0
 android.hardware.tv.hdmi.connection.IHdmiConnection/default          u:object_r:hal_tv_hdmi_connection_service:s0
 android.hardware.tv.hdmi.earc.IEArc/default                          u:object_r:hal_tv_hdmi_earc_service:s0
+android.hardware.tv.mediaquality.IMediaQuality/default               u:object_r:hal_mediaquality_service:s0
 android.hardware.tv.tuner.ITuner/default                             u:object_r:hal_tv_tuner_service:s0
 android.hardware.tv.input.ITvInput/default                           u:object_r:hal_tv_input_service:s0
 android.hardware.usb.IUsb/default                                    u:object_r:hal_usb_service:s0

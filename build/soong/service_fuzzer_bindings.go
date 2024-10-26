@@ -139,6 +139,7 @@ var (
 		"android.hardware.tv.hdmi.connection.IHdmiConnection/default":             EXCEPTION_NO_FUZZER,
 		"android.hardware.tv.hdmi.earc.IEArc/default":                             EXCEPTION_NO_FUZZER,
 		"android.hardware.tv.input.ITvInput/default":                              EXCEPTION_NO_FUZZER,
+		"android.hardware.tv.mediaquality.IMediaQuality/default":                  EXCEPTION_NO_FUZZER,
 		"android.hardware.tv.tuner.ITuner/default":                                EXCEPTION_NO_FUZZER,
 		"android.hardware.usb.IUsb/default":                                       EXCEPTION_NO_FUZZER,
 		"android.hardware.usb.gadget.IUsbGadget/default":                          EXCEPTION_NO_FUZZER,
