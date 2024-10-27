@@ -203,6 +203,11 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to control uprobestats
+ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
+ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
+ctl.restart$uprobestats   u:object_r:ctl_uprobestats_prop:s0
+
 # Restrict access to starting/stopping artd_pre_reboot.
 ctl.start$artd_pre_reboot          u:object_r:ctl_artd_pre_reboot_prop:s0
 ctl.stop$artd_pre_reboot           u:object_r:ctl_artd_pre_reboot_prop:s0
@@ -569,6 +574,7 @@ keyguard.no_require_sim u:object_r:keyguard_config_prop:s0 exact bool
 
 media.c2.dmabuf.padding                      u:object_r:codec2_config_prop:s0 exact int
 media.c2.hal.selection                       u:object_r:codec2_config_prop:s0 exact enum aidl hidl
+media.c2.remove_rendering_depth              u:object_r:codec2_config_prop:s0 exact bool
 
 media.recorder.show_manufacturer_and_model   u:object_r:media_config_prop:s0 exact bool
 media.resolution.limit.32bit                 u:object_r:media_config_prop:s0 exact int
@@ -597,6 +603,12 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+
+bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_hd_priority.config        u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.ldac_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
 
 bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int

@@ -108,6 +108,9 @@ set_prop(shell, rollback_test_prop)
 # Allow shell to set RKP properties for testing purposes
 set_prop(shell, remote_prov_prop)
 
+# Allow shell to enable 16 KB backcompat globally.
+set_prop(shell, bionic_linker_16kb_app_compat_prop)
+
 # Allow shell to get encryption policy of /data/local/tmp/, for CTS
 allowxperm shell shell_data_file:dir ioctl {
   FS_IOC_GET_ENCRYPTION_POLICY
@@ -397,7 +400,6 @@ allow shell sysfs_net:dir r_dir_perms;
 
 r_dir_file(shell, cgroup)
 allow shell cgroup_desc_file:file r_file_perms;
-allow shell cgroup_desc_api_file:file r_file_perms;
 allow shell vendor_cgroup_desc_file:file r_file_perms;
 r_dir_file(shell, cgroup_v2)
 allow shell domain:dir { search open read getattr };

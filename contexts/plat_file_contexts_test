@@ -435,8 +435,8 @@
 /system/bin/hw/android.system.suspend-service                     system_suspend_exec
 /system/etc/aconfig                                               system_aconfig_storage_file
 /system/etc/cgroups.json                                          cgroup_desc_file
-/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_api_file
-/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_api_file
+/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_file
+/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_file
 /system/etc/event-log-tags                                        system_event_log_tags_file
 /system/etc/font_fallback.xml                                     system_font_fallback_file
 /system/etc/group                                                 system_group_file
@@ -460,8 +460,8 @@
 /system/etc/selinux/plat_sepolicy.cil                             sepolicy_file
 /system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256          sepolicy_file
 /system/etc/task_profiles.json                                    task_profiles_file
-/system/etc/task_profiles/task_profiles_0.json                    task_profiles_api_file
-/system/etc/task_profiles/task_profiles_99.json                   task_profiles_api_file
+/system/etc/task_profiles/task_profiles_0.json                    task_profiles_file
+/system/etc/task_profiles/task_profiles_99.json                   task_profiles_file
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
