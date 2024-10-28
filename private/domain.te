@@ -1765,6 +1765,7 @@ is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `
 # that these files cannot be accessed by other domains to ensure that the files
 # do not change between system_server staging the files and apexd processing
 # the files.
+# The update_provider can also stage files before apexd processes them.
 neverallow {
   domain
   -init
@@ -1773,6 +1774,7 @@ neverallow {
   -installd
   -priv_app
   -virtualizationmanager
+  -update_provider # WARNING: USING THIS ATTRIBUTE WILL CAUSE CTS TO FAIL!
 } staging_data_file:dir *;
 neverallow {
   domain
@@ -1787,10 +1789,13 @@ neverallow {
   -shell
   -virtualizationmanager
   -crosvm
+  -update_provider # WARNING: USING THIS ATTRIBUTE WILL CAUSE CTS TO FAIL!
 } staging_data_file:file *;
-neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -system_server -installd -update_provider } staging_data_file:dir no_w_dir_perms;
 # apexd needs the link/unlink/rename permissions
-neverallow { domain -init -system_server -installd -apexd } staging_data_file:file {
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -system_server -installd -apexd -update_provider } staging_data_file:file {
   no_w_file_perms no_x_file_perms
 };
 neverallow apexd staging_data_file:file {
