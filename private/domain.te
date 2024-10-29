@@ -425,11 +425,9 @@ allow { domain -appdomain -rs } cgroup_v2:dir w_dir_perms;
 allow { domain -appdomain -rs } cgroup_v2:file w_file_perms;
 
 allow domain cgroup_desc_file:file r_file_perms;
-allow domain cgroup_desc_api_file:file r_file_perms;
 allow domain cgroup_rc_file:dir search;
 allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
-allow domain task_profiles_api_file:file r_file_perms;
 allow domain vendor_cgroup_desc_file:file r_file_perms;
 allow domain vendor_task_profiles_file:file r_file_perms;
 
@@ -1164,6 +1162,7 @@ full_treble_only(`
     } {
         system_file_type
         -system_lib_file
+        -system_bootstrap_lib_file
         -system_linker_exec
         -crash_dump_exec
         -netutils_wrapper_exec
@@ -1235,7 +1234,6 @@ full_treble_only(`
   } {
     system_file_type
     -cgroup_desc_file
-    -cgroup_desc_api_file
     -crash_dump_exec
     -file_contexts_file
     -netutils_wrapper_exec
@@ -1243,6 +1241,7 @@ full_treble_only(`
     -system_event_log_tags_file
     -system_group_file
     -system_lib_file
+    -system_bootstrap_lib_file
     with_asan(`-system_asan_options_file')
     -system_linker_exec
     -system_linker_config_file
@@ -1250,7 +1249,6 @@ full_treble_only(`
     -system_seccomp_policy_file
     -system_security_cacerts_file
     -system_zoneinfo_file
-    -task_profiles_api_file
     -task_profiles_file
     userdebug_or_eng(`-tcpdump_exec')
     # Vendor components still can invoke shell commands via /system/bin/sh
@@ -1660,6 +1658,7 @@ neverallow {
   -runas
   -system_server
   -zygote
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1725,6 +1724,7 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1828,6 +1828,7 @@ neverallow {
     file_type
     -system_file_type
     -system_lib_file
+    -system_bootstrap_lib_file
     -system_linker_exec
     -vendor_file_type
     -exec_type
