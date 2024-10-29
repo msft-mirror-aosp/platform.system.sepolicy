@@ -326,7 +326,6 @@
 /system/bin/tcpdump                                               tcpdump_exec
 /system/bin/tune2fs                                               fsck_exec
 /system/bin/resize2fs                                             fsck_exec
-/system/bin/rkp_cert_processor                                    rkp_cert_processor_exec
 /system/bin/toolbox                                               toolbox_exec
 /system/bin/toybox                                                toolbox_exec
 /system/bin/ld.mc                                                 rs_exec
@@ -772,6 +771,9 @@
 /system/system_ext/bin/hwservicemanager                           hwservicemanager_exec
 /system_ext/bin/hw/android.hidl.allocator@1.0-service             hal_allocator_default_exec
 /system/system_ext/bin/hw/android.hidl.allocator@1.0-service      hal_allocator_default_exec
+
+/system_ext/bin/rkp_cert_processor                                rkp_cert_processor_exec
+/system/system_ext/bin/rkp_cert_processor                         rkp_cert_processor_exec
 
 
 /system_ext/bin/canhalconfigurator                                canhalconfigurator_exec
