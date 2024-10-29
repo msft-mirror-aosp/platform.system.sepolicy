@@ -115,6 +115,15 @@ is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
   # Allow crosvm to play sound.
   binder_call(crosvm, audioserver)
   allow crosvm audioserver_service:service_manager find;
+
+  # Allow crosvm to mount fuse path in guest VM through virtiofs
+  allow crosvm fuse:file create_file_perms;
+  allow crosvm fuse:dir create_dir_perms;
+  allow crosvm mnt_user_file:dir search;
+
+  # Allow crosvm to create unix socket for vhost-user-fs
+  allow crosvm virtualizationservice_data_file:dir { add_name write remove_name };
+  allow crosvm virtualizationservice_data_file:sock_file { create write unlink };
 ')
 
 # crosvm tries to use netlink sockets as part its APCI implementation, but we don't need it for AVF (b/228077254)
