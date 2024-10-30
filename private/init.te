@@ -616,6 +616,7 @@ allow init sysfs_vibrator:file w_file_perms;
 allow init {
   sysfs_android_usb
   sysfs_devices_system_cpu
+  sysfs_firmware_acpi_tables
   sysfs_ipv4
   sysfs_leds
   sysfs_lowmemorykiller
