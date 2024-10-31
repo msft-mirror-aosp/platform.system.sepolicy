@@ -224,15 +224,6 @@ func (c *policyConf) mlsCats() int {
 	return proptools.IntDefault(c.properties.Mls_cats, MlsCats)
 }
 
-func (c *policyConf) boardApiLevel(ctx android.ModuleContext) string {
-	level := proptools.StringDefault(c.properties.Board_api_level, "current")
-	if level == "current" {
-		return ctx.Config().VendorApiLevel()
-	} else {
-		return level
-	}
-}
-
 func findPolicyConfOrder(name string) int {
 	for idx, pattern := range policyConfOrder {
 		// We could use regexp but it seems like an overkill
@@ -274,7 +265,7 @@ func (c *policyConf) transformPolicyToConf(ctx android.ModuleContext) android.Ou
 		FlagWithArg("-D target_requires_insecure_execmem_for_swiftshader=", strconv.FormatBool(ctx.DeviceConfig().RequiresInsecureExecmemForSwiftshader())).
 		FlagWithArg("-D target_enforce_debugfs_restriction=", c.enforceDebugfsRestrictions(ctx)).
 		FlagWithArg("-D target_recovery=", strconv.FormatBool(c.isTargetRecovery())).
-		FlagWithArg("-D target_board_api_level=", c.boardApiLevel(ctx)).
+		Flag(boardApiLevelToM4Macro(ctx, c.properties.Board_api_level)).
 		Flags(flagsToM4Macros(flags)).
 		Flag("-s").
 		Inputs(srcs).

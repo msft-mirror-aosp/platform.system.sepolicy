@@ -46,6 +46,10 @@ type selinuxContextsProperties struct {
 
 	// Make this module available when building for recovery
 	Recovery_available *bool
+
+	// Board api level of policy files. Set "current" for RELEASE_BOARD_API_LEVEL, or a direct
+	// version string (e.g. "202404"). Defaults to "current"
+	Board_api_level *string
 }
 
 type seappProperties struct {
@@ -224,46 +228,46 @@ func (m *selinuxContextsModule) AndroidMk() android.AndroidMkData {
 	}
 }
 
-func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
+func (m *selinuxContextsModule) ImageMutatorBegin(ctx android.ImageInterfaceContext) {
 	if proptools.Bool(m.properties.Recovery_available) && m.ModuleBase.InstallInRecovery() {
 		ctx.PropertyErrorf("recovery_available",
 			"doesn't make sense at the same time as `recovery: true`")
 	}
 }
 
-func (m *selinuxContextsModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) VendorVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *selinuxContextsModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) ProductVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) CoreVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return !m.ModuleBase.InstallInRecovery()
 }
 
-func (m *selinuxContextsModule) RamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) RamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *selinuxContextsModule) VendorRamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) VendorRamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *selinuxContextsModule) DebugRamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) DebugRamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *selinuxContextsModule) RecoveryVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *selinuxContextsModule) RecoveryVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return m.ModuleBase.InstallInRecovery() || proptools.Bool(m.properties.Recovery_available)
 }
 
-func (m *selinuxContextsModule) ExtraImageVariations(ctx android.BaseModuleContext) []string {
+func (m *selinuxContextsModule) ExtraImageVariations(ctx android.ImageInterfaceContext) []string {
 	return nil
 }
 
-func (m *selinuxContextsModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
+func (m *selinuxContextsModule) SetImageVariation(ctx android.ImageInterfaceContext, variation string) {
 }
 
 var _ android.ImageInterface = (*selinuxContextsModule)(nil)
@@ -288,6 +292,7 @@ func (m *selinuxContextsModule) buildGeneralContexts(ctx android.ModuleContext, 
 		Tool(ctx.Config().PrebuiltBuildTool(ctx, "m4")).
 		Text("--fatal-warnings -s").
 		FlagForEachArg("-D", ctx.DeviceConfig().SepolicyM4Defs()).
+		Flag(boardApiLevelToM4Macro(ctx, m.properties.Board_api_level)).
 		Flags(flagsToM4Macros(flags)).
 		Inputs(inputsWithNewline).
 		FlagWithOutput("> ", builtContext)
@@ -711,42 +716,42 @@ func (m *contextsTestModule) AndroidMkEntries() []android.AndroidMkEntries {
 
 // contextsTestModule implements ImageInterface to be able to include recovery_available contexts
 // modules as its sources.
-func (m *contextsTestModule) ImageMutatorBegin(ctx android.BaseModuleContext) {
+func (m *contextsTestModule) ImageMutatorBegin(ctx android.ImageInterfaceContext) {
 }
 
-func (m *contextsTestModule) VendorVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) VendorVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) ProductVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) ProductVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) CoreVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) CoreVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return true
 }
 
-func (m *contextsTestModule) RamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) RamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) VendorRamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) VendorRamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) DebugRamdiskVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) DebugRamdiskVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) RecoveryVariantNeeded(ctx android.BaseModuleContext) bool {
+func (m *contextsTestModule) RecoveryVariantNeeded(ctx android.ImageInterfaceContext) bool {
 	return false
 }
 
-func (m *contextsTestModule) ExtraImageVariations(ctx android.BaseModuleContext) []string {
+func (m *contextsTestModule) ExtraImageVariations(ctx android.ImageInterfaceContext) []string {
 	return nil
 }
 
-func (m *contextsTestModule) SetImageVariation(ctx android.BaseModuleContext, variation string) {
+func (m *contextsTestModule) SetImageVariation(ctx android.ImageInterfaceContext, variation string) {
 }
 
 var _ android.ImageInterface = (*contextsTestModule)(nil)
