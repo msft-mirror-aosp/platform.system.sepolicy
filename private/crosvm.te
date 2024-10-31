@@ -5,10 +5,6 @@ type crosvm_tmpfs, file_type;
 # Let crosvm open VM manager devices such as /dev/kvm.
 allow crosvm vm_manager_device_type:chr_file rw_file_perms;
 
-# TODO(b/357025924): This is a temporary workaround to allow the KeyMint VM to use crosvm
-# directly. It should be removed once the KeyMint VM can be started with early_virtmgr
-is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, init_daemon_domain(crosvm))
-
 # Most other domains shouldn't access /dev/kvm.
 neverallow { domain -crosvm -ueventd -shell } kvm_device:chr_file getattr;
 neverallow { domain -crosvm -ueventd } kvm_device:chr_file ~getattr;
@@ -116,9 +112,23 @@ is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
   allow crosvm virtualization_service:service_manager find;
   allow crosvm virtualizationservice:binder { call transfer };
 
+  # Allow crosvm to mount Terminal app internal storage directory
+  # to guest VM over virtiofs
+  allow crosvm privapp_data_file:dir { getattr open read search };
+  allow crosvm privapp_data_file:file { open };
+
   # Allow crosvm to play sound.
   binder_call(crosvm, audioserver)
   allow crosvm audioserver_service:service_manager find;
+
+  # Allow crosvm to mount fuse path in guest VM through virtiofs
+  allow crosvm fuse:file create_file_perms;
+  allow crosvm fuse:dir create_dir_perms;
+  allow crosvm mnt_user_file:dir search;
+
+  # Allow crosvm to create unix socket for vhost-user-fs
+  allow crosvm virtualizationservice_data_file:dir { add_name write remove_name };
+  allow crosvm virtualizationservice_data_file:sock_file { create write unlink };
 ')
 
 # crosvm tries to use netlink sockets as part its APCI implementation, but we don't need it for AVF (b/228077254)
@@ -169,12 +179,14 @@ allow crosvm kmsg_debug_device:chr_file w_file_perms;
 # image referring by name to files which it doesn't have permission to open, trying to get crosvm to
 # open them on its behalf. By preventing crosvm from opening any other files we prevent this
 # potential privilege escalation. See http://b/192453819 for more discussion.
+#
+# crosvm requires access to terminal app internal storage; the directory
+# is passed as a mount point to guest VM over virtiofs.
 neverallow crosvm {
   virtualizationservice_data_file
   staging_data_file
   apk_data_file
   app_data_file
-  privapp_data_file
   is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `storage_area_content_file')
   is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `vm_data_file')
   userdebug_or_eng(`-shell_data_file')
@@ -188,11 +200,12 @@ full_treble_only(`
     -vendor_vm_data_file
     # These types are not required for crosvm, but the access is granted to globally in domain.te
     # thus should be exempted here.
+    -vendor_cgroup_desc_file
     -vendor_configs_file
     -vendor_microdroid_file
     -vndk_sp_file
     -vendor_task_profiles_file
-    is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `-same_process_hal_file')
+    -same_process_hal_file
   }:file *;
 ')
 
@@ -212,9 +225,6 @@ neverallow {
   domain
   -crosvm
   -virtualizationmanager
-  # TODO(b/357025924): This is a temporary workaround to allow the KeyMint VM to use crosvm
-  # directly. It should be removed once the KeyMint VM can be started with early_virtmgr
-  is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `-init')
 
   is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `-early_virtmgr')
 } crosvm_exec:file no_x_file_perms;
