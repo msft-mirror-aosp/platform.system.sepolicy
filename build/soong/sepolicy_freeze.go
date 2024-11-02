@@ -33,7 +33,7 @@ func init() {
 // SEPOLICY_FREEZE_TEST_EXTRA_PREBUILT_DIRS.
 func freezeTestFactory() android.SingletonModule {
 	f := &freezeTestModule{}
-	android.InitAndroidModule(f)
+	android.InitAndroidArchModule(f, android.DeviceSupported, android.MultilibCommon)
 	android.AddLoadHook(f, func(ctx android.LoadHookContext) {
 		f.loadHook(ctx)
 	})
