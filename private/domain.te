@@ -1162,6 +1162,7 @@ full_treble_only(`
     } {
         system_file_type
         -system_lib_file
+        -system_bootstrap_lib_file
         -system_linker_exec
         -crash_dump_exec
         -netutils_wrapper_exec
@@ -1240,6 +1241,7 @@ full_treble_only(`
     -system_event_log_tags_file
     -system_group_file
     -system_lib_file
+    -system_bootstrap_lib_file
     with_asan(`-system_asan_options_file')
     -system_linker_exec
     -system_linker_config_file
@@ -1656,6 +1658,7 @@ neverallow {
   -runas
   -system_server
   -zygote
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1721,6 +1724,7 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1824,6 +1828,7 @@ neverallow {
     file_type
     -system_file_type
     -system_lib_file
+    -system_bootstrap_lib_file
     -system_linker_exec
     -vendor_file_type
     -exec_type
