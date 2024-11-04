@@ -409,6 +409,7 @@
 /system/bin/traced_perf                                           traced_perf_exec
 /system/bin/traced_probes                                         traced_probes_exec
 /system/bin/traced_relay                                          traced_exec
+/system/bin/tradeinmode                                           tradeinmode_exec
 /system/bin/heapprofd                                             heapprofd_exec
 /system/bin/uncrypt                                               uncrypt_exec
 /system/bin/update_verifier                                       update_verifier_exec
@@ -417,7 +418,6 @@
 /system/bin/cppreopts.sh                                          cppreopts_exec
 /system/bin/preloads_copy.sh                                      preloads_copy_exec
 /system/bin/preopt2cachename                                      preopt2cachename_exec
-/system/bin/viewcompiler                                          viewcompiler_exec
 /system/bin/sgdisk                                                sgdisk_exec
 /system/bin/blkid                                                 blkid_exec
 /system/bin/flags_health_check                                    flags_health_check_exec
@@ -434,8 +434,8 @@
 /system/bin/hw/android.system.suspend-service                     system_suspend_exec
 /system/etc/aconfig                                               system_aconfig_storage_file
 /system/etc/cgroups.json                                          cgroup_desc_file
-/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_api_file
-/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_api_file
+/system/etc/task_profiles/cgroups_0.json                          cgroup_desc_file
+/system/etc/task_profiles/cgroups_999.json                        cgroup_desc_file
 /system/etc/event-log-tags                                        system_event_log_tags_file
 /system/etc/font_fallback.xml                                     system_font_fallback_file
 /system/etc/group                                                 system_group_file
@@ -459,8 +459,8 @@
 /system/etc/selinux/plat_sepolicy.cil                             sepolicy_file
 /system/etc/selinux/plat_and_mapping_sepolicy.cil.sha256          sepolicy_file
 /system/etc/task_profiles.json                                    task_profiles_file
-/system/etc/task_profiles/task_profiles_0.json                    task_profiles_api_file
-/system/etc/task_profiles/task_profiles_99.json                   task_profiles_api_file
+/system/etc/task_profiles/task_profiles_0.json                    task_profiles_file
+/system/etc/task_profiles/task_profiles_99.json                   task_profiles_file
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
@@ -486,6 +486,7 @@
 /system/bin/android.automotive.evs.manager@1.99                   evsmanagerd_exec
 /system/bin/uprobestats                                           uprobestats_exec
 /system/bin/trace_redactor                                        trace_redactor_exec
+/system/bin/bert_collector                                        bert_collector_exec
 
 /vendor                                                           vendor_file
 /vendor/does_not_exist                                            vendor_file
@@ -772,14 +773,16 @@
 /system_ext/bin/hw/android.hidl.allocator@1.0-service             hal_allocator_default_exec
 /system/system_ext/bin/hw/android.hidl.allocator@1.0-service      hal_allocator_default_exec
 
+/system_ext/bin/rkp_cert_processor                                rkp_cert_processor_exec
+/system/system_ext/bin/rkp_cert_processor                         rkp_cert_processor_exec
+
 
 /system_ext/bin/canhalconfigurator                                canhalconfigurator_exec
 /system_ext/bin/canhalconfigurator-aidl                           canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator                         canhalconfigurator_exec
 /system/system_ext/bin/canhalconfigurator-aidl                    canhalconfigurator_exec
 
-/system_ext/bin/custom_vm_setup                                   custom_vm_setup_exec
-/system/system_ext/bin/custom_vm_setup                            custom_vm_setup_exec
+/system/bin/linux_vm_setup                                        linux_vm_setup_exec
 
 /system_ext/lib                                                   system_lib_file
 /system_ext/lib/does_not_exist                                    system_lib_file
@@ -1277,6 +1280,8 @@
 /metadata/watchdog/test                                           watchdog_metadata_file
 /metadata/repair-mode                                             repair_mode_metadata_file
 /metadata/repair-mode/test                                        repair_mode_metadata_file
+/metadata/tradeinmode                                             tradeinmode_metadata_file
+/metadata/tradeinmode/test                                        tradeinmode_metadata_file
 
 /mnt/asec                                                         asec_apk_file
 /mnt/asec/test                                                    asec_apk_file
