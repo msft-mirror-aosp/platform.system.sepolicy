@@ -288,6 +288,7 @@ var (
 		"fingerprint":                   EXCEPTION_NO_FUZZER,
 		"feature_flags":                 EXCEPTION_NO_FUZZER,
 		"font":                          EXCEPTION_NO_FUZZER,
+		"forensic":                      EXCEPTION_NO_FUZZER,
 		"android.hardware.fingerprint.IFingerprintDaemon": EXCEPTION_NO_FUZZER,
 		"game":                                   EXCEPTION_NO_FUZZER,
 		"gfxinfo":                                EXCEPTION_NO_FUZZER,
