@@ -19,13 +19,7 @@ allow crash_dump {
 }:process { ptrace signal sigchld sigstop sigkill };
 
 userdebug_or_eng(`
-  allow crash_dump {
-    apexd
-    keystore
-    llkd
-    logd
-    vold
-  }:process { ptrace signal sigchld sigstop sigkill };
+  allow crash_dump { apexd llkd logd vold }:process { ptrace signal sigchld sigstop sigkill };
 ')
 
 # Read ART APEX data directory
@@ -106,8 +100,15 @@ dontaudit crash_dump {
   core_data_file_type
   vendor_file_type
 }:dir search;
-dontaudit crash_dump system_data_file:{ lnk_file file } read;
-dontaudit crash_dump property_type:file read;
+# Crash dump might try to read files that are mapped into the crashed process's
+# memory space to extract useful binary information such as the ELF header. See
+# system/core/debuggerd/libdebuggerd/tombstone_proto.cpp:dump_mappings.
+# Ignore these accesses.
+dontaudit crash_dump {
+  app_data_file_type
+  property_type
+  system_data_file
+}:{ lnk_file file } { read open };
 
 get_prop(crash_dump, misctrl_prop)
 
@@ -128,7 +129,6 @@ neverallow crash_dump {
   init
   kernel
   keystore
-  userdebug_or_eng(`-keystore')
   llkd
   userdebug_or_eng(`-llkd')
   logd

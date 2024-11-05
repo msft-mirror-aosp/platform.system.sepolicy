@@ -198,6 +198,8 @@ allow system_server cameraserver:process { getsched setsched };
 allow system_server hal_camera:process { getsched setsched };
 allow system_server mediaserver:process { getsched setsched };
 allow system_server bootanim:process { getsched setsched };
+# Set scheduling info for VMs (b/375058190)
+allow system_server { virtualizationmanager crosvm }:process { getsched setsched };
 
 # Set scheduling info for psi monitor thread.
 # TODO: delete this line b/131761776
@@ -324,6 +326,7 @@ hal_client_domain(system_server, hal_input_processor)
 hal_client_domain(system_server, hal_ir)
 hal_client_domain(system_server, hal_keymint)
 hal_client_domain(system_server, hal_light)
+hal_client_domain(system_server, hal_mediaquality)
 hal_client_domain(system_server, hal_memtrack)
 hal_client_domain(system_server, hal_neuralnetworks)
 hal_client_domain(system_server, hal_oemlock)
@@ -1134,15 +1137,18 @@ allow system_server configfs:file { getattr open create unlink write };
 
 # Connect to adbd and use a socket transferred from it.
 # Used for e.g. jdwp.
-allow system_server adbd:unix_stream_socket connectto;
-allow system_server adbd:fd use;
-allow system_server adbd:unix_stream_socket { getattr getopt ioctl read write shutdown };
+allow system_server adbd_common:unix_stream_socket connectto;
+allow system_server adbd_common:fd use;
+allow system_server adbd_common:unix_stream_socket { getattr getopt ioctl read write shutdown };
 
 # Read service.adb.tls.port, persist.adb.wifi. properties
 get_prop(system_server, adbd_prop)
 
 # Set persist.adb.tls_server.enable property
 set_prop(system_server, system_adbd_prop)
+
+# Set service.adbd.tradeinmode from ITradeInService.
+set_prop(system_server, adbd_tradeinmode_prop)
 
 # Allow invoking tools like "timeout"
 allow system_server toolbox_exec:file rx_file_perms;
@@ -1269,9 +1275,6 @@ get_prop(system_server,system_jvmti_agent_prop)
 # UsbDeviceManager uses /dev/usb-ffs
 allow system_server functionfs:dir search;
 allow system_server functionfs:file rw_file_perms;
-# To resolve arbitrary sysfs paths from /sys/class/udc/* symlinks.
-allow system_server sysfs_type:dir search;
-r_dir_file(system_server, sysfs_udc)
 
 # system_server contains time / time zone detection logic so reads the associated properties.
 get_prop(system_server, time_prop)
@@ -1447,6 +1450,9 @@ allow system_server apex_mnt_dir:dir r_dir_perms;
 # Allow system server to read /apex/apex-info-list.xml
 allow system_server apex_info_file:file r_file_perms;
 
+# Allow system_server to communicate with tradeinmode.
+binder_call(system_server, tradeinmode)
+
 # Allow system server to communicate to system-suspend's control interface
 allow system_server system_suspend_control_internal_service:service_manager find;
 allow system_server system_suspend_control_service:service_manager find;
@@ -1497,6 +1503,10 @@ allow system_server {
 allow system_server metadata_file:dir search;
 allow system_server password_slot_metadata_file:dir rw_dir_perms;
 allow system_server password_slot_metadata_file:file create_file_perms;
+
+# Allow TradeInMode service rw access to /metadata/tradeinmode.
+allow system_server tradeinmode_metadata_file:dir rw_dir_perms;
+allow system_server tradeinmode_metadata_file:file create_file_perms;
 
 allow system_server userspace_reboot_metadata_file:dir create_dir_perms;
 allow system_server userspace_reboot_metadata_file:file create_file_perms;
@@ -1672,6 +1682,9 @@ allow system_server {
 # Do not allow any domain other than init or system server to get or set the property
 neverallow { domain -init -system_server } crashrecovery_prop:property_service set;
 neverallow { domain -init -dumpstate -system_server } crashrecovery_prop:file no_rw_file_perms;
+
+# Do not allow anything other than system_server and init to touch /metadata/tradeinmode.
+neverallow { domain -init -system_server } tradeinmode_metadata_file:file no_rw_file_perms;
 
 neverallow {
   domain
