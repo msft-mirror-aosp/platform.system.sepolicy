@@ -361,6 +361,7 @@ var (
 		"meminfo":                                EXCEPTION_NO_FUZZER,
 		"memtrack.proxy":                         EXCEPTION_NO_FUZZER,
 		"midi":                                   EXCEPTION_NO_FUZZER,
+		"mmd":                                    EXCEPTION_NO_FUZZER,
 		"mount":                                  EXCEPTION_NO_FUZZER,
 		"music_recognition":                      EXCEPTION_NO_FUZZER,
 		"nearby":                                 EXCEPTION_NO_FUZZER,
