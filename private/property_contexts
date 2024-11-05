@@ -51,6 +51,7 @@ persist.simpleperf.profile_app_expiration_time  u:object_r:shell_prop:s0
 security.lower_kptr_restrict u:object_r:lower_kptr_restrict_prop:s0
 service.adb.root        u:object_r:shell_prop:s0
 service.adb.tls.port    u:object_r:adbd_prop:s0
+persist.adb.tradeinmode u:object_r:adbd_tradeinmode_prop:s0
 persist.adb.wifi.       u:object_r:adbd_prop:s0
 persist.adb.tls_server.enable  u:object_r:system_adbd_prop:s0
 
@@ -201,6 +202,11 @@ ctl.interface_restart$android.hardware.dumpstate u:object_r:ctl_dumpstate_prop:s
 ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
+
+# Restrict access to control uprobestats
+ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
+ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
+ctl.restart$uprobestats   u:object_r:ctl_uprobestats_prop:s0
 
 # Restrict access to starting/stopping artd_pre_reboot.
 ctl.start$artd_pre_reboot          u:object_r:ctl_artd_pre_reboot_prop:s0
@@ -568,6 +574,7 @@ keyguard.no_require_sim u:object_r:keyguard_config_prop:s0 exact bool
 
 media.c2.dmabuf.padding                      u:object_r:codec2_config_prop:s0 exact int
 media.c2.hal.selection                       u:object_r:codec2_config_prop:s0 exact enum aidl hidl
+media.c2.remove_rendering_depth              u:object_r:codec2_config_prop:s0 exact bool
 
 media.recorder.show_manufacturer_and_model   u:object_r:media_config_prop:s0 exact bool
 media.resolution.limit.32bit                 u:object_r:media_config_prop:s0 exact int
@@ -596,6 +603,12 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+
+bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.aptx_hd_priority.config        u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.a2dp.source.ldac_priority.config           u:object_r:bluetooth_config_prop:s0 exact int
 
 bluetooth.hardware.power.operating_voltage_mv        u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.power.idle_cur_ma                 u:object_r:bluetooth_config_prop:s0 exact int
@@ -1013,6 +1026,7 @@ ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
+ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
@@ -1539,6 +1553,9 @@ remote_provisioning.tee.rkp_only u:object_r:remote_prov_prop:s0 exact bool
 # Hostname for the remote provisioning server a device should communicate with
 remote_provisioning.hostname u:object_r:remote_prov_prop:s0 exact string
 
+# Support for post-processing RKP certificates
+remote_provisioning.use_cert_processor u:object_r:remote_prov_cert_prop:s0 exact bool
+
 # Connection Timeout for remote provisioning step
 remote_provisioning.connect_timeout_millis u:object_r:remote_prov_prop:s0 exact int
 
@@ -1726,3 +1743,7 @@ sys.snapshotctl.unmap u:object_r:snapshotctl_prop:s0 exact string
 # Properties for enabling/disabling system services
 ro.system_settings.service.odp_enabled   u:object_r:system_service_enable_prop:s0 exact bool
 ro.system_settings.service.backgound_install_control_enabled   u:object_r:system_service_enable_prop:s0 exact bool
+
+# Properties related to Trusty VMs
+trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
+trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int

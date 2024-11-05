@@ -115,6 +115,7 @@ android.hardware.threadnetwork.IThreadChip/chip0                     u:object_r:
 android.hardware.tv.hdmi.cec.IHdmiCec/default                        u:object_r:hal_tv_hdmi_cec_service:s0
 android.hardware.tv.hdmi.connection.IHdmiConnection/default          u:object_r:hal_tv_hdmi_connection_service:s0
 android.hardware.tv.hdmi.earc.IEArc/default                          u:object_r:hal_tv_hdmi_earc_service:s0
+android.hardware.tv.mediaquality.IMediaQuality/default               u:object_r:hal_mediaquality_service:s0
 android.hardware.tv.tuner.ITuner/default                             u:object_r:hal_tv_tuner_service:s0
 android.hardware.tv.input.ITvInput/default                           u:object_r:hal_tv_input_service:s0
 android.hardware.usb.IUsb/default                                    u:object_r:hal_usb_service:s0
@@ -186,6 +187,9 @@ ambient_context                           u:object_r:ambient_context_service:s0
 app_binding                               u:object_r:app_binding_service:s0
 app_function                              u:object_r:app_function_service:s0
 app_hibernation                           u:object_r:app_hibernation_service:s0
+starting_at_board_api(202504, `
+    dynamic_instrumentation               u:object_r:dynamic_instrumentation_service:s0
+')
 app_integrity                             u:object_r:app_integrity_service:s0
 app_prediction                            u:object_r:app_prediction_service:s0
 app_search                                u:object_r:app_search_service:s0
@@ -337,6 +341,7 @@ media.tuner                               u:object_r:mediatuner_service:s0
 media_communication                       u:object_r:media_communication_service:s0
 media_metrics                             u:object_r:media_metrics_service:s0
 media_projection                          u:object_r:media_projection_service:s0
+media_quality                             u:object_r:media_quality_service:s0
 media_resource_monitor                    u:object_r:media_session_service:s0
 media_router                              u:object_r:media_router_service:s0
 media_session                             u:object_r:media_session_service:s0
@@ -399,6 +404,7 @@ resources                                 u:object_r:resources_manager_service:s
 restrictions                              u:object_r:restrictions_service:s0
 rkpd.registrar                            u:object_r:rkpd_registrar_service:s0
 rkpd.refresh                              u:object_r:rkpd_refresh_service:s0
+rkp_cert_processor.service                u:object_r:rkp_cert_processor_service:s0
 role                                      u:object_r:role_service:s0
 rollback                                  u:object_r:rollback_service:s0
 rttmanager                                u:object_r:rttmanager_service:s0
@@ -465,6 +471,7 @@ time_zone_detector                        u:object_r:timezonedetector_service:s0
 thermalservice                            u:object_r:thermal_service:s0
 thread_network                            u:object_r:threadnetwork_service:s0
 tracing.proxy                             u:object_r:tracingproxy_service:s0
+tradeinmode                               u:object_r:tradeinmode_service:s0
 translation                               u:object_r:translation_service:s0
 transparency                              u:object_r:transparency_service:s0
 trust                                     u:object_r:trust_service:s0

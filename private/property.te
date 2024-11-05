@@ -1,7 +1,9 @@
 # Properties used only in /system
 system_internal_prop(adbd_prop)
+system_internal_prop(adbd_tradeinmode_prop)
 system_internal_prop(apexd_payload_metadata_prop)
 system_internal_prop(ctl_snapuserd_prop)
+system_internal_prop(ctl_uprobestats_prop)
 system_internal_prop(crashrecovery_prop)
 system_internal_prop(debug_tracing_desktop_mode_visible_tasks_prop)
 system_internal_prop(device_config_core_experiments_team_internal_prop)
@@ -43,6 +45,7 @@ system_internal_prop(pm_prop)
 system_internal_prop(profcollectd_node_id_prop)
 system_internal_prop(radio_cdma_ecm_prop)
 system_internal_prop(remote_prov_prop)
+system_internal_prop(remote_prov_cert_prop)
 system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
 system_internal_prop(snapshotctl_prop)
@@ -69,6 +72,7 @@ system_internal_prop(hidl_memory_prop)
 system_internal_prop(suspend_debug_prop)
 system_internal_prop(system_service_enable_prop)
 system_internal_prop(ctl_artd_pre_reboot_prop)
+system_internal_prop(trusty_security_vm_sys_prop)
 
 
 # Properties which can't be written outside system
@@ -507,6 +511,7 @@ neverallow {
   -init
   -vendor_init
   -adbd
+  -adbd_tradeinmode
   -system_server
 } {
   adbd_config_prop
@@ -517,6 +522,7 @@ neverallow {
   domain
   -init
   -adbd
+  -adbd_tradeinmode
 } {
   adbd_prop
 }:property_service set;
@@ -783,6 +789,11 @@ neverallow {
 } remote_prov_prop:property_service set;
 
 neverallow {
+  domain
+  -init
+} remote_prov_cert_prop:property_service set;
+
+neverallow {
   # Only allow init and shell to set rollback_test_prop
   domain
   -init
@@ -852,5 +863,6 @@ neverallow {
 neverallow {
   domain
   -init
+  -shell
   userdebug_or_eng(`-su')
 } bionic_linker_16kb_app_compat_prop:property_service set;
