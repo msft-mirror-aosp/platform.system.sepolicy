@@ -1021,12 +1021,12 @@ ro.boottime.init.mount.data u:object_r:boottime_public_prop:s0 exact string
 ro.boottime.init.fsck.data  u:object_r:boottime_public_prop:s0 exact string
 ro.fstype.data  u:object_r:fstype_prop:s0 exact string
 
+ro.build.backported_fixes.alias_bitset.long_list u:object_r:build_prop:s0 exact string
 ro.build.characteristics                  u:object_r:build_prop:s0 exact string
 ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
-ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
