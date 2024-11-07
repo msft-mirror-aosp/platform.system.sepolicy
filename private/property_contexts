@@ -1300,6 +1300,13 @@ ro.boot.product.hardware.sku u:object_r:exported_default_prop:s0 exact string
 ro.boot.product.vendor.sku   u:object_r:exported_default_prop:s0 exact string
 ro.boot.slot_suffix          u:object_r:exported_default_prop:s0 exact string
 
+# Vendor configurable property to be used specifically to assign industrial
+# design ID or vendor hardware identifier that encodes on device components.
+# This property should not be assigned a generic device name or identifier and
+# should not be redundant to properties like ro.boot.hardware. ro.product.name
+# etc.
+ro.boot.product.hardware.id  u:object_r:exported_default_prop:s0 exact string
+
 ro.boringcrypto.hwrand u:object_r:exported_default_prop:s0 exact bool
 
 # Update related props
