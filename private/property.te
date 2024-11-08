@@ -96,6 +96,11 @@ until_board_api(202504, `
     system_restricted_prop(profcollectd_etr_prop)
 ')
 
+# These types will be public starting at board api 202504
+until_board_api(202504, `
+    system_vendor_config_prop(trusty_security_vm_sys_vendor_prop)
+')
+
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)
 system_vendor_config_prop(high_barometer_quality_prop)
