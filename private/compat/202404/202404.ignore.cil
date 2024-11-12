@@ -7,6 +7,7 @@
   ( new_objects
     bluetooth_finder_prop
     profcollectd_etr_prop
+    fwk_devicestate_service
     fstype_prop
     binderfs_logs_transactions
     binderfs_logs_transaction_history

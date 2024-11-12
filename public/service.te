@@ -151,6 +151,9 @@ starting_at_board_api(202504, `
     type forensic_service, app_api_service, system_api_service, system_server_service, service_manager_type;
 ')
 type fwk_altitude_service, system_server_service, service_manager_type;
+starting_at_board_api(202504, `
+    type fwk_devicestate_service, system_server_service, service_manager_type;
+')
 type fwk_stats_service, app_api_service, system_server_service, service_manager_type;
 type fwk_sensor_service, system_server_service, service_manager_type;
 type fwk_vibrator_control_service, system_server_service, service_manager_type;
