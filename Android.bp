@@ -102,6 +102,7 @@ phony {
         "plat_property_contexts",
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
+        "plat_sepolicy_genfs_202504.cil",
         "plat_service_contexts",
         "secilc",
         "plat_29.0.cil",
@@ -568,6 +569,22 @@ sepolicy_vers {
     vendor: true,
 }
 
+genrule {
+    name: "genfs_labels_version.txt.gen",
+    out: ["genfs_labels_version.txt"],
+    cmd: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
+        any @ value: "echo " + value + " > $(out)",
+        default: "echo > $(out)",
+    }),
+}
+
+prebuilt_etc {
+    name: "genfs_labels_version.txt",
+    src: ":genfs_labels_version.txt.gen",
+    relative_install_path: "selinux",
+    vendor: true,
+}
+
 soong_config_module_type {
     name: "precompiled_sepolicy_prebuilts_defaults",
     module_type: "prebuilt_defaults",
@@ -651,6 +668,10 @@ filegroup {
         ":system_ext_mapping_file",
         ":product_mapping_file",
     ],
+    device_first_srcs: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
+        "202504": [":plat_sepolicy_genfs_202504.cil"],
+        default: [],
+    }),
     // Make precompiled_sepolicy_srcs as public so that OEMs have access to them.
     // Useful when some partitions need to be bind mounted across VM boundaries.
     visibility: ["//visibility:public"],
@@ -1058,6 +1079,7 @@ phony {
 phony {
     name: "selinux_policy_vendor",
     required: [
+        "genfs_labels_version.txt",
         "plat_pub_versioned.cil",
         "vendor_sepolicy.cil",
         "plat_sepolicy_vers.txt",
@@ -1135,6 +1157,7 @@ phony {
         "plat_property_contexts_test",
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
+        "plat_sepolicy_genfs_202504.cil",
         "plat_service_contexts",
         "plat_service_contexts_test",
         "searchpolicy",
