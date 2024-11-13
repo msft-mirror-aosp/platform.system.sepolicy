@@ -793,6 +793,7 @@ avf.remote_attestation.enabled u:object_r:avf_virtualizationservice_prop:s0 exac
 
 hypervisor.pvmfw.path                              u:object_r:hypervisor_pvmfw_prop:s0 exact string
 hypervisor.virtualizationmanager.debug_policy.path u:object_r:hypervisor_virtualizationmanager_prop:s0 exact string
+hypervisor.virtualizationmanager.dump_device_tree u:object_r:hypervisor_virtualizationmanager_prop:s0 exact bool
 
 # hypervisor.*: configured by the vendor to advertise capabilities of their
 # hypervisor to virtualizationservice.
