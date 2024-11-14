@@ -649,6 +649,7 @@ type audiohal_data_file, file_type, data_file_type, core_data_file_type;
 
 starting_at_board_api(202504, `
     type sysfs_udc, fs_type, sysfs_type;
+    type tee_service_contexts_file, system_file_type, file_type;
 ')
 
 # system/sepolicy/public is for vendor-facing type and attribute definitions.
