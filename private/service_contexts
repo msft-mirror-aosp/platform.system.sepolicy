@@ -144,7 +144,6 @@ accessibility                             u:object_r:accessibility_service:s0
 account                                   u:object_r:account_service:s0
 activity                                  u:object_r:activity_service:s0
 activity_task                             u:object_r:activity_task_service:s0
-adaptive_authentication                   u:object_r:adaptive_authentication_service:s0
 adb                                       u:object_r:adb_service:s0
 adservices_manager                        u:object_r:adservices_manager_service:s0
 starting_at_board_api(202504, `
@@ -206,6 +205,7 @@ assetatlas                                u:object_r:assetatlas_service:s0
 attention                                 u:object_r:attention_service:s0
 audio                                     u:object_r:audio_service:s0
 auth                                      u:object_r:auth_service:s0
+authentication_policy                     u:object_r:authentication_policy_service:s0
 autofill                                  u:object_r:autofill_service:s0
 background_install_control                u:object_r:bg_install_control_service:s0
 backup                                    u:object_r:backup_service:s0
