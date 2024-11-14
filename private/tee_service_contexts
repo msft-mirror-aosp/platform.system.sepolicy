@@ -1,0 +1,9 @@
+# Tee services contexts.
+#
+# This file defines all tee services available to VMs.
+# This file is read by virtmngr.
+#
+# Format:
+# <tee_service_name> <label>
+#
+# <tee_service_name> must be a string
