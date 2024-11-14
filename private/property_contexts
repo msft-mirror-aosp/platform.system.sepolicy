@@ -453,6 +453,10 @@ ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
 # to enable spatialization for stereo channel mask
 ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
 
+# Boolean property used in AudioPolicyInterfaceImpl to configure whether
+# to disable usecase validator for game mode
+ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
+
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
 ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
