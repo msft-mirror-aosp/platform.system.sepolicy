@@ -1,5 +1,5 @@
 # aconfigd -- manager for aconfig flags
-type aconfigd, domain, coredomain;
+type aconfigd, domain, coredomain, mlstrustedsubject;
 type aconfigd_exec, exec_type, file_type, system_file_type;
 
 init_daemon_domain(aconfigd)

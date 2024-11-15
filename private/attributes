@@ -27,3 +27,7 @@ attribute adbd_common;
 # WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
 attribute update_provider;
 expandattribute update_provider false;
+
+until_board_api(202504, `
+    attribute tee_service_type;
+')
