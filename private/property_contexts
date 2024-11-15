@@ -426,6 +426,9 @@ audio.timecheck.disabled                  u:object_r:audio_config_prop:s0 exact 
 audio.timecheck.timeout_duration_ms       u:object_r:audio_config_prop:s0 exact int
 audio.timecheck.second_chance_duration_ms u:object_r:audio_config_prop:s0 exact int
 
+# Client wait timeout for audioserver before returning error (usually between 3000 to 10000).
+audio.service.client_wait_ms              u:object_r:audio_config_prop:s0 exact int
+
 # spatializer tuning
 audio.spatializer.priority               u:object_r:audio_config_prop:s0 exact int
 audio.spatializer.effect.affinity        u:object_r:audio_config_prop:s0 exact int
