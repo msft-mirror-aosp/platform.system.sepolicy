@@ -224,6 +224,7 @@ full_treble_only(`
   neverallow {
     coredomain
     -adbd
+    -adbd_tradeinmode
     -init
     -mediaprovider
     -system_server
