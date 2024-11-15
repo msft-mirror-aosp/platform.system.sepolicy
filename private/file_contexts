@@ -83,6 +83,7 @@
 /vendor_seapp_contexts      u:object_r:seapp_contexts_file:s0
 /plat_seapp_contexts     u:object_r:seapp_contexts_file:s0
 /sepolicy           u:object_r:sepolicy_file:s0
+/plat_tee_service_contexts   u:object_r:tee_service_contexts_file:s0
 /plat_service_contexts   u:object_r:service_contexts_file:s0
 /plat_hwservice_contexts   u:object_r:hwservice_contexts_file:s0
 /plat_keystore2_key_contexts u:object_r:keystore2_key_contexts_file:s0
@@ -377,6 +378,7 @@
 /system/etc/selinux/mapping/[0-9]+\.[0-9]+(\.compat)?\.cil       u:object_r:sepolicy_file:s0
 /system/etc/selinux/plat_mac_permissions\.xml u:object_r:mac_perms_file:s0
 /system/etc/selinux/plat_property_contexts  u:object_r:property_contexts_file:s0
+/system/etc/selinux/plat_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 /system/etc/selinux/plat_service_contexts  u:object_r:service_contexts_file:s0
 /system/etc/selinux/plat_hwservice_contexts  u:object_r:hwservice_contexts_file:s0
 /system/etc/selinux/plat_keystore2_key_contexts  u:object_r:keystore2_key_contexts_file:s0
@@ -493,6 +495,7 @@
 /(odm|vendor/odm)/etc/selinux/odm_hwservice_contexts            u:object_r:hwservice_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_keystore2_key_contexts        u:object_r:keystore2_key_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_mac_permissions\.xml          u:object_r:mac_perms_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_tee_service_contexts          u:object_r:tee_service_contexts_file:s0
 
 #############################
 # Product files
@@ -509,6 +512,7 @@
 /(product|system/product)/etc/selinux/product_seapp_contexts     u:object_r:seapp_contexts_file:s0
 /(product|system/product)/etc/selinux/product_service_contexts   u:object_r:service_contexts_file:s0
 /(product|system/product)/etc/selinux/product_mac_permissions\.xml u:object_r:mac_perms_file:s0
+/(product|system/product)/etc/selinux/product_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 
 /(product|system/product)/lib(64)?(/.*)?                         u:object_r:system_lib_file:s0
 
@@ -545,6 +549,7 @@
 /(system_ext|system/system_ext)/lib(64)?(/.*)?      u:object_r:system_lib_file:s0
 
 /(system_ext|system/system_ext)/etc/aconfig(/.*)?                u:object_r:system_aconfig_storage_file:s0
+/(system_ext|system/system_ext)/etc/selinux/system_ext_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 
 #############################
 # VendorDlkm files
