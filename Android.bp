@@ -126,6 +126,9 @@ phony {
     }) + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
         true: ["plat_sepolicy_and_mapping.sha256"],
         default: [],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["plat_tee_service_contexts"],
+        default: [],
     }),
 }
 
@@ -1024,6 +1027,9 @@ phony {
         default: [
             "system_ext_202404.compat.cil",
         ],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["system_ext_tee_service_contexts"],
+        default: [],
     }),
     system_ext_specific: true,
 }
@@ -1060,6 +1066,9 @@ phony {
         default: [
             "product_202404.cil",
         ],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["product_tee_service_contexts"],
+        default: [],
     }),
     product_specific: true,
 }
@@ -1097,7 +1106,10 @@ phony {
         "vendor_bug_map",
         "vndservice_contexts",
         "vndservice_contexts_test",
-    ],
+    ] + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["vendor_tee_service_contexts"],
+        default: [],
+    }),
     vendor: true,
 }
 
@@ -1200,6 +1212,9 @@ phony {
         ],
     }) + select(soong_config_variable("ANDROID", "RELEASE_BOARD_API_LEVEL_FROZEN"), {
         true: ["se_freeze_test"],
+        default: [],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["plat_tee_service_contexts"],
         default: [],
     }),
 }
