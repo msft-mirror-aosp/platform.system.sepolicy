@@ -453,6 +453,10 @@ ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
 # to enable spatialization for stereo channel mask
 ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
 
+# Boolean property used in AudioPolicyInterfaceImpl to configure whether
+# to disable usecase validator for game mode
+ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
+
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
 ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
@@ -789,6 +793,7 @@ avf.remote_attestation.enabled u:object_r:avf_virtualizationservice_prop:s0 exac
 
 hypervisor.pvmfw.path                              u:object_r:hypervisor_pvmfw_prop:s0 exact string
 hypervisor.virtualizationmanager.debug_policy.path u:object_r:hypervisor_virtualizationmanager_prop:s0 exact string
+hypervisor.virtualizationmanager.dump_device_tree u:object_r:hypervisor_virtualizationmanager_prop:s0 exact bool
 
 # hypervisor.*: configured by the vendor to advertise capabilities of their
 # hypervisor to virtualizationservice.
