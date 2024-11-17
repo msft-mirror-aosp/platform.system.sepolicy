@@ -29,7 +29,7 @@ var (
 func init() {
 	ctx := android.InitRegistrationContext
 	ctx.RegisterModuleType("se_compat_cil", compatCilFactory)
-	ctx.RegisterParallelSingletonModuleType("se_compat_test", compatTestFactory)
+	ctx.RegisterModuleType("se_compat_test", compatTestFactory)
 }
 
 // se_compat_cil collects and installs backwards compatibility cil files.
@@ -116,7 +116,7 @@ func (c *compatCil) AndroidMkEntries() []android.AndroidMkEntries {
 
 // se_compat_test checks if compat files ({ver}.cil, {ver}.compat.cil) files are compatible with
 // current policy.
-func compatTestFactory() android.SingletonModule {
+func compatTestFactory() android.Module {
 	f := &compatTestModule{}
 	f.AddProperties(&f.properties)
 	android.InitAndroidArchModule(f, android.DeviceSupported, android.MultilibCommon)
@@ -127,7 +127,7 @@ func compatTestFactory() android.SingletonModule {
 }
 
 type compatTestModule struct {
-	android.SingletonModuleBase
+	android.ModuleBase
 	properties struct {
 		// Default modules for conf
 		Defaults []string
@@ -180,11 +180,11 @@ func (f *compatTestModule) DepsMutator(ctx android.BottomUpMutatorContext) {
 	}
 }
 
-func (f *compatTestModule) GenerateSingletonBuildActions(ctx android.SingletonContext) {
-	// does nothing; se_compat_test is a singeton because two compat test modules don't make sense.
-}
-
 func (f *compatTestModule) GenerateAndroidBuildActions(ctx android.ModuleContext) {
+	if ctx.ModuleName() != "sepolicy_compat_test" || ctx.ModuleDir() != "system/sepolicy/compat" {
+		// two compat test modules don't make sense.
+		ctx.ModuleErrorf("There can only be 1 se_compat_test module named sepolicy_compat_test in system/sepolicy/compat")
+	}
 	var inputs android.Paths
 	ctx.VisitDirectDepsWithTag(compatTestDepTag, func(child android.Module) {
 		outputs := android.OutputFilesForModule(ctx, child, "")
