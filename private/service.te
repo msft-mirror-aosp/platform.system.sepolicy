@@ -57,8 +57,9 @@ is_flag_enabled(RELEASE_AVF_ENABLE_MICROFUCHSIA, `
     type microfuchsia_service,          service_manager_type;
 ')
 
-type uce_service,                   service_manager_type;
-type wearable_sensing_service,      app_api_service, system_server_service, service_manager_type;
+type uce_service,                      service_manager_type;
+type wearable_sensing_service,         app_api_service, system_server_service, service_manager_type;
+type wifi_mainline_supplicant_service, service_manager_type;
 
 ###
 ### Neverallow rules
