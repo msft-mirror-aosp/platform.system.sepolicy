@@ -1077,6 +1077,8 @@
 /data/misc/wifi/test                                              wifi_data_file
 /data/misc_ce/0/wifi                                              wifi_data_file
 /data/misc_ce/99/wifi/test                                        wifi_data_file
+/data/misc/wifi/mainline_supplicant                               mainline_supplicant_data_file
+/data/misc/wifi/mainline_supplicant/sockets                       mainline_supplicant_data_file
 /data/misc/wifi/sockets                                           wpa_socket
 /data/misc/wifi/sockets/test                                      wpa_socket
 /data/misc/wifi/sockets/wpa_ctrl_test                             system_wpa_socket
