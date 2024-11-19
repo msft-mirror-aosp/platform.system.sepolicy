@@ -514,6 +514,7 @@ var (
 		"wifi":                                   EXCEPTION_NO_FUZZER,
 		"wifinl80211":                            []string{"wificond_service_fuzzer"},
 		"wifiaware":                              EXCEPTION_NO_FUZZER,
+		"wifi_usd":                               EXCEPTION_NO_FUZZER,
 		"wifirtt":                                EXCEPTION_NO_FUZZER,
 		"wifi_mainline_supplicant":               EXCEPTION_NO_FUZZER, // defined internally
 		"window":                                 EXCEPTION_NO_FUZZER,
