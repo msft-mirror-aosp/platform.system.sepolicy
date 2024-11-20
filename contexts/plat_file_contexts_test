@@ -65,6 +65,7 @@
 /vendor_seapp_contexts                                            seapp_contexts_file
 /plat_seapp_contexts                                              seapp_contexts_file
 /sepolicy                                                         sepolicy_file
+/plat_tee_service_contexts                                        tee_service_contexts_file
 /plat_service_contexts                                            service_contexts_file
 /plat_hwservice_contexts                                          hwservice_contexts_file
 /plat_keystore2_key_contexts                                      keystore2_key_contexts_file
@@ -452,6 +453,7 @@
 #/system/etc/selinux/mapping/30.compat.0.cil                      sepolicy_file
 /system/etc/selinux/plat_mac_permissions.xml                      mac_perms_file
 /system/etc/selinux/plat_property_contexts                        property_contexts_file
+/system/etc/selinux/plat_tee_service_contexts                     tee_service_contexts_file
 /system/etc/selinux/plat_service_contexts                         service_contexts_file
 /system/etc/selinux/plat_hwservice_contexts                       hwservice_contexts_file
 /system/etc/selinux/plat_keystore2_key_contexts                   keystore2_key_contexts_file
@@ -689,6 +691,8 @@
 /vendor/odm/etc/selinux/odm_keystore2_key_contexts                keystore2_key_contexts_file
 /odm/etc/selinux/odm_mac_permissions.xml                          mac_perms_file
 /vendor/odm/etc/selinux/odm_mac_permissions.xml                   mac_perms_file
+/odm/etc/selinux/odm_tee_service_contexts                         tee_service_contexts_file
+/vendor/odm//etc/selinux/odm_tee_service_contexts                 tee_service_contexts_file
 
 /product                                                          system_file
 /product/does_not_exist                                           system_file
@@ -717,6 +721,8 @@
 /system/product/etc/selinux/product_service_contexts              service_contexts_file
 /product/etc/selinux/product_mac_permissions.xml                  mac_perms_file
 /system/product/etc/selinux/product_mac_permissions.xml           mac_perms_file
+/product/etc/selinux/product_tee_service_contexts                 tee_service_contexts_file
+/system/product/etc/selinux/product_tee_service_contexts          tee_service_contexts_file
 
 /product/lib                                                      system_lib_file
 /product/lib/does_not_exist                                       system_lib_file
@@ -761,6 +767,8 @@
 /system/system_ext/etc/selinux/system_ext_mac_permissions.xml     mac_perms_file
 /system_ext/etc/selinux/userdebug_plat_sepolicy.cil               sepolicy_file
 /system/system_ext/etc/selinux/userdebug_plat_sepolicy.cil        sepolicy_file
+/system_ext/etc/selinux/system_ext_tee_service_contexts           tee_service_contexts_file
+/system/system_ext/etc/selinux/system_ext_tee_service_contexts    tee_service_contexts_file
 
 /system_ext/bin/aidl_lazy_test_server                             aidl_lazy_test_server_exec
 /system/system_ext/bin/aidl_lazy_test_server                      aidl_lazy_test_server_exec
@@ -1069,6 +1077,8 @@
 /data/misc/wifi/test                                              wifi_data_file
 /data/misc_ce/0/wifi                                              wifi_data_file
 /data/misc_ce/99/wifi/test                                        wifi_data_file
+/data/misc/wifi/mainline_supplicant                               mainline_supplicant_data_file
+/data/misc/wifi/mainline_supplicant/sockets                       mainline_supplicant_data_file
 /data/misc/wifi/sockets                                           wpa_socket
 /data/misc/wifi/sockets/test                                      wpa_socket
 /data/misc/wifi/sockets/wpa_ctrl_test                             system_wpa_socket
