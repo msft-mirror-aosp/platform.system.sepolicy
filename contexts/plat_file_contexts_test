@@ -325,6 +325,7 @@
 /system/bin/sload_f2fs                                            e2fs_exec
 /system/bin/make_f2fs                                             e2fs_exec
 /system/bin/fsck_msdos                                            fsck_exec
+/system/bin/prefetch                                              prefetch_exec
 /system/bin/tcpdump                                               tcpdump_exec
 /system/bin/tune2fs                                               fsck_exec
 /system/bin/resize2fs                                             fsck_exec
@@ -1294,6 +1295,8 @@
 /metadata/repair-mode/test                                        repair_mode_metadata_file
 /metadata/tradeinmode                                             tradeinmode_metadata_file
 /metadata/tradeinmode/test                                        tradeinmode_metadata_file
+/metadata/prefetch                                                prefetch_metadata_file
+/metadata/prefetch/test                                           prefetch_metadata_file
 
 /mnt/asec                                                         asec_apk_file
 /mnt/asec/test                                                    asec_apk_file
