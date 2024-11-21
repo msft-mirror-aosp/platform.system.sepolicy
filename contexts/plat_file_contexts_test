@@ -399,6 +399,7 @@
 /system/bin/bootstrap/linkerconfig                                linkerconfig_exec
 /system/bin/llkd                                                  llkd_exec
 /system/bin/lmkd                                                  lmkd_exec
+/system/bin/mmd                                                   mmd_exec
 /system/bin/usbd                                                  usbd_exec
 /system/bin/inputflinger                                          inputflinger_exec
 /system/bin/logd                                                  logd_exec
