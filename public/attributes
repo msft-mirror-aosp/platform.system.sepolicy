@@ -452,3 +452,8 @@ attribute charger_type;
 
 # All types of ART properties.
 attribute dalvik_config_prop_type;
+
+# All tee services that can be accessed by VMs
+starting_at_board_api(202504, `
+    attribute tee_service_type;
+')

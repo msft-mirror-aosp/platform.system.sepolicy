@@ -83,6 +83,7 @@
 /vendor_seapp_contexts      u:object_r:seapp_contexts_file:s0
 /plat_seapp_contexts     u:object_r:seapp_contexts_file:s0
 /sepolicy           u:object_r:sepolicy_file:s0
+/plat_tee_service_contexts   u:object_r:tee_service_contexts_file:s0
 /plat_service_contexts   u:object_r:service_contexts_file:s0
 /plat_hwservice_contexts   u:object_r:hwservice_contexts_file:s0
 /plat_keystore2_key_contexts u:object_r:keystore2_key_contexts_file:s0
@@ -377,6 +378,7 @@
 /system/etc/selinux/mapping/[0-9]+\.[0-9]+(\.compat)?\.cil       u:object_r:sepolicy_file:s0
 /system/etc/selinux/plat_mac_permissions\.xml u:object_r:mac_perms_file:s0
 /system/etc/selinux/plat_property_contexts  u:object_r:property_contexts_file:s0
+/system/etc/selinux/plat_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 /system/etc/selinux/plat_service_contexts  u:object_r:service_contexts_file:s0
 /system/etc/selinux/plat_hwservice_contexts  u:object_r:hwservice_contexts_file:s0
 /system/etc/selinux/plat_keystore2_key_contexts  u:object_r:keystore2_key_contexts_file:s0
@@ -412,6 +414,7 @@
 /system/bin/bert_collector        u:object_r:bert_collector_exec:s0
 /system/bin/linux_vm_setup        u:object_r:linux_vm_setup_exec:s0
 /system/bin/tradeinmode           u:object_r:tradeinmode_exec:s0
+/system/bin/prefetch              u:object_r:prefetch_exec:s0
 
 #############################
 # Vendor files
@@ -470,8 +473,11 @@
 /(odm|vendor/odm|vendor|system/vendor)/apex(/[^/]+){0,2}              u:object_r:vendor_apex_file:s0
 
 # Input configuration
+/(odm|vendor/odm|vendor|system/vendor)/usr/keylayout(/.*)?            u:object_r:vendor_keylayout_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/keylayout(/.*)?\.kl        u:object_r:vendor_keylayout_file:s0
+/(odm|vendor/odm|vendor|system/vendor)/usr/keychars(/.*)?             u:object_r:vendor_keychars_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/keychars(/.*)?\.kcm        u:object_r:vendor_keychars_file:s0
+/(odm|vendor/odm|vendor|system/vendor)/usr/idc(/.*)?                  u:object_r:vendor_idc_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/idc(/.*)?\.idc             u:object_r:vendor_idc_file:s0
 
 /oem(/.*)?              u:object_r:oemfs:s0
@@ -493,6 +499,7 @@
 /(odm|vendor/odm)/etc/selinux/odm_hwservice_contexts            u:object_r:hwservice_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_keystore2_key_contexts        u:object_r:keystore2_key_contexts_file:s0
 /(odm|vendor/odm)/etc/selinux/odm_mac_permissions\.xml          u:object_r:mac_perms_file:s0
+/(odm|vendor/odm)/etc/selinux/odm_tee_service_contexts          u:object_r:tee_service_contexts_file:s0
 
 #############################
 # Product files
@@ -509,6 +516,7 @@
 /(product|system/product)/etc/selinux/product_seapp_contexts     u:object_r:seapp_contexts_file:s0
 /(product|system/product)/etc/selinux/product_service_contexts   u:object_r:service_contexts_file:s0
 /(product|system/product)/etc/selinux/product_mac_permissions\.xml u:object_r:mac_perms_file:s0
+/(product|system/product)/etc/selinux/product_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 
 /(product|system/product)/lib(64)?(/.*)?                         u:object_r:system_lib_file:s0
 
@@ -545,6 +553,7 @@
 /(system_ext|system/system_ext)/lib(64)?(/.*)?      u:object_r:system_lib_file:s0
 
 /(system_ext|system/system_ext)/etc/aconfig(/.*)?                u:object_r:system_aconfig_storage_file:s0
+/(system_ext|system/system_ext)/etc/selinux/system_ext_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
 
 #############################
 # VendorDlkm files
@@ -711,6 +720,7 @@
 /data/misc/vpn(/.*)?            u:object_r:vpn_data_file:s0
 /data/misc/wifi(/.*)?           u:object_r:wifi_data_file:s0
 /data/misc_ce/[0-9]+/wifi(/.*)? u:object_r:wifi_data_file:s0
+/data/misc/wifi/mainline_supplicant(/.*)?  u:object_r:mainline_supplicant_data_file:s0
 /data/misc/wifi/sockets(/.*)?   u:object_r:wpa_socket:s0
 /data/misc/wifi/sockets/wpa_ctrl.*   u:object_r:system_wpa_socket:s0
 /data/misc/vold(/.*)?           u:object_r:vold_data_file:s0
@@ -892,6 +902,7 @@
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 /metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
 /metadata/tradeinmode(/.*)?    u:object_r:tradeinmode_metadata_file:s0
+/metadata/prefetch(/.*)?    u:object_r:prefetch_metadata_file:s0
 
 ############################
 # mount point for ota metadata

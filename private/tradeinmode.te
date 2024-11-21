@@ -6,11 +6,9 @@ type tradeinmode_exec, exec_type, file_type, system_file_type;
 allow tradeinmode adbd_tradeinmode:fd use;
 allow tradeinmode adbd_tradeinmode:unix_stream_socket { read write ioctl };
 
-# Allow running from normal shell on userdebug/eng.
-userdebug_or_eng(`
-  allow tradeinmode { adbd shell }:fd use;
-  allow tradeinmode adbd:unix_stream_socket { read write ioctl };
-')
+# Allow running from normal shell.
+allow tradeinmode { adbd shell }:fd use;
+allow tradeinmode adbd:unix_stream_socket { read write ioctl };
 
 allow tradeinmode devpts:chr_file rw_file_perms;
 
