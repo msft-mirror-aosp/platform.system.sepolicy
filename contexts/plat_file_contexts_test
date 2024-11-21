@@ -325,6 +325,7 @@
 /system/bin/sload_f2fs                                            e2fs_exec
 /system/bin/make_f2fs                                             e2fs_exec
 /system/bin/fsck_msdos                                            fsck_exec
+/system/bin/prefetch                                              prefetch_exec
 /system/bin/tcpdump                                               tcpdump_exec
 /system/bin/tune2fs                                               fsck_exec
 /system/bin/resize2fs                                             fsck_exec
@@ -643,6 +644,7 @@
 /odm/usr/keylayout/test.kl                                        vendor_keylayout_file
 /vendor/odm/usr/keylayout.kl                                      vendor_keylayout_file
 /vendor/odm/usr/keylayout/test.kl                                 vendor_keylayout_file
+/vendor/usr/keylayout                                             vendor_keylayout_file
 /vendor/usr/keylayout.kl                                          vendor_keylayout_file
 /vendor/usr/keylayout/test.kl                                     vendor_keylayout_file
 /system/vendor/usr/keylayout.kl                                   vendor_keylayout_file
@@ -651,6 +653,7 @@
 /odm/usr/keychars/test.kcm                                        vendor_keychars_file
 /vendor/odm/usr/keychars.kcm                                      vendor_keychars_file
 /vendor/odm/usr/keychars/test.kcm                                 vendor_keychars_file
+/vendor/usr/keychars                                              vendor_keychars_file
 /vendor/usr/keychars.kcm                                          vendor_keychars_file
 /vendor/usr/keychars/test.kcm                                     vendor_keychars_file
 /system/vendor/usr/keychars.kcm                                   vendor_keychars_file
@@ -659,6 +662,7 @@
 /odm/usr/idc/test.idc                                             vendor_idc_file
 /vendor/odm/usr/idc.idc                                           vendor_idc_file
 /vendor/odm/usr/idc/test.idc                                      vendor_idc_file
+/vendor/usr/idc                                                   vendor_idc_file
 /vendor/usr/idc.idc                                               vendor_idc_file
 /vendor/usr/idc/test.idc                                          vendor_idc_file
 /system/vendor/usr/idc.idc                                        vendor_idc_file
@@ -1294,6 +1298,8 @@
 /metadata/repair-mode/test                                        repair_mode_metadata_file
 /metadata/tradeinmode                                             tradeinmode_metadata_file
 /metadata/tradeinmode/test                                        tradeinmode_metadata_file
+/metadata/prefetch                                                prefetch_metadata_file
+/metadata/prefetch/test                                           prefetch_metadata_file
 
 /mnt/asec                                                         asec_apk_file
 /mnt/asec/test                                                    asec_apk_file
