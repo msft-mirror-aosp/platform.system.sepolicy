@@ -8,3 +8,10 @@ init_daemon_domain(mmd)
 # mmd binder setup
 add_service(mmd, mmd_service)
 binder_use(mmd)
+
+# zram sysfs access
+allow mmd sysfs_zram:dir search;
+allow mmd sysfs_zram:file rw_file_perms;
+
+# procfs
+allow mmd proc_meminfo:file r_file_perms;
