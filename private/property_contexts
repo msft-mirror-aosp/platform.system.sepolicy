@@ -1776,3 +1776,6 @@ trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
 # Properties that allows vendors to enable Trusty security VM features
 trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
 trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
+
+# Properties for mmd
+mmd.enabled_aconfig u:object_r:mmd_prop:s0 exact bool
