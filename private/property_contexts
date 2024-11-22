@@ -360,12 +360,16 @@ sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
 ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
 
-# Prefetch boot properties
+# Prefetch boot properties which are tunables
 ro.prefetch_boot.enabled u:object_r:prefetch_boot_prop:s0 exact bool
 ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
+# Prefetch property to start and stop the record/replay
+prefetch_boot.record u:object_r:prefetch_service_prop:s0 exact bool
+prefetch_boot.replay u:object_r:prefetch_service_prop:s0 exact bool
 
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
