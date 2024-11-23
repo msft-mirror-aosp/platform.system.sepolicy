@@ -151,6 +151,7 @@ var (
 		"android.hardware.wifi.hostapd.IHostapd/default":                          EXCEPTION_NO_FUZZER,
 		"android.hardware.wifi.supplicant.ISupplicant/default":                    EXCEPTION_NO_FUZZER,
 		"android.frameworks.cameraservice.service.ICameraService/default":         EXCEPTION_NO_FUZZER,
+		"android.frameworks.devicestate.IDeviceStateService/default":              EXCEPTION_NO_FUZZER,
 		"android.frameworks.location.altitude.IAltitudeService/default":           EXCEPTION_NO_FUZZER,
 		"android.frameworks.sensorservice.ISensorManager/default":                 []string{"libsensorserviceaidl_fuzzer"},
 		"android.frameworks.stats.IStats/default":                                 EXCEPTION_NO_FUZZER,
