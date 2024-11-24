@@ -329,6 +329,7 @@
 /system/bin/bootstrap/linkerconfig u:object_r:linkerconfig_exec:s0
 /system/bin/llkd        u:object_r:llkd_exec:s0
 /system/bin/lmkd        u:object_r:lmkd_exec:s0
+/system/bin/mmd         u:object_r:mmd_exec:s0
 /system/bin/usbd   u:object_r:usbd_exec:s0
 /system/bin/inputflinger u:object_r:inputflinger_exec:s0
 /system/bin/logd        u:object_r:logd_exec:s0
@@ -414,6 +415,7 @@
 /system/bin/bert_collector        u:object_r:bert_collector_exec:s0
 /system/bin/linux_vm_setup        u:object_r:linux_vm_setup_exec:s0
 /system/bin/tradeinmode           u:object_r:tradeinmode_exec:s0
+/system/bin/prefetch              u:object_r:prefetch_exec:s0
 
 #############################
 # Vendor files
@@ -472,8 +474,11 @@
 /(odm|vendor/odm|vendor|system/vendor)/apex(/[^/]+){0,2}              u:object_r:vendor_apex_file:s0
 
 # Input configuration
+/(odm|vendor/odm|vendor|system/vendor)/usr/keylayout(/.*)?            u:object_r:vendor_keylayout_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/keylayout(/.*)?\.kl        u:object_r:vendor_keylayout_file:s0
+/(odm|vendor/odm|vendor|system/vendor)/usr/keychars(/.*)?             u:object_r:vendor_keychars_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/keychars(/.*)?\.kcm        u:object_r:vendor_keychars_file:s0
+/(odm|vendor/odm|vendor|system/vendor)/usr/idc(/.*)?                  u:object_r:vendor_idc_file:s0
 /(odm|vendor/odm|vendor|system/vendor)/usr/idc(/.*)?\.idc             u:object_r:vendor_idc_file:s0
 
 /oem(/.*)?              u:object_r:oemfs:s0
@@ -716,6 +721,7 @@
 /data/misc/vpn(/.*)?            u:object_r:vpn_data_file:s0
 /data/misc/wifi(/.*)?           u:object_r:wifi_data_file:s0
 /data/misc_ce/[0-9]+/wifi(/.*)? u:object_r:wifi_data_file:s0
+/data/misc/wifi/mainline_supplicant(/.*)?  u:object_r:mainline_supplicant_data_file:s0
 /data/misc/wifi/sockets(/.*)?   u:object_r:wpa_socket:s0
 /data/misc/wifi/sockets/wpa_ctrl.*   u:object_r:system_wpa_socket:s0
 /data/misc/vold(/.*)?           u:object_r:vold_data_file:s0
@@ -897,6 +903,7 @@
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
 /metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
 /metadata/tradeinmode(/.*)?    u:object_r:tradeinmode_metadata_file:s0
+/metadata/prefetch(/.*)?    u:object_r:prefetch_metadata_file:s0
 
 ############################
 # mount point for ota metadata
