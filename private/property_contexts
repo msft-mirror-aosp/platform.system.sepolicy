@@ -203,6 +203,11 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to control prefetch
+ctl.start$prefetch     u:object_r:ctl_prefetch_prop:s0
+ctl.stop$prefetch      u:object_r:ctl_prefetch_prop:s0
+ctl.restart$prefetch   u:object_r:ctl_prefetch_prop:s0
+
 # Restrict access to control uprobestats
 ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
 ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
@@ -354,6 +359,13 @@ ro.charger.                 u:object_r:charger_prop:s0
 sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
 ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
+
+# Prefetch boot properties
+ro.prefetch_boot.enabled u:object_r:prefetch_boot_prop:s0 exact bool
+ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
 
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
@@ -1656,28 +1668,28 @@ composd.vm.art.memory_mib.config u:object_r:composd_vm_art_prop:s0 exact uint
 composd.vm.vendor.memory_mib.config u:object_r:composd_vm_vendor_prop:s0 exact int
 
 # properties for the virtual Face HAL
-persist.vendor.face.virtual.type u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.strength u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.enrollments u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.features u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.lockout_enable u:object_r:virtual_face_hal_prop:s0 exact bool
-persist.vendor.face.virtual.lockout_timed_enable u:object_r:virtual_face_hal_prop:s0 exact bool
-persist.vendor.face.virtual.lockout_timed_threshold u:object_r:virtual_face_hal_prop:s0 exact int
-persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_hal_prop:s0 exact int
-persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.authenticator_id u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.challenge u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.lockout u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
+persist.vendor.face.virtual.type u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.strength u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.enrollments u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.features u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.lockout_enable u:object_r:virtual_face_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_enable u:object_r:virtual_face_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_threshold u:object_r:virtual_face_prop:s0 exact int
+persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_prop:s0 exact int
+persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.enrollment_hit u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.next_enrollment u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.authenticator_id u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.challenge u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.lockout u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_prop:s0 exact int
 
 # properties for the virtual Fingerprint HAL
 persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_prop:s0 exact string
@@ -1760,3 +1772,7 @@ ro.system_settings.service.backgound_install_control_enabled   u:object_r:system
 # Properties related to Trusty VMs
 trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
 trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
+
+# Properties that allows vendors to enable Trusty security VM features
+trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
+trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool

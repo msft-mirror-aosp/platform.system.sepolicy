@@ -151,6 +151,7 @@ var (
 		"android.hardware.wifi.hostapd.IHostapd/default":                          EXCEPTION_NO_FUZZER,
 		"android.hardware.wifi.supplicant.ISupplicant/default":                    EXCEPTION_NO_FUZZER,
 		"android.frameworks.cameraservice.service.ICameraService/default":         EXCEPTION_NO_FUZZER,
+		"android.frameworks.devicestate.IDeviceStateService/default":              EXCEPTION_NO_FUZZER,
 		"android.frameworks.location.altitude.IAltitudeService/default":           EXCEPTION_NO_FUZZER,
 		"android.frameworks.sensorservice.ISensorManager/default":                 []string{"libsensorserviceaidl_fuzzer"},
 		"android.frameworks.stats.IStats/default":                                 EXCEPTION_NO_FUZZER,
@@ -361,6 +362,7 @@ var (
 		"meminfo":                                EXCEPTION_NO_FUZZER,
 		"memtrack.proxy":                         EXCEPTION_NO_FUZZER,
 		"midi":                                   EXCEPTION_NO_FUZZER,
+		"mmd":                                    EXCEPTION_NO_FUZZER,
 		"mount":                                  EXCEPTION_NO_FUZZER,
 		"music_recognition":                      EXCEPTION_NO_FUZZER,
 		"nearby":                                 EXCEPTION_NO_FUZZER,
@@ -514,8 +516,9 @@ var (
 		"wifi":                                   EXCEPTION_NO_FUZZER,
 		"wifinl80211":                            []string{"wificond_service_fuzzer"},
 		"wifiaware":                              EXCEPTION_NO_FUZZER,
+		"wifi_usd":                               EXCEPTION_NO_FUZZER,
 		"wifirtt":                                EXCEPTION_NO_FUZZER,
-		"wifi_mainline_supplicant":               EXCEPTION_NO_FUZZER, // defined internally
+		"wifi_mainline_supplicant":               []string{"mainline_supplicant_service_fuzzer"},
 		"window":                                 EXCEPTION_NO_FUZZER,
 		"*":                                      EXCEPTION_NO_FUZZER,
 	}

@@ -3,6 +3,9 @@ android.frameworks.location.altitude.IAltitudeService/default        u:object_r:
 android.frameworks.stats.IStats/default                              u:object_r:fwk_stats_service:s0
 android.frameworks.sensorservice.ISensorManager/default              u:object_r:fwk_sensor_service:s0
 android.frameworks.vibrator.IVibratorControlService/default          u:object_r:fwk_vibrator_control_service:s0
+starting_at_board_api(202504, `
+    android.frameworks.devicestate.IDeviceStateService/default           u:object_r:fwk_devicestate_service:s0
+')
 android.hardware.audio.core.IConfig/default                          u:object_r:hal_audio_service:s0
 # 'default' IModule is equivalent to 'primary' in HIDL
 android.hardware.audio.core.IModule/default                          u:object_r:hal_audio_service:s0
@@ -354,6 +357,7 @@ media_session                             u:object_r:media_session_service:s0
 meminfo                                   u:object_r:meminfo_service:s0
 memtrack.proxy                            u:object_r:memtrackproxy_service:s0
 midi                                      u:object_r:midi_service:s0
+mmd                                       u:object_r:mmd_service:s0
 mount                                     u:object_r:mount_service:s0
 music_recognition                         u:object_r:music_recognition_service:s0
 nearby                                    u:object_r:nearby_service:s0
@@ -514,6 +518,9 @@ wifi                                      u:object_r:wifi_service:s0
 wifinl80211                               u:object_r:wifinl80211_service:s0
 wifiaware                                 u:object_r:wifiaware_service:s0
 wifirtt                                   u:object_r:rttmanager_service:s0
+starting_at_board_api(202504, `
+   wifi_usd                                  u:object_r:wifi_usd_service:s0
+')
 wifi_mainline_supplicant                  u:object_r:wifi_mainline_supplicant_service:s0
 window                                    u:object_r:window_service:s0
 *                                         u:object_r:default_android_service:s0
