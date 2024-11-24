@@ -23,4 +23,6 @@
     advanced_protection_service
     sysfs_firmware_acpi_tables
     dynamic_instrumentation_service
+    intrusion_detection_service
+    wifi_mainline_supplicant_service
   ))
