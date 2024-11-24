@@ -169,6 +169,9 @@ type aconfig_test_mission_files, file_type;
 # /data/misc/connectivityblobdb
 type connectivityblob_data_file, file_type, data_file_type, core_data_file_type;
 
+# /data/misc/wifi/mainline_supplicant
+type mainline_supplicant_data_file, file_type, data_file_type, core_data_file_type;
+
 # Type for /mnt/pre_reboot_dexopt
 type pre_reboot_dexopt_file, file_type;
 
@@ -220,6 +223,9 @@ type storage_area_key_file, file_type, data_file_type, core_data_file_type;
 
 # /metadata/tradeinmode files
 type tradeinmode_metadata_file, file_type;
+
+# /metadata/prefetch files
+type prefetch_metadata_file, file_type;
 
 # Types added in 202504 in public/file.te
 until_board_api(202504, `
