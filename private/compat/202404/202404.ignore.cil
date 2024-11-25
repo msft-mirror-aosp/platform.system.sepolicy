@@ -7,6 +7,7 @@
   ( new_objects
     bluetooth_finder_prop
     profcollectd_etr_prop
+    fwk_devicestate_service
     fstype_prop
     binderfs_logs_transactions
     binderfs_logs_transaction_history
@@ -14,7 +15,6 @@
     proc_cgroups
     ranging_service
     supervision_service
-    sysfs_udc
     app_function_service
     virtual_fingerprint
     virtual_fingerprint_exec
@@ -24,4 +24,7 @@
     media_quality_service
     advanced_protection_service
     sysfs_firmware_acpi_tables
+    dynamic_instrumentation_service
+    intrusion_detection_service
+    wifi_mainline_supplicant_service
   ))
