@@ -5,6 +5,9 @@ type mmd_exec, system_file_type, exec_type, file_type;
 
 init_daemon_domain(mmd)
 
+# Set mmd.enabled_aconfig properties.
+set_prop(mmd, mmd_prop)
+
 # mmd binder setup
 add_service(mmd, mmd_service)
 binder_use(mmd)
