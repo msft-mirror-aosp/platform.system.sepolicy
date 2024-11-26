@@ -91,6 +91,7 @@ func init() {
 	android.RegisterModuleType("keystore2_key_contexts", keystoreKeyFactory)
 	android.RegisterModuleType("seapp_contexts", seappFactory)
 	android.RegisterModuleType("vndservice_contexts", vndServiceFactory)
+	android.RegisterModuleType("tee_service_contexts", teeServiceFactory)
 
 	android.RegisterModuleType("file_contexts_test", fileContextsTestFactory)
 	android.RegisterModuleType("property_contexts_test", propertyContextsTestFactory)
@@ -533,6 +534,12 @@ func serviceFactory() android.Module {
 }
 
 func keystoreKeyFactory() android.Module {
+	m := newModule()
+	m.build = m.buildGeneralContexts
+	return m
+}
+
+func teeServiceFactory() android.Module {
 	m := newModule()
 	m.build = m.buildGeneralContexts
 	return m

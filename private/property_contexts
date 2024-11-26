@@ -203,6 +203,11 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to control prefetch
+ctl.start$prefetch     u:object_r:ctl_prefetch_prop:s0
+ctl.stop$prefetch      u:object_r:ctl_prefetch_prop:s0
+ctl.restart$prefetch   u:object_r:ctl_prefetch_prop:s0
+
 # Restrict access to control uprobestats
 ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
 ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
@@ -355,6 +360,13 @@ sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
 ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
 
+# Prefetch boot properties
+ro.prefetch_boot.enabled u:object_r:prefetch_boot_prop:s0 exact bool
+ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
+
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
 ro.virtual_ab.retrofit  u:object_r:virtual_ab_prop:s0 exact bool
@@ -452,6 +464,10 @@ ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioPolicyManager to configure whether
 # to enable spatialization for stereo channel mask
 ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
+
+# Boolean property used in AudioPolicyInterfaceImpl to configure whether
+# to disable usecase validator for game mode
+ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
 
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
@@ -616,6 +632,7 @@ bluetooth.hardware.power.tx_cur_ma                   u:object_r:bluetooth_config
 bluetooth.hardware.power.rx_cur_ma                   u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.hardware.wakeup_supported                  u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
@@ -788,6 +805,7 @@ avf.remote_attestation.enabled u:object_r:avf_virtualizationservice_prop:s0 exac
 
 hypervisor.pvmfw.path                              u:object_r:hypervisor_pvmfw_prop:s0 exact string
 hypervisor.virtualizationmanager.debug_policy.path u:object_r:hypervisor_virtualizationmanager_prop:s0 exact string
+hypervisor.virtualizationmanager.dump_device_tree u:object_r:hypervisor_virtualizationmanager_prop:s0 exact bool
 
 # hypervisor.*: configured by the vendor to advertise capabilities of their
 # hypervisor to virtualizationservice.
@@ -882,8 +900,6 @@ apexd.payload_metadata.path u:object_r:apexd_payload_metadata_prop:s0 exact stri
 apexd.status u:object_r:apexd_prop:s0 exact enum starting activated ready
 
 dmesgd.start u:object_r:dmesgd_start_prop:s0 exact bool
-
-acpi.bert_collector.start u:object_r:bert_collector_start_prop:s0 exact bool
 
 odsign.key.done u:object_r:odsign_prop:s0 exact bool
 odsign.verification.done u:object_r:odsign_prop:s0 exact bool
@@ -1023,12 +1039,12 @@ ro.boottime.init.mount.data u:object_r:boottime_public_prop:s0 exact string
 ro.boottime.init.fsck.data  u:object_r:boottime_public_prop:s0 exact string
 ro.fstype.data  u:object_r:fstype_prop:s0 exact string
 
+ro.build.backported_fixes.alias_bitset.long_list u:object_r:build_prop:s0 exact string
 ro.build.characteristics                  u:object_r:build_prop:s0 exact string
 ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
-ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
@@ -1301,6 +1317,13 @@ ro.boot.hardware.revision    u:object_r:exported_default_prop:s0 exact string
 ro.boot.product.hardware.sku u:object_r:exported_default_prop:s0 exact string
 ro.boot.product.vendor.sku   u:object_r:exported_default_prop:s0 exact string
 ro.boot.slot_suffix          u:object_r:exported_default_prop:s0 exact string
+
+# Vendor configurable property to be used specifically to assign industrial
+# design ID or vendor hardware identifier that encodes on device components.
+# This property should not be assigned a generic device name or identifier and
+# should not be redundant to properties like ro.boot.hardware. ro.product.name
+# etc.
+ro.boot.product.hardware.id  u:object_r:exported_default_prop:s0 exact string
 
 ro.boringcrypto.hwrand u:object_r:exported_default_prop:s0 exact bool
 
@@ -1745,3 +1768,7 @@ sys.snapshotctl.unmap u:object_r:snapshotctl_prop:s0 exact string
 # Properties for enabling/disabling system services
 ro.system_settings.service.odp_enabled   u:object_r:system_service_enable_prop:s0 exact bool
 ro.system_settings.service.backgound_install_control_enabled   u:object_r:system_service_enable_prop:s0 exact bool
+
+# Properties related to Trusty VMs
+trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
+trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
