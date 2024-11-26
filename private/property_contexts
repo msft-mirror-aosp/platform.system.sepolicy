@@ -203,6 +203,11 @@ ctl.start$snapuserd     u:object_r:ctl_snapuserd_prop:s0
 ctl.stop$snapuserd      u:object_r:ctl_snapuserd_prop:s0
 ctl.restart$snapuserd   u:object_r:ctl_snapuserd_prop:s0
 
+# Restrict access to control prefetch
+ctl.start$prefetch     u:object_r:ctl_prefetch_prop:s0
+ctl.stop$prefetch      u:object_r:ctl_prefetch_prop:s0
+ctl.restart$prefetch   u:object_r:ctl_prefetch_prop:s0
+
 # Restrict access to control uprobestats
 ctl.start$uprobestats     u:object_r:ctl_uprobestats_prop:s0
 ctl.stop$uprobestats      u:object_r:ctl_uprobestats_prop:s0
@@ -300,6 +305,7 @@ persist.device_config.window_manager_native_boot.   u:object_r:device_config_win
 persist.device_config.memory_safety_native_boot.    u:object_r:device_config_memory_safety_native_boot_prop:s0
 persist.device_config.memory_safety_native.         u:object_r:device_config_memory_safety_native_prop:s0
 persist.device_config.tethering_u_or_later_native.  u:object_r:device_config_tethering_u_or_later_native_prop:s0
+persist.device_config.mmd_native.                   u:object_r:device_config_mmd_native_prop:s0
 
 # Prop indicates the apex that bundles input configuration files (*.idc,*.kl,*.kcm)
 input_device.config_file.apex    u:object_r:input_device_config_prop:s0 exact string
@@ -354,6 +360,17 @@ ro.charger.                 u:object_r:charger_prop:s0
 sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
 ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
+
+# Prefetch boot properties which are tunables
+ro.prefetch_boot.enabled u:object_r:prefetch_boot_prop:s0 exact bool
+ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
+# Prefetch property to start and stop the record/replay
+prefetch_boot.record u:object_r:prefetch_service_prop:s0 exact bool
+prefetch_boot.replay u:object_r:prefetch_service_prop:s0 exact bool
 
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
@@ -452,6 +469,10 @@ ro.audio.headtracking_enabled u:object_r:audio_config_prop:s0 exact bool
 # Boolean property used in AudioPolicyManager to configure whether
 # to enable spatialization for stereo channel mask
 ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact bool
+
+# Boolean property used in AudioPolicyInterfaceImpl to configure whether
+# to disable usecase validator for game mode
+ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
 
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
@@ -616,6 +637,7 @@ bluetooth.hardware.power.tx_cur_ma                   u:object_r:bluetooth_config
 bluetooth.hardware.power.rx_cur_ma                   u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
+bluetooth.hardware.wakeup_supported                  u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
@@ -788,6 +810,7 @@ avf.remote_attestation.enabled u:object_r:avf_virtualizationservice_prop:s0 exac
 
 hypervisor.pvmfw.path                              u:object_r:hypervisor_pvmfw_prop:s0 exact string
 hypervisor.virtualizationmanager.debug_policy.path u:object_r:hypervisor_virtualizationmanager_prop:s0 exact string
+hypervisor.virtualizationmanager.dump_device_tree u:object_r:hypervisor_virtualizationmanager_prop:s0 exact bool
 
 # hypervisor.*: configured by the vendor to advertise capabilities of their
 # hypervisor to virtualizationservice.
@@ -1021,12 +1044,12 @@ ro.boottime.init.mount.data u:object_r:boottime_public_prop:s0 exact string
 ro.boottime.init.fsck.data  u:object_r:boottime_public_prop:s0 exact string
 ro.fstype.data  u:object_r:fstype_prop:s0 exact string
 
+ro.build.backported_fixes.alias_bitset.long_list u:object_r:build_prop:s0 exact string
 ro.build.characteristics                  u:object_r:build_prop:s0 exact string
 ro.build.date                             u:object_r:build_prop:s0 exact string
 ro.build.date.utc                         u:object_r:build_prop:s0 exact int
 ro.build.description                      u:object_r:build_prop:s0 exact string
 ro.build.display.id                       u:object_r:build_prop:s0 exact string
-ro.build.critical_issues.fixed_issues.long_list u:object_r:build_prop:s0 exact string
 ro.build.flavor                           u:object_r:build_prop:s0 exact string
 ro.build.host                             u:object_r:build_prop:s0 exact string
 ro.build.id                               u:object_r:build_prop:s0 exact string
@@ -1299,6 +1322,13 @@ ro.boot.hardware.revision    u:object_r:exported_default_prop:s0 exact string
 ro.boot.product.hardware.sku u:object_r:exported_default_prop:s0 exact string
 ro.boot.product.vendor.sku   u:object_r:exported_default_prop:s0 exact string
 ro.boot.slot_suffix          u:object_r:exported_default_prop:s0 exact string
+
+# Vendor configurable property to be used specifically to assign industrial
+# design ID or vendor hardware identifier that encodes on device components.
+# This property should not be assigned a generic device name or identifier and
+# should not be redundant to properties like ro.boot.hardware. ro.product.name
+# etc.
+ro.boot.product.hardware.id  u:object_r:exported_default_prop:s0 exact string
 
 ro.boringcrypto.hwrand u:object_r:exported_default_prop:s0 exact bool
 
@@ -1643,28 +1673,28 @@ composd.vm.art.memory_mib.config u:object_r:composd_vm_art_prop:s0 exact uint
 composd.vm.vendor.memory_mib.config u:object_r:composd_vm_vendor_prop:s0 exact int
 
 # properties for the virtual Face HAL
-persist.vendor.face.virtual.type u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.strength u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.enrollments u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.features u:object_r:virtual_face_hal_prop:s0 exact string
-persist.vendor.face.virtual.lockout_enable u:object_r:virtual_face_hal_prop:s0 exact bool
-persist.vendor.face.virtual.lockout_timed_enable u:object_r:virtual_face_hal_prop:s0 exact bool
-persist.vendor.face.virtual.lockout_timed_threshold u:object_r:virtual_face_hal_prop:s0 exact int
-persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_hal_prop:s0 exact int
-persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.enrollment_hit u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.next_enrollment u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.authenticator_id u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.challenge u:object_r:virtual_face_hal_prop:s0 exact int
-vendor.face.virtual.lockout u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_hal_prop:s0 exact bool
-vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_hal_prop:s0 exact string
-vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_hal_prop:s0 exact int
+persist.vendor.face.virtual.type u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.strength u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.enrollments u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.features u:object_r:virtual_face_prop:s0 exact string
+persist.vendor.face.virtual.lockout_enable u:object_r:virtual_face_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_enable u:object_r:virtual_face_prop:s0 exact bool
+persist.vendor.face.virtual.lockout_timed_threshold u:object_r:virtual_face_prop:s0 exact int
+persist.vendor.face.virtual.lockout_timed_duration u:object_r:virtual_face_prop:s0 exact int
+persist.vendor.face.virtual.lockout_permanent_threshold u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.no_human_face_detected u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.enrollment_hit u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.next_enrollment u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.authenticator_id u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.challenge u:object_r:virtual_face_prop:s0 exact int
+vendor.face.virtual.lockout u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_detect_interaction_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_enroll_fails u:object_r:virtual_face_prop:s0 exact bool
+vendor.face.virtual.operation_authenticate_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_detect_interaction_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_enroll_latency u:object_r:virtual_face_prop:s0 exact string
+vendor.face.virtual.operation_authenticate_duration u:object_r:virtual_face_prop:s0 exact int
 
 # properties for the virtual Fingerprint HAL
 persist.vendor.fingerprint.virtual.type u:object_r:virtual_fingerprint_prop:s0 exact string
@@ -1747,3 +1777,11 @@ ro.system_settings.service.backgound_install_control_enabled   u:object_r:system
 # Properties related to Trusty VMs
 trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
 trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
+
+# Properties that allows vendors to enable Trusty security VM features
+trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
+trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
+
+# Properties for mmd
+mmd. u:object_r:mmd_prop:s0
+mmd.enabled_aconfig u:object_r:mmd_prop:s0 exact bool

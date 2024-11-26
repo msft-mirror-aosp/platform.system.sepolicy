@@ -1,5 +1,5 @@
-type adaptive_auth_service,          system_server_service, service_manager_type;
 type ambient_context_service,        app_api_service, system_server_service, service_manager_type;
+type authentication_policy_service,  system_api_service, system_server_service, service_manager_type;
 
 # These types will be public starting at board api 202504
 until_board_api(202504, `
@@ -16,6 +16,7 @@ type incidentcompanion_service,      app_api_service, system_api_service, system
 type logcat_service,                 system_server_service, service_manager_type;
 type logd_service,                   service_manager_type;
 type mediatuner_service,             app_api_service, service_manager_type;
+type mmd_service,                    service_manager_type;
 type on_device_intelligence_service, app_api_service, system_server_service, service_manager_type, isolated_compute_allowed_service;
 type profcollectd_service,           service_manager_type;
 type protolog_configuration_service, app_api_service, system_api_service, system_server_service, service_manager_type;
@@ -57,8 +58,9 @@ is_flag_enabled(RELEASE_AVF_ENABLE_MICROFUCHSIA, `
     type microfuchsia_service,          service_manager_type;
 ')
 
-type uce_service,                   service_manager_type;
-type wearable_sensing_service,      app_api_service, system_server_service, service_manager_type;
+type uce_service,                      service_manager_type;
+type wearable_sensing_service,         app_api_service, system_server_service, service_manager_type;
+type wifi_mainline_supplicant_service, service_manager_type;
 
 ###
 ### Neverallow rules

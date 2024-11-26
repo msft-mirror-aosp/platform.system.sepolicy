@@ -13,9 +13,6 @@ virtualizationservice_use(vmlauncher_app)
 
 allow vmlauncher_app fsck_exec:file { r_file_perms execute execute_no_trans };
 
-allow vmlauncher_app virtualizationservice_data_file:file { read relabelto open write unlink };
-allow vmlauncher_app privapp_data_file:file { relabelfrom };
-
 is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
   # TODO(b/332677707): remove them when display service uses binder RPC.
   allow vmlauncher_app virtualization_service:service_manager find;
