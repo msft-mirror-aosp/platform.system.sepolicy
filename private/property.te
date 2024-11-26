@@ -3,6 +3,8 @@ system_internal_prop(adbd_prop)
 system_internal_prop(adbd_tradeinmode_prop)
 system_internal_prop(apexd_payload_metadata_prop)
 system_internal_prop(ctl_snapuserd_prop)
+system_internal_prop(ctl_prefetch_prop)
+system_internal_prop(ctl_uprobestats_prop)
 system_internal_prop(crashrecovery_prop)
 system_internal_prop(debug_tracing_desktop_mode_visible_tasks_prop)
 system_internal_prop(device_config_core_experiments_team_internal_prop)
@@ -20,8 +22,6 @@ system_internal_prop(device_config_connectivity_prop)
 system_internal_prop(device_config_swcodec_native_prop)
 system_internal_prop(device_config_tethering_u_or_later_native_prop)
 system_internal_prop(dmesgd_start_prop)
-system_internal_prop(bert_collector_start_prop)
-system_internal_prop(desktop_ec_crash_collector_start_prop)
 system_internal_prop(fastbootd_protocol_prop)
 system_internal_prop(gsid_prop)
 system_internal_prop(init_perf_lsm_hooks_prop)
@@ -51,6 +51,7 @@ system_internal_prop(rollback_test_prop)
 system_internal_prop(setupwizard_prop)
 system_internal_prop(snapshotctl_prop)
 system_internal_prop(snapuserd_prop)
+system_internal_prop(prefetch_boot_prop)
 system_internal_prop(system_adbd_prop)
 system_internal_prop(system_audio_config_prop)
 system_internal_prop(timezone_metadata_prop)
@@ -73,6 +74,7 @@ system_internal_prop(hidl_memory_prop)
 system_internal_prop(suspend_debug_prop)
 system_internal_prop(system_service_enable_prop)
 system_internal_prop(ctl_artd_pre_reboot_prop)
+system_internal_prop(trusty_security_vm_sys_prop)
 
 
 # Properties which can't be written outside system
@@ -863,5 +865,6 @@ neverallow {
 neverallow {
   domain
   -init
+  -shell
   userdebug_or_eng(`-su')
 } bionic_linker_16kb_app_compat_prop:property_service set;

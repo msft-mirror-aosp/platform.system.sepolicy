@@ -124,6 +124,7 @@ neverallow {
   -init
   -virtualizationmanager
   -virtualizationservice
+  -vmlauncher_app
 } virtualizationservice_data_file:file { open create };
 
 neverallow virtualizationservice {
@@ -131,7 +132,7 @@ neverallow virtualizationservice {
   -virtualizationmanager
   -virtualizationservice
   # TODO(b/332677707): remove them when display service uses binder RPC.
-  is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `-crosvm')
+  -crosvm
 }:process setrlimit;
 
 is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
