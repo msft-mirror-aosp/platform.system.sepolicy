@@ -13,15 +13,12 @@ allow prefetch metadata_file:dir search;
 allow prefetch prefetch_metadata_file:dir rw_dir_perms;
 allow prefetch prefetch_metadata_file:file create_file_perms;
 
+get_prop(prefetch, prefetch_boot_prop);
+set_prop(prefetch, prefetch_service_prop);
+
 # Disallow other domains controlling prefetch service.
 neverallow {
   domain
   -init
   -shell
 } ctl_prefetch_prop:property_service set;
-
-# Disallow other domains controlling prefetch_boot_prop.
-neverallow {
-  domain
-  -init
-} prefetch_boot_prop:property_service set;
