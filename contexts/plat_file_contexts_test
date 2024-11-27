@@ -190,7 +190,6 @@
 /dev/socket                                                       socket_device
 /dev/socket/does_not_exist                                        socket_device
 /dev/socket/adbd                                                  adbd_socket
-/dev/socket/aconfigd                                              aconfigd_socket
 /dev/socket/aconfigd_system                                       aconfigd_socket
 /dev/socket/dnsproxyd                                             dnsproxyd_socket
 /dev/socket/dumpstate                                             dumpstate_socket
@@ -469,7 +468,6 @@
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
-/system/bin/aconfigd                                              aconfigd_exec
 /system/bin/aconfigd-system                                       aconfigd_exec
 /system/bin/vold_prepare_subdirs                                  vold_prepare_subdirs_exec
 /system/bin/stats                                                 stats_exec
