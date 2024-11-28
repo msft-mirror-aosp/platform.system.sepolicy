@@ -26,7 +26,13 @@ recovery_only(`
   set_prop(recovery, gsid_prop)
 
   # These are needed to allow recovery to manage network
-  allow recovery self:netlink_route_socket { create write read nlmsg_readpriv nlmsg_read };
+  allow recovery self:netlink_route_socket create_socket_perms_no_ioctl;
+  # For kernel < 6.13
+  allow recovery self:netlink_route_socket { nlmsg_readpriv nlmsg_read };
+  # For kernel >= 6.13
+  allow recovery self:netlink_route_socket nlmsg;
+  allowxperm recovery self:netlink_route_socket nlmsg unpriv_route_socket_nlmsgs;
+  allowxperm recovery self:netlink_route_socket nlmsg RTM_GETLINK;
   allow recovery self:global_capability_class_set net_admin;
   allow recovery self:tcp_socket { create ioctl };
   allowxperm recovery self:tcp_socket ioctl { SIOCGIFFLAGS SIOCSIFFLAGS };
