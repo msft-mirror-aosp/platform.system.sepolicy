@@ -425,11 +425,9 @@ allow { domain -appdomain -rs } cgroup_v2:dir w_dir_perms;
 allow { domain -appdomain -rs } cgroup_v2:file w_file_perms;
 
 allow domain cgroup_desc_file:file r_file_perms;
-allow domain cgroup_desc_api_file:file r_file_perms;
 allow domain cgroup_rc_file:dir search;
 allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
-allow domain task_profiles_api_file:file r_file_perms;
 allow domain vendor_cgroup_desc_file:file r_file_perms;
 allow domain vendor_task_profiles_file:file r_file_perms;
 
@@ -1164,6 +1162,7 @@ full_treble_only(`
     } {
         system_file_type
         -system_lib_file
+        -system_bootstrap_lib_file
         -system_linker_exec
         -crash_dump_exec
         -netutils_wrapper_exec
@@ -1235,7 +1234,6 @@ full_treble_only(`
   } {
     system_file_type
     -cgroup_desc_file
-    -cgroup_desc_api_file
     -crash_dump_exec
     -file_contexts_file
     -netutils_wrapper_exec
@@ -1243,6 +1241,7 @@ full_treble_only(`
     -system_event_log_tags_file
     -system_group_file
     -system_lib_file
+    -system_bootstrap_lib_file
     with_asan(`-system_asan_options_file')
     -system_linker_exec
     -system_linker_config_file
@@ -1250,7 +1249,6 @@ full_treble_only(`
     -system_seccomp_policy_file
     -system_security_cacerts_file
     -system_zoneinfo_file
-    -task_profiles_api_file
     -task_profiles_file
     userdebug_or_eng(`-tcpdump_exec')
     # Vendor components still can invoke shell commands via /system/bin/sh
@@ -1660,6 +1658,7 @@ neverallow {
   -runas
   -system_server
   -zygote
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1725,6 +1724,7 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
+  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1765,6 +1765,7 @@ is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `
 # that these files cannot be accessed by other domains to ensure that the files
 # do not change between system_server staging the files and apexd processing
 # the files.
+# The update_provider can also stage files before apexd processes them.
 neverallow {
   domain
   -init
@@ -1773,6 +1774,7 @@ neverallow {
   -installd
   -priv_app
   -virtualizationmanager
+  -update_provider # WARNING: USING THIS ATTRIBUTE WILL CAUSE CTS TO FAIL!
 } staging_data_file:dir *;
 neverallow {
   domain
@@ -1787,10 +1789,13 @@ neverallow {
   -shell
   -virtualizationmanager
   -crosvm
+  -update_provider # WARNING: USING THIS ATTRIBUTE WILL CAUSE CTS TO FAIL!
 } staging_data_file:file *;
-neverallow { domain -init -system_server -installd} staging_data_file:dir no_w_dir_perms;
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -system_server -installd -update_provider } staging_data_file:dir no_w_dir_perms;
 # apexd needs the link/unlink/rename permissions
-neverallow { domain -init -system_server -installd -apexd } staging_data_file:file {
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -system_server -installd -apexd -update_provider } staging_data_file:file {
   no_w_file_perms no_x_file_perms
 };
 neverallow apexd staging_data_file:file {
@@ -1828,6 +1833,7 @@ neverallow {
     file_type
     -system_file_type
     -system_lib_file
+    -system_bootstrap_lib_file
     -system_linker_exec
     -vendor_file_type
     -exec_type
