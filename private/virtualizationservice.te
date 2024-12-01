@@ -124,7 +124,6 @@ neverallow {
   -init
   -virtualizationmanager
   -virtualizationservice
-  -vmlauncher_app
 } virtualizationservice_data_file:file { open create };
 
 neverallow virtualizationservice {
