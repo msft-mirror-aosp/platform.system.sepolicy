@@ -72,6 +72,8 @@ se_build_files {
         "attributes",
         "ioctl_defines",
         "ioctl_macros",
+        "nlmsg_defines",
+        "nlmsg_macros",
         "*.te",
         "roles_decl",
         "roles",
