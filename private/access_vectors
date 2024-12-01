@@ -405,7 +405,6 @@ inherits socket
 {
 	nlmsg_read
 	nlmsg_write
-	nlmsg
 }
 
 class netlink_nflog_socket
