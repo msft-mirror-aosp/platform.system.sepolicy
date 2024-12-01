@@ -76,11 +76,7 @@ allow network_stack { bpfloader netd network_stack system_server }:bpf { map_rea
 get_prop(network_stack, device_config_tethering_u_or_later_native_prop)
 
 # Use XFRM (IPsec) netlink sockets
-allow network_stack self:netlink_xfrm_socket create_socket_perms_no_ioctl;
-# For kernel < 6.13
-allow network_stack self:netlink_xfrm_socket { nlmsg_write nlmsg_read };
-# For kernel >= 6.13
-allow network_stack self:netlink_xfrm_socket nlmsg;
+allow network_stack self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write nlmsg_read };
 
 # tun device used for 3rd party vpn apps and test network manager
 allow network_stack tun_device:chr_file rw_file_perms;

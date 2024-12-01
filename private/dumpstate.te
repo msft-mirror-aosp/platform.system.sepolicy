@@ -517,12 +517,7 @@ allow dumpstate proc_pid_max:file r_file_perms;
 binder_call(dumpstate, installd);
 
 # Allow dumpstate to run ip xfrm policy
-allow dumpstate self:netlink_xfrm_socket create_socket_perms_no_ioctl;
-# For kernel < 6.13
-allow dumpstate self:netlink_xfrm_socket nlmsg_read;
-# For kernel >= 6.13
-allow dumpstate self:netlink_xfrm_socket nlmsg;
-allowxperm dumpstate self:netlink_xfrm_socket nlmsg XFRM_MSG_GETPOLICY;
+allow dumpstate self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_read };
 
 # Allow dumpstate to run iotop
 allow dumpstate self:netlink_socket create_socket_perms_no_ioctl;

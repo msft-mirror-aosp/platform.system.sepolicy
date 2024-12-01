@@ -182,11 +182,7 @@ allow system_server self:socket create_socket_perms_no_ioctl;
 allow system_server self:netlink_route_socket nlmsg_write;
 
 # Use XFRM (IPsec) netlink sockets
-allow system_server self:netlink_xfrm_socket create_socket_perms_no_ioctl;
-# For kernel < 6.13
-allow system_server self:netlink_xfrm_socket { nlmsg_read nlmsg_write };
-# For kernel >= 6.13
-allow system_server self:netlink_xfrm_socket nlmsg;
+allow system_server self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write nlmsg_read };
 
 # Kill apps.
 allow system_server appdomain:process { getpgid sigkill signal };

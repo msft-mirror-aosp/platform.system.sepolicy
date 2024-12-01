@@ -416,7 +416,6 @@ inherits socket
 {
 	nlmsg_read
 	nlmsg_write
-	nlmsg
 }
 
 class netlink_selinux_socket
