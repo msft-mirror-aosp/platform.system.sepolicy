@@ -706,14 +706,7 @@ allow init property_type:property_service set;
 # Send an SELinux userspace denial to the kernel audit subsystem,
 # so it can be picked up and processed by logd. These denials are
 # generated when an attempt to set a property is denied by policy.
-allow init self:netlink_audit_socket create_socket_perms_no_ioctl;
-
-# For kernel < 6.13
-allow init self:netlink_audit_socket nlmsg_relay;
-# For kernel >= 6.13
-allow init self:netlink_audit_socket nlmsg;
-allowxperm init self:netlink_audit_socket nlmsg AUDIT_USER_AVC;
-
+allow init self:netlink_audit_socket { create_socket_perms_no_ioctl nlmsg_relay };
 allow init self:global_capability_class_set audit_write;
 
 # Run "ifup lo" to bring up the localhost interface

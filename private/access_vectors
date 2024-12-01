@@ -428,7 +428,6 @@ inherits socket
 	nlmsg_relay
 	nlmsg_readpriv
 	nlmsg_tty_audit
-	nlmsg
 }
 
 class netlink_dnrt_socket
