@@ -154,8 +154,11 @@ allow system_server self:global_capability2_class_set wake_alarm;
 allow system_server self:netlink_netfilter_socket create_socket_perms_no_ioctl;
 
 # Create/use netlink_tcpdiag_socket for looking up connection UIDs for VPN apps.
-allow system_server self:netlink_tcpdiag_socket
-    { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
+allow system_server self:netlink_tcpdiag_socket create_socket_perms_no_ioctl;
+# For kernel < 6.13
+allow system_server self:netlink_tcpdiag_socket { nlmsg_read nlmsg_write };
+# For kernel >= 6.13
+allow system_server self:netlink_tcpdiag_socket nlmsg;
 
 # Use netlink uevent sockets.
 allow system_server self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
@@ -177,9 +180,14 @@ allow system_server self:socket create_socket_perms_no_ioctl;
 
 # Set and get routes directly via netlink.
 allow system_server self:netlink_route_socket nlmsg_write;
+allowxperm system_server self:netlink_route_socket nlmsg priv_route_socket_nlmsgs;
 
 # Use XFRM (IPsec) netlink sockets
-allow system_server self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write nlmsg_read };
+allow system_server self:netlink_xfrm_socket create_socket_perms_no_ioctl;
+# For kernel < 6.13
+allow system_server self:netlink_xfrm_socket { nlmsg_read nlmsg_write };
+# For kernel >= 6.13
+allow system_server self:netlink_xfrm_socket nlmsg;
 
 # Kill apps.
 allow system_server appdomain:process { getpgid sigkill signal };
@@ -816,6 +824,7 @@ set_prop(system_server, device_config_memory_safety_native_boot_prop)
 set_prop(system_server, device_config_memory_safety_native_prop)
 set_prop(system_server, device_config_remote_key_provisioning_native_prop)
 set_prop(system_server, device_config_tethering_u_or_later_native_prop)
+set_prop(system_server, device_config_mmd_native_prop)
 set_prop(system_server, smart_idle_maint_enabled_prop)
 set_prop(system_server, arm64_memtag_prop)
 
@@ -1280,6 +1289,11 @@ get_prop(system_server,system_jvmti_agent_prop)
 # UsbDeviceManager uses /dev/usb-ffs
 allow system_server functionfs:dir search;
 allow system_server functionfs:file rw_file_perms;
+# To resolve arbitrary sysfs paths from /sys/class/udc/* symlinks.
+starting_at_board_api(202504, `
+allow system_server sysfs_type:dir search;
+r_dir_file(system_server, sysfs_udc)
+')
 
 # system_server contains time / time zone detection logic so reads the associated properties.
 get_prop(system_server, time_prop)
@@ -1397,6 +1411,7 @@ neverallow {
   device_config_aconfig_flags_prop
   device_config_window_manager_native_boot_prop
   device_config_tethering_u_or_later_native_prop
+  device_config_mmd_native_prop
   next_boot_prop
 }:property_service set;
 
