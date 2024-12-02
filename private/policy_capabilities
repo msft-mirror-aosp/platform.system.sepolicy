@@ -18,3 +18,7 @@ policycap extended_socket_class;
 # process2: nnp_transition, nosuid_transition
 #
 policycap nnp_nosuid_transition;
+
+# Support extended permissions for netlink sockets.
+# Available in kernel >= 6.13.
+policycap netlink_xperm;
