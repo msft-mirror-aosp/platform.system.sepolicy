@@ -584,7 +584,6 @@ allow {
 # all processes need access to the underlying files.
 is_flag_enabled(RELEASE_READ_FROM_NEW_STORAGE, `
   r_dir_file(domain, aconfig_storage_metadata_file);
-  r_dir_file(domain, aconfig_test_mission_files);
 ')
 
 r_dir_file({ coredomain appdomain }, system_aconfig_storage_file);
