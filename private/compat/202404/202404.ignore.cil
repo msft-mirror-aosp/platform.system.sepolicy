@@ -27,6 +27,8 @@
     sysfs_firmware_acpi_tables
     tee_service_contexts_file
     trusty_security_vm_sys_vendor_prop
+    virtual_camera
+    virtual_camera_exec
     virtual_face
     virtual_face_exec
     virtual_fingerprint
