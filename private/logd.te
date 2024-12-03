@@ -58,14 +58,7 @@ r_dir_file(logd, proc_meminfo)
 
 allow logd self:global_capability_class_set { setuid setgid setpcap sys_nice audit_control };
 allow logd self:global_capability2_class_set syslog;
-allow logd self:netlink_audit_socket create_socket_perms_no_ioctl;
-
-# For kernel < 6.13
-allow logd self:netlink_audit_socket nlmsg_write;
-# For kernel >= 6.13
-allow logd self:netlink_audit_socket nlmsg;
-allowxperm logd self:netlink_audit_socket nlmsg { AUDIT_SET AUDIT_USER_AVC };
-
+allow logd self:netlink_audit_socket { create_socket_perms_no_ioctl nlmsg_write };
 allow logd kernel:system syslog_read;
 allow logd kmsg_device:chr_file { getattr w_file_perms };
 allow logd system_data_file:{ file lnk_file } r_file_perms;
