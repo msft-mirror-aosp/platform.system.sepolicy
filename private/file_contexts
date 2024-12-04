@@ -156,6 +156,7 @@
 /dev/snd(/.*)?		u:object_r:audio_device:s0
 /dev/socket(/.*)?	u:object_r:socket_device:s0
 /dev/socket/adbd	u:object_r:adbd_socket:s0
+/dev/socket/aconfigd_mainline	u:object_r:aconfigd_mainline_socket:s0
 /dev/socket/aconfigd_system	u:object_r:aconfigd_socket:s0
 /dev/socket/dnsproxyd	u:object_r:dnsproxyd_socket:s0
 /dev/socket/dumpstate	u:object_r:dumpstate_socket:s0
@@ -899,7 +900,6 @@
 /metadata/repair-mode(/.*)?    u:object_r:repair_mode_metadata_file:s0
 /metadata/aconfig(/.*)?    u:object_r:aconfig_storage_metadata_file:s0
 /metadata/aconfig/flags(/.*)?    u:object_r:aconfig_storage_flags_metadata_file:s0
-/metadata/aconfig_test_missions(/.*)?    u:object_r:aconfig_test_mission_files:s0
 /metadata/tradeinmode(/.*)?    u:object_r:tradeinmode_metadata_file:s0
 /metadata/prefetch(/.*)?    u:object_r:prefetch_metadata_file:s0
 

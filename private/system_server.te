@@ -154,11 +154,8 @@ allow system_server self:global_capability2_class_set wake_alarm;
 allow system_server self:netlink_netfilter_socket create_socket_perms_no_ioctl;
 
 # Create/use netlink_tcpdiag_socket for looking up connection UIDs for VPN apps.
-allow system_server self:netlink_tcpdiag_socket create_socket_perms_no_ioctl;
-# For kernel < 6.13
-allow system_server self:netlink_tcpdiag_socket { nlmsg_read nlmsg_write };
-# For kernel >= 6.13
-allow system_server self:netlink_tcpdiag_socket nlmsg;
+allow system_server self:netlink_tcpdiag_socket
+    { create_socket_perms_no_ioctl nlmsg_read nlmsg_write };
 
 # Use netlink uevent sockets.
 allow system_server self:netlink_kobject_uevent_socket create_socket_perms_no_ioctl;
@@ -180,14 +177,9 @@ allow system_server self:socket create_socket_perms_no_ioctl;
 
 # Set and get routes directly via netlink.
 allow system_server self:netlink_route_socket nlmsg_write;
-allowxperm system_server self:netlink_route_socket nlmsg priv_route_socket_nlmsgs;
 
 # Use XFRM (IPsec) netlink sockets
-allow system_server self:netlink_xfrm_socket create_socket_perms_no_ioctl;
-# For kernel < 6.13
-allow system_server self:netlink_xfrm_socket { nlmsg_read nlmsg_write };
-# For kernel >= 6.13
-allow system_server self:netlink_xfrm_socket nlmsg;
+allow system_server self:netlink_xfrm_socket { create_socket_perms_no_ioctl nlmsg_write nlmsg_read };
 
 # Kill apps.
 allow system_server appdomain:process { getpgid sigkill signal };
@@ -1538,15 +1530,8 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
-allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
-allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
-allow system_server aconfig_storage_metadata_file:dir search;
-
 allow system_server aconfigd_socket:sock_file {read write};
 allow system_server aconfigd:unix_stream_socket connectto;
-
-allow system_server aconfig_test_mission_files:dir create_dir_perms;
-allow system_server aconfig_test_mission_files:file create_file_perms;
 
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
@@ -1595,10 +1580,6 @@ neverallow {
   -system_server
 } password_slot_metadata_file:notdevfile_class_set ~{ relabelto getattr };
 neverallow { domain -init -system_server } password_slot_metadata_file:notdevfile_class_set *;
-
-# Only system server should access /metadata/aconfig
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
 
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)
