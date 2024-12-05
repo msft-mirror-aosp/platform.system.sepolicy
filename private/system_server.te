@@ -1530,8 +1530,11 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
-allow system_server aconfigd_socket:sock_file {read write};
-allow system_server aconfigd:unix_stream_socket connectto;
+# allow system_server write to aconfigd socket
+unix_socket_connect(system_server, aconfigd, aconfigd);
+
+# allow system_server write to aconfigd_mainline socket
+unix_socket_connect(system_server, aconfigd_mainline, aconfigd_mainline);
 
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
