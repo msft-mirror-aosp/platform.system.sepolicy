@@ -691,6 +691,10 @@ bluetooth.core.classic.sniff_timeouts                u:object_r:bluetooth_config
 
 bluetooth.core.le.min_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.max_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.min_connection_interval_relaxed    u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval_relaxed    u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.min_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_latency                 u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_supervision_timeout     u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.direct_connection_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
