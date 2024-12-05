@@ -100,9 +100,6 @@ type cgroup, fs_type, mlstrustedobject;
 type cgroup_v2, fs_type;
 type sysfs, fs_type, sysfs_type, mlstrustedobject;
 type sysfs_android_usb, fs_type, sysfs_type;
-starting_at_board_api(202504, `
-    type sysfs_udc, fs_type, sysfs_type;
-')
 type sysfs_uio, sysfs_type, fs_type;
 type sysfs_batteryinfo, fs_type, sysfs_type;
 type sysfs_bluetooth_writable, fs_type, sysfs_type, mlstrustedobject;
@@ -649,6 +646,11 @@ with_asan(`type asanwrapper_exec, exec_type, file_type;')
 
 # Deprecated in SDK version 28
 type audiohal_data_file, file_type, data_file_type, core_data_file_type;
+
+starting_at_board_api(202504, `
+    type sysfs_udc, fs_type, sysfs_type;
+    type tee_service_contexts_file, system_file_type, file_type;
+')
 
 # system/sepolicy/public is for vendor-facing type and attribute definitions.
 # DO NOT ADD allow, neverallow, or dontaudit statements here.
