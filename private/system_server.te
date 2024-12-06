@@ -823,6 +823,9 @@ set_prop(system_server, arm64_memtag_prop)
 # staged flag properties
 set_prop(system_server, next_boot_prop)
 
+# Allow system server to read pm.16kb.app_compat.disabled
+get_prop(system_server, pm_16kb_app_compat_prop)
+
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
 get_prop(system_server, device_config_runtime_native_prop)

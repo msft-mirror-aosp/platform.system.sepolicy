@@ -84,6 +84,8 @@ set_prop(init, vts_status_prop)
 
 # Allow init to set 16kb app compatibility props
 set_prop(init, bionic_linker_16kb_app_compat_prop)
+set_prop(init, pm_16kb_app_compat_prop)
+
 
 # Allow init to set/get prefetch boot prop to initiate record/replay
 set_prop(init, ctl_prefetch_prop);
