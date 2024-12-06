@@ -361,12 +361,16 @@ sys.boot_from_charger_mode  u:object_r:charger_status_prop:s0 exact int
 ro.enable_boot_charger_mode u:object_r:charger_config_prop:s0 exact bool
 ro.product.charger.unplugged_shutdown_time  u:object_r:charger_config_prop:s0 exact int
 
-# Prefetch boot properties
+# Prefetch boot properties which are tunables
 ro.prefetch_boot.enabled u:object_r:prefetch_boot_prop:s0 exact bool
 ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
+ro.prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
+# Prefetch property to start and stop the record/replay
+prefetch_boot.record u:object_r:prefetch_service_prop:s0 exact bool
+prefetch_boot.replay u:object_r:prefetch_service_prop:s0 exact bool
 
 # Virtual A/B and snapuserd properties
 ro.virtual_ab.enabled   u:object_r:virtual_ab_prop:s0 exact bool
@@ -758,6 +762,8 @@ pm.dexopt.downgrade_after_inactive_days                 u:object_r:exported_pm_p
 
 pm.dexopt.                                              u:object_r:future_pm_prop:s0 prefix
 
+pm.16kb.app_compat.disabled                             u:object_r:pm_16kb_app_compat_prop:s0 exact bool
+
 ro.apk_verity.mode u:object_r:apk_verity_prop:s0 exact int
 
 ro.bluetooth.a2dp_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
@@ -1019,6 +1025,7 @@ ro.boot.qemu               u:object_r:bootloader_prop:s0 exact bool
 ro.boot.revision           u:object_r:bootloader_prop:s0 exact string
 ro.boot.serialconsole      u:object_r:bootloader_prop:s0 exact bool
 ro.boot.vbmeta.avb_version u:object_r:bootloader_prop:s0 exact string
+ro.boot.vbmeta.public_key_digest  u:object_r:bootloader_prop:s0 exact string
 ro.boot.verifiedbootstate  u:object_r:bootloader_prop:s0 exact string
 ro.boot.veritymode         u:object_r:bootloader_prop:s0 exact string
 # Properties specific to virtualized deployments of Android

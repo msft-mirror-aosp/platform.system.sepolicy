@@ -190,7 +190,7 @@
 /dev/socket                                                       socket_device
 /dev/socket/does_not_exist                                        socket_device
 /dev/socket/adbd                                                  adbd_socket
-/dev/socket/aconfigd                                              aconfigd_socket
+/dev/socket/aconfigd_mainline                                     aconfigd_mainline_socket
 /dev/socket/aconfigd_system                                       aconfigd_socket
 /dev/socket/dnsproxyd                                             dnsproxyd_socket
 /dev/socket/dumpstate                                             dumpstate_socket
@@ -469,7 +469,6 @@
 /system/usr/share/zoneinfo                                        system_zoneinfo_file
 /system/usr/share/zoneinfo/0                                      system_zoneinfo_file
 /system/bin/adbd                                                  adbd_exec
-/system/bin/aconfigd                                              aconfigd_exec
 /system/bin/aconfigd-system                                       aconfigd_exec
 /system/bin/vold_prepare_subdirs                                  vold_prepare_subdirs_exec
 /system/bin/stats                                                 stats_exec
@@ -697,7 +696,7 @@
 /odm/etc/selinux/odm_mac_permissions.xml                          mac_perms_file
 /vendor/odm/etc/selinux/odm_mac_permissions.xml                   mac_perms_file
 /odm/etc/selinux/odm_tee_service_contexts                         tee_service_contexts_file
-/vendor/odm//etc/selinux/odm_tee_service_contexts                 tee_service_contexts_file
+/vendor/odm/etc/selinux/odm_tee_service_contexts                  tee_service_contexts_file
 
 /product                                                          system_file
 /product/does_not_exist                                           system_file
@@ -1271,8 +1270,6 @@
 /metadata/aconfig/maps/test                                       aconfig_storage_metadata_file
 /metadata/aconfig/boot                                            aconfig_storage_metadata_file
 /metadata/aconfig/boot/test                                       aconfig_storage_metadata_file
-/metadata/aconfig_test_missions                                   aconfig_test_mission_files
-/metadata/aconfig_test_missions/test                              aconfig_test_mission_files
 /metadata/apex                                                    apex_metadata_file
 /metadata/apex/test                                               apex_metadata_file
 /metadata/vold                                                    vold_metadata_file
