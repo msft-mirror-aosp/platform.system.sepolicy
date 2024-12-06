@@ -132,8 +132,10 @@ allow gmscore_app shell_data_file:file r_file_perms;
 allow gmscore_app shell_data_file:dir r_dir_perms;
 
 # allow gms core app write to aconfigd socket
-allow gmscore_app aconfigd_socket:sock_file {read write};
-allow gmscore_app aconfigd:unix_stream_socket connectto;
+unix_socket_connect(gmscore_app, aconfigd, aconfigd);
+
+# allow gms core app write to aconfigd_mainline socket
+unix_socket_connect(gmscore_app, aconfigd_mainline, aconfigd_mainline);
 
 # b/18504118: Allow reads from /data/anr/traces.txt
 allow gmscore_app anr_data_file:file r_file_perms;
@@ -155,6 +157,9 @@ get_prop(gmscore_app, remote_prov_prop)
 # policies.
 get_prop(gmscore_app, quick_start_prop)
 neverallow { domain -init -dumpstate -vendor_init -gmscore_app } quick_start_prop:file no_rw_file_perms;
+
+# Allow GmsCore to read Bluetotoh Power Off Finder property
+get_prop(gmscore_app, bluetooth_finder_prop)
 
 # Do not allow getting permission-protected network information from sysfs.
 neverallow gmscore_app sysfs_net:file *;

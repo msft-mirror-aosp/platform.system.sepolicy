@@ -156,6 +156,13 @@ filegroup {
 }
 
 filegroup {
+    name: "com.android.nfcservices-file_contexts",
+    srcs: [
+        "com.android.nfcservices-file_contexts",
+    ],
+}
+
+filegroup {
     name: "com.android.os.statsd-file_contexts",
     srcs: [
         "com.android.os.statsd-file_contexts",
@@ -305,5 +312,26 @@ filegroup {
     name: "com.android.uprobestats-file_contexts",
     srcs: [
         "com.android.uprobestats-file_contexts",
+    ],
+}
+
+filegroup {
+    name: "com.android.biometrics.virtual.face-file_contexts",
+    srcs: [
+        "com.android.biometrics.virtual.face-file_contexts",
+    ],
+}
+
+filegroup {
+    name: "com.android.documentsuibundle-file_contexts",
+    srcs: [
+        "com.android.documentsuibundle-file_contexts",
+    ],
+}
+
+filegroup {
+    name: "com.android.profiling-file_contexts",
+    srcs: [
+        "com.android.profiling-file_contexts",
     ],
 }
