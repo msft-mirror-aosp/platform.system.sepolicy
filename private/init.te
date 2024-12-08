@@ -84,6 +84,8 @@ set_prop(init, vts_status_prop)
 
 # Allow init to set 16kb app compatibility props
 set_prop(init, bionic_linker_16kb_app_compat_prop)
+set_prop(init, pm_16kb_app_compat_prop)
+
 
 # Allow init to set/get prefetch boot prop to initiate record/replay
 set_prop(init, ctl_prefetch_prop);
@@ -705,14 +707,7 @@ allow init property_type:property_service set;
 # Send an SELinux userspace denial to the kernel audit subsystem,
 # so it can be picked up and processed by logd. These denials are
 # generated when an attempt to set a property is denied by policy.
-allow init self:netlink_audit_socket create_socket_perms_no_ioctl;
-
-# For kernel < 6.13
-allow init self:netlink_audit_socket nlmsg_relay;
-# For kernel >= 6.13
-allow init self:netlink_audit_socket nlmsg;
-allowxperm init self:netlink_audit_socket nlmsg AUDIT_USER_AVC;
-
+allow init self:netlink_audit_socket { create_socket_perms_no_ioctl nlmsg_relay };
 allow init self:global_capability_class_set audit_write;
 
 # Run "ifup lo" to bring up the localhost interface
@@ -728,6 +723,8 @@ allow init kernel:process { getsched setsched };
 # swapon() needs write access to swap device
 # system/core/fs_mgr/fs_mgr.c - fs_mgr_swapon_all
 allow init swap_block_device:blk_file rw_file_perms;
+# Allow to change group owner and permissions for new swap setup in mmd
+allow init swap_block_device:blk_file setattr;
 
 # Create and access /dev files without a specific type,
 # e.g. /dev/.coldboot_done, /dev/.booting
