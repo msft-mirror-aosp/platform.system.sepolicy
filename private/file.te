@@ -256,5 +256,9 @@ until_board_api(202504, `
     type tee_service_contexts_file, system_file_type, file_type;
 ')
 
+until_board_api(202504, `
+    type sysfs_mem_sleep, fs_type, sysfs_type;
+')
+
 ## END Types added in 202504 in public/file.te
 
