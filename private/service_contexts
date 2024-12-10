@@ -141,6 +141,7 @@ android.hardware.security.secretkeeper.ISecretkeeper/nonsecure       u:object_r:
 android.system.keystore2.IKeystoreService/default                    u:object_r:keystore_service:s0
 android.system.net.netd.INetd/default                                u:object_r:system_net_netd_service:s0
 android.system.suspend.ISystemSuspend/default                        u:object_r:hal_system_suspend_service:s0
+android.system.vold.IVold/default                                    u:object_r:fwk_vold_service:s0
 
 accessibility                             u:object_r:accessibility_service:s0
 account                                   u:object_r:account_service:s0
