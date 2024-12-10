@@ -13,9 +13,19 @@ get_prop(mmd, device_config_mmd_native_prop)
 add_service(mmd, mmd_service)
 binder_use(mmd)
 
+# Read /proc/swaps
+allow mmd proc_swaps:file r_file_perms;
+
 # zram sysfs access
 allow mmd sysfs_zram:dir search;
 allow mmd sysfs_zram:file rw_file_perms;
 
 # procfs
 allow mmd proc_meminfo:file r_file_perms;
+
+# mkswap /dev/block/zram command
+allow mmd block_device:dir search;
+allow mmd swap_block_device:blk_file rw_file_perms;
+
+# swapon syscall
+allow mmd self:capability sys_admin;
