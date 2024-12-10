@@ -347,6 +347,7 @@ dump_hal(hal_secretkeeper)
 dump_hal(hal_sensors)
 dump_hal(hal_thermal)
 dump_hal(hal_vehicle)
+dump_hal(hal_vm_capabilities)
 dump_hal(hal_weaver)
 dump_hal(hal_wifi)
 
