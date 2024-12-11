@@ -87,6 +87,8 @@ system_restricted_prop(log_file_logger_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
 system_restricted_prop(page_size_prop)
+system_restricted_prop(pm_16kb_app_compat_prop)
+
 
 # Properties with no restrictions
 until_board_api(202504, `
@@ -877,3 +879,10 @@ neverallow {
   -shell
   userdebug_or_eng(`-su')
 } bionic_linker_16kb_app_compat_prop:property_service set;
+
+neverallow {
+  domain
+  -init
+  -shell
+  userdebug_or_eng(`-su')
+} pm_16kb_app_compat_prop:property_service set;
