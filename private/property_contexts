@@ -1789,6 +1789,13 @@ trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
 trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
 trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
 
+# Properties that allows vendors to enable Trusty widevine VM features
+# Enable Widevine VM
+trusty.widevine_vm.enabled           u:object_r:widevine_sys_vendor_prop:s0 exact bool
+# Sets the path used by Widevine HALs to find correct library for the widevine
+# service provider location
+widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact string
+
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0
 mmd.enabled_aconfig u:object_r:mmd_prop:s0 exact bool
