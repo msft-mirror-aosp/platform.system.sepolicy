@@ -112,6 +112,7 @@ until_board_api(202504, `
 system_vendor_config_prop(avf_virtualizationservice_prop)
 system_vendor_config_prop(high_barometer_quality_prop)
 system_vendor_config_prop(prefetch_boot_prop)
+system_vendor_config_prop(widevine_sys_vendor_prop)
 
 typeattribute log_prop log_property_type;
 typeattribute log_tag_prop log_property_type;

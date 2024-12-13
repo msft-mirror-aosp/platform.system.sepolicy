@@ -695,6 +695,10 @@ bluetooth.core.classic.sniff_timeouts                u:object_r:bluetooth_config
 
 bluetooth.core.le.min_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.max_connection_interval            u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.min_connection_interval_relaxed    u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval_relaxed    u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.min_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.max_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_latency                 u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_supervision_timeout     u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.direct_connection_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
@@ -1784,6 +1788,13 @@ trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
 # Properties that allows vendors to enable Trusty security VM features
 trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
 trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
+
+# Properties that allows vendors to enable Trusty widevine VM features
+# Enable Widevine VM
+trusty.widevine_vm.enabled           u:object_r:widevine_sys_vendor_prop:s0 exact bool
+# Sets the path used by Widevine HALs to find correct library for the widevine
+# service provider location
+widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact string
 
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0
