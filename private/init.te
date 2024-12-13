@@ -68,6 +68,12 @@ set_prop(init, userspace_reboot_exported_prop)
 allow init self:perf_event { open cpu };
 allow init self:global_capability2_class_set perfmon;
 
+# Allow opening /proc/kallsyms so that on boot, init can create and retain an
+# fd with the full address visibility (which is evaluated on open and persists
+# for the lifetime of the open file description). This fd can then be shared
+# with other privileged processes.
+allow init proc_kallsyms:file r_file_perms;
+
 # Allow init to communicate with snapuserd to transition Virtual A/B devices
 # from the first-stage daemon to the second-stage.
 allow init snapuserd_socket:sock_file write;
