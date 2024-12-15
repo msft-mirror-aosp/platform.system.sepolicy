@@ -87,6 +87,8 @@ system_restricted_prop(log_file_logger_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
 system_restricted_prop(page_size_prop)
+system_restricted_prop(pm_16kb_app_compat_prop)
+
 
 # Properties with no restrictions
 until_board_api(202504, `
@@ -110,6 +112,7 @@ until_board_api(202504, `
 system_vendor_config_prop(avf_virtualizationservice_prop)
 system_vendor_config_prop(high_barometer_quality_prop)
 system_vendor_config_prop(prefetch_boot_prop)
+system_vendor_config_prop(widevine_sys_vendor_prop)
 
 typeattribute log_prop log_property_type;
 typeattribute log_tag_prop log_property_type;
@@ -877,3 +880,10 @@ neverallow {
   -shell
   userdebug_or_eng(`-su')
 } bionic_linker_16kb_app_compat_prop:property_service set;
+
+neverallow {
+  domain
+  -init
+  -shell
+  userdebug_or_eng(`-su')
+} pm_16kb_app_compat_prop:property_service set;
