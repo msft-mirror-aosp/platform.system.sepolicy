@@ -26,4 +26,7 @@
     dynamic_instrumentation_service
     intrusion_detection_service
     wifi_mainline_supplicant_service
+    crosvm
+    early_virtmgr
+    virtualizationmanager
   ))
