@@ -823,6 +823,9 @@ set_prop(system_server, arm64_memtag_prop)
 # staged flag properties
 set_prop(system_server, next_boot_prop)
 
+# Allow system server to read pm.16kb.app_compat.disabled
+get_prop(system_server, pm_16kb_app_compat_prop)
+
 # Allow query ART device config properties
 get_prop(system_server, device_config_runtime_native_boot_prop)
 get_prop(system_server, device_config_runtime_native_prop)
@@ -1530,15 +1533,11 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
-allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
-allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
-allow system_server aconfig_storage_metadata_file:dir search;
+# allow system_server write to aconfigd socket
+unix_socket_connect(system_server, aconfigd, aconfigd);
 
-allow system_server aconfigd_socket:sock_file {read write};
-allow system_server aconfigd:unix_stream_socket connectto;
-
-allow system_server aconfig_test_mission_files:dir create_dir_perms;
-allow system_server aconfig_test_mission_files:file create_file_perms;
+# allow system_server write to aconfigd_mainline socket
+unix_socket_connect(system_server, aconfigd_mainline, aconfigd_mainline);
 
 allow system_server repair_mode_metadata_file:dir rw_dir_perms;
 allow system_server repair_mode_metadata_file:file create_file_perms;
@@ -1587,10 +1586,6 @@ neverallow {
   -system_server
 } password_slot_metadata_file:notdevfile_class_set ~{ relabelto getattr };
 neverallow { domain -init -system_server } password_slot_metadata_file:notdevfile_class_set *;
-
-# Only system server should access /metadata/aconfig
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
 
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)

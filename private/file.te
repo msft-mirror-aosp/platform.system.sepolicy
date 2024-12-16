@@ -158,13 +158,14 @@ type sysfs_uprobe, fs_type, sysfs_type;
 # Type for aconfig daemon socket
 type aconfigd_socket, file_type, coredomain_socket, mlstrustedobject;
 
+# Type for aconfig mainline daemon socket
+type aconfigd_mainline_socket, file_type, coredomain_socket,  mlstrustedobject;
+
 # Type for /(system|system_ext|product)/etc/aconfig
 type system_aconfig_storage_file, system_file_type, file_type;
 
 # Type for /vendor/etc/aconfig
 type vendor_aconfig_storage_file, vendor_file_type, file_type;
-
-type aconfig_test_mission_files, file_type;
 
 # /data/misc/connectivityblobdb
 type connectivityblob_data_file, file_type, data_file_type, core_data_file_type;
