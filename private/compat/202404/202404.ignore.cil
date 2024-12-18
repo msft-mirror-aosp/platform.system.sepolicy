@@ -25,4 +25,7 @@
     sysfs_firmware_acpi_tables
     intrusion_detection_service
     wifi_mainline_supplicant_service
+    crosvm
+    early_virtmgr
+    virtualizationmanager
   ))

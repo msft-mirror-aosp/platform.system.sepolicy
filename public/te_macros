@@ -201,6 +201,10 @@ allow $1 virtualizationmanager:vsock_socket { getattr getopt read write };
 get_prop($1, hypervisor_prop)
 # Allow client to read (but not open) the crashdump provided by virtualizationmanager
 allow $1 virtualizationservice_data_file:file { getattr read };
+# Allow virtualizationmanager to read the path of the client using /proc/{PID}/exe
+allow virtualizationmanager $1:dir search;
+allow virtualizationmanager $1:file read;
+allow virtualizationmanager $1:lnk_file read;
 ')
 
 ####################################
