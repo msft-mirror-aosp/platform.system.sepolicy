@@ -1,7 +1,7 @@
-# Domain for a child process that manages virtual machines on behalf of its parent.
-
-type virtualizationmanager, domain, coredomain;
-type virtualizationmanager_exec, system_file_type, exec_type, file_type;
+until_board_api(202504, `
+    type virtualizationmanager, domain, coredomain;
+    type virtualizationmanager_exec, system_file_type, exec_type, file_type;
+')
 
 # Allow virtualizationmanager to communicate use, read and write over the adb connection.
 allow virtualizationmanager adbd:fd use;
@@ -135,3 +135,10 @@ is_flag_enabled(RELEASE_AVF_ENABLE_NETWORK, `
     allow virtualizationmanager tun_device:chr_file rw_file_perms;
     allow virtualizationmanager vmnic:fd use;
 ')
+
+# virtualizationmanager reads tee_service_contexts_file to determine if VM is allowed
+# to access requested tee services
+allow virtualizationmanager tee_service_contexts_file:file r_file_perms;
+# virtualizationmanager uses libselinux to check if VM is allowed to access requested
+# tee services.
+selinux_check_access(virtualizationmanager)
