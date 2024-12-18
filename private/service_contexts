@@ -188,9 +188,7 @@ ambient_context                           u:object_r:ambient_context_service:s0
 app_binding                               u:object_r:app_binding_service:s0
 app_function                              u:object_r:app_function_service:s0
 app_hibernation                           u:object_r:app_hibernation_service:s0
-starting_at_board_api(202504, `
-    dynamic_instrumentation               u:object_r:dynamic_instrumentation_service:s0
-')
+dynamic_instrumentation                   u:object_r:dynamic_instrumentation_service:s0
 app_integrity                             u:object_r:app_integrity_service:s0
 app_prediction                            u:object_r:app_prediction_service:s0
 app_search                                u:object_r:app_search_service:s0
