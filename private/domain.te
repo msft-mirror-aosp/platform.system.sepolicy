@@ -526,11 +526,12 @@ neverallow {
 # still contains global information about the system.
 neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs_transaction_history:file no_rw_file_perms;
 
-# Allow access to fsverity keyring.
+# Needed for loading kernel modules.
+# TODO(384942085): Reduce the scope.
 allow domain kernel:key search;
-# Allow access to keys in the fsverity keyring that were installed at boot.
-allow domain fsverity_init:key search;
+
 # For testing purposes, allow access to keys installed with su.
+# TODO(277916185): Remove since this shouldn't be needed anymore.
 userdebug_or_eng(`
   allow domain su:key search;
 ')
