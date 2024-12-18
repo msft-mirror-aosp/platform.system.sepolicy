@@ -55,3 +55,6 @@ allow virtual_camera permission_service:service_manager find;
 allow virtual_camera adbd:fd use;
 allow virtual_camera adbd:unix_stream_socket { getattr read write };
 allow virtual_camera shell:fifo_file { getattr read write };
+
+# Allow virtual_camera to access dmabuf_system_heap_device
+allow virtual_camera dmabuf_system_heap_device:chr_file { read open };
