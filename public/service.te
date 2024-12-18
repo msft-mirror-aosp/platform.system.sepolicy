@@ -75,9 +75,6 @@ starting_at_board_api(202504, `
     type app_function_service, app_api_service, system_server_service, service_manager_type;
 ')
 type app_hibernation_service, app_api_service, system_api_service, system_server_service, service_manager_type;
-starting_at_board_api(202504, `
-    type dynamic_instrumentation_service, app_api_service, system_server_service, service_manager_type;
-')
 type app_integrity_service, system_api_service, system_server_service, service_manager_type;
 type app_prediction_service, app_api_service, system_server_service, service_manager_type;
 type app_search_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
