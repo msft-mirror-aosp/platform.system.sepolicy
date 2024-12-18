@@ -28,9 +28,7 @@ binder_call(virtual_camera, appdomain)
 # Allow virtual_camera to use fd from apps
 allow virtual_camera { appdomain -isolated_app }:fd use;
 
-# Allow virtual_camera to use fd from surface flinger
-allow virtual_camera surfaceflinger:fd use;
-allow virtual_camera surfaceflinger:binder call;
+binder_call(virtual_camera, surfaceflinger);
 
 # Only allow virtual_camera to add a virtual_camera_service and no one else.
 add_service(virtual_camera, virtual_camera_service);
@@ -41,7 +39,7 @@ hal_client_domain(virtual_camera, hal_graphics_allocator)
 # Allow virtual_camera to use GPU
 allow virtual_camera gpu_device:chr_file rw_file_perms;
 allow virtual_camera gpu_device:dir r_dir_perms;
-allow virtual_camera sysfs_gpu:file r_file_perms;
+r_dir_file(virtual_camera, sysfs_gpu)
 
 # Allow virtual camera to use graphics composer fd-s (fences).
 allow virtual_camera hal_graphics_composer:fd use;
@@ -57,3 +55,6 @@ allow virtual_camera permission_service:service_manager find;
 allow virtual_camera adbd:fd use;
 allow virtual_camera adbd:unix_stream_socket { getattr read write };
 allow virtual_camera shell:fifo_file { getattr read write };
+
+# Allow virtual_camera to access dmabuf_system_heap_device
+allow virtual_camera dmabuf_system_heap_device:chr_file { read open };
