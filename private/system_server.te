@@ -1497,10 +1497,6 @@ allow system_server staged_install_file:file create_file_perms;
 allow system_server watchdog_metadata_file:dir rw_dir_perms;
 allow system_server watchdog_metadata_file:file create_file_perms;
 
-allow system_server aconfig_storage_flags_metadata_file:dir rw_dir_perms;
-allow system_server aconfig_storage_flags_metadata_file:file create_file_perms;
-allow system_server aconfig_storage_metadata_file:dir search;
-
 allow system_server aconfigd_socket:sock_file {read write};
 allow system_server aconfigd:unix_stream_socket connectto;
 
@@ -1562,10 +1558,6 @@ neverallow { domain -init -system_server } password_slot_metadata_file:notdevfil
 # Only system_server/init should access /metadata/userspacereboot.
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:dir *;
 neverallow { domain -init -system_server } userspace_reboot_metadata_file:file no_rw_file_perms;
-
-# Only system server should access /metadata/aconfig
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:dir *;
-neverallow { domain -init -system_server -aconfigd } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
 
 # Allow systemserver to read/write the invalidation property
 set_prop(system_server, binder_cache_system_server_prop)
