@@ -776,6 +776,7 @@ pm.16kb.app_compat.disabled                             u:object_r:pm_16kb_app_c
 ro.apk_verity.mode u:object_r:apk_verity_prop:s0 exact int
 
 ro.bluetooth.a2dp_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
+ro.bluetooth.leaudio_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
 
 ro.boot.vendor.overlay.theme u:object_r:exported_overlay_prop:s0 exact string
 
