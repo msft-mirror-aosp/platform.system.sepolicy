@@ -1646,7 +1646,6 @@ neverallow {
   -runas
   -system_server
   -zygote
-  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1712,7 +1711,6 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
-  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
