@@ -116,6 +116,7 @@ allow vendor_init {
   -aconfig_storage_metadata_file
   -aconfig_storage_flags_metadata_file
   -tradeinmode_metadata_file
+  -proc_kallsyms
   enforce_debugfs_restriction(`-debugfs_type')
 }:file { create getattr open read write setattr relabelfrom unlink map };
 
@@ -195,6 +196,7 @@ allow vendor_init {
   -proc_uid_time_in_state
   -proc_uid_concurrent_active_time
   -proc_uid_concurrent_policy_time
+  -proc_kallsyms
   enforce_debugfs_restriction(`-debugfs_type')
 }:file { open read setattr map };
 
