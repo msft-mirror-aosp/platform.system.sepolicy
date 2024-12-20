@@ -156,6 +156,8 @@
 /dev/socket(/.*)?	u:object_r:socket_device:s0
 /dev/socket/adbd	u:object_r:adbd_socket:s0
 /dev/socket/aconfigd	u:object_r:aconfigd_socket:s0
+/dev/socket/aconfigd_mainline	u:object_r:aconfigd_mainline_socket:s0
+/dev/socket/aconfigd_system	u:object_r:aconfigd_socket:s0
 /dev/socket/dnsproxyd	u:object_r:dnsproxyd_socket:s0
 /dev/socket/dumpstate	u:object_r:dumpstate_socket:s0
 /dev/socket/fwmarkd	u:object_r:fwmarkd_socket:s0

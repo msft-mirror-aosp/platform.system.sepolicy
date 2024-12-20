@@ -189,6 +189,8 @@
 /dev/socket/does_not_exist                                        socket_device
 /dev/socket/adbd                                                  adbd_socket
 /dev/socket/aconfigd                                              aconfigd_socket
+/dev/socket/aconfigd_mainline                                     aconfigd_mainline_socket
+/dev/socket/aconfigd_system                                       aconfigd_socket
 /dev/socket/dnsproxyd                                             dnsproxyd_socket
 /dev/socket/dumpstate                                             dumpstate_socket
 /dev/socket/fwmarkd                                               fwmarkd_socket
