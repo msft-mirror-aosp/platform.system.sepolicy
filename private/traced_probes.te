@@ -35,10 +35,13 @@ allow traced_probes self:global_capability_class_set { sys_nice };
 # Allow procfs access
 r_dir_file(traced_probes, domain)
 
-# Allow to temporarily lift the kptr_restrict setting and build a symbolization
-# map reading /proc/kallsyms.
+# For kernel address symbolisation. Allow reading from /proc/kallsyms inherited
+# from init, as well as separately opening and locking the file for
+# coordinating the use of that shared fd.
+# On debuggable builds, allow using lower_kptr_restrict_prop to temporarily
+# lift kptr_restrict systemwide.
 userdebug_or_eng(`set_prop(traced_probes, lower_kptr_restrict_prop)')
-allow traced_probes proc_kallsyms:file r_file_perms;
+allow traced_probes proc_kallsyms:file { open read lock };
 
 # Allow to read packages.list file.
 allow traced_probes packages_list_file:file r_file_perms;
