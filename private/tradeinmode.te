@@ -22,6 +22,7 @@ allow tradeinmode activity_service:service_manager find;
 get_prop(tradeinmode, odsign_prop)
 get_prop(tradeinmode, build_attestation_prop)
 get_prop(tradeinmode, adbd_tradeinmode_prop)
+set_prop(tradeinmode, powerctl_prop)
 
 # Needed to start activities through "am".
 binder_call(tradeinmode, system_server)

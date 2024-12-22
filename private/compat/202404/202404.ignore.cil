@@ -10,6 +10,7 @@
     fstype_prop
     binderfs_logs_transactions
     binderfs_logs_transaction_history
+    proc_compaction_proactiveness
     proc_cgroups
     ranging_service
     supervision_service
@@ -22,7 +23,9 @@
     media_quality_service
     advanced_protection_service
     sysfs_firmware_acpi_tables
-    dynamic_instrumentation_service
     intrusion_detection_service
     wifi_mainline_supplicant_service
+    crosvm
+    early_virtmgr
+    virtualizationmanager
   ))
