@@ -25,12 +25,6 @@ allow aconfigd {
 allow aconfigd aconfigd_socket:unix_stream_socket { accept listen getattr read write };
 allow aconfigd aconfigd_socket:sock_file rw_file_perms;
 
-# allow aconfigd to access shell_data_file for atest
-userdebug_or_eng(`
-    allow aconfigd shell_data_file:dir search;
-    allow aconfigd shell_data_file:file { getattr read open map };
-')
-
 # allow aconfigd to log to the kernel.
 allow aconfigd kmsg_device:chr_file w_file_perms;
 
@@ -41,3 +35,35 @@ allow aconfigd vendor_aconfig_storage_file:dir r_dir_perms;
 # allow aconfigd to read /apex dir
 allow aconfigd apex_mnt_dir:dir r_dir_perms;
 allow aconfigd apex_mnt_dir:file r_file_perms;
+
+# Do not allow write access to boot/map storage files except, aconfigd and aconfigd_mainline.
+# These files are meant to serve flag reads for all processes. They are created by aconfigd (for
+# platform storage files) and aconfigd_mainline (mainline storage files) processes.
+neverallow {
+  domain
+  -init
+  -aconfigd
+  -aconfigd_mainline
+} aconfig_storage_metadata_file:dir no_w_dir_perms;
+neverallow {
+  domain
+  -init
+  -aconfigd
+  -aconfigd_mainline
+} aconfig_storage_metadata_file:file no_w_file_perms;
+
+# Only aconfigd and aconfigd_mainline can access persist storage files
+# These files are meant to serve as persist flag value storage, only aconfigd and
+# aconfigd_mainline process should manage them. Other processes should have zero access.
+neverallow {
+  domain
+  -init
+  -aconfigd
+  -aconfigd_mainline
+} aconfig_storage_flags_metadata_file:dir *;
+neverallow {
+  domain
+  -init
+  -aconfigd
+  -aconfigd_mainline
+} aconfig_storage_flags_metadata_file:file no_rw_file_perms;
