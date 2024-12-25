@@ -60,6 +60,7 @@ is_flag_enabled(RELEASE_AVF_ENABLE_MICROFUCHSIA, `
 ')
 
 type uce_service,                      service_manager_type;
+type fwk_vold_service,                 service_manager_type;
 type wearable_sensing_service,         app_api_service, system_server_service, service_manager_type;
 type wifi_mainline_supplicant_service, service_manager_type;
 type dynamic_instrumentation_service,  app_api_service, system_server_service, service_manager_type;
