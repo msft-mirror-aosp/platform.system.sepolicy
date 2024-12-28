@@ -1606,8 +1606,11 @@ remote_provisioning.connect_timeout_millis u:object_r:remote_prov_prop:s0 exact 
 # Broadcast boot stages, which keystore listens to
 keystore.boot_level u:object_r:keystore_listen_prop:s0 exact int
 
-# Property that tracks keystore crash counts during a boot cycle.
-keystore.crash_count u:object_r:keystore_crash_prop:s0 exact int
+# Tracks keystore crash counts during a boot cycle.
+keystore.crash_count u:object_r:keystore_diagnostics_prop:s0 exact int
+
+# Tracks whether Keystore has successfully sent the module info hash to (V4+) KeyMints.
+keystore.module_hash.sent u:object_r:keystore_diagnostics_prop:s0 exact bool
 
 # Configure the means by which we protect the L0 key from the future
 ro.keystore.boot_level_key.strategy u:object_r:keystore_config_prop:s0 exact string
