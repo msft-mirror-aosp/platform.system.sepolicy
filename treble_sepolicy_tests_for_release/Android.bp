@@ -38,12 +38,12 @@ java_genrule {
     srcs: [
         ":29.0_plat_policy.cil",
         ":29.0_mapping.combined.cil",
-        ":29.0_plat_pub_policy.cil",
+        ":base_plat_pub_policy.cil",
     ],
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_29.0"],
     cmd: "$(location treble_sepolicy_tests) " +
-        "-b $(location :29.0_plat_pub_policy.cil) " +
+        "-b $(location :base_plat_pub_policy.cil) " +
         "-m $(location :29.0_mapping.combined.cil) " +
         "-o $(location :29.0_plat_policy.cil) && " +
         "touch $(out)",
@@ -92,8 +92,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":30.0_plat_pub_policy.cil"],
-        (default, default): [":30.0_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_30.0"],
@@ -102,12 +102,12 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
         (false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :30.0_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :30.0_mapping.combined.cil) " +
             "-o $(location :30.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :30.0_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :30.0_mapping.combined.cil) " +
             "-o $(location :30.0_plat_policy.cil) && " +
             "touch $(out)",
@@ -157,8 +157,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":31.0_plat_pub_policy.cil"],
-        (default, default): [":31.0_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_31.0"],
@@ -167,12 +167,12 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
         (false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :31.0_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :31.0_mapping.combined.cil) " +
             "-o $(location :31.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :31.0_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :31.0_mapping.combined.cil) " +
             "-o $(location :31.0_plat_policy.cil) && " +
             "touch $(out)",
@@ -222,8 +222,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":32.0_plat_pub_policy.cil"],
-        (default, default): [":32.0_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_32.0"],
@@ -232,12 +232,12 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
         (false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :32.0_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :32.0_mapping.combined.cil) " +
             "-o $(location :32.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :32.0_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :32.0_mapping.combined.cil) " +
             "-o $(location :32.0_plat_policy.cil) && " +
             "touch $(out)",
@@ -287,8 +287,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":33.0_plat_pub_policy.cil"],
-        (default, default): [":33.0_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_33.0"],
@@ -297,12 +297,12 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
         (false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :33.0_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :33.0_mapping.combined.cil) " +
             "-o $(location :33.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :33.0_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :33.0_mapping.combined.cil) " +
             "-o $(location :33.0_plat_policy.cil) && " +
             "touch $(out)",
@@ -352,8 +352,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":34.0_plat_pub_policy.cil"],
-        (default, default): [":34.0_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_34.0"],
@@ -362,12 +362,12 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
         (false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :34.0_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :34.0_mapping.combined.cil) " +
             "-o $(location :34.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :34.0_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :34.0_mapping.combined.cil) " +
             "-o $(location :34.0_plat_policy.cil) && " +
             "touch $(out)",
@@ -422,8 +422,8 @@ java_genrule {
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
         soong_config_variable("ANDROID", "HAS_BOARD_PRODUCT_PREBUILT_DIR"),
     ), {
-        (false, false): [":202404_plat_pub_policy.cil"],
-        (default, default): [":202404_product_pub_policy.cil"],
+        (false, false): [":base_plat_pub_policy.cil"],
+        (default, default): [":base_product_pub_policy.cil"],
     }),
     tools: ["treble_sepolicy_tests"],
     out: ["treble_sepolicy_tests_202404"],
@@ -435,12 +435,12 @@ java_genrule {
         ("202404", false, false): "touch $(out)",
         ("202404", default, default): "touch $(out)",
         (default, false, false): "$(location treble_sepolicy_tests) " +
-            "-b $(location :202404_plat_pub_policy.cil) " +
+            "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :202404_mapping.combined.cil) " +
             "-o $(location :202404_plat_policy.cil) && " +
             "touch $(out)",
         (default, default, default): "$(location treble_sepolicy_tests) " +
-            "-b $(location :202404_product_pub_policy.cil) " +
+            "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :202404_mapping.combined.cil) " +
             "-o $(location :202404_plat_policy.cil) && " +
             "touch $(out)",
