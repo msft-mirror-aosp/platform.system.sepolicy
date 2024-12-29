@@ -703,6 +703,7 @@ bluetooth.core.le.min_connection_interval_relaxed    u:object_r:bluetooth_config
 bluetooth.core.le.max_connection_interval_relaxed    u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.min_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.max_connection_interval_aggressive u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.aggressive_connection_threshold    u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_latency                 u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.connection_supervision_timeout     u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.direct_connection_timeout          u:object_r:bluetooth_config_prop:s0 exact uint
@@ -775,6 +776,7 @@ pm.16kb.app_compat.disabled                             u:object_r:pm_16kb_app_c
 ro.apk_verity.mode u:object_r:apk_verity_prop:s0 exact int
 
 ro.bluetooth.a2dp_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
+ro.bluetooth.leaudio_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
 
 ro.boot.vendor.overlay.theme u:object_r:exported_overlay_prop:s0 exact string
 
