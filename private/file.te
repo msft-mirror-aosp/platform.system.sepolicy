@@ -1,3 +1,6 @@
+# /proc/allocinfo
+type proc_allocinfo, fs_type, proc_type;
+
 # /proc/config.gz
 type config_gz, fs_type, proc_type;
 
