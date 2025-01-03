@@ -23,6 +23,7 @@
     profcollectd_etr_prop
     ranging_service
     supervision_service
+    sysfs_cma
     sysfs_firmware_acpi_tables
     tee_service_contexts_file
     trusty_security_vm_sys_vendor_prop

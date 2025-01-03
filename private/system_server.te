@@ -243,6 +243,11 @@ allow system_server sysfs_ion:file r_file_perms;
 # Read /sys/kernel/dma_heap/*.
 allow system_server sysfs_dma_heap:file r_file_perms;
 
+# Read /sys/kernel/mm/cma/*.
+starting_at_board_api(202504, `
+allow system_server sysfs_cma:file r_file_perms;
+')
+
 # Allow reading DMA-BUF sysfs stats from /sys/kernel/dmabuf.
 allow system_server sysfs_dmabuf_stats:dir r_dir_perms;
 allow system_server sysfs_dmabuf_stats:file r_file_perms;
