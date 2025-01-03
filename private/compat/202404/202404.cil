@@ -2475,7 +2475,7 @@
 (typeattributeset surfaceflinger_tmpfs_202404 (surfaceflinger_tmpfs))
 (typeattributeset suspend_prop_202404 (suspend_prop))
 (typeattributeset swap_block_device_202404 (swap_block_device))
-(typeattributeset sysfs_202404 (sysfs sysfs_mem_sleep sysfs_udc))
+(typeattributeset sysfs_202404 (sysfs sysfs_udc))
 (typeattributeset sysfs_android_usb_202404 (sysfs_android_usb))
 (typeattributeset sysfs_batteryinfo_202404 (sysfs_batteryinfo))
 (typeattributeset sysfs_bluetooth_writable_202404 (sysfs_bluetooth_writable))

@@ -444,9 +444,6 @@ allow shell sysfs_batteryinfo:file r_file_perms;
 # Allow reads (but not writes) of the MGLRU state
 allow shell sysfs_lru_gen_enabled:file r_file_perms;
 
-# Allow reads (but not writes) of mem_sleep to determine suspend mechanism
-allow shell sysfs_mem_sleep:file r_file_perms;
-
 # Allow communicating with the VM terminal.
 userdebug_or_eng(`
   allow shell vmlauncher_app_devpts:chr_file rw_file_perms;
