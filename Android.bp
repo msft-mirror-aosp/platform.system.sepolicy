@@ -906,8 +906,32 @@ se_neverallow_test {
 // Additional directories can be specified via Makefile variables:
 // SEPOLICY_FREEZE_TEST_EXTRA_DIRS and SEPOLICY_FREEZE_TEST_EXTRA_PREBUILT_DIRS.
 //////////////////////////////////
+
+FREEZE_TEST_BOARD_API_LEVEL = "202404"
+
+se_policy_conf {
+    name: "base_plat_pub_policy_for_freeze_test.conf",
+    defaults: ["se_policy_conf_flags_defaults"],
+    srcs: plat_public_policy +
+        reqd_mask_policy,
+    build_variant: "user",
+    installable: false,
+    board_api_level: FREEZE_TEST_BOARD_API_LEVEL,
+}
+
+se_policy_cil {
+    name: "base_plat_pub_policy_for_freeze_test.cil",
+    src: ":base_plat_pub_policy_for_freeze_test.conf",
+    filter_out: [":reqd_policy_mask.cil"],
+    secilc_check: false,
+    installable: false,
+}
+
 se_freeze_test {
     name: "se_freeze_test",
+    board_api_level: FREEZE_TEST_BOARD_API_LEVEL,
+    current_cil: ":base_plat_pub_policy_for_freeze_test.cil",
+    prebuilt_cil: ":" + FREEZE_TEST_BOARD_API_LEVEL + "_plat_pub_policy.cil",
 }
 
 //////////////////////////////////
