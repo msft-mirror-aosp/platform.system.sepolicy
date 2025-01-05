@@ -539,6 +539,7 @@ userdebug_or_eng(`
 
 allow init {
   proc # b/67049235 processes /proc/<pid>/* files are mislabeled.
+  proc_allocinfo
   proc_bootconfig
   proc_cmdline
   proc_diskstats
@@ -574,6 +575,7 @@ allow init {
 
 # init chmod/chown access to /proc files.
 allow init {
+  proc_allocinfo
   proc_cmdline
   proc_bootconfig
   proc_kmsg
