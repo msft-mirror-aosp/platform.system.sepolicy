@@ -321,7 +321,6 @@
 /system/bin/fsck.f2fs                                             fsck_exec
 /system/bin/init                                                  init_exec
 /system/bin/mini-keyctl                                           toolbox_exec
-/system/bin/fsverity_init                                         fsverity_init_exec
 /system/bin/sload_f2fs                                            e2fs_exec
 /system/bin/make_f2fs                                             e2fs_exec
 /system/bin/fsck_msdos                                            fsck_exec
