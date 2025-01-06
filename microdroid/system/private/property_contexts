@@ -58,6 +58,7 @@ ro.build.fingerprint u:object_r:fingerprint_prop:s0 exact string
 
 apexd.status      u:object_r:apexd_prop:s0 exact enum starting activated ready
 ro.apex.updatable u:object_r:apexd_prop:s0 exact bool
+apex.all.ready    u:object_r:apex_ready_prop:s0 exact bool
 
 ro.cold_boot_done u:object_r:cold_boot_done_prop:s0 exact bool
 

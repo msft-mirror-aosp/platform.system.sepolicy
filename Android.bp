@@ -102,6 +102,7 @@ phony {
         "plat_property_contexts",
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
+        "plat_sepolicy_genfs_202504.cil",
         "plat_service_contexts",
         "secilc",
         "plat_29.0.cil",
@@ -124,6 +125,9 @@ phony {
         ],
     }) + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
         true: ["plat_sepolicy_and_mapping.sha256"],
+        default: [],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["plat_tee_service_contexts"],
         default: [],
     }),
 }
@@ -568,6 +572,22 @@ sepolicy_vers {
     vendor: true,
 }
 
+genrule {
+    name: "genfs_labels_version.txt.gen",
+    out: ["genfs_labels_version.txt"],
+    cmd: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
+        any @ value: "echo " + value + " > $(out)",
+        default: "echo > $(out)",
+    }),
+}
+
+prebuilt_etc {
+    name: "genfs_labels_version.txt",
+    src: ":genfs_labels_version.txt.gen",
+    relative_install_path: "selinux",
+    vendor: true,
+}
+
 soong_config_module_type {
     name: "precompiled_sepolicy_prebuilts_defaults",
     module_type: "prebuilt_defaults",
@@ -651,6 +671,10 @@ filegroup {
         ":system_ext_mapping_file",
         ":product_mapping_file",
     ],
+    device_first_srcs: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
+        "202504": [":plat_sepolicy_genfs_202504.cil"],
+        default: [],
+    }),
     // Make precompiled_sepolicy_srcs as public so that OEMs have access to them.
     // Useful when some partitions need to be bind mounted across VM boundaries.
     visibility: ["//visibility:public"],
@@ -882,8 +906,32 @@ se_neverallow_test {
 // Additional directories can be specified via Makefile variables:
 // SEPOLICY_FREEZE_TEST_EXTRA_DIRS and SEPOLICY_FREEZE_TEST_EXTRA_PREBUILT_DIRS.
 //////////////////////////////////
+
+FREEZE_TEST_BOARD_API_LEVEL = "202404"
+
+se_policy_conf {
+    name: "base_plat_pub_policy_for_freeze_test.conf",
+    defaults: ["se_policy_conf_flags_defaults"],
+    srcs: plat_public_policy +
+        reqd_mask_policy,
+    build_variant: "user",
+    installable: false,
+    board_api_level: FREEZE_TEST_BOARD_API_LEVEL,
+}
+
+se_policy_cil {
+    name: "base_plat_pub_policy_for_freeze_test.cil",
+    src: ":base_plat_pub_policy_for_freeze_test.conf",
+    filter_out: [":reqd_policy_mask.cil"],
+    secilc_check: false,
+    installable: false,
+}
+
 se_freeze_test {
     name: "se_freeze_test",
+    board_api_level: FREEZE_TEST_BOARD_API_LEVEL,
+    current_cil: ":base_plat_pub_policy_for_freeze_test.cil",
+    prebuilt_cil: ":" + FREEZE_TEST_BOARD_API_LEVEL + "_plat_pub_policy.cil",
 }
 
 //////////////////////////////////
@@ -1003,6 +1051,9 @@ phony {
         default: [
             "system_ext_202404.compat.cil",
         ],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["system_ext_tee_service_contexts"],
+        default: [],
     }),
     system_ext_specific: true,
 }
@@ -1039,6 +1090,9 @@ phony {
         default: [
             "product_202404.cil",
         ],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["product_tee_service_contexts"],
+        default: [],
     }),
     product_specific: true,
 }
@@ -1058,6 +1112,7 @@ phony {
 phony {
     name: "selinux_policy_vendor",
     required: [
+        "genfs_labels_version.txt",
         "plat_pub_versioned.cil",
         "vendor_sepolicy.cil",
         "plat_sepolicy_vers.txt",
@@ -1075,7 +1130,10 @@ phony {
         "vendor_bug_map",
         "vndservice_contexts",
         "vndservice_contexts_test",
-    ],
+    ] + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["vendor_tee_service_contexts"],
+        default: [],
+    }),
     vendor: true,
 }
 
@@ -1135,6 +1193,7 @@ phony {
         "plat_property_contexts_test",
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
+        "plat_sepolicy_genfs_202504.cil",
         "plat_service_contexts",
         "plat_service_contexts_test",
         "searchpolicy",
@@ -1177,6 +1236,9 @@ phony {
         ],
     }) + select(soong_config_variable("ANDROID", "RELEASE_BOARD_API_LEVEL_FROZEN"), {
         true: ["se_freeze_test"],
+        default: [],
+    }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
+        true: ["plat_tee_service_contexts"],
         default: [],
     }),
 }

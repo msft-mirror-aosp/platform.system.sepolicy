@@ -34,7 +34,6 @@ userdebug_or_eng(`
 ')
 
 r_dir_file(dumpstate, aconfig_storage_metadata_file);
-r_dir_file(dumpstate, aconfig_test_mission_files);
 
 # Allow dumpstate to make binder calls to incidentd
 binder_call(dumpstate, incidentd)
@@ -395,6 +394,7 @@ read_runtime_log_tags(dumpstate)
 
 # Read files in /proc
 allow dumpstate {
+  proc_allocinfo
   proc_bootconfig
   proc_buddyinfo
   proc_cmdline
@@ -539,6 +539,9 @@ dontaudit dumpstate {
   mnt_user_file
   vm_data_file
 }:dir getattr;
+
+#suppress denials for dumpstate to call vitualizationservice.
+dontaudit dumpstate virtualizationservice:binder { call };
 
 # Allow dumpstate to talk to bufferhubd over binder
 binder_call(dumpstate, bufferhubd);

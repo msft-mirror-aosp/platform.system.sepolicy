@@ -183,6 +183,7 @@ full_treble_only(`
     -shell
     -system_server
     -traceur_app
+    -prefetch
     userdebug_or_eng(`-profcollectd')
     userdebug_or_eng(`-simpleperf_boot')
   } debugfs_tracing:file no_rw_file_perms;

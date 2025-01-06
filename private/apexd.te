@@ -226,7 +226,11 @@ neverallow { domain -apexd } apex_info_file:file no_w_file_perms;
 neverallow { domain -apexd -init -otapreopt_chroot } apex_mnt_dir:filesystem { mount unmount };
 neverallow { domain -apexd -dexopt_chroot_setup -init -otapreopt_chroot } apex_mnt_dir:dir mounton;
 
-neverallow { domain -init -apexd -system_server -update_engine } apex_service:service_manager find;
-neverallow { domain -init -apexd -system_server -servicemanager -update_engine } apexd:binder call;
+# The update_provider performs APEX updates. To do this, it needs to be able to find apex_service
+# and make binder calls to apexd.
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -apexd -keystore -system_server -update_engine -update_provider } apex_service:service_manager find;
+# WARNING: USING THE update_provider ATTRIBUTE WILL CAUSE CTS TO FAIL!
+neverallow { domain -init -apexd -keystore -system_server -servicemanager -update_engine -update_provider } apexd:binder call;
 
 neverallow { domain userdebug_or_eng(`-crash_dump') } apexd:process ptrace;
