@@ -1651,6 +1651,16 @@ userdebug_or_eng(`
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
 
+# Allow system server to write HintManagerService properties
+set_prop(system_server, hint_manager_config_prop)
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  userdebug_or_eng(`-shell')
+} hint_manager_config_prop:property_service set;
+
 # ThreadNetworkService reads Thread Network properties
 get_prop(system_server, threadnetwork_config_prop)
 
