@@ -106,7 +106,7 @@ class ApexSepolicyTests(unittest.TestCase):
         self.assert_ok('./bin/init u:object_r:init_exec:s0')
         self.assert_ok('./bin/hw/svc u:object_r:init_exec:s0')
         self.assert_error('./bin/hw/svc u:object_r:vendor_file:s0',
-                          r"Error: .*svc: can\'t be labelled as \'vendor_file\'")
+                          r'Error: .*svc: can\'t be labelled as \'vendor_file\'')
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
