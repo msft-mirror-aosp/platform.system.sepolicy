@@ -372,6 +372,9 @@ type hal_wifi_service, protected_service, hal_service_type, service_manager_type
 type hal_wifi_hostapd_service, protected_service, hal_service_type, service_manager_type;
 type hal_wifi_supplicant_service, protected_service, hal_service_type, service_manager_type;
 type hal_gatekeeper_service, protected_service, hal_service_type, service_manager_type;
+starting_at_board_api(202504, `
+    type hal_vm_capabilities_service, protected_service, hal_service_type, service_manager_type;
+')
 
 # system/sepolicy/public is for vendor-facing type and attribute definitions.
 # DO NOT ADD allow, neverallow, or dontaudit statements here.

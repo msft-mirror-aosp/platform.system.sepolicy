@@ -16,6 +16,7 @@
     forensic_service
     fstype_prop
     hal_mediaquality_service
+    hal_vm_capabilities_service
     intrusion_detection_service
     media_quality_service
     proc_cgroups
