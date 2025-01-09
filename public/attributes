@@ -457,3 +457,8 @@ attribute dalvik_config_prop_type;
 starting_at_board_api(202504, `
     attribute tee_service_type;
 ')
+
+# HAL service used for custom smc filtering project
+starting_at_board_api(202504, `
+    hal_attribute(vm_capabilities);
+')
