@@ -243,6 +243,11 @@ allow system_server sysfs_ion:file r_file_perms;
 # Read /sys/kernel/dma_heap/*.
 allow system_server sysfs_dma_heap:file r_file_perms;
 
+# Read /sys/kernel/mm/cma/*.
+starting_at_board_api(202504, `
+allow system_server sysfs_cma:file r_file_perms;
+')
+
 # Allow reading DMA-BUF sysfs stats from /sys/kernel/dmabuf.
 allow system_server sysfs_dmabuf_stats:dir r_dir_perms;
 allow system_server sysfs_dmabuf_stats:file r_file_perms;
@@ -1650,6 +1655,16 @@ userdebug_or_eng(`
 
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
+
+# Allow system server to write HintManagerService properties
+set_prop(system_server, hint_manager_config_prop)
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  userdebug_or_eng(`-shell')
+} hint_manager_config_prop:property_service set;
 
 # ThreadNetworkService reads Thread Network properties
 get_prop(system_server, threadnetwork_config_prop)

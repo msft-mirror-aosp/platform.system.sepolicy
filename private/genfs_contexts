@@ -2,6 +2,7 @@
 genfscon rootfs / u:object_r:rootfs:s0
 # proc labeling can be further refined (longest matching prefix).
 genfscon proc / u:object_r:proc:s0
+genfscon proc /allocinfo u:object_r:proc_allocinfo:s0
 genfscon proc /asound u:object_r:proc_asound:s0
 genfscon proc /bootconfig u:object_r:proc_bootconfig:s0
 genfscon proc /buddyinfo u:object_r:proc_buddyinfo:s0
@@ -168,6 +169,9 @@ genfscon sysfs /kernel/memory_state_time u:object_r:sysfs_power:s0
 genfscon sysfs /kernel/dma_heap u:object_r:sysfs_dma_heap:s0
 genfscon sysfs /kernel/ion u:object_r:sysfs_ion:s0
 genfscon sysfs /kernel/ipv4 u:object_r:sysfs_ipv4:s0
+starting_at_board_api(202504, `
+genfscon sysfs /kernel/mm/cma u:object_r:sysfs_cma:s0
+')
 genfscon sysfs /kernel/mm/transparent_hugepage u:object_r:sysfs_transparent_hugepage:s0
 genfscon sysfs /kernel/mm/lru_gen/enabled u:object_r:sysfs_lru_gen_enabled:s0
 genfscon sysfs /kernel/mm/pgsize_migration/enabled u:object_r:sysfs_pgsize_migration:s0
