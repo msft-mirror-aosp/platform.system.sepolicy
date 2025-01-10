@@ -5,7 +5,6 @@
 (typeattribute new_objects)
 (typeattributeset new_objects
   ( new_objects
-    advanced_protection_service
     app_function_service
     binderfs_logs_transaction_history
     binderfs_logs_transactions
@@ -16,6 +15,7 @@
     forensic_service
     fstype_prop
     hal_mediaquality_service
+    hal_vm_capabilities_service
     intrusion_detection_service
     media_quality_service
     proc_cgroups
@@ -23,6 +23,7 @@
     profcollectd_etr_prop
     ranging_service
     supervision_service
+    sysfs_cma
     sysfs_firmware_acpi_tables
     tee_service_contexts_file
     trusty_security_vm_sys_vendor_prop
