@@ -584,7 +584,6 @@ allow {
 # all processes need access to the underlying files.
 is_flag_enabled(RELEASE_READ_FROM_NEW_STORAGE, `
   r_dir_file(domain, aconfig_storage_metadata_file);
-  r_dir_file(domain, aconfig_test_mission_files);
 ')
 
 r_dir_file({ coredomain appdomain }, system_aconfig_storage_file);
@@ -863,6 +862,7 @@ neverallow {
   userdebug_or_eng(`-fsck')
   userdebug_or_eng(`-init')
   -recovery
+  userdebug_or_eng(`-remount')
   -update_engine
 } system_block_device:blk_file { write append };
 
@@ -1658,7 +1658,6 @@ neverallow {
   -runas
   -system_server
   -zygote
-  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1724,7 +1723,6 @@ neverallow {
   -artd # compile secondary dex files
   -installd
   -rs # spawned by appdomain, so carryover the exception above
-  -crosvm # required to access terminal app internal storage
 } {
   privapp_data_file
   app_data_file
@@ -1747,17 +1745,9 @@ neverallow {
   -artd # compile secondary dex files
   -installd
 } {
+  privapp_data_file
   app_data_file
   is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `storage_area_content_file')
-}:dir_file_class_set { relabelfrom relabelto };
-
-neverallow {
-  domain
-  -artd # compile secondary dex files
-  -installd
-  -vmlauncher_app # it still cannot relabel files belong to other apps due to UID mismatch
-} {
-  privapp_data_file
 }:dir_file_class_set { relabelfrom relabelto };
 
 is_flag_enabled(RELEASE_UNLOCKED_STORAGE_API, `
@@ -2187,7 +2177,6 @@ neverallow {
   -artd
   -dumpstate
   -installd
-  userdebug_or_eng(`-aconfigd')
   userdebug_or_eng(`-uncrypt')
   userdebug_or_eng(`-virtualizationmanager')
   userdebug_or_eng(`-virtualizationservice')
@@ -2235,7 +2224,6 @@ neverallow {
   -installd
   -simpleperf_app_runner
   -system_server # why?
-  userdebug_or_eng(`-aconfigd')
   userdebug_or_eng(`-uncrypt')
   userdebug_or_eng(`-virtualizationmanager')
   userdebug_or_eng(`-crosvm')
@@ -2265,10 +2253,6 @@ neverallow { domain -init } kcmdlinectrl:process { dyntransition transition };
 
 # For now, don't allow processes other than gmscore to access /data/misc_ce/<userid>/checkin
 neverallow { domain -gmscore_app -init -vold_prepare_subdirs } checkin_data_file:{dir file} *;
-
-# Do not allow write access to aconfig flag value files except init and aconfigd
-neverallow { domain -init -aconfigd -system_server } aconfig_storage_metadata_file:dir no_w_dir_perms;
-neverallow { domain -init -aconfigd -system_server } aconfig_storage_metadata_file:file no_w_file_perms;
 
 neverallow { domain -dexopt_chroot_setup -init } proc:{ file dir } mounton;
 neverallow { domain -dexopt_chroot_setup -init -zygote } proc_type:{ file dir } mounton;
