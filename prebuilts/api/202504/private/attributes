@@ -31,3 +31,7 @@ expandattribute update_provider false;
 until_board_api(202504, `
     attribute tee_service_type;
 ')
+
+until_board_api(202504, `
+    hal_attribute(vm_capabilities);
+')

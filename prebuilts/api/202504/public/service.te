@@ -66,9 +66,6 @@ type activity_service, app_api_service, ephemeral_app_api_service, system_server
 type activity_task_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type adb_service, system_api_service, system_server_service, service_manager_type;
 type adservices_manager_service, system_api_service, system_server_service, service_manager_type;
-starting_at_board_api(202504, `
-    type advanced_protection_service, app_api_service, system_server_service, service_manager_type;
-')
 type alarm_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type app_binding_service, system_server_service, service_manager_type;
 starting_at_board_api(202504, `
@@ -144,9 +141,6 @@ type bugreport_service, app_api_service, system_server_service, service_manager_
 type platform_compat_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 type face_service, app_api_service, system_server_service, service_manager_type;
 type fingerprint_service, app_api_service, system_server_service, service_manager_type;
-starting_at_board_api(202504, `
-    type forensic_service, app_api_service, system_api_service, system_server_service, service_manager_type;
-')
 type fwk_altitude_service, system_server_service, service_manager_type;
 type fwk_stats_service, app_api_service, system_server_service, service_manager_type;
 type fwk_sensor_service, system_server_service, service_manager_type;
@@ -375,6 +369,9 @@ type hal_wifi_service, protected_service, hal_service_type, service_manager_type
 type hal_wifi_hostapd_service, protected_service, hal_service_type, service_manager_type;
 type hal_wifi_supplicant_service, protected_service, hal_service_type, service_manager_type;
 type hal_gatekeeper_service, protected_service, hal_service_type, service_manager_type;
+starting_at_board_api(202504, `
+    type hal_vm_capabilities_service, protected_service, hal_service_type, service_manager_type;
+')
 
 # system/sepolicy/public is for vendor-facing type and attribute definitions.
 # DO NOT ADD allow, neverallow, or dontaudit statements here.

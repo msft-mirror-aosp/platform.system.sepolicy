@@ -1,7 +1,10 @@
 # virtual_camera - virtual camera daemon
 
-type virtual_camera, domain, coredomain;
-type virtual_camera_exec, system_file_type, exec_type, file_type;
+# The types are moved to public starting at 202502
+until_board_api(202504, `
+    type virtual_camera, domain, coredomain;
+    type virtual_camera_exec, system_file_type, exec_type, file_type;
+')
 
 init_daemon_domain(virtual_camera)
 
@@ -40,6 +43,10 @@ hal_client_domain(virtual_camera, hal_graphics_allocator)
 allow virtual_camera gpu_device:chr_file rw_file_perms;
 allow virtual_camera gpu_device:dir r_dir_perms;
 r_dir_file(virtual_camera, sysfs_gpu)
+
+# ION And DMABUF are used by vendor to allocate graphic buffers needed by virtual_camera
+allow cameraserver ion_device:chr_file rw_file_perms;
+allow cameraserver dmabuf_system_heap_device:chr_file r_file_perms;
 
 # Allow virtual camera to use graphics composer fd-s (fences).
 allow virtual_camera hal_graphics_composer:fd use;
