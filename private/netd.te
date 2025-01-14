@@ -48,7 +48,7 @@ r_dir_file(netd, cgroup)
 
 allow netd system_server:fd use;
 
-allow netd self:global_capability_class_set { net_admin net_raw kill };
+allow netd self:global_capability_class_set { net_admin net_raw net_bind_service kill };
 # Note: fsetid is deliberately not included above. fsetid checks are
 # triggered by chmod on a directory or file owned by a group other
 # than one of the groups assigned to the current process to see if
