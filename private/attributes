@@ -16,6 +16,11 @@ until_board_api(202504, `
     hal_attribute(mediaquality);
 ')
 
+until_board_api(202504, `
+attribute unconstrained_vsock_violators;
+expandattribute unconstrained_vsock_violators false;
+')
+
 # All SDK sandbox domains
 attribute sdk_sandbox_all;
 # The SDK sandbox domains for the current SDK level.
