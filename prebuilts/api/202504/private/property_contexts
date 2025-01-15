@@ -622,6 +622,7 @@ persist.bluetooth.btsnoopenable                             u:object_r:exported_
 persist.bluetooth.btsnoopdefaultmode                        u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
 persist.bluetooth.btsnooplogmode                            u:object_r:bluetooth_prop:s0 exact enum empty disabled filtered full
 persist.bluetooth.finder.supported                          u:object_r:bluetooth_finder_prop:s0 exact bool
+persist.bluetooth.sniff_offload.enabled                     u:object_r:bluetooth_config_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.headers.enabled            u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.profiles.a2dp.enabled      u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.snooplogfilter.profiles.map               u:object_r:bluetooth_prop:s0 exact enum empty disabled fullfilter header magic
@@ -1723,7 +1724,7 @@ persist.vendor.fingerprint.virtual.sensor_location u:object_r:virtual_fingerprin
 persist.vendor.fingerprint.virtual.sensor_id u:object_r:virtual_fingerprint_prop:s0 exact int
 persist.vendor.fingerprint.virtual.sensor_strength u:object_r:virtual_fingerprint_prop:s0 exact int
 persist.vendor.fingerprint.virtual.max_enrollments u:object_r:virtual_fingerprint_prop:s0 exact int
-persist.vendor.fingerprint.virtual.navigation_guesture u:object_r:virtual_fingerprint_prop:s0 exact bool
+persist.vendor.fingerprint.virtual.navigation_gesture u:object_r:virtual_fingerprint_prop:s0 exact bool
 persist.vendor.fingerprint.virtual.detect_interaction u:object_r:virtual_fingerprint_prop:s0 exact bool
 persist.vendor.fingerprint.virtual.udfps.display_touch u:object_r:virtual_fingerprint_prop:s0 exact bool
 persist.vendor.fingerprint.virtual.udfps.control_illumination u:object_r:virtual_fingerprint_prop:s0 exact bool

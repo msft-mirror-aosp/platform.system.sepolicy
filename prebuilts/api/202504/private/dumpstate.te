@@ -347,6 +347,7 @@ dump_hal(hal_secretkeeper)
 dump_hal(hal_sensors)
 dump_hal(hal_thermal)
 dump_hal(hal_vehicle)
+dump_hal(hal_vm_capabilities)
 dump_hal(hal_weaver)
 dump_hal(hal_wifi)
 
@@ -462,6 +463,7 @@ allow dumpstate {
   -hal_service_type
   -virtual_touchpad_service
   -vold_service
+  -fwk_vold_service
   -default_android_service
 }:service_manager find;
 # suppress denials for services dumpstate should not be accessing.
@@ -472,6 +474,7 @@ dontaudit dumpstate {
   hal_service_type
   virtual_touchpad_service
   vold_service
+  fwk_vold_service
 }:service_manager find;
 
 # Most of these are neverallowed.

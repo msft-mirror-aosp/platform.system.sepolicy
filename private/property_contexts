@@ -368,9 +368,9 @@ ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact in
 ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
-ro.prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
 # Prefetch property to start and stop the record/replay
 prefetch_boot.record u:object_r:prefetch_service_prop:s0 exact bool
+prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
 prefetch_boot.replay u:object_r:prefetch_service_prop:s0 exact bool
 
 # Virtual A/B and snapuserd properties
