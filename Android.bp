@@ -907,7 +907,7 @@ se_neverallow_test {
 // SEPOLICY_FREEZE_TEST_EXTRA_DIRS and SEPOLICY_FREEZE_TEST_EXTRA_PREBUILT_DIRS.
 //////////////////////////////////
 
-FREEZE_TEST_BOARD_API_LEVEL = "202404"
+FREEZE_TEST_BOARD_API_LEVEL = "202504"
 
 se_policy_conf {
     name: "base_plat_pub_policy_for_freeze_test.conf",
