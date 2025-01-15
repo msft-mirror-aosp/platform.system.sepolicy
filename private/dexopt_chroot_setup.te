@@ -76,6 +76,7 @@ allow dexopt_chroot_setup {
   system_file
   system_lib_file
   tmpfs
+  vendor_configs_file
   vendor_file
 }:dir mounton;
 
