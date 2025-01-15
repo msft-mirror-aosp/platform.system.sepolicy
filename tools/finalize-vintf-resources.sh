@@ -149,3 +149,5 @@ EOF
 bpmodify="$top/out/host/linux-x86/bin/bpmodify"
 $bpmodify -a ":${ver}_sepolicy_cts_data" -m prebuilt_sepolicy_cts_data -property srcs -w \
     $top/system/sepolicy/tests/Android.bp
+sed -i "s/FREEZE_TEST_BOARD_API_LEVEL = \".\{6\}\"/FREEZE_TEST_BOARD_API_LEVEL = \"${ver}\"/" \
+    $top/system/sepolicy/Android.bp
