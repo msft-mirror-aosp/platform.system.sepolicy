@@ -256,9 +256,6 @@ se_policy_cil {
     name: "plat_sepolicy.cil",
     src: ":plat_sepolicy.conf",
     additional_cil_files: [":sepolicy_technical_debt{.plat_private}"],
-    dist: {
-        targets: ["sepolicy_finalize"],
-    },
 }
 
 // userdebug_plat_policy.conf - the userdebug version plat_sepolicy.cil
@@ -367,9 +364,6 @@ se_versioned_policy {
     mapping: true,
     version: "current",
     relative_install_path: "mapping", // install to /system/etc/selinux/mapping
-    dist: {
-        targets: ["sepolicy_finalize"],
-    },
 }
 
 se_versioned_policy {
@@ -774,6 +768,9 @@ se_policy_cil {
     additional_cil_files: ["private/technical_debt.cil"],
     installable: false,
     secilc_check: false, // done by se_policy_binary
+    dist: {
+        targets: ["sepolicy_finalize"],
+    },
 }
 
 se_policy_binary {
@@ -833,6 +830,18 @@ se_policy_cil {
     dist: {
         targets: ["base-sepolicy-files-for-mapping"],
     },
+}
+
+se_versioned_policy {
+    name: "base_plat_mapping_file",
+    base: ":base_plat_pub_policy.cil",
+    mapping: true,
+    version: "current",
+    relative_install_path: "mapping", // install to /system/etc/selinux/mapping
+    dist: {
+        targets: ["sepolicy_finalize"],
+    },
+    installable: false,
 }
 
 se_policy_conf {
