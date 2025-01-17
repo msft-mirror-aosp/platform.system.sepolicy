@@ -43,7 +43,7 @@ get_prop(platform_app, radio_cdma_ecm_prop)
 userdebug_or_eng(`
   set_prop(platform_app, persist_wm_debug_prop)
 ')
-neverallow { domain -init -dumpstate userdebug_or_eng(`-domain') } persist_wm_debug_prop:property_service set;
+neverallow { domain -init -dumpstate -system_server userdebug_or_eng(`-domain') } persist_wm_debug_prop:property_service set;
 
 userdebug_or_eng(`
   set_prop(platform_app, persist_sysui_builder_extras_prop)
