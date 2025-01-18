@@ -52,6 +52,7 @@ security.lower_kptr_restrict u:object_r:lower_kptr_restrict_prop:s0
 service.adb.root        u:object_r:shell_prop:s0
 service.adb.tls.port    u:object_r:adbd_prop:s0
 persist.adb.tradeinmode u:object_r:adbd_tradeinmode_prop:s0
+persist.adb.test_tradeinmode u:object_r:adbd_tradeinmode_prop:s0
 persist.adb.wifi.       u:object_r:adbd_prop:s0
 persist.adb.tls_server.enable  u:object_r:system_adbd_prop:s0
 
@@ -368,9 +369,9 @@ ro.prefetch_boot.trace_buffer_size_kib u:object_r:prefetch_boot_prop:s0 exact in
 ro.prefetch_boot.duration_s u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.io_depth u:object_r:prefetch_boot_prop:s0 exact int
 ro.prefetch_boot.max_fds u:object_r:prefetch_boot_prop:s0 exact int
-ro.prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
 # Prefetch property to start and stop the record/replay
 prefetch_boot.record u:object_r:prefetch_service_prop:s0 exact bool
+prefetch_boot.record_stop u:object_r:prefetch_boot_prop:s0 exact bool
 prefetch_boot.replay u:object_r:prefetch_service_prop:s0 exact bool
 
 # Virtual A/B and snapuserd properties
