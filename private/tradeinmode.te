@@ -6,6 +6,9 @@ type tradeinmode_exec, exec_type, file_type, system_file_type;
 allow tradeinmode adbd_tradeinmode:fd use;
 allow tradeinmode adbd_tradeinmode:unix_stream_socket { read write ioctl };
 
+# Needed to enable trade-in mode for testing.
+set_prop(tradeinmode, adbd_tradeinmode_prop)
+
 # Allow running from normal shell.
 allow tradeinmode { adbd shell }:fd use;
 allow tradeinmode adbd:unix_stream_socket { read write ioctl };
