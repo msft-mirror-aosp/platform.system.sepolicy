@@ -22,7 +22,6 @@
     artd
     artd_exec
     artd_service
-    atrace
     authorization_service
     bootanim_config_prop
     camerax_extensions_prop
@@ -139,7 +138,6 @@
     system_suspend_control_internal_service
     task_profiles_api_file
     texttospeech_service
-    traced_tmpfs
     translation_service
     update_engine_stable_service
     userdata_sysdev

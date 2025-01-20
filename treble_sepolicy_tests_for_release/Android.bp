@@ -36,7 +36,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_29.0",
     srcs: [
-        ":29.0_plat_pub_policy.cil",
+        ":29.0_plat_policy.cil",
         ":29.0_mapping.combined.cil",
         ":base_plat_pub_policy.cil",
     ],
@@ -45,7 +45,7 @@ java_genrule {
     cmd: "$(location treble_sepolicy_tests) " +
         "-b $(location :base_plat_pub_policy.cil) " +
         "-m $(location :29.0_mapping.combined.cil) " +
-        "-o $(location :29.0_plat_pub_policy.cil) && " +
+        "-o $(location :29.0_plat_policy.cil) && " +
         "touch $(out)",
 }
 
@@ -86,7 +86,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_30.0",
     srcs: [
-        ":30.0_plat_pub_policy.cil",
+        ":30.0_plat_policy.cil",
         ":30.0_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -104,12 +104,12 @@ java_genrule {
         (false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :30.0_mapping.combined.cil) " +
-            "-o $(location :30.0_plat_pub_policy.cil) && " +
+            "-o $(location :30.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :30.0_mapping.combined.cil) " +
-            "-o $(location :30.0_plat_pub_policy.cil) && " +
+            "-o $(location :30.0_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
@@ -151,7 +151,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_31.0",
     srcs: [
-        ":31.0_plat_pub_policy.cil",
+        ":31.0_plat_policy.cil",
         ":31.0_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -169,12 +169,12 @@ java_genrule {
         (false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :31.0_mapping.combined.cil) " +
-            "-o $(location :31.0_plat_pub_policy.cil) && " +
+            "-o $(location :31.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :31.0_mapping.combined.cil) " +
-            "-o $(location :31.0_plat_pub_policy.cil) && " +
+            "-o $(location :31.0_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
@@ -216,7 +216,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_32.0",
     srcs: [
-        ":32.0_plat_pub_policy.cil",
+        ":32.0_plat_policy.cil",
         ":32.0_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -234,12 +234,12 @@ java_genrule {
         (false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :32.0_mapping.combined.cil) " +
-            "-o $(location :32.0_plat_pub_policy.cil) && " +
+            "-o $(location :32.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :32.0_mapping.combined.cil) " +
-            "-o $(location :32.0_plat_pub_policy.cil) && " +
+            "-o $(location :32.0_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
@@ -281,7 +281,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_33.0",
     srcs: [
-        ":33.0_plat_pub_policy.cil",
+        ":33.0_plat_policy.cil",
         ":33.0_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -299,12 +299,12 @@ java_genrule {
         (false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :33.0_mapping.combined.cil) " +
-            "-o $(location :33.0_plat_pub_policy.cil) && " +
+            "-o $(location :33.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :33.0_mapping.combined.cil) " +
-            "-o $(location :33.0_plat_pub_policy.cil) && " +
+            "-o $(location :33.0_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
@@ -346,7 +346,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_34.0",
     srcs: [
-        ":34.0_plat_pub_policy.cil",
+        ":34.0_plat_policy.cil",
         ":34.0_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -364,12 +364,12 @@ java_genrule {
         (false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :34.0_mapping.combined.cil) " +
-            "-o $(location :34.0_plat_pub_policy.cil) && " +
+            "-o $(location :34.0_plat_policy.cil) && " +
             "touch $(out)",
         (default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :34.0_mapping.combined.cil) " +
-            "-o $(location :34.0_plat_pub_policy.cil) && " +
+            "-o $(location :34.0_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
@@ -416,7 +416,7 @@ java_genrule {
 java_genrule {
     name: "treble_sepolicy_tests_202404",
     srcs: [
-        ":202404_plat_pub_policy.cil",
+        ":202404_plat_policy.cil",
         ":202404_mapping.combined.cil",
     ] + select((
         soong_config_variable("ANDROID", "HAS_BOARD_SYSTEM_EXT_PREBUILT_DIR"),
@@ -437,12 +437,12 @@ java_genrule {
         (default, false, false): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_plat_pub_policy.cil) " +
             "-m $(location :202404_mapping.combined.cil) " +
-            "-o $(location :202404_plat_pub_policy.cil) && " +
+            "-o $(location :202404_plat_policy.cil) && " +
             "touch $(out)",
         (default, default, default): "$(location treble_sepolicy_tests) " +
             "-b $(location :base_product_pub_policy.cil) " +
             "-m $(location :202404_mapping.combined.cil) " +
-            "-o $(location :202404_plat_pub_policy.cil) && " +
+            "-o $(location :202404_plat_policy.cil) && " +
             "touch $(out)",
     }),
 }
