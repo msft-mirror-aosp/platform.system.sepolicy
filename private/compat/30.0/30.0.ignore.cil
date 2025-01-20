@@ -95,6 +95,7 @@
     odsign
     odsign_data_file
     odsign_exec
+    otapreopt_chroot
     pac_proxy_service
     permission_checker_service
     people_service
