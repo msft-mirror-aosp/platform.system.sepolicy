@@ -70,6 +70,7 @@ var (
 		"android.hardware.gnss.IGnss/default":                                         EXCEPTION_NO_FUZZER,
 		"android.hardware.graphics.allocator.IAllocator/default":                      EXCEPTION_NO_FUZZER,
 		"android.hardware.graphics.composer3.IComposer/default":                       EXCEPTION_NO_FUZZER,
+		"android.hardware.tv.mediaquality.IPictureProfileChangedListener/default":     EXCEPTION_NO_FUZZER,
 		"android.hardware.health.storage.IStorage/default":                            EXCEPTION_NO_FUZZER,
 		"android.hardware.health.IHealth/default":                                     []string{"android.hardware.health-service.aidl_fuzzer"},
 		"android.hardware.identity.IIdentityCredentialStore/default":                  EXCEPTION_NO_FUZZER,
