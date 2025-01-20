@@ -12,7 +12,6 @@
     crosvm
     early_virtmgr
     early_virtmgr_exec
-    enable_16k_pages_prop
     forensic_service
     fstype_prop
     hal_mediaquality_service

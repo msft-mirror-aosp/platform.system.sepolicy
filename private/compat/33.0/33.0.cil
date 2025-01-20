@@ -2083,7 +2083,7 @@
 (typeattributeset permission_checker_service_33_0 (permission_checker_service))
 (typeattributeset permission_service_33_0 (permission_service))
 (typeattributeset permissionmgr_service_33_0 (permissionmgr_service))
-(typeattributeset persist_debug_prop_33_0 (persist_debug_prop system_user_mode_emulation_prop))
+(typeattributeset persist_debug_prop_33_0 (persist_debug_prop))
 (typeattributeset persist_vendor_debug_wifi_prop_33_0 (persist_vendor_debug_wifi_prop))
 (typeattributeset persist_wm_debug_prop_33_0 (persist_wm_debug_prop))
 (typeattributeset persistent_data_block_service_33_0 (persistent_data_block_service))
