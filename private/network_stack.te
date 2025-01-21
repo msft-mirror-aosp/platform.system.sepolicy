@@ -51,6 +51,10 @@ allow network_stack self:key_socket create;
 # calls if (fd.isSocket$()) if (isLingerSocket(fd)) ...
 dontaudit network_stack self:key_socket getopt;
 
+# Allow network_stack to open/read/getattr various /proc/net files
+# (includes /proc/net/{anycast6,igmp,psched} /proc/sys/net/ipv4/ip_default_ttl)
+dontaudit network_stack proc_net:file r_file_perms;
+
 # Grant read permission of connectivity namespace system property prefix.
 get_prop(network_stack, device_config_connectivity_prop)
 
