@@ -228,3 +228,6 @@ neverallow adbd {
 # Only init is allowed to enter the adbd domain via exec()
 neverallow { domain -init } adbd:process transition;
 neverallow * adbd:process dyntransition;
+
+# allow adbd to check if an app is frozen
+allow adbd cgroup_v2:file read;
