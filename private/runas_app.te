@@ -28,8 +28,8 @@ dontaudit runas_app domain:dir search;
 
 # Allow runas_app to call perf_event_open for profiling debuggable app
 # processes, but not the whole system.
-allow runas_app self:perf_event { open read write kernel };
-neverallow runas_app self:perf_event ~{ open read write kernel };
+allow runas_app self:perf_event { open read write };
+neverallow runas_app self:perf_event ~{ open read write };
 
 # Suppress bionic loader denial /data/local/tests directories.
 dontaudit runas_app shell_test_data_file:dir search;
