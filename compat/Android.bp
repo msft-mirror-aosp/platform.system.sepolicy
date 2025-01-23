@@ -671,3 +671,9 @@ se_compat_cil {
     system_ext_specific: true,
     version: "202504",
 }
+
+prebuilt_etc {
+    name: "plat_sepolicy_genfs_202604.cil",
+    src: "plat_sepolicy_genfs_202604.cil",
+    relative_install_path: "selinux",
+}
