@@ -123,6 +123,14 @@ phony {
             "plat_202404.cil",
             "202404.compat.cil",
         ],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
+        "202404": [],
+        "202504": [],
+        default: [
+            "plat_202504.cil",
+            "202504.compat.cil",
+        ],
     }) + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
         true: ["plat_sepolicy_and_mapping.sha256"],
         default: [],
@@ -666,7 +674,9 @@ filegroup {
         ":product_mapping_file",
     ],
     device_first_srcs: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
         "202504": [":plat_sepolicy_genfs_202504.cil"],
+        "202604": [":plat_sepolicy_genfs_202504.cil"],
         default: [],
     }),
     // Make precompiled_sepolicy_srcs as public so that OEMs have access to them.
@@ -1031,6 +1041,13 @@ phony {
         default: [
             "system_ext_202404.cil",
         ],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
+        "202404": [],
+        "202504": [],
+        default: [
+            "system_ext_202504.cil",
+        ],
     }) +
     select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
         true: ["system_ext_sepolicy_and_mapping.sha256"],
@@ -1059,6 +1076,13 @@ phony {
         "202404": [],
         default: [
             "system_ext_202404.compat.cil",
+        ],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
+        "202404": [],
+        "202504": [],
+        default: [
+            "system_ext_202504.compat.cil",
         ],
     }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
         true: ["system_ext_tee_service_contexts"],
@@ -1098,6 +1122,13 @@ phony {
         "202404": [],
         default: [
             "product_202404.cil",
+        ],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
+        "202404": [],
+        "202504": [],
+        default: [
+            "product_202504.cil",
         ],
     }) + select(release_flag("RELEASE_AVF_ENABLE_VM_TO_TEE_SERVICES_ALLOWLIST"), {
         true: ["product_tee_service_contexts"],
@@ -1213,6 +1244,14 @@ phony {
             "202404.compat.cil",
             "plat_202404.cil",
         ],
+    }) + select(soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"), {
+        // TODO(b/391513934): clean up once we can simplify complex select statements.
+        "202404": [],
+        "202504": [],
+        default: [
+            "202504.compat.cil",
+            "plat_202504.cil",
+        ],
     }) + select(soong_config_variable("ANDROID", "PRODUCT_PRECOMPILED_SEPOLICY"), {
         true: ["plat_sepolicy_and_mapping.sha256"],
         default: [],
@@ -1242,6 +1281,17 @@ phony {
         (default, true, true): [],
         (default, default, default): [
             "treble_sepolicy_tests_202404",
+        ],
+    }) + select((
+        soong_config_variable("ANDROID", "PLATFORM_SEPOLICY_VERSION"),
+        soong_config_variable("ANDROID", "ASAN_ENABLED"),
+        product_variable("selinux_ignore_neverallows"),
+    ), {
+        ("202404", default, default): [], // TODO(b/391513934): clean up once we can simplify complex select statements.
+        ("202504", true, true): [],
+        (default, true, true): [],
+        (default, default, default): [
+            "treble_sepolicy_tests_202504",
         ],
     }) + select(soong_config_variable("ANDROID", "RELEASE_BOARD_API_LEVEL_FROZEN"), {
         true: ["se_freeze_test"],
