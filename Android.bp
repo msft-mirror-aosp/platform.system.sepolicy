@@ -103,6 +103,7 @@ phony {
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
         "plat_sepolicy_genfs_202504.cil",
+        "plat_sepolicy_genfs_202604.cil",
         "plat_service_contexts",
         "secilc",
         "plat_29.0.cil",
@@ -674,9 +675,8 @@ filegroup {
         ":product_mapping_file",
     ],
     device_first_srcs: select(soong_config_variable("ANDROID", "BOARD_GENFS_LABELS_VERSION"), {
-        // TODO(b/391513934): clean up once we can simplify complex select statements.
-        "202504": [":plat_sepolicy_genfs_202504.cil"],
-        "202604": [":plat_sepolicy_genfs_202504.cil"],
+        "202404": [],
+        any @ ver: [":plat_sepolicy_genfs_" + ver + ".cil"],
         default: [],
     }),
     // Make precompiled_sepolicy_srcs as public so that OEMs have access to them.
@@ -1234,6 +1234,7 @@ phony {
         "plat_seapp_contexts",
         "plat_sepolicy.cil",
         "plat_sepolicy_genfs_202504.cil",
+        "plat_sepolicy_genfs_202604.cil",
         "plat_service_contexts",
         "plat_service_contexts_test",
         "searchpolicy",
