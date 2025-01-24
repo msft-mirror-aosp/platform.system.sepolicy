@@ -142,7 +142,7 @@ allow shell remount_exec:file rx_file_perms;
 
 # Allow shell to call perf_event_open for profiling other shell processes, but
 # not the whole system.
-allow shell self:perf_event { open read write };
+allow shell self:perf_event { open read write kernel };
 
 # Allow shell to read microdroid vendor image
 r_dir_file(shell, vendor_microdroid_file)
