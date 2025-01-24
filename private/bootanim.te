@@ -67,7 +67,3 @@ allow bootanim system_file:dir r_dir_perms;
 
 # Allow bootanim to send information to statsd socket.
 unix_socket_send(bootanim, statsdw, statsd)
-
-# Allow bootanim to access extcon information.
-allow bootanim sysfs_extcon:dir r_dir_perms;
-allow bootanim sysfs_extcon:file r_file_perms;
