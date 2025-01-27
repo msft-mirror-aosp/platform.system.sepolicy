@@ -14,7 +14,7 @@ define(`simpleperf_profileable_apps', `{
   untrusted_app_all
 }')
 
-domain_auto_trans({ simpleperf_profileable_apps -runas_app }, simpleperf_exec, simpleperf)
+domain_auto_trans(simpleperf_profileable_apps, simpleperf_exec, simpleperf)
 
 # When running in this domain, simpleperf is scoped to profiling an individual
 # app. The necessary MAC permissions for profiling are more maintainable and
