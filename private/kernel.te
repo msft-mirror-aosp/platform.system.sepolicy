@@ -2,9 +2,6 @@ typeattribute kernel coredomain;
 
 domain_auto_trans(kernel, init_exec, init)
 domain_auto_trans(kernel, snapuserd_exec, snapuserd)
-userdebug_or_eng(`
-  domain_auto_trans(kernel, overlay_remounter_exec, overlay_remounter)
-')
 
 # Allow the kernel to read otapreopt_chroot's file descriptors and files under
 # /postinstall, as it uses apexd logic to mount APEX packages in /postinstall/apex.
@@ -152,15 +149,6 @@ recovery_only(`
 
 # required by VTS lidbm unit test
 allow kernel appdomain_tmpfs:file { read write };
-
-# Allow first stage init to copy and then launch overlay_remounter
-userdebug_or_eng(`
-  allow kernel tmpfs:dir rw_dir_perms;
-  allow kernel tmpfs:file { create_file_perms relabelfrom };
-  allow kernel overlay_remounter_exec:file { relabelto unlink };
-  allow kernel overlay_remounter:process2 nosuid_transition;
-  allow kernel overlay_remounter:process share;
-')
 
 dontaudit kernel metadata_file:dir search;
 dontaudit kernel ota_metadata_file:dir rw_dir_perms;
