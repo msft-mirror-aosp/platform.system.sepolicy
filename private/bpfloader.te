@@ -54,7 +54,7 @@ neverallow { domain -bpfdomain } *:bpf { map_create map_read map_write prog_run 
 neverallow { domain -bpfloader } fs_bpf_loader:bpf *;
 neverallow { domain -bpfloader } fs_bpf_loader:file *;
 
-neverallow { domain -bpfloader -init } bpfloader_exec:file { execute execute_no_trans };
+neverallow { domain -bpfloader -init userdebug_or_eng(`-overlay_remounter') } bpfloader_exec:file { execute execute_no_trans };
 
 neverallow { coredomain -bpfloader -netd -netutils_wrapper } fs_bpf_vendor:file *;
 
