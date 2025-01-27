@@ -430,6 +430,8 @@ allow domain cgroup_rc_file:file r_file_perms;
 allow domain task_profiles_file:file r_file_perms;
 allow domain vendor_cgroup_desc_file:file r_file_perms;
 allow domain vendor_task_profiles_file:file r_file_perms;
+allow domain libprocessgroup_metadata_file:dir r_dir_perms;
+allow domain libprocessgroup_metadata_file:file r_file_perms;
 
 # Allow all domains to read sys.use_memfd to determine
 # if memfd support can be used if device supports it
@@ -526,11 +528,12 @@ neverallow {
 # still contains global information about the system.
 neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs_transaction_history:file no_rw_file_perms;
 
-# Allow access to fsverity keyring.
+# Needed for loading kernel modules.
+# TODO(384942085): Reduce the scope.
 allow domain kernel:key search;
-# Allow access to keys in the fsverity keyring that were installed at boot.
-allow domain fsverity_init:key search;
+
 # For testing purposes, allow access to keys installed with su.
+# TODO(277916185): Remove since this shouldn't be needed anymore.
 userdebug_or_eng(`
   allow domain su:key search;
 ')
@@ -2271,5 +2274,26 @@ neverallow { domain -dexopt_chroot_setup -init -zygote } proc_type:{ file dir } 
 # ueventd needs write access to all sysfs files.
 neverallow { domain -init -vendor_init -ueventd } sysfs_pgsize_migration:file no_w_file_perms;
 
-# We need to be able to rely on vsock labels, so disallow changing them.
-neverallow domain *:vsock_socket { relabelfrom relabelto };
+# virtmanager enforces access policy for which components can connect
+# to which VMs. If you have permissions to make direct connections, you
+# can talk to anything.
+starting_at_board_api(202504, `
+neverallow {
+    domain
+
+    # these are expected
+    -early_virtmgr
+    -virtualizationmanager
+    -virtualizationservice
+    -adbd_common # maybe should move to emulator/virtual device specific policy
+
+    # not expected, and defined outside of system/sepolicy.
+    # Note: this attribute is strongly recommended to be empty if not required.
+    -unconstrained_vsock_violators
+
+    # these are permissions that should be removed, and they are here for visibility.
+    -compos_fd_server   # TODO: get connections from virtmanager
+    -hal_keymint_system # TODO: get connections from virtmanager
+    -vmlauncher_app     # TODO: get connections from virtmanager
+} *:vsock_socket { connect create accept bind };
+')
