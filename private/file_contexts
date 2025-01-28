@@ -353,6 +353,7 @@
 /system/bin/preopt2cachename u:object_r:preopt2cachename_exec:s0
 /system/bin/sgdisk      u:object_r:sgdisk_exec:s0
 /system/bin/blkid       u:object_r:blkid_exec:s0
+/system/bin/pbtombstone       u:object_r:pbtombstone_exec:s0
 /system/bin/flags_health_check -- u:object_r:flags_health_check_exec:s0
 /system/bin/idmap2(d)?              u:object_r:idmap_exec:s0
 /system/bin/update_engine           u:object_r:update_engine_exec:s0

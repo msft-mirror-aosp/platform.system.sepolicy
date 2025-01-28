@@ -192,6 +192,9 @@ type sysfs_pgsize_migration, fs_type, sysfs_type;
 # /sys/firmware/acpi/tables
 type sysfs_firmware_acpi_tables, fs_type, sysfs_type;
 
+# Type for /system/bin/pbtombstone.
+type pbtombstone_exec, system_file_type, exec_type, file_type;
+
 # Allow files to be created in their appropriate filesystems.
 allow fs_type self:filesystem associate;
 allow cgroup tmpfs:filesystem associate;
