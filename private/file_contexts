@@ -952,3 +952,7 @@
 #############################
 # For early boot VM
 /mnt/vm u:object_r:vm_data_file:s0
+
+#############################
+# For overlays
+/second_stage_resources/overlay_remounter u:object_r:overlay_remounter_exec:s0
