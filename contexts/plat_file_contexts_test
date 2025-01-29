@@ -339,6 +339,7 @@
 /system/bin/bootstat                                              bootstat_exec
 /system/bin/app_process32                                         zygote_exec
 /system/bin/app_process64                                         zygote_exec
+/system/bin/pbtombstone                                           pbtombstone_exec
 /system/bin/servicemanager                                        servicemanager_exec
 /system/bin/surfaceflinger                                        surfaceflinger_exec
 /system/bin/gpuservice                                            gpuservice_exec
@@ -1344,3 +1345,5 @@
 /tmp                                                              shell_data_file
 
 /mnt/pre_reboot_dexopt                                            pre_reboot_dexopt_file
+
+/second_stage_resources/overlay_remounter                         overlay_remounter_exec

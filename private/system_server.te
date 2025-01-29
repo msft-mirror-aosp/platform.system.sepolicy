@@ -1168,6 +1168,9 @@ set_prop(system_server, adbd_tradeinmode_prop)
 # Allow invoking tools like "timeout"
 allow system_server toolbox_exec:file rx_file_perms;
 
+# Allow invoking pbtombstone
+allow system_server pbtombstone_exec:file rx_file_perms;
+
 # Allow system process to setup fs-verity
 allowxperm system_server { apk_data_file apk_tmp_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
 
@@ -1360,6 +1363,7 @@ neverallow system_server {
   file_type
   -toolbox_exec
   -logcat_exec
+  -pbtombstone_exec
   with_asan(`-shell_exec -asanwrapper_exec -zygote_exec')
 }:file execute_no_trans;
 
