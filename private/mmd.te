@@ -29,3 +29,6 @@ allow mmd swap_block_device:blk_file rw_file_perms;
 
 # swapon syscall
 allow mmd self:capability sys_admin;
+
+# Allow mmd to write to statsd socket.
+unix_socket_send(mmd, statsdw, statsd)
