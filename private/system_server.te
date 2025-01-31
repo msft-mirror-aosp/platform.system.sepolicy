@@ -923,6 +923,9 @@ get_prop(system_server, sensors_config_prop)
 # Allow system server to determine if system services are enabled
 get_prop(system_server, system_service_enable_prop)
 
+# Allow system server to read shared mmd properties
+get_prop(system_server, mmd_shared_prop)
+
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
 
