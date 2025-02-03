@@ -429,6 +429,9 @@ allow system_server {
   hal_sensors_server
   hal_vibrator_server
   hal_vr_server
+  hal_wifi_hostapd_server
+  hal_wifi_server
+  hal_wifi_supplicant_server
   system_suspend_server
 }:process { signal };
 
