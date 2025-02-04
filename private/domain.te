@@ -532,12 +532,6 @@ neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs
 # TODO(384942085): Reduce the scope.
 allow domain kernel:key search;
 
-# For testing purposes, allow access to keys installed with su.
-# TODO(277916185): Remove since this shouldn't be needed anymore.
-userdebug_or_eng(`
-  allow domain su:key search;
-')
-
 # Allow access to linkerconfig file
 allow domain linkerconfig_file:dir search;
 allow domain linkerconfig_file:file r_file_perms;
