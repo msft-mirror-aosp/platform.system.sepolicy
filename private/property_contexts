@@ -718,6 +718,7 @@ bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.msft_vendor_opcode                 u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
@@ -1818,4 +1819,5 @@ widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact
 
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0
-mmd.enabled_aconfig u:object_r:mmd_prop:s0 exact bool
+mmd.zram.enabled u:object_r:mmd_shared_prop:s0 exact bool
+mmd.enabled_aconfig u:object_r:mmd_status_prop:s0 exact bool
