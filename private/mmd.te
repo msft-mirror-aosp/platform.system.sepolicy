@@ -5,7 +5,7 @@ type mmd_exec, system_file_type, exec_type, file_type;
 
 init_daemon_domain(mmd)
 
-# Set mmd.enabled_aconfig properties.
+# Set mmd.enabled_aconfig and zram backing device size.
 set_prop(mmd, mmd_status_prop)
 get_prop(mmd, mmd_prop)
 get_prop(mmd, device_config_mmd_native_prop)
