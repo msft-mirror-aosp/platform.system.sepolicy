@@ -243,6 +243,11 @@ allow system_server sysfs_ion:file r_file_perms;
 # Read /sys/kernel/dma_heap/*.
 allow system_server sysfs_dma_heap:file r_file_perms;
 
+# Read /sys/kernel/mm/cma/*.
+starting_at_board_api(202504, `
+allow system_server sysfs_cma:file r_file_perms;
+')
+
 # Allow reading DMA-BUF sysfs stats from /sys/kernel/dmabuf.
 allow system_server sysfs_dmabuf_stats:dir r_dir_perms;
 allow system_server sysfs_dmabuf_stats:file r_file_perms;
@@ -424,6 +429,9 @@ allow system_server {
   hal_sensors_server
   hal_vibrator_server
   hal_vr_server
+  hal_wifi_hostapd_server
+  hal_wifi_server
+  hal_wifi_supplicant_server
   system_suspend_server
 }:process { signal };
 
@@ -893,6 +901,7 @@ get_prop(system_server, hypervisor_prop)
 
 # Read persist.wm.debug. properties
 get_prop(system_server, persist_wm_debug_prop)
+set_prop(system_server, persist_wm_debug_prop)
 
 # Read persist.sysui.notification.builder_extras_override property
 get_prop(system_server, persist_sysui_builder_extras_prop)
@@ -913,6 +922,9 @@ get_prop(system_server, sensors_config_prop)
 
 # Allow system server to determine if system services are enabled
 get_prop(system_server, system_service_enable_prop)
+
+# Allow system server to read shared mmd properties
+get_prop(system_server, mmd_shared_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1162,6 +1174,9 @@ set_prop(system_server, adbd_tradeinmode_prop)
 # Allow invoking tools like "timeout"
 allow system_server toolbox_exec:file rx_file_perms;
 
+# Allow invoking pbtombstone
+allow system_server pbtombstone_exec:file rx_file_perms;
+
 # Allow system process to setup fs-verity
 allowxperm system_server { apk_data_file apk_tmp_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
 
@@ -1354,6 +1369,7 @@ neverallow system_server {
   file_type
   -toolbox_exec
   -logcat_exec
+  -pbtombstone_exec
   with_asan(`-shell_exec -asanwrapper_exec -zygote_exec')
 }:file execute_no_trans;
 
@@ -1650,6 +1666,16 @@ userdebug_or_eng(`
 
 # Allow GameManagerService to read and write persist.graphics.game_default_frame_rate.enabled
 set_prop(system_server, game_manager_config_prop)
+
+# Allow system server to write HintManagerService properties
+set_prop(system_server, hint_manager_config_prop)
+neverallow {
+  domain
+  -init
+  -vendor_init
+  -system_server
+  userdebug_or_eng(`-shell')
+} hint_manager_config_prop:property_service set;
 
 # ThreadNetworkService reads Thread Network properties
 get_prop(system_server, threadnetwork_config_prop)

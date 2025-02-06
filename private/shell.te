@@ -142,7 +142,7 @@ allow shell remount_exec:file rx_file_perms;
 
 # Allow shell to call perf_event_open for profiling other shell processes, but
 # not the whole system.
-allow shell self:perf_event { open read write kernel };
+allow shell self:perf_event { open read write };
 
 # Allow shell to read microdroid vendor image
 r_dir_file(shell, vendor_microdroid_file)
@@ -443,6 +443,9 @@ allow shell sysfs_batteryinfo:file r_file_perms;
 
 # Allow reads (but not writes) of the MGLRU state
 allow shell sysfs_lru_gen_enabled:file r_file_perms;
+
+# Allow reads (but not writes) of mem_sleep to determine suspend mechanism
+allow shell sysfs_mem_sleep:file r_file_perms;
 
 # Allow communicating with the VM terminal.
 userdebug_or_eng(`

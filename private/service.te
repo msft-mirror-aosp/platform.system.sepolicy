@@ -20,7 +20,7 @@ type mediatuner_service,             app_api_service, service_manager_type;
 type mmd_service,                    service_manager_type;
 type on_device_intelligence_service, app_api_service, system_server_service, service_manager_type, isolated_compute_allowed_service;
 type profcollectd_service,           service_manager_type;
-type protolog_configuration_service, app_api_service, system_api_service, system_server_service, service_manager_type;
+type protolog_configuration_service, app_api_service, system_api_service, system_server_service, service_manager_type, ephemeral_app_api_service;
 type resolver_service,               system_server_service, service_manager_type;
 type rkpd_registrar_service,         service_manager_type;
 type rkpd_refresh_service,           service_manager_type;
@@ -64,9 +64,14 @@ type fwk_vold_service,                 service_manager_type;
 type wearable_sensing_service,         app_api_service, system_server_service, service_manager_type;
 type wifi_mainline_supplicant_service, service_manager_type;
 type dynamic_instrumentation_service,  app_api_service, system_server_service, service_manager_type;
+type advanced_protection_service,      app_api_service, system_server_service, service_manager_type;
 
 is_flag_enabled(RELEASE_RANGING_STACK, `
     type ranging_service, app_api_service, system_server_service, service_manager_type;
+')
+
+until_board_api(202504, `
+    type hal_vm_capabilities_service, protected_service, hal_service_type, service_manager_type;
 ')
 
 ###
