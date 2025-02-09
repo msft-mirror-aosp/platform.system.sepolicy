@@ -54,16 +54,21 @@ neverallow {
 
 # Only aconfigd and aconfigd_mainline can access persist storage files
 # These files are meant to serve as persist flag value storage, only aconfigd and
-# aconfigd_mainline process should manage them. Other processes should have zero access.
+# aconfigd_mainline process should manage them. Other processes should have zero
+# access. system_server was previous granted write permission to these files as
+# well during test missions. Thus also added system_server to the neverallow
+# exclusion list to cts test requirements.
 neverallow {
   domain
   -init
   -aconfigd
   -aconfigd_mainline
+  -system_server
 } aconfig_storage_flags_metadata_file:dir *;
 neverallow {
   domain
   -init
   -aconfigd
   -aconfigd_mainline
+  -system_server
 } aconfig_storage_flags_metadata_file:file no_rw_file_perms;
