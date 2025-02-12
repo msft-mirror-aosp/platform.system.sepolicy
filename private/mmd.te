@@ -33,3 +33,7 @@ allow mmd self:capability sys_admin;
 
 # Allow mmd to write to statsd socket.
 unix_socket_send(mmd, statsdw, statsd)
+# Allow mmd to interact with statsd binder calls for pulled atoms.
+allow mmd stats_service:service_manager find;
+allow mmd statsmanager_service:service_manager find;
+binder_call(mmd, statsd)

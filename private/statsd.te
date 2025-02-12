@@ -98,6 +98,10 @@ binder_call(statsd, mediametrics)
 allow statsd mediaserver_service:service_manager find;
 binder_call(statsd, mediaserver)
 
+# Allow statsd to interact with mmd
+allow statsd mmd_service:service_manager find;
+binder_call(statsd, mmd)
+
 # Allow logd access.
 read_logd(statsd)
 control_logd(statsd)
