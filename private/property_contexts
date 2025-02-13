@@ -780,8 +780,6 @@ pm.dexopt.                                              u:object_r:future_pm_pro
 
 pm.16kb.app_compat.disabled                             u:object_r:pm_16kb_app_compat_prop:s0 exact bool
 
-ro.apk_verity.mode u:object_r:apk_verity_prop:s0 exact int
-
 ro.bluetooth.a2dp_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
 ro.bluetooth.leaudio_offload.supported u:object_r:bluetooth_a2dp_offload_prop:s0 exact bool
 
