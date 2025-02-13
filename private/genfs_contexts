@@ -266,6 +266,7 @@ genfscon tracefs /events/vmscan/mm_vmscan_direct_reclaim_begin/          u:objec
 genfscon tracefs /events/vmscan/mm_vmscan_direct_reclaim_end/            u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/vmscan/mm_vmscan_kswapd_wake/                   u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/vmscan/mm_vmscan_kswapd_sleep/                  u:object_r:debugfs_tracing:s0
+genfscon tracefs /events/android_vendor_lmk/                             u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/binder/binder_transaction/                      u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/binder/binder_transaction_received/             u:object_r:debugfs_tracing:s0
 genfscon tracefs /events/binder/binder_lock/                             u:object_r:debugfs_tracing:s0
