@@ -87,6 +87,14 @@ file_contexts {
     },
 }
 
+// The platform file context without any extra added. This is used by CTS to
+// ensure that no entries are removed from the AOSP file.
+file_contexts {
+    name: "plat_file_contexts_cts",
+    defaults: ["contexts_flags_defaults"],
+    srcs: [":file_contexts_files{.plat_private}"],
+}
+
 file_contexts {
     name: "plat_file_contexts.recovery",
     defaults: ["contexts_flags_defaults"],
