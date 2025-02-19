@@ -849,6 +849,9 @@ get_prop(system_server, boottime_prop)
 # Read device's serial number from system properties
 get_prop(system_server, serialno_prop)
 
+# Read whether uvc gadget is enabled
+get_prop(system_server, usb_uvc_enabled_prop)
+
 # Read/write the property which keeps track of whether this is the first start of system_server
 set_prop(system_server, firstboot_prop)
 
