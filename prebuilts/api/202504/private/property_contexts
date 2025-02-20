@@ -88,6 +88,9 @@ persist.service.bdroid. u:object_r:bluetooth_prop:s0
 persist.security.       u:object_r:system_prop:s0
 persist.traced.enable   u:object_r:traced_enabled_prop:s0
 traced.lazy.            u:object_r:traced_lazy_prop:s0
+traced_relay.relay_port u:object_r:traced_relay_relay_port_prop:s0
+ro.traced.              u:object_r:traced_config_prop:s0
+traced.relay_producer_port u:object_r:traced_config_prop:s0
 persist.heapprofd.enable u:object_r:heapprofd_enabled_prop:s0
 persist.traced_perf.enable u:object_r:traced_perf_enabled_prop:s0
 uprobestats.start_with_config u:object_r:uprobestats_start_with_config_prop:s0
@@ -718,6 +721,7 @@ bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
+bluetooth.core.le.msft_vendor_opcode                 u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
@@ -1811,11 +1815,13 @@ trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop
 
 # Properties that allows vendors to enable Trusty widevine VM features
 # Enable Widevine VM
-trusty.widevine_vm.enabled           u:object_r:widevine_sys_vendor_prop:s0 exact bool
+trusty.widevine_vm.enabled           u:object_r:drm_config_prop:s0 exact bool
 # Sets the path used by Widevine HALs to find correct library for the widevine
 # service provider location
-widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact string
+widevine.liboemcrypto.path          u:object_r:drm_config_prop:s0 exact string
 
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0
-mmd.enabled_aconfig u:object_r:mmd_prop:s0 exact bool
+mmd.zram.enabled u:object_r:mmd_shared_prop:s0 exact bool
+mmd.enabled_aconfig u:object_r:mmd_shared_status_prop:s0 exact bool
+mmd.status. u:object_r:mmd_status_prop:s0
