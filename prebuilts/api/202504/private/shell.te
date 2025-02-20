@@ -67,6 +67,9 @@ allow shell perfetto_traces_data_file:file { r_file_perms unlink };
 # ... and /data/misc/perfetto-traces/bugreport/ .
 allow shell perfetto_traces_bugreport_data_file:dir rw_dir_perms;
 allow shell perfetto_traces_bugreport_data_file:file { r_file_perms unlink };
+# ... and /data/misc/perfetto-traces/profiling/ .
+allow shell perfetto_traces_profiling_data_file:dir rw_dir_perms;
+allow shell perfetto_traces_profiling_data_file:file { r_file_perms unlink };
 
 # Allow shell to create/remove configs stored in /data/misc/perfetto-configs.
 allow shell perfetto_configs_data_file:dir rw_dir_perms;
@@ -142,7 +145,7 @@ allow shell remount_exec:file rx_file_perms;
 
 # Allow shell to call perf_event_open for profiling other shell processes, but
 # not the whole system.
-allow shell self:perf_event { open read write kernel };
+allow shell self:perf_event { open read write };
 
 # Allow shell to read microdroid vendor image
 r_dir_file(shell, vendor_microdroid_file)

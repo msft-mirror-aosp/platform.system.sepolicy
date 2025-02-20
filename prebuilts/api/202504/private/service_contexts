@@ -32,6 +32,7 @@ android.hardware.biometrics.fingerprint.IFingerprint/default         u:object_r:
 android.hardware.biometrics.fingerprint.IFingerprint/virtual         u:object_r:hal_fingerprint_service:s0
 android.hardware.biometrics.fingerprint.virtualhal.IVirtualHal/virtual u:object_r:hal_fingerprint_service:s0
 android.hardware.bluetooth.IBluetoothHci/default                     u:object_r:hal_bluetooth_service:s0
+android.hardware.bluetooth.offload.leaudio.IHciProxy/default         u:object_r:hal_bluetooth_service:s0
 android.hardware.bluetooth.finder.IBluetoothFinder/default           u:object_r:hal_bluetooth_service:s0
 is_flag_enabled(RELEASE_HARDWARE_BLUETOOTH_RANGING_SERVICE, `
     android.hardware.bluetooth.ranging.IBluetoothChannelSounding/default u:object_r:hal_bluetooth_service:s0

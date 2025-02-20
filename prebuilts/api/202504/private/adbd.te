@@ -178,6 +178,10 @@ allow adbd perfetto:process signal;
 allow adbd perfetto_traces_data_file:file r_file_perms;
 allow adbd perfetto_traces_data_file:dir r_dir_perms;
 
+# Allow to pull ProfilingManager Perfetto traces.
+allow adbd perfetto_traces_profiling_data_file:file r_file_perms;
+allow adbd perfetto_traces_profiling_data_file:dir r_dir_perms;
+
 # Allow to push and manage configs in /data/misc/perfetto-configs.
 allow adbd perfetto_configs_data_file:dir rw_dir_perms;
 allow adbd perfetto_configs_data_file:file create_file_perms;
@@ -228,3 +232,6 @@ neverallow adbd {
 # Only init is allowed to enter the adbd domain via exec()
 neverallow { domain -init } adbd:process transition;
 neverallow * adbd:process dyntransition;
+
+# allow adbd to check if an app is frozen
+allow adbd cgroup_v2:file read;
