@@ -1821,5 +1821,5 @@ widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0
 mmd.zram.enabled u:object_r:mmd_shared_prop:s0 exact bool
-mmd.enabled_aconfig u:object_r:mmd_status_prop:s0 exact bool
+mmd.enabled_aconfig u:object_r:mmd_shared_status_prop:s0 exact bool
 mmd.status. u:object_r:mmd_status_prop:s0
