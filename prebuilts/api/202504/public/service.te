@@ -18,6 +18,9 @@ type dumpstate_service,         service_manager_type;
 type evsmanagerd_service,       service_manager_type;
 type fingerprintd_service,      service_manager_type;
 type fwk_automotive_display_service, service_manager_type;
+starting_at_board_api(202504, `
+    type fwk_vold_service,      service_manager_type;
+')
 type gatekeeper_service,        app_api_service, service_manager_type;
 type gpu_service,               app_api_service, ephemeral_app_api_service, service_manager_type;
 type idmap_service,             service_manager_type;
