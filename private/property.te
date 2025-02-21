@@ -86,6 +86,7 @@ system_restricted_prop(bionic_linker_16kb_app_compat_prop)
 system_restricted_prop(device_config_virtualization_framework_native_prop)
 system_restricted_prop(fstype_prop)
 system_restricted_prop(log_file_logger_prop)
+system_restricted_prop(mmd_shared_status_prop)
 system_restricted_prop(persist_sysui_builder_extras_prop)
 system_restricted_prop(persist_sysui_ranking_update_prop)
 system_restricted_prop(page_size_prop)
@@ -112,11 +113,13 @@ until_board_api(202504, `
 
 # Properties which should only be written by vendor_init
 system_vendor_config_prop(avf_virtualizationservice_prop)
+until_board_api(202504, `
+    system_vendor_config_prop(drm_config_prop)
+')
 system_vendor_config_prop(high_barometer_quality_prop)
 system_vendor_config_prop(mmd_prop)
 system_vendor_config_prop(mmd_shared_prop)
 system_vendor_config_prop(prefetch_boot_prop)
-system_vendor_config_prop(widevine_sys_vendor_prop)
 
 typeattribute log_prop log_property_type;
 typeattribute log_tag_prop log_property_type;

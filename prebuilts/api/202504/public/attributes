@@ -366,6 +366,9 @@ hal_attribute(graphics_allocator);
 hal_attribute(graphics_composer);
 hal_attribute(health);
 hal_attribute(health_storage);
+starting_at_board_api(202504, `
+    hal_attribute(hwcrypto);
+')
 hal_attribute(identity);
 hal_attribute(input_classifier);
 hal_attribute(input_processor);
