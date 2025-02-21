@@ -634,6 +634,7 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+persist.bluetooth.leaudio_dynamic_switcher.mode             u:object_r:bluetooth_lea_mode_prop:s0 exact string
 
 bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
