@@ -649,6 +649,8 @@ bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config
 bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.wakeup_supported                  u:object_r:bluetooth_config_prop:s0 exact bool
 
+bluetooth.hci.msft_vendor_opcode                     u:object_r:bluetooth_config_prop:s0 exact uint
+
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
 
@@ -721,7 +723,6 @@ bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
-bluetooth.core.le.msft_vendor_opcode                 u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
