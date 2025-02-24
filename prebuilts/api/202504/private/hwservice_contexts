@@ -34,6 +34,7 @@ android.hardware.gatekeeper::IGatekeeper                        u:object_r:hal_g
 android.hardware.gnss::IGnss                                    u:object_r:hal_gnss_hwservice:s0
 android.hardware.graphics.allocator::IAllocator                 u:object_r:hal_graphics_allocator_hwservice:s0
 android.hardware.graphics.composer::IComposer                   u:object_r:hal_graphics_composer_hwservice:s0
+android.hardware.tv.mediaquality::IPictureProfileChangedListener     u:object_r:hal_graphics_composer_hwservice:s0
 android.hardware.graphics.mapper::IMapper                       u:object_r:hal_graphics_mapper_hwservice:s0
 android.hardware.health::IHealth                                u:object_r:hal_health_hwservice:s0
 android.hardware.health.storage::IStorage                       u:object_r:hal_health_storage_hwservice:s0
