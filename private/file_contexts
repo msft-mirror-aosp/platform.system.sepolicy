@@ -555,7 +555,6 @@
 
 /(system_ext|system/system_ext)/etc/aconfig(/.*)?                u:object_r:system_aconfig_storage_file:s0
 /(system_ext|system/system_ext)/etc/selinux/system_ext_tee_service_contexts  u:object_r:tee_service_contexts_file:s0
-/(system_ext|system/system_ext)/bin/hw/android\.hardware\.drm-service\.widevine\.system   u:object_r:hal_widevine_system_exec:s0
 
 #############################
 # VendorDlkm files

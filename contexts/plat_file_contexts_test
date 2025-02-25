@@ -808,9 +808,6 @@
 /system/system_ext/lib64                                          system_lib_file
 /system/system_ext/lib64/does_not_exist                           system_lib_file
 
-/system_ext/bin/hw/android.hardware.drm-service.widevine.system          hal_widevine_system_exec
-/system/system_ext/bin/hw/android.hardware.drm-service.widevine.system   hal_widevine_system_exec
-
 /vendor_dlkm                                                      vendor_file
 /vendor_dlkm/does_not_exist                                       vendor_file
 /vendor/vendor_dlkm                                               vendor_file
