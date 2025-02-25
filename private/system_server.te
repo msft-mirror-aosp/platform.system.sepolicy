@@ -429,6 +429,9 @@ allow system_server {
   hal_sensors_server
   hal_vibrator_server
   hal_vr_server
+  hal_wifi_hostapd_server
+  hal_wifi_server
+  hal_wifi_supplicant_server
   system_suspend_server
 }:process { signal };
 
@@ -846,6 +849,9 @@ get_prop(system_server, boottime_prop)
 # Read device's serial number from system properties
 get_prop(system_server, serialno_prop)
 
+# Read whether uvc gadget is enabled
+get_prop(system_server, usb_uvc_enabled_prop)
+
 # Read/write the property which keeps track of whether this is the first start of system_server
 set_prop(system_server, firstboot_prop)
 
@@ -919,6 +925,9 @@ get_prop(system_server, sensors_config_prop)
 
 # Allow system server to determine if system services are enabled
 get_prop(system_server, system_service_enable_prop)
+
+# Allow system server to read shared mmd properties
+get_prop(system_server, mmd_shared_prop)
 
 # Create a socket for connections from debuggerd.
 allow system_server system_ndebug_socket:sock_file create_file_perms;
@@ -1168,6 +1177,9 @@ set_prop(system_server, adbd_tradeinmode_prop)
 # Allow invoking tools like "timeout"
 allow system_server toolbox_exec:file rx_file_perms;
 
+# Allow invoking pbtombstone
+allow system_server pbtombstone_exec:file rx_file_perms;
+
 # Allow system process to setup fs-verity
 allowxperm system_server { apk_data_file apk_tmp_file system_data_file apex_system_server_data_file }:file ioctl FS_IOC_ENABLE_VERITY;
 
@@ -1360,6 +1372,7 @@ neverallow system_server {
   file_type
   -toolbox_exec
   -logcat_exec
+  -pbtombstone_exec
   with_asan(`-shell_exec -asanwrapper_exec -zygote_exec')
 }:file execute_no_trans;
 

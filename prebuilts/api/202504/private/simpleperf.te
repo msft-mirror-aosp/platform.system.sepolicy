@@ -14,14 +14,13 @@ define(`simpleperf_profileable_apps', `{
   untrusted_app_all
 }')
 
-domain_auto_trans({ simpleperf_profileable_apps -runas_app }, simpleperf_exec, simpleperf)
+domain_auto_trans(simpleperf_profileable_apps, simpleperf_exec, simpleperf)
 
 # When running in this domain, simpleperf is scoped to profiling an individual
 # app. The necessary MAC permissions for profiling are more maintainable and
 # consistent if simpleperf is marked as an app domain as well (as, for example,
 # it will then see the same set of system libraries as the app).
 app_domain(simpleperf)
-untrusted_app_domain(simpleperf)
 
 # Allow ptrace attach to the target app, for reading JIT debug info (using
 # process_vm_readv) during unwinding and symbolization.
@@ -45,7 +44,23 @@ allow simpleperf_profileable_apps simpleperf:process signal;
 # not allowed to see.
 dontaudit simpleperf domain:dir search;
 
+# Allow simpleperf to read apk files and libraries executed by the app.
+r_dir_file(simpleperf, privapp_data_file);
+r_dir_file(simpleperf, app_data_file);
+allow simpleperf { apk_tmp_file apk_private_tmp_file }:file { getattr read };
+allow simpleperf system_linker_exec:file r_file_perms;
+allow simpleperf app_exec_data_file:file r_file_perms;
+allow simpleperf asec_public_file:file r_file_perms;
+r_dir_file(simpleperf, vendor_app_file);
+
+# Allow simpleperf to read input files passed from adb shell.
+allow simpleperf shell_data_file:file r_file_perms;
+allow simpleperf shell_data_file:dir r_dir_perms;
+
 # Neverallows:
 
 # Profiling must be confined to the scope of an individual app.
 neverallow simpleperf self:perf_event ~{ open read write kernel };
+# Never allow other processes to ptrace simpleperf, as this could leak sensitive infomation from
+# raw samples.
+neverallow { domain -crash_dump -llkd } simpleperf:process ptrace;

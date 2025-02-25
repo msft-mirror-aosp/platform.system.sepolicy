@@ -119,6 +119,8 @@ def match_path(path: str, matcher: Matcher) -> bool:
             return path.startswith('./bin/') and not path.endswith('/')
         case MatchPred(pred):
             return pred(path)
+        case _:
+            sys.exit(f'unknown matcher: {matcher}')
 
 
 def check_rule(pol, path: str, tcontext: str, rule: Rule) -> List[str]:
@@ -186,15 +188,15 @@ def base_attr_for(partition):
 
 def system_vendor_rule(partition):
     exceptions = [
-        "./etc/linkerconfig.pb"
+        "./etc/linker.config.pb"
     ]
     def pred(path):
         return path not in exceptions
 
-    return pred, HasAttr(base_attr_for(partition))
+    return MatchPred(pred), HasAttr(base_attr_for(partition))
 
 
-def check_line(pol: policy.Policy, line: str, rules) -> List[str]:
+def check_line(pol: policy.Policy, line: str, rules, ignore_unknown_context=False) -> List[str]:
     """Parses a file_contexts line and runs checks"""
     # skip empty/comment line
     line = line.strip()
@@ -209,6 +211,9 @@ def check_line(pol: policy.Policy, line: str, rules) -> List[str]:
     if len(context.split(':')) != 4:
         return [f"Error: invalid file_contexts: {line}"]
     tcontext = context.split(':')[2]
+
+    if ignore_unknown_context and tcontext not in pol.GetAllTypes(False):
+        return []
 
     # check rules
     errors = []
@@ -240,18 +245,19 @@ def do_main(work_dir):
     policy_path = extract_data('precompiled_sepolicy', work_dir)
     pol = policy.Policy(policy_path, None, lib_path)
 
+    # ignore unknown contexts unless --all is specified
+    ignore_unknown_context = True
     if args.all:
-        rules = all_rules
-    else:
-        rules = generic_rules
+        ignore_unknown_context = False
 
+    rules = all_rules
     if args.partition:
         rules.append(system_vendor_rule(args.partition))
 
     errors = []
     with open(args.file_contexts, 'rt', encoding='utf-8') as file_contexts:
         for line in file_contexts:
-            errors.extend(check_line(pol, line, rules))
+            errors.extend(check_line(pol, line, rules, ignore_unknown_context))
     if len(errors) > 0:
         sys.exit('\n'.join(errors))
 

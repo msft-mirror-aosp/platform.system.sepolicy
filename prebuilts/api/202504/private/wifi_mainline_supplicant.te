@@ -5,7 +5,7 @@ binder_use(wifi_mainline_supplicant)
 init_daemon_domain(wifi_mainline_supplicant)
 add_service(wifi_mainline_supplicant, wifi_mainline_supplicant_service)
 
-allow wifi_mainline_supplicant self:global_capability_class_set { setuid setgid net_admin net_raw };
+allow wifi_mainline_supplicant self:global_capability_class_set { net_admin net_raw };
 allow wifi_mainline_supplicant proc_net:file rw_file_perms;
 allow wifi_mainline_supplicant sysfs_net:dir search;
 
