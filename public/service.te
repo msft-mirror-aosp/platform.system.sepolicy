@@ -18,6 +18,9 @@ type dumpstate_service,         service_manager_type;
 type evsmanagerd_service,       service_manager_type;
 type fingerprintd_service,      service_manager_type;
 type fwk_automotive_display_service, service_manager_type;
+starting_at_board_api(202504, `
+    type fwk_vold_service,      service_manager_type;
+')
 type gatekeeper_service,        app_api_service, service_manager_type;
 type gpu_service,               app_api_service, ephemeral_app_api_service, service_manager_type;
 type idmap_service,             service_manager_type;
@@ -323,6 +326,9 @@ type hal_graphics_composer_service, protected_service, hal_service_type, service
 type hal_graphics_mapper_service, hal_service_type, service_manager_type;
 type hal_health_service, protected_service, hal_service_type, service_manager_type;
 type hal_health_storage_service, protected_service, hal_service_type, service_manager_type;
+starting_at_board_api(202504, `
+    type hal_hwcrypto_service, protected_service, hal_service_type, service_manager_type;
+')
 type hal_identity_service, protected_service, hal_service_type, service_manager_type;
 type hal_input_processor_service, protected_service, hal_service_type, service_manager_type;
 type hal_ir_service, protected_service, hal_service_type, service_manager_type;
