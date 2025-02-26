@@ -523,7 +523,7 @@ var (
 		"wifiaware":                              EXCEPTION_NO_FUZZER,
 		"wifi_usd":                               EXCEPTION_NO_FUZZER,
 		"wifirtt":                                EXCEPTION_NO_FUZZER,
-		"wifi_mainline_supplicant":               EXCEPTION_NO_FUZZER, // defined internally
+		"wifi_mainline_supplicant":               []string{"mainline_supplicant_service_fuzzer"},
 		"window":                                 EXCEPTION_NO_FUZZER,
 		"*":                                      EXCEPTION_NO_FUZZER,
 	}
