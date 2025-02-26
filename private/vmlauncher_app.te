@@ -14,7 +14,7 @@ virtualizationservice_use(vmlauncher_app)
 allow vmlauncher_app fsck_exec:file { r_file_perms execute execute_no_trans };
 allow vmlauncher_app crosvm:fd use;
 allow vmlauncher_app crosvm_tmpfs:file { map read write };
-allow vmlauncher_app crosvm_exec:file rx_file_perms;
+allow vmlauncher_app crosvm_exec:file r_file_perms;
 
 allow vmlauncher_app privapp_data_file:sock_file { create unlink write getattr };
 
