@@ -109,6 +109,8 @@ is_flag_enabled(RELEASE_AVF_SUPPORT_CUSTOM_VM_WITH_PARAVIRTUALIZED_DEVICES, `
   hal_client_domain(crosvm, hal_graphics_allocator)
 
   # To provide display service to an app to get surface.
+  # TODO(b/332677707): remove them when display service uses binder RPC.
+  allow crosvm vmlauncher_app:binder { transfer call };
   allow crosvm servicemanager:binder { call transfer };
   allow crosvm virtualization_service:service_manager find;
   allow crosvm virtualizationservice:binder { call transfer };
@@ -215,10 +217,12 @@ neverallow crosvm {
 }:file read;
 
 # Only virtualizationmanager can run crosvm
+# Allow vmlauncher app to launch crosvm for virtiofs
 neverallow {
   domain
   -crosvm
   -virtualizationmanager
+  -vmlauncher_app
   userdebug_or_eng(`-overlay_remounter')
 
   is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `-early_virtmgr')
