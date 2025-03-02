@@ -634,6 +634,7 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+persist.bluetooth.leaudio_dynamic_switcher.mode             u:object_r:bluetooth_lea_mode_prop:s0 exact string
 
 bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
@@ -648,6 +649,8 @@ bluetooth.hardware.power.rx_cur_ma                   u:object_r:bluetooth_config
 bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.wakeup_supported                  u:object_r:bluetooth_config_prop:s0 exact bool
+
+bluetooth.hci.msft_vendor_opcode                     u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
@@ -721,7 +724,6 @@ bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
-bluetooth.core.le.msft_vendor_opcode                 u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
@@ -1815,10 +1817,10 @@ trusty.security_vm.keymint.enabled u:object_r:trusty_security_vm_sys_vendor_prop
 
 # Properties that allows vendors to enable Trusty widevine VM features
 # Enable Widevine VM
-trusty.widevine_vm.enabled           u:object_r:widevine_sys_vendor_prop:s0 exact bool
+trusty.widevine_vm.enabled           u:object_r:drm_config_prop:s0 exact bool
 # Sets the path used by Widevine HALs to find correct library for the widevine
 # service provider location
-widevine.liboemcrypto.path          u:object_r:widevine_sys_vendor_prop:s0 exact string
+widevine.liboemcrypto.path          u:object_r:drm_config_prop:s0 exact string
 
 # Properties for mmd
 mmd. u:object_r:mmd_prop:s0

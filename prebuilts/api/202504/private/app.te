@@ -6,6 +6,7 @@ r_dir_file({
   appdomain
   -ephemeral_app
   -isolated_app_all
+  -network_stack
   -platform_app
   -priv_app
   -shell
@@ -19,6 +20,7 @@ userdebug_or_eng(`
     appdomain
     -ephemeral_app
     -isolated_app_all
+    -network_stack
     -platform_app
     -priv_app
     -shell

@@ -40,3 +40,7 @@ until_board_api(202504, `
 until_board_api(202504, `
     hal_attribute(vm_capabilities);
 ')
+
+until_board_api(202504, `
+    hal_attribute(hwcrypto);
+')
