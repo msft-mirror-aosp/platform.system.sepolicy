@@ -15,6 +15,10 @@ allow uprobestats self:perf_event { cpu open write };
 allow uprobestats sysfs_uprobe:file { open read };
 allow uprobestats sysfs_uprobe:dir { search };
 
+allow uprobestats { apex_art_data_file apex_module_data_file }:dir r_dir_perms;
+allow uprobestats { apex_art_data_file apex_module_data_file }:file r_file_perms;
+allow uprobestats packages_list_file:file r_file_perms;
+
 # Allow uprobestats to popen oatdump.
 allow uprobestats system_file:file rx_file_perms;
 
