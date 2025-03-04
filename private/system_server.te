@@ -700,6 +700,9 @@ allow system_server app_data_file_type:file { getattr read write append map };
 # Access to /data/media for measuring disk usage.
 allow system_server media_rw_data_file:dir { search getattr open read };
 
+# Access to check if the mainline supplicant binary exists
+allow system_server wifi_mainline_supplicant_exec:file getattr;
+
 # Receive and use open /data/media files passed over binder IPC.
 # Also used for measuring disk usage.
 allow system_server media_rw_data_file:file { getattr read write append };
