@@ -114,6 +114,9 @@ userdebug_or_eng(`
 # Allow virtualizationmanager to read microdroid related files in vendor partition
 r_dir_file(virtualizationmanager, vendor_microdroid_file)
 
+# Allow virtualizationmanager to read /data/nativetest for VTS
+r_dir_file(virtualizationmanager, nativetest_data_file)
+
 # Do not allow writing vendor_microdroid_file from any process.
 neverallow {
   domain

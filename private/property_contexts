@@ -506,6 +506,8 @@ ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
 ro.camera.disableJpegR        u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableVirtualCamera      u:object_r:camera_config_prop:s0 exact bool
+ro.camera.disableHeicUltraHDR u:object_r:camera_config_prop:s0 exact bool
+ro.camera.enableSWHEVC        u:object_r:camera_config_prop:s0 exact bool
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 
@@ -1810,6 +1812,9 @@ ro.system_settings.service.backgound_install_control_enabled   u:object_r:system
 # Properties related to Trusty VMs
 trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
 trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
+trusty.widevine_vm.nonsecure_vm_ready u:object_r:trusty_widevine_vm_sys_prop:s0 exact bool
+trusty.widevine_vm.vm_cid u:object_r:trusty_widevine_vm_sys_prop:s0 exact int
+trusty.widevine_vm.port u:object_r:trusty_widevine_vm_sys_prop:s0 exact int
 
 # Properties that allows vendors to enable Trusty security VM features
 trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool
