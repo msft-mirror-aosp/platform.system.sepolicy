@@ -2318,7 +2318,7 @@ neverallow {
     domain
 
     # these are expected
-    -early_virtmgr
+    is_flag_enabled(RELEASE_AVF_ENABLE_EARLY_VM, `-early_virtmgr')
     -virtualizationmanager
     -virtualizationservice
     -adbd_common # maybe should move to emulator/virtual device specific policy
