@@ -530,7 +530,9 @@ neverallow { domain -dumpstate -init -vendor_init -system_server } binderfs_logs
 
 # Needed for loading kernel modules.
 # TODO(384942085): Reduce the scope.
+is_flag_disabled(RELEASE_SEPOLICY_RESTRICT_KERNEL_KEYRING_SEARCH, `
 allow domain kernel:key search;
+')
 
 # Allow access to linkerconfig file
 allow domain linkerconfig_file:dir search;
