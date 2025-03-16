@@ -75,7 +75,8 @@ allow $1 $2:{ file lnk_file } r_file_perms;
 # Allow access to a unique type for this domain when creating tmpfs / ashmem files.
 define(`tmpfs_domain', `
 type_transition $1 tmpfs:file $1_tmpfs;
-allow $1 $1_tmpfs:file { read write getattr map };
+allow $1 $1_tmpfs:file { read write getattr map ioctl };
+allowxperm $1 $1_tmpfs:file ioctl ashmem_ioctls;
 ')
 
 # pdx macros for IPC. pdx is a high-level name which contains transport-specific
@@ -243,7 +244,8 @@ typeattribute $1 appdomain;
 # Label tmpfs objects for all apps.
 type_transition $1 tmpfs:file appdomain_tmpfs;
 userfaultfd_use($1)
-allow $1 appdomain_tmpfs:file { execute getattr map read write };
+allow $1 appdomain_tmpfs:file { execute getattr map read write ioctl };
+allowxperm $1 appdomain_tmpfs:file ioctl ashmem_ioctls;
 neverallow { $1 -runas_app -shell -simpleperf } { domain -$1 }:file no_rw_file_perms;
 neverallow { appdomain -runas_app -shell -simpleperf -$1 } $1:file no_rw_file_perms;
 # The Android security model guarantees the confidentiality and integrity

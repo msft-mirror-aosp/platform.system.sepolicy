@@ -661,6 +661,7 @@ bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config
 bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.core.gap.le.conn.only_init_1m_phy.enabled  u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le_audio.inband_ringtone.supported    u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.le_audio.codec_extension_aidl.enabled u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -729,6 +730,8 @@ bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.hfp.codec_aptx_voice.enabled               u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.hfp.swb.aptx.power_management.enabled      u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.managed_by_audio                       u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le.dsa_transport_preference           u:object_r:bluetooth_config_prop:s0 exact string
