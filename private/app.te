@@ -609,6 +609,8 @@ neverallow appdomain system_data_file:dir_file_class_set
     { create write setattr relabelfrom relabelto append unlink link rename };
 
 # Write to various other parts of /data.
+neverallow appdomain mediadrm_system_data_file:dir_file_class_set
+    { create write setattr relabelfrom relabelto append unlink link rename };
 neverallow appdomain drm_data_file:dir_file_class_set
     { create write setattr relabelfrom relabelto append unlink link rename };
 neverallow { appdomain -platform_app }

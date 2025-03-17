@@ -8,3 +8,7 @@ allow hal_widevine_system self:vsock_socket { create_socket_perms_no_ioctl };
 
 get_prop(hal_widevine_system, drm_config_prop)
 get_prop(hal_widevine_system, trusty_widevine_vm_sys_prop)
+
+allow hal_widevine_system mediadrm_system_data_file:dir { create search add_name rw_dir_perms };
+allow hal_widevine_system mediadrm_system_data_file:file { getattr create open read write };
+

@@ -858,6 +858,7 @@
 /data/system/unsolzygotesocket                                    system_unsolzygote_socket
 /data/drm                                                         drm_data_file
 /data/drm/test                                                    drm_data_file
+/data/system/mediadrm                                             mediadrm_system_data_file
 /data/resource-cache                                              resourcecache_data_file
 /data/resource-cache/test                                         resourcecache_data_file
 /data/dalvik-cache                                                dalvikcache_data_file
