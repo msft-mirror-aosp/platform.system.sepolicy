@@ -67,6 +67,9 @@ binder_call(dumpstate, virtual_camera)
 # Allow dumpstate to talk to ot_daemon service over binder
 binder_call(dumpstate, ot_daemon)
 
+# Allow dumpstate to talk to mmd service over binder
+binder_call(dumpstate, mmd)
+
 # Collect metrics on boot time created by init
 get_prop(dumpstate, boottime_prop)
 
