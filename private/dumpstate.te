@@ -67,6 +67,9 @@ binder_call(dumpstate, virtual_camera)
 # Allow dumpstate to talk to ot_daemon service over binder
 binder_call(dumpstate, ot_daemon)
 
+# Allow dumpstate to talk to mmd service over binder
+binder_call(dumpstate, mmd)
+
 # Collect metrics on boot time created by init
 get_prop(dumpstate, boottime_prop)
 
@@ -567,6 +570,9 @@ use_apex_info(dumpstate)
 # Allow reading files under /data/system/shutdown-checkpoints/
 allow dumpstate shutdown_checkpoints_system_data_file:dir r_dir_perms;
 allow dumpstate shutdown_checkpoints_system_data_file:file r_file_perms;
+
+# Allow dumpstate to make binder calls to wifi_mainline_supplicant
+binder_call(dumpstate, wifi_mainline_supplicant);
 
 ###
 ### neverallow rules

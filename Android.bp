@@ -335,7 +335,6 @@ se_policy_cil {
     src: ":system_ext_sepolicy.conf",
     system_ext_specific: true,
     filter_out: [":plat_sepolicy.cil"],
-    remove_line_marker: true,
 }
 
 // product_policy.conf - A combination of the private and public product policy
@@ -361,7 +360,6 @@ se_policy_cil {
         ":plat_sepolicy.cil",
         ":system_ext_sepolicy.cil",
     ],
-    remove_line_marker: true,
 }
 
 // policy mapping files
@@ -477,7 +475,7 @@ se_policy_cil {
     src: ":odm_sepolicy.conf",
     filter_out: [
         ":reqd_policy_mask.cil",
-        ":vendor_sepolicy.cil",
+        ":vendor_sepolicy.cil.raw",
     ],
     secilc_check: false, // will be done in se_versioned_policy module
     device_specific: true,
@@ -497,10 +495,7 @@ se_versioned_policy {
         ":plat_mapping_file",
         ":vendor_sepolicy.cil",
     ],
-    filter_out: [
-        ":plat_pub_versioned.cil",
-        ":vendor_sepolicy.cil",
-    ],
+    filter_out: [":plat_pub_versioned.cil"],
     device_specific: true,
 }
 
