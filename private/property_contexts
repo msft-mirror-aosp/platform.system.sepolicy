@@ -508,6 +508,7 @@ ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableVirtualCamera      u:object_r:camera_config_prop:s0 exact bool
 ro.camera.disableHeicUltraHDR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableSWHEVC        u:object_r:camera_config_prop:s0 exact bool
+ro.camera.resultFmqSize             u:object_r:camera_config_prop:s0 exact int
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 
