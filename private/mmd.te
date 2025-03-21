@@ -38,3 +38,7 @@ unix_socket_send(mmd, statsdw, statsd)
 allow mmd stats_service:service_manager find;
 allow mmd statsmanager_service:service_manager find;
 binder_call(mmd, statsd)
+
+# Allow mmd to send dump info to dumpstate.
+allow mmd dumpstate:fd use;
+allow mmd dumpstate:fifo_file { getattr write };
