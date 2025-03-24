@@ -611,7 +611,10 @@ define(`not_compatible_property', ifelse(target_compatible_property, `true', , $
 # Userdebug or eng builds
 # SELinux rules which apply only to userdebug or eng builds
 #
-define(`userdebug_or_eng', ifelse(target_build_variant, `eng', $1, ifelse(target_build_variant, `userdebug', $1)))
+define(`userdebug_or_eng', ifelse(target_build_variant, `eng', $1, ifelse(target_build_variant, `userdebug', $1,
+#
+# SUPPRESSED_BY_USERDEBUG_OR_ENG -- this marker is used by CTS -- do not modify
+)))
 
 #####################################
 # asan builds
