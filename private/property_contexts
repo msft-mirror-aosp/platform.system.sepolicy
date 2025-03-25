@@ -479,6 +479,11 @@ ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact boo
 # to disable usecase validator for game mode
 ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
 
+# Boolean property used in UsbAlsaManager and AudioPolicyManager
+# to decide if multiple audio devices of the same type
+# can be connected to audio system at the same time
+ro.audio.same_type_multi_device_allowed u:object_r:audio_config_prop:s0 exact bool
+
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
 ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
@@ -508,6 +513,7 @@ ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableVirtualCamera      u:object_r:camera_config_prop:s0 exact bool
 ro.camera.disableHeicUltraHDR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableSWHEVC        u:object_r:camera_config_prop:s0 exact bool
+ro.camera.resultFmqSize             u:object_r:camera_config_prop:s0 exact int
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 

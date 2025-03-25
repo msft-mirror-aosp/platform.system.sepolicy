@@ -209,3 +209,4 @@ starting_at_board_api(202504, `
 /(vendor|system/vendor)/lib(64)?/libutilscallstack\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/lib(64)?/libz\.so u:object_r:same_process_hal_file:s0
 /(vendor|system/vendor)/bin/hw/android\.hardware\.virtualization\.capabilities\.capabilities_service-noop       u:object_r:hal_vm_capabilities_default_exec:s0
+/(vendor|system/vendor)/bin/hw/android\.hardware\.virtualization\.capabilities\.capabilities_service-default       u:object_r:hal_vm_capabilities_default_exec:s0
