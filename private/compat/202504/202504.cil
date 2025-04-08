@@ -1,3 +1,6 @@
+;; types removed from current policy
+(type apk_verity_prop)
+
 ;; mapping information from ToT policy's types to 202504 policy's types.
 (expandtypeattribute (DockObserver_service_202504) true)
 (expandtypeattribute (IProxyService_service_202504) true)

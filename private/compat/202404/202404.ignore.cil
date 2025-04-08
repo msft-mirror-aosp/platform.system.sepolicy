@@ -17,6 +17,7 @@
     forensic_service
     fstype_prop
     fwk_vold_service
+    hal_hwcrypto_service
     hal_mediaquality_service
     hal_vm_capabilities_service
     intrusion_detection_service

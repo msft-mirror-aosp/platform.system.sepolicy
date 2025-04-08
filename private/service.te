@@ -37,7 +37,9 @@ until_board_api(202504, `
 until_board_api(202504, `
     type hal_mediaquality_service, protected_service, hal_service_type, service_manager_type;
 ')
-
+until_board_api(202504, `
+    type hal_hwcrypto_service, protected_service, hal_service_type, service_manager_type;
+')
 is_flag_enabled(RELEASE_SUPERVISION_SERVICE, `
     type supervision_service, app_api_service, ephemeral_app_api_service, system_server_service, service_manager_type;
 ')

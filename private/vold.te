@@ -472,6 +472,7 @@ neverallow vold {
   -keystore
   -servicemanager
   -system_server
+  -tee
   userdebug_or_eng(`-su')
 }:binder call;
 

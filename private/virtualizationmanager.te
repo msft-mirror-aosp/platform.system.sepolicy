@@ -114,6 +114,9 @@ userdebug_or_eng(`
 # Allow virtualizationmanager to read microdroid related files in vendor partition
 r_dir_file(virtualizationmanager, vendor_microdroid_file)
 
+# Allow virtualizationmanager to read /data/nativetest for VTS
+r_dir_file(virtualizationmanager, nativetest_data_file)
+
 # Do not allow writing vendor_microdroid_file from any process.
 neverallow {
   domain
@@ -150,3 +153,7 @@ allow virtualizationmanager tee_service_contexts_file:file r_file_perms;
 # virtualizationmanager uses libselinux to check if VM is allowed to access requested
 # tee services.
 selinux_check_access(virtualizationmanager)
+
+# virtualizationmanager needs to talk to IVmCapabilitiesService HAL to allow specific VMs to
+# issue vendor-private smcs.
+hal_client_domain(virtualizationmanager, hal_vm_capabilities);

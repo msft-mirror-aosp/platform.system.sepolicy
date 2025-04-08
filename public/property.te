@@ -136,7 +136,7 @@ compatible_property_only(`
 system_vendor_config_prop(apexd_config_prop)
 system_vendor_config_prop(apexd_select_prop)
 system_vendor_config_prop(aaudio_config_prop)
-system_vendor_config_prop(apk_verity_prop)
+until_board_api(202604, `system_vendor_config_prop(apk_verity_prop)')
 system_vendor_config_prop(audio_config_prop)
 system_vendor_config_prop(bootanim_config_prop)
 system_vendor_config_prop(bluetooth_config_prop)

@@ -56,6 +56,7 @@ android.hardware.fastboot.IFastboot/default                          u:object_r:
 android.hardware.gnss.IGnss/default                                  u:object_r:hal_gnss_service:s0
 android.hardware.graphics.allocator.IAllocator/default               u:object_r:hal_graphics_allocator_service:s0
 android.hardware.graphics.composer3.IComposer/default                u:object_r:hal_graphics_composer_service:s0
+android.hardware.tv.mediaquality.IPictureProfileChangedListener/default     u:object_r:hal_graphics_composer_service:s0
 android.hardware.health.storage.IStorage/default                     u:object_r:hal_health_storage_service:s0
 android.hardware.health.IHealth/default                              u:object_r:hal_health_service:s0
 android.hardware.identity.IIdentityCredentialStore/default           u:object_r:hal_identity_service:s0
@@ -109,6 +110,7 @@ android.hardware.security.keymint.IRemotelyProvisionedComponent/default u:object
 android.hardware.security.keymint.IRemotelyProvisionedComponent/avf     u:object_r:hal_remotelyprovisionedcomponent_avf_service:s0
 android.hardware.gatekeeper.IGatekeeper/default                      u:object_r:hal_gatekeeper_service:s0
 android.hardware.security.secureclock.ISecureClock/default             u:object_r:hal_secureclock_service:s0
+android.hardware.security.see.hwcrypto.IHwCryptoKey/default          u:object_r:hal_hwcrypto_service:s0
 android.hardware.security.sharedsecret.ISharedSecret/default             u:object_r:hal_sharedsecret_service:s0
 android.hardware.sensors.ISensors/default                            u:object_r:hal_sensors_service:s0
 android.hardware.soundtrigger3.ISoundTriggerHw/default               u:object_r:hal_audio_service:s0

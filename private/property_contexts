@@ -332,6 +332,7 @@ persist.device_config.global_settings.sys_traced u:object_r:device_config_sys_tr
 
 apexd.                  u:object_r:apexd_prop:s0
 apexd.config.           u:object_r:apexd_config_prop:s0
+apexd.config.apex_file_open.threads      u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.dm_delete.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.dm_create.timeout           u:object_r:apexd_config_prop:s0 exact uint
 apexd.config.loop_wait.attempts          u:object_r:apexd_config_prop:s0 exact uint
@@ -398,6 +399,7 @@ ro.virtual_ab.num_verify_threads u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.cow_op_merge_size u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.verify_threshold_size u:object_r:virtual_ab_prop:s0 exact int
 ro.virtual_ab.verify_block_size u:object_r:virtual_ab_prop:s0 exact int
+ro.virtual_ab.skip_verification u:object_r:virtual_ab_prop:s0 exact bool
 
 # OEMs can set this prop at build time to configure how many seconds to delay
 # merge after installing a Virtual AB OTA. The default behavior is to start
@@ -479,6 +481,11 @@ ro.audio.stereo_spatialization_enabled u:object_r:audio_config_prop:s0 exact boo
 # to disable usecase validator for game mode
 ro.audio.usecase_validator_enabled u:object_r:audio_config_prop:s0 exact bool
 
+# Boolean property used in UsbAlsaManager and AudioPolicyManager
+# to decide if multiple audio devices of the same type
+# can be connected to audio system at the same time
+ro.audio.same_type_multi_device_allowed u:object_r:audio_config_prop:s0 exact bool
+
 # Boolean property used in UsbAlsaManager to decide if only one or multiple
 # USB devices can be connected to audio system at a certain time
 ro.audio.multi_usb_mode u:object_r:audio_config_prop:s0 exact bool
@@ -506,6 +513,9 @@ ro.camera.enableCamera1MaxZsl u:object_r:camera_config_prop:s0 exact bool
 ro.camera.disableJpegR        u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableCompositeAPI0JpegR u:object_r:camera_config_prop:s0 exact bool
 ro.camera.enableVirtualCamera      u:object_r:camera_config_prop:s0 exact bool
+ro.camera.disableHeicUltraHDR u:object_r:camera_config_prop:s0 exact bool
+ro.camera.enableSWHEVC        u:object_r:camera_config_prop:s0 exact bool
+ro.camera.resultFmqSize             u:object_r:camera_config_prop:s0 exact int
 
 ro.camerax.extensions.enabled u:object_r:camerax_extensions_prop:s0 exact bool
 
@@ -634,6 +644,7 @@ persist.bluetooth.snooplogfilter.profiles.pbap              u:object_r:bluetooth
 persist.bluetooth.snooplogfilter.profiles.rfcomm.enabled    u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.factoryreset                              u:object_r:bluetooth_prop:s0 exact bool
 persist.bluetooth.leaudio.allow_list                        u:object_r:bluetooth_prop:s0 exact string
+persist.bluetooth.leaudio_dynamic_switcher.mode             u:object_r:bluetooth_lea_mode_prop:s0 exact string
 
 bluetooth.a2dp.source.sbc_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.a2dp.source.aac_priority.config            u:object_r:bluetooth_config_prop:s0 exact int
@@ -649,6 +660,8 @@ bluetooth.hardware.radio.le_tx_path_loss_comp_db     u:object_r:bluetooth_config
 bluetooth.hardware.radio.le_rx_path_loss_comp_db     u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.hardware.wakeup_supported                  u:object_r:bluetooth_config_prop:s0 exact bool
 
+bluetooth.hci.msft_vendor_opcode                     u:object_r:bluetooth_config_prop:s0 exact uint
+
 bluetooth.framework.support_persisted_state          u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.framework.adapter_address_validation       u:object_r:bluetooth_config_prop:s0 exact bool
 
@@ -656,6 +669,7 @@ bluetooth.core.gap.le.privacy.enabled                u:object_r:bluetooth_config
 bluetooth.core.gap.le.conn.min.limit                 u:object_r:bluetooth_config_prop:s0 exact int
 bluetooth.core.gap.le.conn.only_init_1m_phy.enabled  u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le_audio.inband_ringtone.supported    u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.core.le_audio.codec_extension_aidl.enabled u:object_r:bluetooth_config_prop:s0 exact bool
 
 bluetooth.device.default_name                        u:object_r:bluetooth_config_prop:s0 exact string
 bluetooth.device.class_of_device                     u:object_r:bluetooth_config_prop:s0 exact string
@@ -721,10 +735,11 @@ bluetooth.core.le.connection_scan_interval_slow      u:object_r:bluetooth_config
 bluetooth.core.le.connection_scan_window_slow        u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_interval              u:object_r:bluetooth_config_prop:s0 exact uint
 bluetooth.core.le.inquiry_scan_window                u:object_r:bluetooth_config_prop:s0 exact uint
-bluetooth.core.le.msft_vendor_opcode                 u:object_r:bluetooth_config_prop:s0 exact uint
 
 bluetooth.core.le.vendor_capabilities.enabled        u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.hfp.software_datapath.enabled              u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.hfp.codec_aptx_voice.enabled               u:object_r:bluetooth_config_prop:s0 exact bool
+bluetooth.hfp.swb.aptx.power_management.enabled      u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.disable_enhanced_connection            u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.sco.managed_by_audio                       u:object_r:bluetooth_config_prop:s0 exact bool
 bluetooth.core.le.dsa_transport_preference           u:object_r:bluetooth_config_prop:s0 exact string
@@ -1806,6 +1821,9 @@ ro.system_settings.service.backgound_install_control_enabled   u:object_r:system
 # Properties related to Trusty VMs
 trusty.security_vm.nonsecure_vm_ready u:object_r:trusty_security_vm_sys_prop:s0 exact bool
 trusty.security_vm.vm_cid u:object_r:trusty_security_vm_sys_prop:s0 exact int
+trusty.widevine_vm.nonsecure_vm_ready u:object_r:trusty_widevine_vm_sys_prop:s0 exact bool
+trusty.widevine_vm.vm_cid u:object_r:trusty_widevine_vm_sys_prop:s0 exact int
+trusty.widevine_vm.port u:object_r:trusty_widevine_vm_sys_prop:s0 exact int
 
 # Properties that allows vendors to enable Trusty security VM features
 trusty.security_vm.enabled u:object_r:trusty_security_vm_sys_vendor_prop:s0 exact bool

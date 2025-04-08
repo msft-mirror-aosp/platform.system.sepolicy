@@ -284,6 +284,10 @@ allow system_server webview_zygote:unix_stream_socket { read write connectto set
 # Communicate over a socket created by app_zygote.
 allow system_server app_zygote:unix_stream_socket { read write connectto setopt };
 
+# Communicate with a virtual machine (b/396144272)
+allow system_server virtualizationmanager:fd use;
+allow system_server virtualizationmanager:vsock_socket { getopt read write };
+
 # Perform Binder IPC.
 binder_use(system_server)
 binder_call(system_server, appdomain)
@@ -700,6 +704,9 @@ allow system_server app_data_file_type:file { getattr read write append map };
 # Access to /data/media for measuring disk usage.
 allow system_server media_rw_data_file:dir { search getattr open read };
 
+# Access to check if the mainline supplicant binary exists
+allow system_server wifi_mainline_supplicant_exec:file getattr;
+
 # Receive and use open /data/media files passed over binder IPC.
 # Also used for measuring disk usage.
 allow system_server media_rw_data_file:file { getattr read write append };
@@ -874,9 +881,6 @@ get_prop(system_server, gsid_prop)
 
 # Read the property that mocks an OTA
 get_prop(system_server, mock_ota_prop)
-
-# Read the property as feature flag for protecting apks with fs-verity.
-get_prop(system_server, apk_verity_prop)
 
 # Read wifi.interface
 get_prop(system_server, wifi_prop)
@@ -1293,7 +1297,7 @@ allow system_server profman_dump_data_file:dir rw_dir_perms;
 
 # On userdebug build we may profile system server. Allow it to write and create its own profile.
 userdebug_or_eng(`
-  allow system_server user_profile_data_file:dir w_dir_perms;
+  allow system_server user_profile_data_file:dir rw_dir_perms;
   allow system_server user_profile_data_file:file create_file_perms;
 ')
 # Allow system server to load JVMTI agents under control of a property.
